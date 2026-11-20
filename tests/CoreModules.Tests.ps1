@@ -35,6 +35,16 @@ Describe "AppManager Module" {
 
         $deepPreset = Get-DebloatPreset -PresetName "Deep" -PresetsPath $presetsPath
         $deepPreset.Count | Should -BeGreaterThan 100
+
+        # Category Slices for Power-User Selection
+        $oemApps = @($deepPreset | Where-Object { -not ($_.AppId -like "Microsoft.*") })
+        $oemApps.Count | Should -BeGreaterThan 0
+
+        $xboxApps = @($deepPreset | Where-Object { $_.AppId -like "*Xbox*" -or $_.AppId -like "*Gaming*" })
+        $xboxApps.Count | Should -BeGreaterThan 0
+
+        $mediaApps = @($deepPreset | Where-Object { $_.AppId -like "*BingNews*" -or $_.AppId -like "*Clipchamp*" -or $_.AppId -like "*Photos*" })
+        $mediaApps.Count | Should -BeGreaterThan 0
     }
 
     It "Skips protected packages during removal" {
@@ -134,6 +144,26 @@ Describe "SystemTweaks Module" {
 
     It "Executes StartMenuRecommended WhatIf safely" {
         $res = Set-StartMenuRecommendedTweak -HideRecommended $true -WhatIf
+        $res[0].Status | Should -Be "Preview"
+    }
+
+    It "Executes EdgeBackground WhatIf safely" {
+        $res = Set-EdgeBackgroundTweak -DisableEdgeBackground $true -WhatIf
+        $res[0].Status | Should -Be "Preview"
+    }
+
+    It "Executes TelemetryScheduledTasks WhatIf safely" {
+        $res = Set-TelemetryScheduledTasksTweak -DisableTasks $true -WhatIf
+        $res[0].Status | Should -Be "Preview"
+    }
+
+    It "Executes HibernationStorage WhatIf safely" {
+        $res = Set-HibernationStorageTweak -DisableHibernation $true -WhatIf
+        $res.Status | Should -Be "Preview"
+    }
+
+    It "Executes Multitasking WhatIf safely" {
+        $res = Set-MultitaskingTweak -DisableSnapSuggestions $true -WhatIf
         $res[0].Status | Should -Be "Preview"
     }
 }

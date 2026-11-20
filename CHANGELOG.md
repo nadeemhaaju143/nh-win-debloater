@@ -9,6 +9,38 @@ The project follows a **progressive semantic minor versioning format**:
 
 ---
 
+## [0.3.0] - 2026-11-21
+
+### Material Design UI, Power-User Controls & Advanced System Tweaks
+- **Material Design UI/UX Architecture (`src/UI/MainWindow.xaml` & `AppController.ps1`):**
+  - Updated color hierarchy and elevation surfaces (`#0A0E17` base, `#131D31` cards, `#1E293B` containers, `#2A384F` crisp borders).
+  - Fluid `DoubleAnimation` opacity transitions between wizard stages for smooth, responsive navigation.
+  - Color-coded safety indicator pills across all tweak options:
+    - `RECOMMENDED` / `SAFE` in Emerald (`#064E3B` / `#34D399`)
+    - `CAUTION` / `ADVANCED` in Amber (`#78350F` / `#FBBF24`)
+    - `OPTIONAL` in Slate/Muted (`#1E293B` / `#94A3B8`)
+- **Power-User App Filtering & Selection Engine (`src/UI/` & `AppManager.psm1`):**
+  - Added power-user toolbar with **Select All** (`BtnSelectAllApps`), **Deselect All** (`BtnDeselectAllApps`), and **Invert Selection** (`BtnInvertSelection`) actions.
+  - Added Category quick-selector dropdown (`CmbAppPresetCategory`) providing curated slices:
+    - Recommended Safe Bloat (84 Apps)
+    - Minimal Sponsored Only (11 Apps)
+    - Deep Debloat (All 162 Packages)
+    - OEM & Third-Party Only
+    - Xbox & Gaming Packages
+    - News, Weather & Media
+  - Added "Only show installed apps" filter toggle (`ChkOnlyInstalled`) with automatic local package scanning and `[INSTALLED]` visual badge.
+  - Dynamic live count indicator: *"Showing X apps (Y selected for removal)"*.
+- **Expanded Advanced System Tweaks (`SystemTweaks.psm1`):**
+  - `Set-EdgeBackgroundTweak`: Disables Microsoft Edge Startup Boost and background processes to eliminate idle RAM and thread consumption.
+  - `Set-TelemetryScheduledTasksTweak`: Disables Windows Customer Experience Improvement Program (`Consolidator`, `UsbCeip`) and diagnostic scheduled tasks (`Microsoft Compatibility Appraiser`, `ProgramDataUpdater`).
+  - `Set-HibernationStorageTweak`: Reclaims multi-gigabyte disk space by safely disabling hibernation (`powercfg /hibernate off` and `hiberfil.sys` removal).
+  - `Set-MultitaskingTweak`: Disables Snap Assist suggestions and suppresses Edge browser tabs cluttering `Alt+Tab`.
+- **Quality Gate & Testing:**
+  - Expanded automated test suite in `tests/` to 30 tests (100% pass rate).
+  - Maintained strict PSScriptAnalyzer standard: **0 errors, 0 warnings** across all project scripts.
+
+---
+
 ## [0.2.0] - 2026-11-21
 
 ### Gaming, Performance & Shell Enhancements

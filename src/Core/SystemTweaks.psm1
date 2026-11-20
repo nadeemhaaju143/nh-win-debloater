@@ -552,4 +552,123 @@ function Set-StartMenuRecommendedTweak {
     return $ops.ToArray()
 }
 
-Export-ModuleMember -Function Set-ConsumerFeatureTweak, Set-LockScreenTweak, Set-ClassicContextMenuTweak, Set-MousePrecisionTweak, Set-StickyKeysTweak, Set-FastStartupTweak, Set-StorageSenseTweak, Set-WindowsUpdatePolicyTweak, Set-OptionalFeatureState, Set-GameDVRPlaybackTweak, Set-DeliveryOptimizationTweak, Set-TelemetryServiceTweak, Set-StartMenuRecommendedTweak, New-DebloatRestorePoint, Export-RegistrySnapshot, Restore-RegistrySnapshot
+function Set-EdgeBackgroundTweak {
+    <#
+        .SYNOPSIS
+            Disables Microsoft Edge startup boost and background extension processes.
+    #>
+    [CmdletBinding(SupportsShouldProcess = $true)]
+    [OutputType([PSCustomObject[]])]
+    param(
+        [Parameter(Mandatory = $false)]
+        [bool]$DisableEdgeBackground = $true
+    )
+
+    $ops = [System.Collections.Generic.List[PSCustomObject]]::new()
+    $edgePolicyPath = "HKLM:\SOFTWARE\Policies\Microsoft\Edge"
+    $val = if ($DisableEdgeBackground) { 0 } else { 1 }
+
+    $ops.Add((Set-TweakRegistryValue -Path $edgePolicyPath -Name "StartupBoostEnabled" -Value $val -PropertyType "DWord" -WhatIf:$WhatIfPreference))
+    $ops.Add((Set-TweakRegistryValue -Path $edgePolicyPath -Name "BackgroundModeEnabled" -Value $val -PropertyType "DWord" -WhatIf:$WhatIfPreference))
+
+    return $ops.ToArray()
+}
+
+function Set-TelemetryScheduledTasksTweak {
+    <#
+        .SYNOPSIS
+            Disables Windows Customer Experience Improvement Program and diagnostic scheduled tasks.
+    #>
+    [CmdletBinding(SupportsShouldProcess = $true)]
+    [OutputType([PSCustomObject[]])]
+    param(
+        [Parameter(Mandatory = $false)]
+        [bool]$DisableTasks = $true
+    )
+
+    $ops = [System.Collections.Generic.List[PSCustomObject]]::new()
+    $tasks = @(
+        @{ Path = "\Microsoft\Windows\Customer Experience Improvement Program\"; Name = "Consolidator" },
+        @{ Path = "\Microsoft\Windows\Customer Experience Improvement Program\"; Name = "UsbCeip" },
+        @{ Path = "\Microsoft\Windows\Application Experience\"; Name = "Microsoft Compatibility Appraiser" },
+        @{ Path = "\Microsoft\Windows\Application Experience\"; Name = "ProgramDataUpdater" }
+    )
+
+    foreach ($t in $tasks) {
+        $taskFull = "$($t.Path)$($t.Name)"
+        $action = if ($DisableTasks) { "Disable Task" } else { "Enable Task" }
+
+        if ($PSCmdlet.ShouldProcess("Scheduled Task: $taskFull", $action)) {
+            try {
+                $existing = Get-ScheduledTask -TaskPath $t.Path -TaskName $t.Name -ErrorAction SilentlyContinue
+                if ($existing) {
+                    if ($DisableTasks) {
+                        Disable-ScheduledTask -TaskPath $t.Path -TaskName $t.Name -ErrorAction SilentlyContinue | Out-Null
+                    } else {
+                        Enable-ScheduledTask -TaskPath $t.Path -TaskName $t.Name -ErrorAction SilentlyContinue | Out-Null
+                    }
+                    $ops.Add([PSCustomObject]@{ Path = $t.Path; Name = $t.Name; Value = $action; Status = "Success" })
+                } else {
+                    $ops.Add([PSCustomObject]@{ Path = $t.Path; Name = $t.Name; Value = $action; Status = "Skipped (Not Found)" })
+                }
+            } catch {
+                $ops.Add([PSCustomObject]@{ Path = $t.Path; Name = $t.Name; Value = $action; Status = "Error: $($_.Exception.Message)" })
+            }
+        } else {
+            $ops.Add([PSCustomObject]@{ Path = $t.Path; Name = $t.Name; Value = $action; Status = "Preview" })
+        }
+    }
+
+    return $ops.ToArray()
+}
+
+function Set-HibernationStorageTweak {
+    <#
+        .SYNOPSIS
+            Disables Windows Hibernation to reclaim gigabytes of storage from hiberfil.sys.
+    #>
+    [CmdletBinding(SupportsShouldProcess = $true)]
+    [OutputType([PSCustomObject])]
+    param(
+        [Parameter(Mandatory = $false)]
+        [bool]$DisableHibernation = $true
+    )
+
+    $action = if ($DisableHibernation) { "Disable Hibernation (powercfg /h off)" } else { "Enable Hibernation (powercfg /h on)" }
+
+    if ($PSCmdlet.ShouldProcess("System Power Management", $action)) {
+        try {
+            $arg = if ($DisableHibernation) { "/hibernate off" } else { "/hibernate on" }
+            Start-Process -FilePath "powercfg.exe" -ArgumentList $arg -NoNewWindow -Wait -ErrorAction Stop
+            return [PSCustomObject]@{ Path = "powercfg.exe"; Name = "Hibernation"; Value = $arg; Status = "Success" }
+        } catch {
+            return [PSCustomObject]@{ Path = "powercfg.exe"; Name = "Hibernation"; Value = $action; Status = "Error: $($_.Exception.Message)" }
+        }
+    } else {
+        return [PSCustomObject]@{ Path = "powercfg.exe"; Name = "Hibernation"; Value = $action; Status = "Preview" }
+    }
+}
+
+function Set-MultitaskingTweak {
+    <#
+        .SYNOPSIS
+            Configures Windows 11 Snap Assist and multitasking suggestions.
+    #>
+    [CmdletBinding(SupportsShouldProcess = $true)]
+    [OutputType([PSCustomObject[]])]
+    param(
+        [Parameter(Mandatory = $false)]
+        [bool]$DisableSnapSuggestions = $true
+    )
+
+    $ops = [System.Collections.Generic.List[PSCustomObject]]::new()
+    $advPath = "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced"
+    $val = if ($DisableSnapSuggestions) { 0 } else { 1 }
+
+    $ops.Add((Set-TweakRegistryValue -Path $advPath -Name "SnapAssist" -Value $val -PropertyType "DWord" -WhatIf:$WhatIfPreference))
+    $ops.Add((Set-TweakRegistryValue -Path $advPath -Name "EnableTaskGroups" -Value $val -PropertyType "DWord" -WhatIf:$WhatIfPreference))
+
+    return $ops.ToArray()
+}
+
+Export-ModuleMember -Function Set-ConsumerFeatureTweak, Set-LockScreenTweak, Set-ClassicContextMenuTweak, Set-MousePrecisionTweak, Set-StickyKeysTweak, Set-FastStartupTweak, Set-StorageSenseTweak, Set-WindowsUpdatePolicyTweak, Set-OptionalFeatureState, Set-GameDVRPlaybackTweak, Set-DeliveryOptimizationTweak, Set-TelemetryServiceTweak, Set-StartMenuRecommendedTweak, Set-EdgeBackgroundTweak, Set-TelemetryScheduledTasksTweak, Set-HibernationStorageTweak, Set-MultitaskingTweak, New-DebloatRestorePoint, Export-RegistrySnapshot, Restore-RegistrySnapshot

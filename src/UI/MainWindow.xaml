@@ -2,30 +2,35 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     Title="NH Win Debloater - Guided Setup Assistant"
-    Height="740" Width="1040"
-    MinHeight="660" MinWidth="940"
+    Height="750" Width="1060"
+    MinHeight="670" MinWidth="960"
     WindowStartupLocation="CenterScreen"
-    Background="#0F172A" Foreground="#F8FAFC"
+    Background="#0A0E17" Foreground="#F8FAFC"
     FontFamily="Segoe UI, Segoe UI Variable, Arial">
 
     <Window.Resources>
-        <!-- Modern Colors -->
-        <SolidColorBrush x:Key="BgDark" Color="#0F172A"/>
-        <SolidColorBrush x:Key="CardDark" Color="#1E293B"/>
-        <SolidColorBrush x:Key="CardBorder" Color="#334155"/>
+        <!-- Material Dark Palette & Surface Elevations -->
+        <SolidColorBrush x:Key="BgDark" Color="#0A0E17"/>
+        <SolidColorBrush x:Key="SurfaceCard" Color="#131D31"/>
+        <SolidColorBrush x:Key="SurfaceElevated" Color="#1E293B"/>
+        <SolidColorBrush x:Key="CardBorder" Color="#2A384F"/>
+        <SolidColorBrush x:Key="CardBorderSubtle" Color="#1E293B"/>
         <SolidColorBrush x:Key="AccentCyan" Color="#0EA5E9"/>
-        <SolidColorBrush x:Key="AccentCyanHover" Color="#38BDF8"/>
-        <SolidColorBrush x:Key="AccentGreen" Color="#10B981"/>
-        <SolidColorBrush x:Key="TextWhite" Color="#F8FAFC"/>
-        <SolidColorBrush x:Key="TextMuted" Color="#94A3B8"/>
+        <SolidColorBrush x:Key="AccentCyanGlow" Color="#38BDF8"/>
+        <SolidColorBrush x:Key="AccentEmerald" Color="#10B981"/>
+        <SolidColorBrush x:Key="AccentAmber" Color="#F59E0B"/>
+        <SolidColorBrush x:Key="AccentRose" Color="#EF4444"/>
+        <SolidColorBrush x:Key="TextPrimary" Color="#F8FAFC"/>
+        <SolidColorBrush x:Key="TextSecondary" Color="#94A3B8"/>
+        <SolidColorBrush x:Key="TextTertiary" Color="#64748B"/>
 
         <!-- Button Style -->
         <Style x:Key="ModernBtn" TargetType="Button">
             <Setter Property="Background" Value="#1E293B"/>
             <Setter Property="Foreground" Value="#F8FAFC"/>
-            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="FontSize" Value="12"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
-            <Setter Property="Padding" Value="16,8"/>
+            <Setter Property="Padding" Value="14,7"/>
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="BorderBrush" Value="#334155"/>
             <Setter Property="Cursor" Value="Hand"/>
@@ -37,7 +42,7 @@
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="border" Property="Background" Value="#334155"/>
+                                <Setter TargetName="border" Property="Background" Value="#2A384F"/>
                                 <Setter TargetName="border" Property="BorderBrush" Value="#0EA5E9"/>
                             </Trigger>
                             <Trigger Property="IsEnabled" Value="False">
@@ -79,7 +84,8 @@
             <Setter Property="Foreground" Value="#F8FAFC"/>
             <Setter Property="FontSize" Value="13"/>
             <Setter Property="Cursor" Value="Hand"/>
-            <Setter Property="Margin" Value="0,6"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="Margin" Value="0,4"/>
         </Style>
     </Window.Resources>
 
@@ -92,7 +98,7 @@
         </Grid.RowDefinitions>
 
         <!-- 1. Header Bar -->
-        <Border Grid.Row="0" Background="#1E293B" BorderBrush="#334155" BorderThickness="0,0,0,1">
+        <Border Grid.Row="0" Background="#131D31" BorderBrush="#2A384F" BorderThickness="0,0,0,1">
             <Grid Margin="24,0">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
@@ -111,7 +117,7 @@
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="NH Win Debloater" FontWeight="Bold" FontSize="18" Foreground="#F8FAFC"/>
                             <Border x:Name="BadgeVersion" CornerRadius="4" Background="#0284C7" Margin="10,2,0,2" Padding="6,1">
-                                <TextBlock x:Name="TxtVersion" Text="v0.1" FontSize="11" FontWeight="Bold" Foreground="#FFFFFF"/>
+                                <TextBlock x:Name="TxtVersion" Text="v0.3" FontSize="11" FontWeight="Bold" Foreground="#FFFFFF"/>
                             </Border>
                         </StackPanel>
                         <TextBlock Text="Less Bloat. Better Windows. Built for performance." FontSize="12" Foreground="#94A3B8"/>
@@ -127,7 +133,7 @@
         </Border>
 
         <!-- 2. Step Indicator Bar -->
-        <Border Grid.Row="1" Background="#0F172A" BorderBrush="#1E293B" BorderThickness="0,0,0,1" Padding="24,0">
+        <Border Grid.Row="1" Background="#0A0E17" BorderBrush="#1E293B" BorderThickness="0,0,0,1" Padding="24,0">
             <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                 <TextBlock x:Name="StepTag1" Text="1. Presets &amp; Scope" FontWeight="Bold" Foreground="#0EA5E9" Margin="0,0,20,0"/>
                 <TextBlock Text="›" Foreground="#64748B" Margin="0,0,20,0"/>
@@ -166,7 +172,7 @@
                     </Grid.ColumnDefinitions>
 
                     <!-- Preset 1: Recommended Default -->
-                    <Border Grid.Column="0" Margin="0,0,10,0" CornerRadius="8" Background="#1E293B" BorderBrush="#0EA5E9" BorderThickness="2" Padding="18">
+                    <Border Grid.Column="0" Margin="0,0,10,0" CornerRadius="8" Background="#131D31" BorderBrush="#0EA5E9" BorderThickness="2" Padding="18">
                         <Grid>
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto"/>
@@ -177,14 +183,14 @@
                             <RadioButton x:Name="RadioPresetDefault" IsChecked="True" Grid.Row="0" GroupName="PresetGroup" Content="Recommended Safe" FontWeight="Bold" FontSize="15" Foreground="#F8FAFC"/>
                             <TextBlock Grid.Row="1" Text="84 Safe Apps + Core Privacy" FontSize="12" Foreground="#38BDF8" Margin="0,6,0,12"/>
                             <TextBlock Grid.Row="2" Text="Ideal for most users. Safely removes sponsored bloatware, TikTok, Clipchamp, telemetry diagnostics, lockscreen ads, and disables Copilot while leaving essential system components intact." TextWrapping="Wrap" FontSize="13" Foreground="#CBD5E1"/>
-                            <Border Grid.Row="3" Background="#0F172A" CornerRadius="4" Padding="10,6" Margin="0,10,0,0">
+                            <Border Grid.Row="3" Background="#0A0E17" CornerRadius="4" Padding="10,6" Margin="0,10,0,0">
                                 <TextBlock Text="✓ Zero Risk to Windows Store or Core Features" FontSize="11" Foreground="#10B981"/>
                             </Border>
                         </Grid>
                     </Border>
 
                     <!-- Preset 2: Minimal Sponsored -->
-                    <Border Grid.Column="1" Margin="6,0,6,0" CornerRadius="8" Background="#1E293B" BorderBrush="#334155" BorderThickness="1" Padding="18">
+                    <Border Grid.Column="1" Margin="6,0,6,0" CornerRadius="8" Background="#131D31" BorderBrush="#2A384F" BorderThickness="1" Padding="18">
                         <Grid>
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto"/>
@@ -195,14 +201,14 @@
                             <RadioButton x:Name="RadioPresetMinimal" Grid.Row="0" GroupName="PresetGroup" Content="Minimal Sponsored" FontWeight="Bold" FontSize="15" Foreground="#F8FAFC"/>
                             <TextBlock Grid.Row="1" Text="Third-Party Junk Only" FontSize="12" Foreground="#94A3B8" Margin="0,6,0,12"/>
                             <TextBlock Grid.Row="2" Text="Targets purely third-party preinstalled sponsored software like Spotify, TikTok, Netflix, and promotional games. Leaves all built-in Microsoft apps completely untouched." TextWrapping="Wrap" FontSize="13" Foreground="#CBD5E1"/>
-                            <Border Grid.Row="3" Background="#0F172A" CornerRadius="4" Padding="10,6" Margin="0,10,0,0">
+                            <Border Grid.Row="3" Background="#0A0E17" CornerRadius="4" Padding="10,6" Margin="0,10,0,0">
                                 <TextBlock Text="✓ Conservative &amp; Non-Intrusive" FontSize="11" Foreground="#94A3B8"/>
                             </Border>
                         </Grid>
                     </Border>
 
                     <!-- Preset 3: Deep Debloat -->
-                    <Border Grid.Column="2" Margin="10,0,0,0" CornerRadius="8" Background="#1E293B" BorderBrush="#334155" BorderThickness="1" Padding="18">
+                    <Border Grid.Column="2" Margin="10,0,0,0" CornerRadius="8" Background="#131D31" BorderBrush="#2A384F" BorderThickness="1" Padding="18">
                         <Grid>
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto"/>
@@ -213,7 +219,7 @@
                             <RadioButton x:Name="RadioPresetDeep" Grid.Row="0" GroupName="PresetGroup" Content="Deep / Advanced" FontWeight="Bold" FontSize="15" Foreground="#F8FAFC"/>
                             <TextBlock Grid.Row="1" Text="Maximum Performance" FontSize="12" Foreground="#EAB308" Margin="0,6,0,12"/>
                             <TextBlock Grid.Row="2" Text="Thorough debloating including optional Microsoft productivity utilities (OneNote, Sticky Notes, Voice Recorder). Fully customizable in the next step." TextWrapping="Wrap" FontSize="13" Foreground="#CBD5E1"/>
-                            <Border Grid.Row="3" Background="#0F172A" CornerRadius="4" Padding="10,6" Margin="0,10,0,0">
+                            <Border Grid.Row="3" Background="#0A0E17" CornerRadius="4" Padding="10,6" Margin="0,10,0,0">
                                 <TextBlock Text="⚠ Recommended for power users" FontSize="11" Foreground="#F59E0B"/>
                             </Border>
                         </Grid>
@@ -221,7 +227,7 @@
                 </Grid>
 
                 <!-- Target Scope Bar -->
-                <Border Grid.Row="2" Background="#1E293B" CornerRadius="6" BorderBrush="#334155" BorderThickness="1" Padding="14,10" Margin="0,14,0,0">
+                <Border Grid.Row="2" Background="#131D31" CornerRadius="6" BorderBrush="#2A384F" BorderThickness="1" Padding="14,10" Margin="0,14,0,0">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto"/>
@@ -256,21 +262,52 @@
                     <TextBox x:Name="TxtAppFilter" Grid.Column="1" Width="220" Height="30" VerticalContentAlignment="Center" Padding="8,0" Background="#1E293B" Foreground="#F8FAFC" BorderBrush="#334155"/>
                 </Grid>
 
-                <TabControl Grid.Row="1" Background="#1E293B" BorderBrush="#334155" Foreground="#F8FAFC">
+                <TabControl Grid.Row="1" Background="#131D31" BorderBrush="#2A384F" Foreground="#F8FAFC">
                     <!-- Tab 1: Bloatware Apps -->
                     <TabItem Header="Bloatware Applications" FontWeight="SemiBold">
                         <Grid Margin="12">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="*"/>
                             </Grid.RowDefinitions>
-                            <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,8">
-                                <Button x:Name="BtnSelectAllApps" Style="{StaticResource ModernBtn}" Content="Select All" Margin="0,0,8,0" Padding="10,4"/>
-                                <Button x:Name="BtnDeselectAllApps" Style="{StaticResource ModernBtn}" Content="Deselect All" Margin="0,0,12,0" Padding="10,4"/>
-                                <TextBlock x:Name="TxtAppsSummary" Text="Showing 84 apps selected for removal" VerticalAlignment="Center" FontSize="12" Foreground="#94A3B8"/>
-                            </StackPanel>
 
-                            <Border Grid.Row="1" Background="#0F172A" CornerRadius="6" BorderBrush="#334155" BorderThickness="1">
+                            <!-- Power-User Toolbar: Presets & Filters -->
+                            <Grid Grid.Row="0" Margin="0,0,0,8">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+
+                                <!-- Quick Preset Category Dropdown -->
+                                <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,16,0">
+                                    <TextBlock Text="Category:" FontSize="12" Foreground="#94A3B8" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                                    <ComboBox x:Name="CmbAppPresetCategory" Width="210" Height="28" VerticalContentAlignment="Center" Background="#1E293B" Foreground="#0EA5E9" BorderBrush="#334155">
+                                        <ComboBoxItem Content="Recommended Safe Bloat (84 Apps)" IsSelected="True"/>
+                                        <ComboBoxItem Content="Minimal Sponsored Only (11 Apps)"/>
+                                        <ComboBoxItem Content="Deep Debloat (All 162 Packages)"/>
+                                        <ComboBoxItem Content="OEM &amp; Third-Party Only"/>
+                                        <ComboBoxItem Content="Xbox &amp; Gaming Packages"/>
+                                        <ComboBoxItem Content="News, Weather &amp; Media"/>
+                                    </ComboBox>
+                                </StackPanel>
+
+                                <!-- Only Installed Apps Filter -->
+                                <CheckBox x:Name="ChkOnlyInstalled" Grid.Column="1" Style="{StaticResource ModernCheckBox}" Content="Only show installed apps" IsChecked="False" Margin="0,0,16,0"/>
+
+                                <!-- Selection Action Buttons -->
+                                <StackPanel Grid.Column="3" Orientation="Horizontal" VerticalAlignment="Center">
+                                    <Button x:Name="BtnSelectAllApps" Style="{StaticResource ModernBtn}" Content="Select All" Margin="0,0,6,0" Padding="10,4"/>
+                                    <Button x:Name="BtnDeselectAllApps" Style="{StaticResource ModernBtn}" Content="Deselect All" Margin="0,0,6,0" Padding="10,4"/>
+                                    <Button x:Name="BtnInvertSelection" Style="{StaticResource ModernBtn}" Content="Invert" Margin="0,0,0,0" Padding="10,4"/>
+                                </StackPanel>
+                            </Grid>
+
+                            <TextBlock x:Name="TxtAppsSummary" Grid.Row="1" Text="Showing 84 apps selected for removal" VerticalAlignment="Center" FontSize="12" Foreground="#38BDF8" Margin="0,0,0,8"/>
+
+                            <Border Grid.Row="2" Background="#0A0E17" CornerRadius="6" BorderBrush="#2A384F" BorderThickness="1">
                                 <ScrollViewer VerticalScrollBarVisibility="Auto">
                                     <ItemsControl x:Name="ListAppsContainer" Margin="10"/>
                                 </ScrollViewer>
@@ -282,12 +319,36 @@
                     <TabItem Header="Privacy &amp; Search" FontWeight="SemiBold">
                         <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="16">
                             <StackPanel>
-                                <CheckBox x:Name="ChkTelemetry" Style="{StaticResource ModernCheckBox}" Content="Disable Telemetry &amp; Diagnostic Data Collection (Security/Basic level)" IsChecked="True"/>
-                                <CheckBox x:Name="ChkCopilot" Style="{StaticResource ModernCheckBox}" Content="Disable Windows Copilot &amp; Recall AI screen analysis" IsChecked="True"/>
-                                <CheckBox x:Name="ChkBingSearch" Style="{StaticResource ModernCheckBox}" Content="Disable Bing Web Search suggestions in Start Menu" IsChecked="True"/>
-                                <CheckBox x:Name="ChkAdvertisingId" Style="{StaticResource ModernCheckBox}" Content="Disable Advertising ID tracking across installed apps" IsChecked="True"/>
-                                <CheckBox x:Name="ChkActivityHistory" Style="{StaticResource ModernCheckBox}" Content="Disable Windows Activity History timeline feed" IsChecked="True"/>
-                                <CheckBox x:Name="ChkTailoredExp" Style="{StaticResource ModernCheckBox}" Content="Disable Tailored Experiences &amp; personalized diagnostic ads" IsChecked="True"/>
+                                <Grid Margin="0,4">
+                                    <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                                    <CheckBox x:Name="ChkTelemetry" Grid.Column="0" Style="{StaticResource ModernCheckBox}" Content="Disable Telemetry &amp; Diagnostic Data Collection (Security/Basic level)" IsChecked="True"/>
+                                    <Border Grid.Column="1" Background="#064E3B" CornerRadius="10" Padding="8,2" VerticalAlignment="Center"><TextBlock Text="RECOMMENDED" FontSize="10" FontWeight="Bold" Foreground="#34D399"/></Border>
+                                </Grid>
+                                <Grid Margin="0,4">
+                                    <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                                    <CheckBox x:Name="ChkCopilot" Grid.Column="0" Style="{StaticResource ModernCheckBox}" Content="Disable Windows Copilot &amp; Recall AI screen analysis" IsChecked="True"/>
+                                    <Border Grid.Column="1" Background="#064E3B" CornerRadius="10" Padding="8,2" VerticalAlignment="Center"><TextBlock Text="RECOMMENDED" FontSize="10" FontWeight="Bold" Foreground="#34D399"/></Border>
+                                </Grid>
+                                <Grid Margin="0,4">
+                                    <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                                    <CheckBox x:Name="ChkBingSearch" Grid.Column="0" Style="{StaticResource ModernCheckBox}" Content="Disable Bing Web Search suggestions in Start Menu" IsChecked="True"/>
+                                    <Border Grid.Column="1" Background="#064E3B" CornerRadius="10" Padding="8,2" VerticalAlignment="Center"><TextBlock Text="RECOMMENDED" FontSize="10" FontWeight="Bold" Foreground="#34D399"/></Border>
+                                </Grid>
+                                <Grid Margin="0,4">
+                                    <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                                    <CheckBox x:Name="ChkAdvertisingId" Grid.Column="0" Style="{StaticResource ModernCheckBox}" Content="Disable Advertising ID tracking across installed apps" IsChecked="True"/>
+                                    <Border Grid.Column="1" Background="#064E3B" CornerRadius="10" Padding="8,2" VerticalAlignment="Center"><TextBlock Text="RECOMMENDED" FontSize="10" FontWeight="Bold" Foreground="#34D399"/></Border>
+                                </Grid>
+                                <Grid Margin="0,4">
+                                    <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                                    <CheckBox x:Name="ChkActivityHistory" Grid.Column="0" Style="{StaticResource ModernCheckBox}" Content="Disable Windows Activity History timeline feed" IsChecked="True"/>
+                                    <Border Grid.Column="1" Background="#064E3B" CornerRadius="10" Padding="8,2" VerticalAlignment="Center"><TextBlock Text="RECOMMENDED" FontSize="10" FontWeight="Bold" Foreground="#34D399"/></Border>
+                                </Grid>
+                                <Grid Margin="0,4">
+                                    <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                                    <CheckBox x:Name="ChkTailoredExp" Grid.Column="0" Style="{StaticResource ModernCheckBox}" Content="Disable Tailored Experiences &amp; personalized diagnostic ads" IsChecked="True"/>
+                                    <Border Grid.Column="1" Background="#064E3B" CornerRadius="10" Padding="8,2" VerticalAlignment="Center"><TextBlock Text="RECOMMENDED" FontSize="10" FontWeight="Bold" Foreground="#34D399"/></Border>
+                                </Grid>
                             </StackPanel>
                         </ScrollViewer>
                     </TabItem>
@@ -296,18 +357,71 @@
                     <TabItem Header="Taskbar &amp; Explorer" FontWeight="SemiBold">
                         <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="16">
                             <StackPanel>
-                                <CheckBox x:Name="ChkShowExt" Style="{StaticResource ModernCheckBox}" Content="Show Known File Extensions (.exe, .txt, .ps1, etc.)" IsChecked="True"/>
-                                <CheckBox x:Name="ChkShowHidden" Style="{StaticResource ModernCheckBox}" Content="Show Hidden Files, Folders, and Drives" IsChecked="True"/>
-                                <CheckBox x:Name="ChkExplorerThisPC" Style="{StaticResource ModernCheckBox}" Content="Launch File Explorer directly to 'This PC' instead of Home" IsChecked="True"/>
-                                <CheckBox x:Name="ChkClassicContextMenu" Style="{StaticResource ModernCheckBox}" Content="Restore Windows 10 Classic Right-Click Context Menu" IsChecked="True"/>
-                                <CheckBox x:Name="ChkHideWidgets" Style="{StaticResource ModernCheckBox}" Content="Hide Taskbar Widgets / News icon" IsChecked="True"/>
-                                <CheckBox x:Name="ChkHideChat" Style="{StaticResource ModernCheckBox}" Content="Hide Taskbar Teams / Chat icon" IsChecked="True"/>
-                                <CheckBox x:Name="ChkEndTask" Style="{StaticResource ModernCheckBox}" Content="Enable right-click 'End Task' directly on the Taskbar" IsChecked="True"/>
-                                <CheckBox x:Name="ChkAlignLeft" Style="{StaticResource ModernCheckBox}" Content="Align Windows 11 Taskbar icons to the Left (Classic style)" IsChecked="False"/>
-                                <CheckBox x:Name="ChkHideOneDriveNav" Style="{StaticResource ModernCheckBox}" Content="Hide OneDrive folder from File Explorer Navigation Pane" IsChecked="False"/>
-                                <CheckBox x:Name="ChkSearchHighlights" Style="{StaticResource ModernCheckBox}" Content="Disable Taskbar Search Highlights &amp; Doodles" IsChecked="True"/>
-                                <CheckBox x:Name="ChkStartRecommended" Style="{StaticResource ModernCheckBox}" Content="Hide Start Menu Recommended Section &amp; Recent Items" IsChecked="True"/>
-                                <CheckBox x:Name="ChkCompactExplorer" Style="{StaticResource ModernCheckBox}" Content="Enable Compact View in File Explorer (Tighter classic item padding)" IsChecked="False"/>
+                                <Grid Margin="0,4">
+                                    <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                                    <CheckBox x:Name="ChkShowExt" Grid.Column="0" Style="{StaticResource ModernCheckBox}" Content="Show Known File Extensions (.exe, .txt, .ps1, etc.)" IsChecked="True"/>
+                                    <Border Grid.Column="1" Background="#064E3B" CornerRadius="10" Padding="8,2" VerticalAlignment="Center"><TextBlock Text="RECOMMENDED" FontSize="10" FontWeight="Bold" Foreground="#34D399"/></Border>
+                                </Grid>
+                                <Grid Margin="0,4">
+                                    <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                                    <CheckBox x:Name="ChkShowHidden" Grid.Column="0" Style="{StaticResource ModernCheckBox}" Content="Show Hidden Files, Folders, and Drives" IsChecked="True"/>
+                                    <Border Grid.Column="1" Background="#064E3B" CornerRadius="10" Padding="8,2" VerticalAlignment="Center"><TextBlock Text="SAFE" FontSize="10" FontWeight="Bold" Foreground="#34D399"/></Border>
+                                </Grid>
+                                <Grid Margin="0,4">
+                                    <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                                    <CheckBox x:Name="ChkExplorerThisPC" Grid.Column="0" Style="{StaticResource ModernCheckBox}" Content="Launch File Explorer directly to 'This PC' instead of Home" IsChecked="True"/>
+                                    <Border Grid.Column="1" Background="#064E3B" CornerRadius="10" Padding="8,2" VerticalAlignment="Center"><TextBlock Text="SAFE" FontSize="10" FontWeight="Bold" Foreground="#34D399"/></Border>
+                                </Grid>
+                                <Grid Margin="0,4">
+                                    <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                                    <CheckBox x:Name="ChkClassicContextMenu" Grid.Column="0" Style="{StaticResource ModernCheckBox}" Content="Restore Windows 10 Classic Right-Click Context Menu" IsChecked="True"/>
+                                    <Border Grid.Column="1" Background="#064E3B" CornerRadius="10" Padding="8,2" VerticalAlignment="Center"><TextBlock Text="SAFE" FontSize="10" FontWeight="Bold" Foreground="#34D399"/></Border>
+                                </Grid>
+                                <Grid Margin="0,4">
+                                    <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                                    <CheckBox x:Name="ChkHideWidgets" Grid.Column="0" Style="{StaticResource ModernCheckBox}" Content="Hide Taskbar Widgets / News icon" IsChecked="True"/>
+                                    <Border Grid.Column="1" Background="#064E3B" CornerRadius="10" Padding="8,2" VerticalAlignment="Center"><TextBlock Text="SAFE" FontSize="10" FontWeight="Bold" Foreground="#34D399"/></Border>
+                                </Grid>
+                                <Grid Margin="0,4">
+                                    <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                                    <CheckBox x:Name="ChkHideChat" Grid.Column="0" Style="{StaticResource ModernCheckBox}" Content="Hide Taskbar Teams / Chat icon" IsChecked="True"/>
+                                    <Border Grid.Column="1" Background="#064E3B" CornerRadius="10" Padding="8,2" VerticalAlignment="Center"><TextBlock Text="SAFE" FontSize="10" FontWeight="Bold" Foreground="#34D399"/></Border>
+                                </Grid>
+                                <Grid Margin="0,4">
+                                    <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                                    <CheckBox x:Name="ChkEndTask" Grid.Column="0" Style="{StaticResource ModernCheckBox}" Content="Enable right-click 'End Task' directly on the Taskbar" IsChecked="True"/>
+                                    <Border Grid.Column="1" Background="#064E3B" CornerRadius="10" Padding="8,2" VerticalAlignment="Center"><TextBlock Text="RECOMMENDED" FontSize="10" FontWeight="Bold" Foreground="#34D399"/></Border>
+                                </Grid>
+                                <Grid Margin="0,4">
+                                    <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                                    <CheckBox x:Name="ChkAlignLeft" Grid.Column="0" Style="{StaticResource ModernCheckBox}" Content="Align Windows 11 Taskbar icons to the Left (Classic style)" IsChecked="False"/>
+                                    <Border Grid.Column="1" Background="#1E293B" CornerRadius="10" Padding="8,2" VerticalAlignment="Center"><TextBlock Text="OPTIONAL" FontSize="10" FontWeight="Bold" Foreground="#94A3B8"/></Border>
+                                </Grid>
+                                <Grid Margin="0,4">
+                                    <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                                    <CheckBox x:Name="ChkHideOneDriveNav" Grid.Column="0" Style="{StaticResource ModernCheckBox}" Content="Hide OneDrive folder from File Explorer Navigation Pane" IsChecked="False"/>
+                                    <Border Grid.Column="1" Background="#1E293B" CornerRadius="10" Padding="8,2" VerticalAlignment="Center"><TextBlock Text="OPTIONAL" FontSize="10" FontWeight="Bold" Foreground="#94A3B8"/></Border>
+                                </Grid>
+                                <Grid Margin="0,4">
+                                    <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                                    <CheckBox x:Name="ChkSearchHighlights" Grid.Column="0" Style="{StaticResource ModernCheckBox}" Content="Disable Taskbar Search Highlights &amp; Doodles" IsChecked="True"/>
+                                    <Border Grid.Column="1" Background="#064E3B" CornerRadius="10" Padding="8,2" VerticalAlignment="Center"><TextBlock Text="SAFE" FontSize="10" FontWeight="Bold" Foreground="#34D399"/></Border>
+                                </Grid>
+                                <Grid Margin="0,4">
+                                    <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                                    <CheckBox x:Name="ChkStartRecommended" Grid.Column="0" Style="{StaticResource ModernCheckBox}" Content="Hide Start Menu Recommended Section &amp; Recent Items" IsChecked="True"/>
+                                    <Border Grid.Column="1" Background="#064E3B" CornerRadius="10" Padding="8,2" VerticalAlignment="Center"><TextBlock Text="SAFE" FontSize="10" FontWeight="Bold" Foreground="#34D399"/></Border>
+                                </Grid>
+                                <Grid Margin="0,4">
+                                    <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                                    <CheckBox x:Name="ChkCompactExplorer" Grid.Column="0" Style="{StaticResource ModernCheckBox}" Content="Enable Compact View in File Explorer (Tighter classic item padding)" IsChecked="False"/>
+                                    <Border Grid.Column="1" Background="#1E293B" CornerRadius="10" Padding="8,2" VerticalAlignment="Center"><TextBlock Text="SAFE" FontSize="10" FontWeight="Bold" Foreground="#94A3B8"/></Border>
+                                </Grid>
+                                <Grid Margin="0,4">
+                                    <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                                    <CheckBox x:Name="ChkMultitasking" Grid.Column="0" Style="{StaticResource ModernCheckBox}" Content="Disable Snap Assist suggestions &amp; app tabs in Alt+Tab" IsChecked="True"/>
+                                    <Border Grid.Column="1" Background="#064E3B" CornerRadius="10" Padding="8,2" VerticalAlignment="Center"><TextBlock Text="SAFE" FontSize="10" FontWeight="Bold" Foreground="#34D399"/></Border>
+                                </Grid>
                             </StackPanel>
                         </ScrollViewer>
                     </TabItem>
@@ -316,9 +430,36 @@
                     <TabItem Header="Gaming &amp; Performance" FontWeight="SemiBold">
                         <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="16">
                             <StackPanel>
-                                <CheckBox x:Name="ChkGameDVR" Style="{StaticResource ModernCheckBox}" Content="Disable Xbox Game DVR &amp; Background Video Capture (Reduces micro-stutter &amp; latency)" IsChecked="True"/>
-                                <CheckBox x:Name="ChkDeliveryOpt" Style="{StaticResource ModernCheckBox}" Content="Disable Delivery Optimization P2P (Stops Windows uploading updates to Internet hosts)" IsChecked="True"/>
-                                <CheckBox x:Name="ChkTelemetryService" Style="{StaticResource ModernCheckBox}" Content="Disable Connected User Experiences &amp; Telemetry Service (DiagTrack background service)" IsChecked="True"/>
+                                <Grid Margin="0,4">
+                                    <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                                    <CheckBox x:Name="ChkGameDVR" Grid.Column="0" Style="{StaticResource ModernCheckBox}" Content="Disable Xbox Game DVR &amp; Background Video Capture (Reduces micro-stutter &amp; latency)" IsChecked="True"/>
+                                    <Border Grid.Column="1" Background="#064E3B" CornerRadius="10" Padding="8,2" VerticalAlignment="Center"><TextBlock Text="RECOMMENDED" FontSize="10" FontWeight="Bold" Foreground="#34D399"/></Border>
+                                </Grid>
+                                <Grid Margin="0,4">
+                                    <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                                    <CheckBox x:Name="ChkDeliveryOpt" Grid.Column="0" Style="{StaticResource ModernCheckBox}" Content="Disable Delivery Optimization P2P (Stops Windows uploading updates to Internet hosts)" IsChecked="True"/>
+                                    <Border Grid.Column="1" Background="#064E3B" CornerRadius="10" Padding="8,2" VerticalAlignment="Center"><TextBlock Text="RECOMMENDED" FontSize="10" FontWeight="Bold" Foreground="#34D399"/></Border>
+                                </Grid>
+                                <Grid Margin="0,4">
+                                    <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                                    <CheckBox x:Name="ChkEdgeBackground" Grid.Column="0" Style="{StaticResource ModernCheckBox}" Content="Disable Microsoft Edge background mode &amp; Startup Boost (Prevents idle RAM consumption)" IsChecked="True"/>
+                                    <Border Grid.Column="1" Background="#064E3B" CornerRadius="10" Padding="8,2" VerticalAlignment="Center"><TextBlock Text="RECOMMENDED" FontSize="10" FontWeight="Bold" Foreground="#34D399"/></Border>
+                                </Grid>
+                                <Grid Margin="0,4">
+                                    <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                                    <CheckBox x:Name="ChkScheduledTasks" Grid.Column="0" Style="{StaticResource ModernCheckBox}" Content="Disable Telemetry Scheduled Tasks (Consolidator, Compatibility Appraiser, ProgramDataUpdater)" IsChecked="True"/>
+                                    <Border Grid.Column="1" Background="#064E3B" CornerRadius="10" Padding="8,2" VerticalAlignment="Center"><TextBlock Text="RECOMMENDED" FontSize="10" FontWeight="Bold" Foreground="#34D399"/></Border>
+                                </Grid>
+                                <Grid Margin="0,4">
+                                    <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                                    <CheckBox x:Name="ChkTelemetryService" Grid.Column="0" Style="{StaticResource ModernCheckBox}" Content="Disable Connected User Experiences &amp; Telemetry Service (DiagTrack background service)" IsChecked="True"/>
+                                    <Border Grid.Column="1" Background="#78350F" CornerRadius="10" Padding="8,2" VerticalAlignment="Center"><TextBlock Text="CAUTION" FontSize="10" FontWeight="Bold" Foreground="#FBBF24"/></Border>
+                                </Grid>
+                                <Grid Margin="0,4">
+                                    <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                                    <CheckBox x:Name="ChkHibernation" Grid.Column="0" Style="{StaticResource ModernCheckBox}" Content="Reclaim Disk Space by Disabling Hibernation (Removes multi-GB hiberfil.sys)" IsChecked="False"/>
+                                    <Border Grid.Column="1" Background="#78350F" CornerRadius="10" Padding="8,2" VerticalAlignment="Center"><TextBlock Text="CAUTION" FontSize="10" FontWeight="Bold" Foreground="#FBBF24"/></Border>
+                                </Grid>
                             </StackPanel>
                         </ScrollViewer>
                     </TabItem>
@@ -327,26 +468,66 @@
                     <TabItem Header="System Extras" FontWeight="SemiBold">
                         <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="16">
                             <StackPanel>
-                                <CheckBox x:Name="ChkConsumerFeatures" Style="{StaticResource ModernCheckBox}" Content="Disable Windows Consumer Features (Blocks silent preinstall of OEM promo apps)" IsChecked="True"/>
-                                <CheckBox x:Name="ChkLockScreenAds" Style="{StaticResource ModernCheckBox}" Content="Disable Lock Screen tips, fun facts, and promotional suggestions" IsChecked="True"/>
-                                <CheckBox x:Name="ChkMousePrecision" Style="{StaticResource ModernCheckBox}" Content="Disable Mouse Acceleration / Enhance Pointer Precision (1:1 Mouse Input)" IsChecked="True"/>
-                                <CheckBox x:Name="ChkStickyKeys" Style="{StaticResource ModernCheckBox}" Content="Disable Sticky Keys prompt (Pressing Shift 5x)" IsChecked="True"/>
-                                <CheckBox x:Name="ChkFastStartup" Style="{StaticResource ModernCheckBox}" Content="Disable Fast Startup (Avoid hibernation boot anomalies)" IsChecked="False"/>
-                                <CheckBox x:Name="ChkStorageSense" Style="{StaticResource ModernCheckBox}" Content="Disable Storage Sense automatic background deletion" IsChecked="False"/>
-                                <CheckBox x:Name="ChkPreventAutoReboot" Style="{StaticResource ModernCheckBox}" Content="Prevent automatic reboot while users are logged on for updates" IsChecked="True"/>
-                                <CheckBox x:Name="ChkExcludeDrivers" Style="{StaticResource ModernCheckBox}" Content="Exclude third-party drivers from Windows Update quality updates" IsChecked="True"/>
+                                <Grid Margin="0,4">
+                                    <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                                    <CheckBox x:Name="ChkConsumerFeatures" Grid.Column="0" Style="{StaticResource ModernCheckBox}" Content="Disable Windows Consumer Features (Blocks silent preinstall of OEM promo apps)" IsChecked="True"/>
+                                    <Border Grid.Column="1" Background="#064E3B" CornerRadius="10" Padding="8,2" VerticalAlignment="Center"><TextBlock Text="RECOMMENDED" FontSize="10" FontWeight="Bold" Foreground="#34D399"/></Border>
+                                </Grid>
+                                <Grid Margin="0,4">
+                                    <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                                    <CheckBox x:Name="ChkLockScreenAds" Grid.Column="0" Style="{StaticResource ModernCheckBox}" Content="Disable Lock Screen tips, fun facts, and promotional suggestions" IsChecked="True"/>
+                                    <Border Grid.Column="1" Background="#064E3B" CornerRadius="10" Padding="8,2" VerticalAlignment="Center"><TextBlock Text="RECOMMENDED" FontSize="10" FontWeight="Bold" Foreground="#34D399"/></Border>
+                                </Grid>
+                                <Grid Margin="0,4">
+                                    <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                                    <CheckBox x:Name="ChkMousePrecision" Grid.Column="0" Style="{StaticResource ModernCheckBox}" Content="Disable Mouse Acceleration / Enhance Pointer Precision (1:1 Mouse Input)" IsChecked="True"/>
+                                    <Border Grid.Column="1" Background="#064E3B" CornerRadius="10" Padding="8,2" VerticalAlignment="Center"><TextBlock Text="RECOMMENDED" FontSize="10" FontWeight="Bold" Foreground="#34D399"/></Border>
+                                </Grid>
+                                <Grid Margin="0,4">
+                                    <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                                    <CheckBox x:Name="ChkStickyKeys" Grid.Column="0" Style="{StaticResource ModernCheckBox}" Content="Disable Sticky Keys prompt (Pressing Shift 5x)" IsChecked="True"/>
+                                    <Border Grid.Column="1" Background="#064E3B" CornerRadius="10" Padding="8,2" VerticalAlignment="Center"><TextBlock Text="SAFE" FontSize="10" FontWeight="Bold" Foreground="#34D399"/></Border>
+                                </Grid>
+                                <Grid Margin="0,4">
+                                    <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                                    <CheckBox x:Name="ChkFastStartup" Grid.Column="0" Style="{StaticResource ModernCheckBox}" Content="Disable Fast Startup (Avoid hibernation boot anomalies)" IsChecked="False"/>
+                                    <Border Grid.Column="1" Background="#78350F" CornerRadius="10" Padding="8,2" VerticalAlignment="Center"><TextBlock Text="CAUTION" FontSize="10" FontWeight="Bold" Foreground="#FBBF24"/></Border>
+                                </Grid>
+                                <Grid Margin="0,4">
+                                    <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                                    <CheckBox x:Name="ChkStorageSense" Grid.Column="0" Style="{StaticResource ModernCheckBox}" Content="Disable Storage Sense automatic background deletion" IsChecked="False"/>
+                                    <Border Grid.Column="1" Background="#78350F" CornerRadius="10" Padding="8,2" VerticalAlignment="Center"><TextBlock Text="CAUTION" FontSize="10" FontWeight="Bold" Foreground="#FBBF24"/></Border>
+                                </Grid>
+                                <Grid Margin="0,4">
+                                    <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                                    <CheckBox x:Name="ChkPreventAutoReboot" Grid.Column="0" Style="{StaticResource ModernCheckBox}" Content="Prevent automatic reboot while users are logged on for updates" IsChecked="True"/>
+                                    <Border Grid.Column="1" Background="#064E3B" CornerRadius="10" Padding="8,2" VerticalAlignment="Center"><TextBlock Text="RECOMMENDED" FontSize="10" FontWeight="Bold" Foreground="#34D399"/></Border>
+                                </Grid>
+                                <Grid Margin="0,4">
+                                    <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                                    <CheckBox x:Name="ChkExcludeDrivers" Grid.Column="0" Style="{StaticResource ModernCheckBox}" Content="Exclude third-party drivers from Windows Update quality updates" IsChecked="True"/>
+                                    <Border Grid.Column="1" Background="#064E3B" CornerRadius="10" Padding="8,2" VerticalAlignment="Center"><TextBlock Text="RECOMMENDED" FontSize="10" FontWeight="Bold" Foreground="#34D399"/></Border>
+                                </Grid>
                             </StackPanel>
                         </ScrollViewer>
                     </TabItem>
 
-                    <!-- Tab 5: Optional Features -->
+                    <!-- Tab 6: Optional Features -->
                     <TabItem Header="Optional Features" FontWeight="SemiBold">
                         <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="16">
                             <StackPanel>
                                 <TextBlock Text="Optional Windows Components:" FontSize="13" FontWeight="Bold" Foreground="#38BDF8" Margin="0,0,0,10"/>
-                                <CheckBox x:Name="ChkWindowsSandbox" Style="{StaticResource ModernCheckBox}" Content="Enable Windows Sandbox (Lightweight disposable virtual desktop)" IsChecked="False"/>
-                                <CheckBox x:Name="ChkWSL" Style="{StaticResource ModernCheckBox}" Content="Enable Windows Subsystem for Linux (WSL)" IsChecked="False"/>
-                                <TextBlock Text="Note: Enabling optional Windows features requires system virtualization support." FontSize="11" Foreground="#94A3B8" Margin="0,10,0,0"/>
+                                <Grid Margin="0,4">
+                                    <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                                    <CheckBox x:Name="ChkWindowsSandbox" Grid.Column="0" Style="{StaticResource ModernCheckBox}" Content="Enable Windows Sandbox (Lightweight disposable virtual desktop)" IsChecked="False"/>
+                                    <Border Grid.Column="1" Background="#881337" CornerRadius="10" Padding="8,2" VerticalAlignment="Center"><TextBlock Text="HIGH IMPACT" FontSize="10" FontWeight="Bold" Foreground="#F87171"/></Border>
+                                </Grid>
+                                <Grid Margin="0,4">
+                                    <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                                    <CheckBox x:Name="ChkWSL" Grid.Column="0" Style="{StaticResource ModernCheckBox}" Content="Enable Windows Subsystem for Linux (WSL)" IsChecked="False"/>
+                                    <Border Grid.Column="1" Background="#881337" CornerRadius="10" Padding="8,2" VerticalAlignment="Center"><TextBlock Text="HIGH IMPACT" FontSize="10" FontWeight="Bold" Foreground="#F87171"/></Border>
+                                </Grid>
+                                <TextBlock Text="Note: Enabling optional Windows features requires system virtualization support (VT-x/AMD-V)." FontSize="11" Foreground="#94A3B8" Margin="0,10,0,0"/>
                             </StackPanel>
                         </ScrollViewer>
                     </TabItem>
@@ -367,7 +548,7 @@
                 </StackPanel>
 
                 <!-- Safety Options -->
-                <Border Grid.Row="1" Background="#1E293B" CornerRadius="8" BorderBrush="#334155" BorderThickness="1" Padding="18" Margin="0,0,0,14">
+                <Border Grid.Row="1" Background="#131D31" CornerRadius="8" BorderBrush="#2A384F" BorderThickness="1" Padding="18" Margin="0,0,0,14">
                     <StackPanel>
                         <CheckBox x:Name="ChkCreateRestorePoint" Style="{StaticResource ModernCheckBox}" Content="Create Windows System Restore Point (Recommended)" IsChecked="True" FontWeight="Bold"/>
                         <TextBlock Text="Creates an immediate restore point checkpoint allowing rollback through Windows Recovery if needed." FontSize="12" Foreground="#94A3B8" Margin="24,0,0,10"/>
@@ -378,7 +559,7 @@
                 </Border>
 
                 <!-- Dry-Run Preview Box -->
-                <Border Grid.Row="2" Background="#0F172A" CornerRadius="8" BorderBrush="#334155" BorderThickness="1" Padding="14">
+                <Border Grid.Row="2" Background="#0A0E17" CornerRadius="8" BorderBrush="#2A384F" BorderThickness="1" Padding="14">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
@@ -388,7 +569,7 @@
                             <Button x:Name="BtnRunDryRun" Style="{StaticResource ModernBtn}" Content="▶ Run Dry-Run Preview (WhatIf)" Margin="0,0,10,0"/>
                             <TextBlock x:Name="TxtDryRunStatus" Text="Click to simulate changes without applying anything." VerticalAlignment="Center" FontSize="12" Foreground="#38BDF8"/>
                         </StackPanel>
-                        <TextBox x:Name="TxtDryRunLog" Grid.Row="1" IsReadOnly="True" VerticalScrollBarVisibility="Auto" Background="#0B132B" Foreground="#E2E8F0" FontFamily="Consolas, Lucida Console" FontSize="12" BorderThickness="0" Padding="8"/>
+                        <TextBox x:Name="TxtDryRunLog" Grid.Row="1" IsReadOnly="True" VerticalScrollBarVisibility="Auto" Background="#0A0E17" Foreground="#E2E8F0" FontFamily="Consolas, Lucida Console" FontSize="12" BorderThickness="0" Padding="8"/>
                     </Grid>
                 </Border>
             </Grid>
@@ -406,9 +587,9 @@
                     <TextBlock x:Name="TxtProgressStatus" Text="Initializing requested operations..." FontSize="13" Foreground="#38BDF8"/>
                 </StackPanel>
 
-                <ProgressBar x:Name="ProgExecution" Grid.Row="1" Height="10" Maximum="100" Value="0" Background="#1E293B" Foreground="#0EA5E9" Margin="0,0,0,16"/>
+                <ProgressBar x:Name="ProgExecution" Grid.Row="1" Height="10" Maximum="100" Value="0" Background="#131D31" Foreground="#0EA5E9" Margin="0,0,0,16"/>
 
-                <Border Grid.Row="2" Background="#0B132B" CornerRadius="8" BorderBrush="#334155" BorderThickness="1" Padding="12">
+                <Border Grid.Row="2" Background="#0A0E17" CornerRadius="8" BorderBrush="#2A384F" BorderThickness="1" Padding="12">
                     <TextBox x:Name="TxtLiveLog" IsReadOnly="True" VerticalScrollBarVisibility="Auto" Background="Transparent" Foreground="#E2E8F0" FontFamily="Consolas, Lucida Console" FontSize="12" BorderThickness="0"/>
                 </Border>
             </Grid>
@@ -437,19 +618,19 @@
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
-                        <Border Grid.Column="0" Background="#1E293B" CornerRadius="8" Padding="16" Margin="0,0,8,0">
+                        <Border Grid.Column="0" Background="#131D31" CornerRadius="8" Padding="16" Margin="0,0,8,0">
                             <StackPanel>
                                 <TextBlock Text="Total Operations" FontSize="12" Foreground="#94A3B8"/>
                                 <TextBlock x:Name="TxtStatTotal" Text="0" FontSize="26" FontWeight="Bold" Foreground="#F8FAFC"/>
                             </StackPanel>
                         </Border>
-                        <Border Grid.Column="1" Background="#1E293B" CornerRadius="8" Padding="16" Margin="4,0,4,0">
+                        <Border Grid.Column="1" Background="#131D31" CornerRadius="8" Padding="16" Margin="4,0,4,0">
                             <StackPanel>
                                 <TextBlock Text="Successfully Applied" FontSize="12" Foreground="#94A3B8"/>
                                 <TextBlock x:Name="TxtStatSuccess" Text="0" FontSize="26" FontWeight="Bold" Foreground="#10B981"/>
                             </StackPanel>
                         </Border>
-                        <Border Grid.Column="2" Background="#1E293B" CornerRadius="8" Padding="16" Margin="8,0,0,0">
+                        <Border Grid.Column="2" Background="#131D31" CornerRadius="8" Padding="16" Margin="8,0,0,0">
                             <StackPanel>
                                 <TextBlock Text="Skipped / Safeguarded" FontSize="12" Foreground="#94A3B8"/>
                                 <TextBlock x:Name="TxtStatSkipped" Text="0" FontSize="26" FontWeight="Bold" Foreground="#38BDF8"/>
@@ -457,7 +638,7 @@
                         </Border>
                     </Grid>
 
-                    <Border Grid.Row="1" Background="#1E293B" CornerRadius="8" BorderBrush="#334155" BorderThickness="1" Padding="18">
+                    <Border Grid.Row="1" Background="#131D31" CornerRadius="8" BorderBrush="#2A384F" BorderThickness="1" Padding="18">
                         <StackPanel>
                             <TextBlock Text="Recommended Next Steps:" FontSize="14" FontWeight="Bold" Foreground="#F8FAFC" Margin="0,0,0,10"/>
                             <TextBlock Text="• Restart Windows Explorer to immediately refresh Taskbar and desktop icons." FontSize="13" Foreground="#CBD5E1" Margin="0,2"/>
@@ -477,7 +658,7 @@
         </Grid>
 
         <!-- 4. Footer Bar & Navigation -->
-        <Border Grid.Row="3" Background="#1E293B" BorderBrush="#334155" BorderThickness="0,1,0,0" Padding="24,0">
+        <Border Grid.Row="3" Background="#131D31" BorderBrush="#2A384F" BorderThickness="0,1,0,0" Padding="24,0">
             <Grid VerticalAlignment="Center">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>

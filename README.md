@@ -1,6 +1,6 @@
 # NH Win Debloater
 
-**Version:** 0.1  
+**Version:** 0.3  
 **Tagline:** Less Bloat. Better Windows.  
 **Developer:** NH Digital ([nhdigital.shop](https://nhdigital.shop))  
 
@@ -21,9 +21,9 @@ v0.1  -->  v0.2  -->  v0.3  -->  v0.4  --> ... -->  v1.0
 (Init)     (Core)     (UI/WPF)   (Presets)         (Stable Release)
 ```
 
-- **v0.1 (Current):** Project initialization, folder architecture, standalone launcher, and environment bootstrapper.
-- **v0.2:** Core engine integration (AppX removal, WinGet support, atomic registry tweaks, and baseline backup snapshots).
-- **v0.3:** Modern single-window WPF Guided Assistant interface with real-time progress reporting.
+- **v0.1:** Project initialization, folder architecture, standalone launcher, and core PowerShell modules.
+- **v0.2:** Gaming & performance engine, shell customizations, DPI-safe branding, and zero-error preflight gate.
+- **v0.3 (Current):** Material Design dark palette, power-user category slices & installed package filter, smooth animations, and advanced system tweaks (Edge background suppression, CEIP task cleaning, hibernation storage reclaim).
 - **v0.4+:** Expanded debloat presets, community package signatures, and advanced Windows 11 feature configurations.
 - **v1.0:** Consolidated, production-grade standalone utility.
 
@@ -36,7 +36,7 @@ Each increment introduces modular features, verified bloatware signatures, or sa
 ```
 NH Win Debloater/
 ├── Run.bat                     # Standalone launcher (handles elevation & execution policy)
-├── VERSION.txt                 # Current version tracker (0.1)
+├── VERSION.txt                 # Current version tracker (0.3)
 ├── README.md                   # Project documentation and release workflow
 ├── src/
 │   ├── Core/                   # Modular PowerShell engines and bootstrap logic
