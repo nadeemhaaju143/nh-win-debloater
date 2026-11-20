@@ -152,21 +152,55 @@ function Show-DebloaterWindow {
         $txtVersion.Text = "v0.1"
     }
 
-    # Logo wiring (preferring png, falling back to stylish vector box)
-    $pngLogo1 = Join-Path $logoDir "logo.png"
-    $pngLogo2 = Join-Path $logoDir "nhdigital-logo.png"
-    if (Test-Path $pngLogo1) {
-        try {
-            $imgLogo.Source = [System.Windows.Media.Imaging.BitmapImage]::new([Uri]$pngLogo1)
-            $imgLogo.Visibility = [System.Windows.Visibility]::Visible
-            $logoFallbackBox.Visibility = [System.Windows.Visibility]::Collapsed
-        } catch { Write-Verbose "Failed loading logo.png: $($_.Exception.Message)" }
-    } elseif (Test-Path $pngLogo2) {
-        try {
-            $imgLogo.Source = [System.Windows.Media.Imaging.BitmapImage]::new([Uri]$pngLogo2)
-            $imgLogo.Visibility = [System.Windows.Visibility]::Visible
-            $logoFallbackBox.Visibility = [System.Windows.Visibility]::Collapsed
-        } catch { Write-Verbose "Failed loading nhdigital-logo.png: $($_.Exception.Message)" }
+    # Window Icon wiring
+    $icoCandidates = @(
+        (Join-Path $logoDir "logo.ico"),
+        (Join-Path $logoDir "favicon.ico"),
+        (Join-Path $logoDir "logo.png"),
+        (Join-Path $logoDir "nhdigital-logo.png"),
+        (Join-Path $logoDir "nh-digital-logo.png")
+    )
+    foreach ($ico in $icoCandidates) {
+        if (Test-Path $ico) {
+            try {
+                $window.Icon = [System.Windows.Media.Imaging.BitmapFrame]::Create([Uri]$ico)
+                break
+            } catch { Write-Verbose "Could not load window icon '$ico': $($_.Exception.Message)" }
+        }
+    }
+
+    # Header Logo wiring (preferring raster official logo, falling back to stylish vector box)
+    $logoCandidates = @(
+        (Join-Path $logoDir "logo.png"),
+        (Join-Path $logoDir "nhdigital-logo.png"),
+        (Join-Path $logoDir "nh-digital-logo.png"),
+        (Join-Path $logoDir "logo.jpg"),
+        (Join-Path $logoDir "nhdigital.png")
+    )
+    $foundLogo = $false
+    foreach ($candidate in $logoCandidates) {
+        if (Test-Path $candidate) {
+            try {
+                $img = [System.Windows.Media.Imaging.BitmapImage]::new()
+                $img.BeginInit()
+                $img.UriSource = [Uri]$candidate
+                $img.CacheOption = [System.Windows.Media.Imaging.BitmapCacheOption]::OnLoad
+                $img.EndInit()
+
+                $imgLogo.Source = $img
+                $imgLogo.Visibility = [System.Windows.Visibility]::Visible
+                $logoFallbackBox.Visibility = [System.Windows.Visibility]::Collapsed
+                $foundLogo = $true
+                break
+            } catch {
+                Write-Verbose "Could not load logo from '$candidate': $($_.Exception.Message)"
+            }
+        }
+    }
+
+    if (-not $foundLogo) {
+        $imgLogo.Visibility = [System.Windows.Visibility]::Collapsed
+        $logoFallbackBox.Visibility = [System.Windows.Visibility]::Visible
     }
 
     # Platform Information
