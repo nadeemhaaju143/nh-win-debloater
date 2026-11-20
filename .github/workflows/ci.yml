@@ -1,0 +1,51 @@
+name: CI - Static Analysis & Automated Tests
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  validate:
+    name: Lint & Test Suite
+    runs-on: windows-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Install PSScriptAnalyzer & Pester
+        shell: powershell
+        run: |
+          Install-Module -Name PSScriptAnalyzer -Scope CurrentUser -Force -SkipPublisherCheck
+          Install-Module -Name Pester -RequiredVersion 5.5.0 -Scope CurrentUser -Force -SkipPublisherCheck
+
+      - name: Run PSScriptAnalyzer Quality Gate
+        shell: powershell
+        run: |
+          $files = Get-ChildItem -Path . -Recurse -Include "*.ps1", "*.psm1" | Where-Object { $_.FullName -notmatch "\\tests\\" }
+          $issues = @()
+          foreach ($f in $files) {
+              $analysis = Invoke-ScriptAnalyzer -Path $f.FullName
+              if ($analysis.Count -gt 0) {
+                  Write-Host "::error file=$($f.FullName)::PSScriptAnalyzer detected $($analysis.Count) issue(s)."
+                  $analysis | Format-Table RuleName, Severity, Line, Message -AutoSize
+                  $issues += $analysis
+              }
+          }
+          if ($issues.Count -gt 0) {
+              Write-Error "PSScriptAnalyzer failed with $($issues.Count) warning(s)/error(s)."
+              exit 1
+          }
+          Write-Host "PSScriptAnalyzer passed cleanly (0 errors, 0 warnings)." -ForegroundColor Green
+
+      - name: Run Pester Automated Tests
+        shell: powershell
+        run: |
+          $res = Invoke-Pester -Path .\tests -PassThru -Output Detailed
+          if ($res.FailedCount -gt 0) {
+              Write-Error "Pester test suite failed: $($res.FailedCount) failed test(s)."
+              exit 1
+          }
+          Write-Host "All $($res.PassedCount) Pester tests passed successfully." -ForegroundColor Green

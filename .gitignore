@@ -1,0 +1,8 @@
+# NH Win Debloater - Git Ignore
+
+*.log
+*.tmp
+backups/
+logs/
+.vs/
+.vscode/

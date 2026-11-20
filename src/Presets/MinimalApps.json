@@ -1,0 +1,68 @@
+﻿[
+    {
+        "AppId":  "Clipchamp.Clipchamp",
+        "DisplayName":  "Clipchamp.Clipchamp",
+        "Recommendation":  "Safe",
+        "RemovalMethod":  "Appx"
+    },
+    {
+        "AppId":  "Microsoft.549981C3F5F10",
+        "DisplayName":  "Microsoft.549981C3F5F10",
+        "Recommendation":  "Safe",
+        "RemovalMethod":  "Appx"
+    },
+    {
+        "AppId":  "Microsoft.BingNews",
+        "DisplayName":  "Microsoft.BingNews",
+        "Recommendation":  "Safe",
+        "RemovalMethod":  "Appx"
+    },
+    {
+        "AppId":  "Microsoft.BingWeather",
+        "DisplayName":  "Microsoft.BingWeather",
+        "Recommendation":  "Safe",
+        "RemovalMethod":  "Appx"
+    },
+    {
+        "AppId":  "Microsoft.Getstarted",
+        "DisplayName":  "Microsoft.Getstarted",
+        "Recommendation":  "Safe",
+        "RemovalMethod":  "Appx"
+    },
+    {
+        "AppId":  "Microsoft.MicrosoftSolitaireCollection",
+        "DisplayName":  "Microsoft.MicrosoftSolitaireCollection",
+        "Recommendation":  "Safe",
+        "RemovalMethod":  "Appx"
+    },
+    {
+        "AppId":  "Microsoft.WindowsFeedbackHub",
+        "DisplayName":  "Microsoft.WindowsFeedbackHub",
+        "Recommendation":  "Safe",
+        "RemovalMethod":  "Appx"
+    },
+    {
+        "AppId":  "Disney.37853FC22B2CE",
+        "DisplayName":  "Disney.37853FC22B2CE",
+        "Recommendation":  "Safe",
+        "RemovalMethod":  "Appx"
+    },
+    {
+        "AppId":  "FACEBOOK.FACEBOOK",
+        "DisplayName":  "FACEBOOK.FACEBOOK",
+        "Recommendation":  "Safe",
+        "RemovalMethod":  "Appx"
+    },
+    {
+        "AppId":  "SpotifyAB.SpotifyMusic",
+        "DisplayName":  "SpotifyAB.SpotifyMusic",
+        "Recommendation":  "Safe",
+        "RemovalMethod":  "Appx"
+    },
+    {
+        "AppId":  "BytedancePte.Ltd.TikTok",
+        "DisplayName":  "BytedancePte.Ltd.TikTok",
+        "Recommendation":  "Safe",
+        "RemovalMethod":  "Appx"
+    }
+]
