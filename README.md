@@ -1,6 +1,6 @@
 # NH Win Debloater
 
-**Version:** 0.3  
+**Version:** 0.4  
 **Tagline:** Less Bloat. Better Windows.  
 **Developer:** NH Digital ([nhdigital.shop](https://nhdigital.shop))  
 
@@ -8,7 +8,7 @@
 
 ## Overview
 
-**NH Win Debloater** is a modern, lightweight, temporary Windows utility designed to remove unnecessary pre-installed applications, streamline system telemetry, and optimize Windows 10 and 11 environments without persistent overhead or background services.
+**NH Win Debloater** is a modern, lightweight, temporary Windows utility designed to remove unnecessary pre-installed applications, streamline system telemetry, remove intrusive AI background tracking, and optimize Windows 10 and 11 environments without persistent overhead or background services.
 
 ---
 
@@ -17,14 +17,15 @@
 NH Win Debloater adopts a progressive **minor-style semantic versioning cadence** starting at `v0.1`:
 
 ```
-v0.1  -->  v0.2  -->  v0.3  -->  v0.4  --> ... -->  v1.0
-(Init)     (Core)     (UI/WPF)   (Presets)         (Stable Release)
+v0.1  -->  v0.2  -->  v0.3  -->  v0.4  -->  v0.5+  -->  v1.0
+(Init)     (Core)     (UI/WPF)   (AI/Select) (Cloud)     (Stable Release)
 ```
 
 - **v0.1:** Project initialization, folder architecture, standalone launcher, and core PowerShell modules.
 - **v0.2:** Gaming & performance engine, shell customizations, DPI-safe branding, and zero-error preflight gate.
-- **v0.3 (Current):** Material Design dark palette, power-user category slices & installed package filter, smooth animations, and advanced system tweaks (Edge background suppression, CEIP task cleaning, hibernation storage reclaim).
-- **v0.4+:** Expanded debloat presets, community package signatures, and advanced Windows 11 feature configurations.
+- **v0.3:** Material Design dark palette, power-user category slices & installed package filter, smooth animations, and advanced system tweaks (Edge background suppression, CEIP task cleaning, hibernation storage reclaim).
+- **v0.4 (Current):** Dark Material multi-select CheckBox dropdowns across all tabs, multi-category aggregation, dedicated AI Integration suite (Copilot policy/AppX, Recall/Click to Do, Edge/Paint/Notepad AI), and expanded registry backups.
+- **v0.5+:** Expanded community debloat signatures, context menu enhancements, and cloud backup sync.
 - **v1.0:** Consolidated, production-grade standalone utility.
 
 Each increment introduces modular features, verified bloatware signatures, or safety refinements while maintaining backward compatibility and zero host system damage.
@@ -37,7 +38,7 @@ Each increment introduces modular features, verified bloatware signatures, or sa
 NH Win Debloater/
 ├── Get-NHWinDebloater.ps1      # One-line zero-install quick-launch bootstrapper
 ├── Run.bat                     # Standalone launcher (handles elevation & execution policy)
-├── VERSION.txt                 # Current version tracker (0.3)
+├── VERSION.txt                 # Current version tracker (0.4)
 ├── README.md                   # Project documentation and release workflow
 ├── src/
 │   ├── Core/                   # Modular PowerShell engines and bootstrap logic
@@ -86,6 +87,36 @@ irm https://raw.githubusercontent.com/nadeemhaaju143/nh-win-debloater/main/Get-N
 - **Zero Persistent Overhead:** Does not install permanent services, scheduled tasks, or startup entries.
 - **Explicit Authorization:** No modifications occur without explicit user confirmation.
 - **System Safeguards:** Core system components (Windows Store, Windows Security, Essential Frameworks) are protected against removal.
+- **Pre-Tweak Registry Snapshots:** Automatic `.reg` backup snapshots generated before applying modifications with one-click folder inspection.
+
+---
+
+## Windows SmartScreen, Defender & Execution Policy Transparency
+
+When downloading scripts or tools directly from GitHub, Windows may display a **Windows SmartScreen** prompt (*"Windows protected your PC"*) or PowerShell may restrict script execution (`ExecutionPolicy`). Here is why this happens and how to handle it safely:
+
+### 1. Why Does SmartScreen or Defender Prompt?
+- **Mark-of-the-Web (MOTW):** Files downloaded via browsers or web streams receive an alternate data stream identifier (`Zone.Identifier`) marking them as coming from the internet. Windows displays SmartScreen prompts for any unsigned script or executable that has not yet accumulated millions of global download reputation signals.
+- **100% Open Source & Zero Binaries:** NH Win Debloater contains **zero compiled binaries (.exe/.dll)**, **zero obfuscated code**, and **zero hidden telemetry**. Every line of PowerShell (`.ps1`, `.psm1`) and XAML is open, readable, and auditable directly in this repository.
+
+### 2. How to Run Unrestricted:
+- **SmartScreen Prompt:** Click **More info** -> **Run anyway**.
+- **PowerShell Execution Policy:** To permit local script execution in your PowerShell session:
+  ```powershell
+  Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+  ```
+- **Unblocking Downloaded Files (GUI / CLI):**
+  - *GUI:* Right-click the downloaded `.zip` or folder -> **Properties** -> Check **Unblock** -> Click **Apply**.
+  - *PowerShell:*
+    ```powershell
+    Get-ChildItem -Path "C:\Path\To\NH Win Debloater" -Recurse | Unblock-File
+    ```
+- **Windows Defender Local Folder Exclusion (Optional for Developers):**
+  If you regularly run debloat or administrative scripts, you can optionally exclude your development directory:
+  ```powershell
+  # Run in elevated Administrator PowerShell if desired:
+  Add-MpPreference -ExclusionPath "C:\Users\<YourUser>\Projects\NH Win Debloater"
+  ```
 
 ---
 

@@ -1,12 +1,13 @@
-<#
+﻿<#
     .SYNOPSIS
         NH Win Debloater - UI Controller Engine
     .DESCRIPTION
         Orchestrates the WPF/XAML Guided Setup Assistant, manages stage transitions with
-        fluid animations, populates application catalogs and power-user filters,
-        executes dry-run previews, and triggers atomic debloat pipelines with full safety gates.
+        fluid animations, populates application catalogs with dark Material multi-select
+        category filters, executes dry-run previews, and triggers atomic debloat pipelines
+        with dedicated AI integration, privacy, gaming, and system tweak controls.
     .MODULEVERSION
-        0.3.0
+        0.4.0
 #>
 
 [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '')]
@@ -88,9 +89,18 @@ function Show-DebloaterWindow {
     $radioScopeCurrentUser = $window.FindName("RadioScopeCurrentUser")
     $radioScopeDefaultUser = $window.FindName("RadioScopeDefaultUser")
 
-    # Power-User App Filtering & Selection Controls
+    # Tab 1: Apps & Multi-Select Category Filters
     $txtAppFilter = $window.FindName("TxtAppFilter")
-    $cmbAppPresetCategory = $window.FindName("CmbAppPresetCategory")
+    $toggleAppCategories = $window.FindName("ToggleAppCategories")
+    $chkCatRecommended = $window.FindName("ChkCatRecommended")
+    $chkCatMinimal = $window.FindName("ChkCatMinimal")
+    $chkCatDeep = $window.FindName("ChkCatDeep")
+    $chkCatOem = $window.FindName("ChkCatOem")
+    $chkCatXbox = $window.FindName("ChkCatXbox")
+    $chkCatMedia = $window.FindName("ChkCatMedia")
+    $btnCatSelectAll = $window.FindName("BtnCatSelectAll")
+    $btnCatClear = $window.FindName("BtnCatClear")
+
     $chkOnlyInstalled = $window.FindName("ChkOnlyInstalled")
     $btnSelectAllApps = $window.FindName("BtnSelectAllApps")
     $btnDeselectAllApps = $window.FindName("BtnDeselectAllApps")
@@ -98,15 +108,24 @@ function Show-DebloaterWindow {
     $txtAppsSummary = $window.FindName("TxtAppsSummary")
     $listAppsContainer = $window.FindName("ListAppsContainer")
 
-    # Privacy & Search
+    # Tab 2: Privacy & Search
+    $togglePrivacyPresets = $window.FindName("TogglePrivacyPresets")
+    $btnPrivacyRecommended = $window.FindName("BtnPrivacyRecommended")
+    $btnPrivacyStrict = $window.FindName("BtnPrivacyStrict")
+    $btnSelectAllPrivacy = $window.FindName("BtnSelectAllPrivacy")
+    $btnDeselectAllPrivacy = $window.FindName("BtnDeselectAllPrivacy")
     $chkTelemetry = $window.FindName("ChkTelemetry")
-    $chkCopilot = $window.FindName("ChkCopilot")
     $chkBingSearch = $window.FindName("ChkBingSearch")
     $chkAdvertisingId = $window.FindName("ChkAdvertisingId")
     $chkActivityHistory = $window.FindName("ChkActivityHistory")
     $chkTailoredExp = $window.FindName("ChkTailoredExp")
 
-    # UI & Shell
+    # Tab 3: UI & Shell
+    $toggleShellPresets = $window.FindName("ToggleShellPresets")
+    $btnShellClean = $window.FindName("BtnShellClean")
+    $btnShellPowerUser = $window.FindName("BtnShellPowerUser")
+    $btnSelectAllShell = $window.FindName("BtnSelectAllShell")
+    $btnDeselectAllShell = $window.FindName("BtnDeselectAllShell")
     $chkShowExt = $window.FindName("ChkShowExt")
     $chkShowHidden = $window.FindName("ChkShowHidden")
     $chkExplorerThisPC = $window.FindName("ChkExplorerThisPC")
@@ -121,7 +140,12 @@ function Show-DebloaterWindow {
     $chkCompactExplorer = $window.FindName("ChkCompactExplorer")
     $chkMultitasking = $window.FindName("ChkMultitasking")
 
-    # Gaming & Performance
+    # Tab 4: Gaming & Performance
+    $toggleGamingPresets = $window.FindName("ToggleGamingPresets")
+    $btnGamingMaxPerformance = $window.FindName("BtnGamingMaxPerformance")
+    $btnGamingStorage = $window.FindName("BtnGamingStorage")
+    $btnSelectAllGaming = $window.FindName("BtnSelectAllGaming")
+    $btnDeselectAllGaming = $window.FindName("BtnDeselectAllGaming")
     $chkGameDVR = $window.FindName("ChkGameDVR")
     $chkDeliveryOpt = $window.FindName("ChkDeliveryOpt")
     $chkEdgeBackground = $window.FindName("ChkEdgeBackground")
@@ -129,7 +153,11 @@ function Show-DebloaterWindow {
     $chkTelemetryService = $window.FindName("ChkTelemetryService")
     $chkHibernation = $window.FindName("ChkHibernation")
 
-    # System Extras
+    # Tab 5: System Extras
+    $toggleExtrasPresets = $window.FindName("ToggleExtrasPresets")
+    $btnExtrasRecommended = $window.FindName("BtnExtrasRecommended")
+    $btnSelectAllExtras = $window.FindName("BtnSelectAllExtras")
+    $btnDeselectAllExtras = $window.FindName("BtnDeselectAllExtras")
     $chkConsumerFeatures = $window.FindName("ChkConsumerFeatures")
     $chkLockScreenAds = $window.FindName("ChkLockScreenAds")
     $chkMousePrecision = $window.FindName("ChkMousePrecision")
@@ -139,7 +167,23 @@ function Show-DebloaterWindow {
     $chkPreventAutoReboot = $window.FindName("ChkPreventAutoReboot")
     $chkExcludeDrivers = $window.FindName("ChkExcludeDrivers")
 
-    # Optional Features
+    # Tab 6: AI Integration (Dedicated Suite)
+    $toggleAIPresets = $window.FindName("ToggleAIPresets")
+    $btnAIAll = $window.FindName("BtnAIAll")
+    $btnAISystemOnly = $window.FindName("BtnAISystemOnly")
+    $btnAIAppsOnly = $window.FindName("BtnAIAppsOnly")
+    $btnSelectAllAI = $window.FindName("BtnSelectAllAI")
+    $btnDeselectAllAI = $window.FindName("BtnDeselectAllAI")
+    $chkCopilotPolicy = $window.FindName("ChkCopilotPolicy")
+    $chkCopilotAppx = $window.FindName("ChkCopilotAppx")
+    $chkRecallAI = $window.FindName("ChkRecallAI")
+    $chkEdgeAI = $window.FindName("ChkEdgeAI")
+    $chkPaintAI = $window.FindName("ChkPaintAI")
+    $chkNotepadAI = $window.FindName("ChkNotepadAI")
+
+    # Tab 7: Optional Features
+    $btnSelectAllFeatures = $window.FindName("BtnSelectAllFeatures")
+    $btnDeselectAllFeatures = $window.FindName("BtnDeselectAllFeatures")
     $chkWindowsSandbox = $window.FindName("ChkWindowsSandbox")
     $chkWSL = $window.FindName("ChkWSL")
 
@@ -175,7 +219,7 @@ function Show-DebloaterWindow {
         $v = (Get-Content -Path $versionPath -Raw).Trim()
         $txtVersion.Text = "v$v"
     } else {
-        $txtVersion.Text = "v0.3"
+        $txtVersion.Text = "v0.4"
     }
 
     # Window Icon wiring
@@ -388,7 +432,7 @@ function Show-DebloaterWindow {
         & $updateSummaryText
     }
 
-    # Function to populate apps list according to category and system scan
+    # Multi-Category Aggregation Engine for Bloatware Apps
     $populateApps = {
         # 1. Scan and cache installed packages once per session
         if ($null -eq $script:InstalledAppMap) {
@@ -406,41 +450,58 @@ function Show-DebloaterWindow {
             }
         }
 
-        # 2. Determine apps catalog based on Category selection
-        $catIndex = if ($cmbAppPresetCategory) { $cmbAppPresetCategory.SelectedIndex } else { 0 }
-        $apps = @()
+        # 2. Multi-category selection aggregation
+        $appMap = @{}
+        $selectedCatNames = [System.Collections.Generic.List[string]]::new()
 
-        switch ($catIndex) {
-            1 {
-                # Minimal Sponsored Only (11 Apps)
-                $apps = Get-DebloatPreset -PresetName "Minimal" -PresetsPath $presetsPath
+        if ($chkCatRecommended -and $chkCatRecommended.IsChecked) {
+            $selectedCatNames.Add("Recommended")
+            $recList = Get-DebloatPreset -PresetName "Default" -PresetsPath $presetsPath
+            foreach ($a in $recList) { $appMap[$a.AppId] = $a }
+        }
+        if ($chkCatMinimal -and $chkCatMinimal.IsChecked) {
+            $selectedCatNames.Add("Minimal")
+            $minList = Get-DebloatPreset -PresetName "Minimal" -PresetsPath $presetsPath
+            foreach ($a in $minList) { $appMap[$a.AppId] = $a }
+        }
+        if ($chkCatDeep -and $chkCatDeep.IsChecked) {
+            $selectedCatNames.Add("Deep")
+            $deepList = Get-DebloatPreset -PresetName "Deep" -PresetsPath $presetsPath
+            foreach ($a in $deepList) { $appMap[$a.AppId] = $a }
+        }
+        if ($chkCatOem -and $chkCatOem.IsChecked) {
+            $selectedCatNames.Add("OEM")
+            $deepList = Get-DebloatPreset -PresetName "Deep" -PresetsPath $presetsPath
+            foreach ($a in ($deepList | Where-Object { -not ($_.AppId -like "Microsoft.*") })) {
+                $appMap[$a.AppId] = $a
             }
-            2 {
-                # Deep Debloat (All 162 Packages)
-                $apps = Get-DebloatPreset -PresetName "Deep" -PresetsPath $presetsPath
+        }
+        if ($chkCatXbox -and $chkCatXbox.IsChecked) {
+            $selectedCatNames.Add("Xbox")
+            $deepList = Get-DebloatPreset -PresetName "Deep" -PresetsPath $presetsPath
+            foreach ($a in ($deepList | Where-Object { $_.AppId -like "*Xbox*" -or $_.AppId -like "*Gaming*" -or $_.AppId -like "*GameOverlay*" })) {
+                $appMap[$a.AppId] = $a
             }
-            3 {
-                # OEM & Third-Party Only
-                $deep = Get-DebloatPreset -PresetName "Deep" -PresetsPath $presetsPath
-                $apps = @($deep | Where-Object { -not ($_.AppId -like "Microsoft.*") })
+        }
+        if ($chkCatMedia -and $chkCatMedia.IsChecked) {
+            $selectedCatNames.Add("Media")
+            $deepList = Get-DebloatPreset -PresetName "Deep" -PresetsPath $presetsPath
+            foreach ($a in ($deepList | Where-Object {
+                $_.AppId -like "*BingNews*" -or $_.AppId -like "*BingWeather*" -or $_.AppId -like "*BingSports*" -or
+                $_.AppId -like "*BingFinance*" -or $_.AppId -like "*Zune*" -or $_.AppId -like "*Clipchamp*" -or $_.AppId -like "*Photos*"
+            })) {
+                $appMap[$a.AppId] = $a
             }
-            4 {
-                # Xbox & Gaming Packages
-                $deep = Get-DebloatPreset -PresetName "Deep" -PresetsPath $presetsPath
-                $apps = @($deep | Where-Object { $_.AppId -like "*Xbox*" -or $_.AppId -like "*Gaming*" -or $_.AppId -like "*GameOverlay*" })
-            }
-            5 {
-                # News, Weather & Media
-                $deep = Get-DebloatPreset -PresetName "Deep" -PresetsPath $presetsPath
-                $apps = @($deep | Where-Object {
-                    $_.AppId -like "*BingNews*" -or $_.AppId -like "*BingWeather*" -or $_.AppId -like "*BingSports*" -or
-                    $_.AppId -like "*BingFinance*" -or $_.AppId -like "*Zune*" -or $_.AppId -like "*Clipchamp*" -or $_.AppId -like "*Photos*"
-                })
-            }
-            Default {
-                # Recommended Safe Bloat (84 Apps) or mapped from Stage 1 selection
-                $presetName = if ($radioPresetMinimal.IsChecked) { "Minimal" } elseif ($radioPresetDeep.IsChecked) { "Deep" } else { "Default" }
-                $apps = Get-DebloatPreset -PresetName $presetName -PresetsPath $presetsPath
+        }
+
+        # Update Toggle Header text
+        if ($toggleAppCategories) {
+            if ($selectedCatNames.Count -eq 0) {
+                $toggleAppCategories.Content = "Categories: None Selected (0 Apps) ▼"
+            } elseif ($selectedCatNames.Count -eq 6) {
+                $toggleAppCategories.Content = "Categories: All Selected ($($appMap.Count) Apps) ▼"
+            } else {
+                $toggleAppCategories.Content = "Categories: $($selectedCatNames -join ', ') ($($appMap.Count) Apps) ▼"
             }
         }
 
@@ -448,7 +509,7 @@ function Show-DebloaterWindow {
         $script:AppCheckboxes.Clear()
         $script:AppMetadata.Clear()
 
-        foreach ($app in $apps) {
+        foreach ($app in $appMap.Values) {
             $isInst = $script:InstalledAppMap.ContainsKey($app.AppId.ToLower())
 
             $cb = [System.Windows.Controls.CheckBox]::new()
@@ -482,7 +543,34 @@ function Show-DebloaterWindow {
         & $filterApps
     }
 
-    # Event Wiring: Filters & Selection Actions
+    # Tab 1: Category Checkboxes Wiring
+    $catCheckboxes = @($chkCatRecommended, $chkCatMinimal, $chkCatDeep, $chkCatOem, $chkCatXbox, $chkCatMedia)
+    foreach ($chk in $catCheckboxes) {
+        if ($chk) {
+            $chk.Add_Click({
+                param([object]$eventSource, [System.Windows.RoutedEventArgs]$eventArgs)
+                & $populateApps
+            })
+        }
+    }
+
+    if ($btnCatSelectAll) {
+        $btnCatSelectAll.Add_Click({
+            param([object]$eventSource, [System.Windows.RoutedEventArgs]$eventArgs)
+            foreach ($chk in $catCheckboxes) { if ($chk) { $chk.IsChecked = $true } }
+            & $populateApps
+        })
+    }
+
+    if ($btnCatClear) {
+        $btnCatClear.Add_Click({
+            param([object]$eventSource, [System.Windows.RoutedEventArgs]$eventArgs)
+            foreach ($chk in $catCheckboxes) { if ($chk) { $chk.IsChecked = $false } }
+            & $populateApps
+        })
+    }
+
+    # App Search and Selection Action Wiring
     if ($txtAppFilter) {
         $txtAppFilter.Add_TextChanged({
             param([object]$eventSource, [System.Windows.Controls.TextChangedEventArgs]$eventArgs)
@@ -497,20 +585,11 @@ function Show-DebloaterWindow {
         })
     }
 
-    if ($cmbAppPresetCategory) {
-        $cmbAppPresetCategory.Add_SelectionChanged({
-            param([object]$eventSource, [System.Windows.Controls.SelectionChangedEventArgs]$eventArgs)
-            & $populateApps
-        })
-    }
-
     if ($btnSelectAllApps) {
         $btnSelectAllApps.Add_Click({
             param([object]$eventSource, [System.Windows.RoutedEventArgs]$eventArgs)
             foreach ($cb in $script:AppCheckboxes) {
-                if ($cb.Visibility -eq [System.Windows.Visibility]::Visible) {
-                    $cb.IsChecked = $true
-                }
+                if ($cb.Visibility -eq [System.Windows.Visibility]::Visible) { $cb.IsChecked = $true }
             }
             & $updateSummaryText
         })
@@ -520,9 +599,7 @@ function Show-DebloaterWindow {
         $btnDeselectAllApps.Add_Click({
             param([object]$eventSource, [System.Windows.RoutedEventArgs]$eventArgs)
             foreach ($cb in $script:AppCheckboxes) {
-                if ($cb.Visibility -eq [System.Windows.Visibility]::Visible) {
-                    $cb.IsChecked = $false
-                }
+                if ($cb.Visibility -eq [System.Windows.Visibility]::Visible) { $cb.IsChecked = $false }
             }
             & $updateSummaryText
         })
@@ -532,11 +609,206 @@ function Show-DebloaterWindow {
         $btnInvertSelection.Add_Click({
             param([object]$eventSource, [System.Windows.RoutedEventArgs]$eventArgs)
             foreach ($cb in $script:AppCheckboxes) {
-                if ($cb.Visibility -eq [System.Windows.Visibility]::Visible) {
-                    $cb.IsChecked = -not $cb.IsChecked
-                }
+                if ($cb.Visibility -eq [System.Windows.Visibility]::Visible) { $cb.IsChecked = -not $cb.IsChecked }
             }
             & $updateSummaryText
+        })
+    }
+
+    # Tab 2: Privacy Batch Presets & Selection
+    if ($btnSelectAllPrivacy) {
+        $btnSelectAllPrivacy.Add_Click({
+            param([object]$eventSource, [System.Windows.RoutedEventArgs]$eventArgs)
+            @($chkTelemetry, $chkBingSearch, $chkAdvertisingId, $chkActivityHistory, $chkTailoredExp) |
+                Where-Object { $_ } | ForEach-Object { $_.IsChecked = $true }
+        })
+    }
+    if ($btnDeselectAllPrivacy) {
+        $btnDeselectAllPrivacy.Add_Click({
+            param([object]$eventSource, [System.Windows.RoutedEventArgs]$eventArgs)
+            @($chkTelemetry, $chkBingSearch, $chkAdvertisingId, $chkActivityHistory, $chkTailoredExp) |
+                Where-Object { $_ } | ForEach-Object { $_.IsChecked = $false }
+        })
+    }
+    if ($btnPrivacyRecommended) {
+        $btnPrivacyRecommended.Add_Click({
+            param([object]$eventSource, [System.Windows.RoutedEventArgs]$eventArgs)
+            if ($chkTelemetry) { $chkTelemetry.IsChecked = $true }
+            if ($chkBingSearch) { $chkBingSearch.IsChecked = $true }
+            if ($chkAdvertisingId) { $chkAdvertisingId.IsChecked = $true }
+            if ($chkActivityHistory) { $chkActivityHistory.IsChecked = $true }
+            if ($chkTailoredExp) { $chkTailoredExp.IsChecked = $true }
+            if ($togglePrivacyPresets) { $togglePrivacyPresets.IsChecked = $false }
+        })
+    }
+    if ($btnPrivacyStrict) {
+        $btnPrivacyStrict.Add_Click({
+            param([object]$eventSource, [System.Windows.RoutedEventArgs]$eventArgs)
+            @($chkTelemetry, $chkBingSearch, $chkAdvertisingId, $chkActivityHistory, $chkTailoredExp) |
+                Where-Object { $_ } | ForEach-Object { $_.IsChecked = $true }
+            if ($togglePrivacyPresets) { $togglePrivacyPresets.IsChecked = $false }
+        })
+    }
+
+    # Tab 3: Shell Batch Presets & Selection
+    $shellCheckboxes = @($chkShowExt, $chkShowHidden, $chkExplorerThisPC, $chkClassicContextMenu, $chkHideWidgets, $chkHideChat, $chkEndTask, $chkAlignLeft, $chkHideOneDriveNav, $chkSearchHighlights, $chkStartRecommended, $chkCompactExplorer, $chkMultitasking)
+    if ($btnSelectAllShell) {
+        $btnSelectAllShell.Add_Click({
+            param([object]$eventSource, [System.Windows.RoutedEventArgs]$eventArgs)
+            foreach ($chk in $shellCheckboxes) { if ($chk) { $chk.IsChecked = $true } }
+        })
+    }
+    if ($btnDeselectAllShell) {
+        $btnDeselectAllShell.Add_Click({
+            param([object]$eventSource, [System.Windows.RoutedEventArgs]$eventArgs)
+            foreach ($chk in $shellCheckboxes) { if ($chk) { $chk.IsChecked = $false } }
+        })
+    }
+    if ($btnShellClean) {
+        $btnShellClean.Add_Click({
+            param([object]$eventSource, [System.Windows.RoutedEventArgs]$eventArgs)
+            if ($chkHideWidgets) { $chkHideWidgets.IsChecked = $true }
+            if ($chkHideChat) { $chkHideChat.IsChecked = $true }
+            if ($chkEndTask) { $chkEndTask.IsChecked = $true }
+            if ($chkSearchHighlights) { $chkSearchHighlights.IsChecked = $true }
+            if ($chkStartRecommended) { $chkStartRecommended.IsChecked = $true }
+            if ($chkMultitasking) { $chkMultitasking.IsChecked = $true }
+            if ($toggleShellPresets) { $toggleShellPresets.IsChecked = $false }
+        })
+    }
+    if ($btnShellPowerUser) {
+        $btnShellPowerUser.Add_Click({
+            param([object]$eventSource, [System.Windows.RoutedEventArgs]$eventArgs)
+            if ($chkShowExt) { $chkShowExt.IsChecked = $true }
+            if ($chkShowHidden) { $chkShowHidden.IsChecked = $true }
+            if ($chkExplorerThisPC) { $chkExplorerThisPC.IsChecked = $true }
+            if ($chkClassicContextMenu) { $chkClassicContextMenu.IsChecked = $true }
+            if ($chkCompactExplorer) { $chkCompactExplorer.IsChecked = $true }
+            if ($chkEndTask) { $chkEndTask.IsChecked = $true }
+            if ($toggleShellPresets) { $toggleShellPresets.IsChecked = $false }
+        })
+    }
+
+    # Tab 4: Gaming Batch Presets & Selection
+    $gamingCheckboxes = @($chkGameDVR, $chkDeliveryOpt, $chkEdgeBackground, $chkScheduledTasks, $chkTelemetryService, $chkHibernation)
+    if ($btnSelectAllGaming) {
+        $btnSelectAllGaming.Add_Click({
+            param([object]$eventSource, [System.Windows.RoutedEventArgs]$eventArgs)
+            foreach ($chk in $gamingCheckboxes) { if ($chk) { $chk.IsChecked = $true } }
+        })
+    }
+    if ($btnDeselectAllGaming) {
+        $btnDeselectAllGaming.Add_Click({
+            param([object]$eventSource, [System.Windows.RoutedEventArgs]$eventArgs)
+            foreach ($chk in $gamingCheckboxes) { if ($chk) { $chk.IsChecked = $false } }
+        })
+    }
+    if ($btnGamingMaxPerformance) {
+        $btnGamingMaxPerformance.Add_Click({
+            param([object]$eventSource, [System.Windows.RoutedEventArgs]$eventArgs)
+            if ($chkGameDVR) { $chkGameDVR.IsChecked = $true }
+            if ($chkDeliveryOpt) { $chkDeliveryOpt.IsChecked = $true }
+            if ($chkEdgeBackground) { $chkEdgeBackground.IsChecked = $true }
+            if ($chkScheduledTasks) { $chkScheduledTasks.IsChecked = $true }
+            if ($chkTelemetryService) { $chkTelemetryService.IsChecked = $true }
+            if ($toggleGamingPresets) { $toggleGamingPresets.IsChecked = $false }
+        })
+    }
+    if ($btnGamingStorage) {
+        $btnGamingStorage.Add_Click({
+            param([object]$eventSource, [System.Windows.RoutedEventArgs]$eventArgs)
+            if ($chkDeliveryOpt) { $chkDeliveryOpt.IsChecked = $true }
+            if ($chkHibernation) { $chkHibernation.IsChecked = $true }
+            if ($toggleGamingPresets) { $toggleGamingPresets.IsChecked = $false }
+        })
+    }
+
+    # Tab 5: Extras Batch Presets & Selection
+    $extrasCheckboxes = @($chkConsumerFeatures, $chkLockScreenAds, $chkMousePrecision, $chkStickyKeys, $chkFastStartup, $chkStorageSense, $chkPreventAutoReboot, $chkExcludeDrivers)
+    if ($btnSelectAllExtras) {
+        $btnSelectAllExtras.Add_Click({
+            param([object]$eventSource, [System.Windows.RoutedEventArgs]$eventArgs)
+            foreach ($chk in $extrasCheckboxes) { if ($chk) { $chk.IsChecked = $true } }
+        })
+    }
+    if ($btnDeselectAllExtras) {
+        $btnDeselectAllExtras.Add_Click({
+            param([object]$eventSource, [System.Windows.RoutedEventArgs]$eventArgs)
+            foreach ($chk in $extrasCheckboxes) { if ($chk) { $chk.IsChecked = $false } }
+        })
+    }
+    if ($btnExtrasRecommended) {
+        $btnExtrasRecommended.Add_Click({
+            param([object]$eventSource, [System.Windows.RoutedEventArgs]$eventArgs)
+            if ($chkConsumerFeatures) { $chkConsumerFeatures.IsChecked = $true }
+            if ($chkLockScreenAds) { $chkLockScreenAds.IsChecked = $true }
+            if ($chkMousePrecision) { $chkMousePrecision.IsChecked = $true }
+            if ($chkStickyKeys) { $chkStickyKeys.IsChecked = $true }
+            if ($chkPreventAutoReboot) { $chkPreventAutoReboot.IsChecked = $true }
+            if ($chkExcludeDrivers) { $chkExcludeDrivers.IsChecked = $true }
+            if ($toggleExtrasPresets) { $toggleExtrasPresets.IsChecked = $false }
+        })
+    }
+
+    # Tab 6: AI Integration Batch Presets & Selection
+    $aiCheckboxes = @($chkCopilotPolicy, $chkCopilotAppx, $chkRecallAI, $chkEdgeAI, $chkPaintAI, $chkNotepadAI)
+    if ($btnSelectAllAI) {
+        $btnSelectAllAI.Add_Click({
+            param([object]$eventSource, [System.Windows.RoutedEventArgs]$eventArgs)
+            foreach ($chk in $aiCheckboxes) { if ($chk) { $chk.IsChecked = $true } }
+        })
+    }
+    if ($btnDeselectAllAI) {
+        $btnDeselectAllAI.Add_Click({
+            param([object]$eventSource, [System.Windows.RoutedEventArgs]$eventArgs)
+            foreach ($chk in $aiCheckboxes) { if ($chk) { $chk.IsChecked = $false } }
+        })
+    }
+    if ($btnAIAll) {
+        $btnAIAll.Add_Click({
+            param([object]$eventSource, [System.Windows.RoutedEventArgs]$eventArgs)
+            foreach ($chk in $aiCheckboxes) { if ($chk) { $chk.IsChecked = $true } }
+            if ($toggleAIPresets) { $toggleAIPresets.IsChecked = $false }
+        })
+    }
+    if ($btnAISystemOnly) {
+        $btnAISystemOnly.Add_Click({
+            param([object]$eventSource, [System.Windows.RoutedEventArgs]$eventArgs)
+            if ($chkCopilotPolicy) { $chkCopilotPolicy.IsChecked = $true }
+            if ($chkCopilotAppx) { $chkCopilotAppx.IsChecked = $true }
+            if ($chkRecallAI) { $chkRecallAI.IsChecked = $true }
+            if ($chkEdgeAI) { $chkEdgeAI.IsChecked = $false }
+            if ($chkPaintAI) { $chkPaintAI.IsChecked = $false }
+            if ($chkNotepadAI) { $chkNotepadAI.IsChecked = $false }
+            if ($toggleAIPresets) { $toggleAIPresets.IsChecked = $false }
+        })
+    }
+    if ($btnAIAppsOnly) {
+        $btnAIAppsOnly.Add_Click({
+            param([object]$eventSource, [System.Windows.RoutedEventArgs]$eventArgs)
+            if ($chkCopilotPolicy) { $chkCopilotPolicy.IsChecked = $false }
+            if ($chkCopilotAppx) { $chkCopilotAppx.IsChecked = $false }
+            if ($chkRecallAI) { $chkRecallAI.IsChecked = $false }
+            if ($chkEdgeAI) { $chkEdgeAI.IsChecked = $true }
+            if ($chkPaintAI) { $chkPaintAI.IsChecked = $true }
+            if ($chkNotepadAI) { $chkNotepadAI.IsChecked = $true }
+            if ($toggleAIPresets) { $toggleAIPresets.IsChecked = $false }
+        })
+    }
+
+    # Tab 7: Features Selection
+    if ($btnSelectAllFeatures) {
+        $btnSelectAllFeatures.Add_Click({
+            param([object]$eventSource, [System.Windows.RoutedEventArgs]$eventArgs)
+            if ($chkWindowsSandbox) { $chkWindowsSandbox.IsChecked = $true }
+            if ($chkWSL) { $chkWSL.IsChecked = $true }
+        })
+    }
+    if ($btnDeselectAllFeatures) {
+        $btnDeselectAllFeatures.Add_Click({
+            param([object]$eventSource, [System.Windows.RoutedEventArgs]$eventArgs)
+            if ($chkWindowsSandbox) { $chkWindowsSandbox.IsChecked = $false }
+            if ($chkWSL) { $chkWSL.IsChecked = $false }
         })
     }
 
@@ -553,7 +825,6 @@ function Show-DebloaterWindow {
         $logBuilder.AppendLine("Target Scope: $scope") | Out-Null
 
         if ($chkTelemetry -and $chkTelemetry.IsChecked) { $logBuilder.AppendLine("WhatIf: Disable Telemetry policies would be applied.") | Out-Null }
-        if ($chkCopilot -and $chkCopilot.IsChecked) { $logBuilder.AppendLine("WhatIf: Windows Copilot & Recall AI would be disabled.") | Out-Null }
         if ($chkBingSearch -and $chkBingSearch.IsChecked) { $logBuilder.AppendLine("WhatIf: Start Menu Bing search suggestions would be disabled.") | Out-Null }
         if ($chkShowExt -and $chkShowExt.IsChecked) { $logBuilder.AppendLine("WhatIf: File Explorer Show Known Extensions would be enabled.") | Out-Null }
         if ($chkShowHidden -and $chkShowHidden.IsChecked) { $logBuilder.AppendLine("WhatIf: File Explorer Show Hidden Files would be enabled.") | Out-Null }
@@ -578,6 +849,14 @@ function Show-DebloaterWindow {
         if ($chkWindowsSandbox -and $chkWindowsSandbox.IsChecked) { $logBuilder.AppendLine("WhatIf: Windows Sandbox optional feature would be enabled.") | Out-Null }
         if ($chkWSL -and $chkWSL.IsChecked) { $logBuilder.AppendLine("WhatIf: Windows Subsystem for Linux (WSL) would be enabled.") | Out-Null }
 
+        # AI Suite Simulations
+        if ($chkCopilotPolicy -and $chkCopilotPolicy.IsChecked) { $logBuilder.AppendLine("WhatIf: Windows Copilot taskbar button and group policies would be disabled.") | Out-Null }
+        if ($chkCopilotAppx -and $chkCopilotAppx.IsChecked) { $logBuilder.AppendLine("WhatIf: Windows Copilot AppX package would be removed.") | Out-Null }
+        if ($chkRecallAI -and $chkRecallAI.IsChecked) { $logBuilder.AppendLine("WhatIf: Windows Recall and AI screen analysis snapshots would be disabled.") | Out-Null }
+        if ($chkEdgeAI -and $chkEdgeAI.IsChecked) { $logBuilder.AppendLine("WhatIf: Microsoft Edge Copilot & AI sidebar would be disabled.") | Out-Null }
+        if ($chkPaintAI -and $chkPaintAI.IsChecked) { $logBuilder.AppendLine("WhatIf: Microsoft Paint Cocreator AI would be disabled.") | Out-Null }
+        if ($chkNotepadAI -and $chkNotepadAI.IsChecked) { $logBuilder.AppendLine("WhatIf: Microsoft Notepad Cowriter AI would be disabled.") | Out-Null }
+
         $selectedCount = 0
         foreach ($cb in $script:AppCheckboxes) {
             if ($cb.IsChecked) {
@@ -600,10 +879,27 @@ function Show-DebloaterWindow {
     $btnNext.Add_Click({
         param([object]$eventSource, [System.Windows.RoutedEventArgs]$eventArgs)
         if ($script:CurrentStage -eq 1) {
-            if ($cmbAppPresetCategory) {
-                if ($radioPresetMinimal.IsChecked) { $cmbAppPresetCategory.SelectedIndex = 1 }
-                elseif ($radioPresetDeep.IsChecked) { $cmbAppPresetCategory.SelectedIndex = 2 }
-                else { $cmbAppPresetCategory.SelectedIndex = 0 }
+            if ($radioPresetMinimal.IsChecked) {
+                if ($chkCatMinimal) { $chkCatMinimal.IsChecked = $true }
+                if ($chkCatRecommended) { $chkCatRecommended.IsChecked = $false }
+                if ($chkCatDeep) { $chkCatDeep.IsChecked = $false }
+                if ($chkCatOem) { $chkCatOem.IsChecked = $false }
+                if ($chkCatXbox) { $chkCatXbox.IsChecked = $false }
+                if ($chkCatMedia) { $chkCatMedia.IsChecked = $false }
+            } elseif ($radioPresetDeep.IsChecked) {
+                if ($chkCatDeep) { $chkCatDeep.IsChecked = $true }
+                if ($chkCatRecommended) { $chkCatRecommended.IsChecked = $false }
+                if ($chkCatMinimal) { $chkCatMinimal.IsChecked = $false }
+                if ($chkCatOem) { $chkCatOem.IsChecked = $false }
+                if ($chkCatXbox) { $chkCatXbox.IsChecked = $false }
+                if ($chkCatMedia) { $chkCatMedia.IsChecked = $false }
+            } else {
+                if ($chkCatRecommended) { $chkCatRecommended.IsChecked = $true }
+                if ($chkCatMinimal) { $chkCatMinimal.IsChecked = $false }
+                if ($chkCatDeep) { $chkCatDeep.IsChecked = $false }
+                if ($chkCatOem) { $chkCatOem.IsChecked = $false }
+                if ($chkCatXbox) { $chkCatXbox.IsChecked = $false }
+                if ($chkCatMedia) { $chkCatMedia.IsChecked = $false }
             }
             & $populateApps
             & $updateStageView 2
@@ -646,7 +942,7 @@ function Show-DebloaterWindow {
         if ($chkCreateRestorePoint.IsChecked) {
             & $appendLog "Creating Windows System Restore Point..."
             $txtProgressStatus.Text = "Creating System Restore checkpoint..."
-            $rp = New-DebloatRestorePoint -Description "NH Win Debloater v0.3 Checkpoint"
+            $rp = New-DebloatRestorePoint -Description "NH Win Debloater v0.4 Checkpoint"
             $totalOps++
             if ($rp.Status -eq "Success") { $successOps++; & $appendLog "System Restore Point created successfully." }
             else { $skippedOps++; & $appendLog "System Restore Point skipped/warning: $($rp.Message)" }
@@ -661,6 +957,11 @@ function Show-DebloaterWindow {
                 "HKCU:\Software\Microsoft\Windows\CurrentVersion\Privacy",
                 "HKCU:\Software\Microsoft\Windows\CurrentVersion\AdvertisingInfo",
                 "HKCU:\Software\Policies\Microsoft\Windows\WindowsCopilot",
+                "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsCopilot",
+                "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsAI",
+                "HKCU:\Software\Policies\Microsoft\Windows\WindowsAI",
+                "HKLM:\SOFTWARE\Policies\Microsoft\Windows\ClickToDo",
+                "HKCU:\Software\Microsoft\Windows\CurrentVersion\ClickToDo",
                 "HKCU:\Software\Policies\Microsoft\Windows\Explorer",
                 "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced",
                 "HKCU:\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager",
@@ -668,7 +969,11 @@ function Show-DebloaterWindow {
                 "HKCU:\Control Panel\Accessibility\StickyKeys",
                 "HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\Power",
                 "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate",
-                "HKLM:\SOFTWARE\Policies\Microsoft\Edge"
+                "HKLM:\SOFTWARE\Policies\Microsoft\Edge",
+                "HKCU:\Software\Microsoft\Paint\Settings",
+                "HKCU:\Software\Policies\Microsoft\Paint",
+                "HKCU:\Software\Microsoft\Notepad",
+                "HKCU:\Software\Policies\Microsoft\Notepad"
             )
             $snapFile = Export-RegistrySnapshot -RegistryPaths $regPaths
             $totalOps++
@@ -679,12 +984,11 @@ function Show-DebloaterWindow {
 
         # 3. Privacy & Search Tweaks
         if ($chkTelemetry.IsChecked) { Set-PrivacySetting -SettingId "DisableTelemetry" -Enable $true | Out-Null; $totalOps++; $successOps++; & $appendLog "Telemetry diagnostics set to Security/Basic." }
-        if ($chkCopilot.IsChecked) { Set-PrivacySetting -SettingId "DisableCopilot" -Enable $true | Out-Null; $totalOps++; $successOps++; & $appendLog "Windows Copilot & Recall AI disabled." }
         if ($chkBingSearch.IsChecked) { Set-PrivacySetting -SettingId "DisableBingSearch" -Enable $true | Out-Null; $totalOps++; $successOps++; & $appendLog "Bing Start Search suggestions disabled." }
         if ($chkAdvertisingId.IsChecked) { Set-PrivacySetting -SettingId "DisableAdvertisingId" -Enable $true | Out-Null; $totalOps++; $successOps++; & $appendLog "Advertising ID disabled." }
         if ($chkActivityHistory.IsChecked) { Set-PrivacySetting -SettingId "DisableActivityHistory" -Enable $true | Out-Null; $totalOps++; $successOps++; & $appendLog "Activity History feed disabled." }
         if ($chkTailoredExp.IsChecked) { Set-PrivacySetting -SettingId "DisableTailoredExperiences" -Enable $true | Out-Null; $totalOps++; $successOps++; & $appendLog "Tailored Experiences disabled." }
-        $progExecution.Value = 50
+        $progExecution.Value = 48
 
         # 4. UI & Shell Tweaks
         if ($chkShowExt.IsChecked) { Set-ShellSetting -SettingId "ShowFileExtensions" | Out-Null; $totalOps++; $successOps++; & $appendLog "Show Known File Extensions enabled." }
@@ -700,7 +1004,7 @@ function Show-DebloaterWindow {
         if ($chkStartRecommended.IsChecked) { Set-StartMenuRecommendedTweak -HideRecommended $true | Out-Null; $totalOps++; $successOps++; & $appendLog "Start Menu Recommended clutter hidden." }
         if ($chkCompactExplorer.IsChecked) { Set-ShellSetting -SettingId "ShowCompactExplorer" | Out-Null; $totalOps++; $successOps++; & $appendLog "File Explorer compact view enabled." }
         if ($chkMultitasking.IsChecked) { Set-MultitaskingTweak -DisableSnapSuggestions $true | Out-Null; $totalOps++; $successOps++; & $appendLog "Multitasking & Snap Assist suggestions disabled." }
-        $progExecution.Value = 65
+        $progExecution.Value = 60
 
         # 5. Gaming & Performance Tweaks
         if ($chkGameDVR.IsChecked) { Set-GameDVRPlaybackTweak -DisableGameDVR $true | Out-Null; $totalOps++; $successOps++; & $appendLog "Game DVR background recording disabled." }
@@ -709,6 +1013,7 @@ function Show-DebloaterWindow {
         if ($chkScheduledTasks.IsChecked) { Set-TelemetryScheduledTasksTweak -DisableTasks $true | Out-Null; $totalOps++; $successOps++; & $appendLog "Telemetry scheduled tasks disabled." }
         if ($chkTelemetryService.IsChecked) { Set-TelemetryServiceTweak -DisableServices $true | Out-Null; $totalOps++; $successOps++; & $appendLog "DiagTrack telemetry service disabled." }
         if ($chkHibernation.IsChecked) { Set-HibernationStorageTweak -DisableHibernation $true | Out-Null; $totalOps++; $successOps++; & $appendLog "Hibernation disabled and storage reclaimed." }
+        $progExecution.Value = 72
 
         # 6. System Extras
         if ($chkConsumerFeatures.IsChecked) { Set-ConsumerFeatureTweak -Disable $true | Out-Null; $totalOps++; $successOps++; & $appendLog "Windows consumer features disabled." }
@@ -723,7 +1028,24 @@ function Show-DebloaterWindow {
         }
         $progExecution.Value = 80
 
-        # 7. Optional Windows Features
+        # 7. AI Integration Suite
+        if ($chkCopilotPolicy.IsChecked -or $chkCopilotAppx.IsChecked) {
+            Set-CopilotAITweak -DisableCopilot ([bool]$chkCopilotPolicy.IsChecked) -RemoveAppxPackage ([bool]$chkCopilotAppx.IsChecked) | Out-Null
+            $totalOps++; $successOps++; & $appendLog "Windows Copilot policies applied (AppX removal: $([bool]$chkCopilotAppx.IsChecked))."
+        }
+        if ($chkRecallAI.IsChecked) {
+            Set-RecallAITweak -DisableRecall $true | Out-Null
+            $totalOps++; $successOps++; & $appendLog "Windows Recall & AI screen analysis snapshots disabled."
+        }
+        if ($chkEdgeAI.IsChecked -or $chkPaintAI.IsChecked -or $chkNotepadAI.IsChecked) {
+            Set-ApplicationAITweak -DisableEdgeAI ([bool]$chkEdgeAI.IsChecked) `
+                                  -DisablePaintAI ([bool]$chkPaintAI.IsChecked) `
+                                  -DisableNotepadAI ([bool]$chkNotepadAI.IsChecked) | Out-Null
+            $totalOps++; $successOps++; & $appendLog "Integrated application AI features (Edge/Paint/Notepad) updated."
+        }
+        $progExecution.Value = 88
+
+        # 8. Optional Windows Features
         if ($chkWindowsSandbox.IsChecked) {
             & $appendLog "Enabling Windows Sandbox optional feature..."
             $sbRes = Set-OptionalFeatureState -FeatureId "WindowsSandbox" -Enable $true
@@ -738,9 +1060,9 @@ function Show-DebloaterWindow {
             if ($wslRes.Status -eq "Success") { $successOps++; & $appendLog "WSL enabled." }
             else { $skippedOps++; & $appendLog "WSL skipped/error: $($wslRes.Status)" }
         }
-        $progExecution.Value = 88
+        $progExecution.Value = 93
 
-        # 8. Selected Apps Removal
+        # 9. Selected Apps Removal
         $appsToRemove = [System.Collections.Generic.List[string]]::new()
         foreach ($cb in $script:AppCheckboxes) {
             if ($cb.IsChecked) {

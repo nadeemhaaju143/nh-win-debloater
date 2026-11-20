@@ -9,6 +9,35 @@ The project follows a **progressive semantic minor versioning format**:
 
 ---
 
+## [0.4.0] - 2026-11-21
+
+### Dark Material Multi-Select Dropdowns & Dedicated AI Integration Suite
+- **Dark Material Multi-Select CheckBox Dropdowns Across All Tabs (`MainWindow.xaml` & `AppController.ps1`):**
+  - Replaced single-select ComboBox on **Bloatware Applications** with a custom dark Material multi-select dropdown (`ModernDropdownToggle` + `PopupAppCategories`) allowing users to check and combine multiple categories simultaneously (Recommended Safe Bloat, Minimal Sponsored, Deep Debloat, OEM & Third-Party, Xbox & Gaming, News/Weather/Media).
+  - Added live aggregated category counts with automatic deduplication across categories (e.g. *"Categories: Recommended, OEM (89 Apps) ▼"*).
+  - Added matching dark Material multi-select preset dropdowns plus **Select All / Deselect All** action toolbars across **ALL** tweak tabs:
+    - **Privacy & Search:** Strict Telemetry, Web Search & Doodles, Activity & Feedback, or custom combinations.
+    - **Taskbar & Explorer:** Left Align, Show Extensions, Show Hidden, Hide Widgets/Chat, Compact Explorer.
+    - **Gaming & Performance:** Game DVR, Delivery Optimization, Telemetry Services, Edge Background, CEIP Tasks, Hibernation.
+    - **System Extras:** Classic Context Menu, Mouse Precision, Sticky Keys, Fast Startup, Storage Sense.
+    - **AI Integration:** Full AI Suite, System AI Only, Application AI Only.
+    - **Optional Features:** Windows Sandbox, WSL, Hyper-V, Virtual Machine Platform.
+  - 100% dark Material elevation palette (`#131D31`, `#1E293B`, `#2A384F`, `#38BDF8`) with zero light-themed or jarring white popups.
+- **Dedicated AI Integration Suite (`SystemTweaks.psm1`, `MainWindow.xaml`, `AppController.ps1` & `Entrypoint.ps1`):**
+  - Added dedicated **AI Integration** tab (Tab 6) in the WPF Guided Assistant and interactive CLI option `[8]`.
+  - `Set-CopilotAITweak`: Disables Windows Copilot via `TurnOffWindowsCopilot` in HKLM/HKCU, removes taskbar Copilot button (`ShowCopilotButton = 0`), and provides optional AppX removal for `Microsoft.Copilot` / `Microsoft.Windows.Copilot`.
+  - `Set-RecallAITweak`: Disables Windows Recall & AI snapshots (`DisableAIDataAnalysis = 1`, `AllowSnapshotStore = 0`), and Click to Do screen tracking (`ClickToDoAllowed = 0`).
+  - `Set-ApplicationAITweak`: Disables embedded AI features in Microsoft Edge (`HubsSidebarEnabled = 0`, `ComposeInlineEnabled = 0`), Paint Cocreator/Image Creator (`EnableCocreator = 0`, `DisableCocreator = 1`), and Notepad AI Cowriter/rewrite (`EnableAI = 0`, `DisableCowriter = 1`).
+  - Color-coded safety indicator pills (`RECOMMENDED` in Emerald `#34D399`, `CAUTION` in Amber `#FBBF24`).
+- **Clean Execution & Security Transparency:**
+  - Pure in-memory and direct API execution with zero dynamic temporary `.ps1` script generation.
+  - Expanded pre-tweak registry snapshot backup paths for all AI and system tweak keys.
+- **Automated Quality Gate & Testing:**
+  - Expanded automated test suite in `tests/CoreModules.Tests.ps1` to 37 tests (100% pass rate).
+  - Maintained strict PSScriptAnalyzer standard: **0 errors, 0 warnings** across all 10 project scripts.
+
+---
+
 ## [0.3.0] - 2026-11-21
 
 ### Material Design UI, Power-User Controls & Advanced System Tweaks
