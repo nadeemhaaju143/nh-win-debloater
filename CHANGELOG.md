@@ -9,6 +9,31 @@ The project follows a **progressive semantic minor versioning format**:
 
 ---
 
+## [0.2.0] - 2026-11-21
+
+### Gaming, Performance & Shell Enhancements
+- **Gaming & Performance Engine (`SystemTweaks.psm1`):**
+  - `Set-GameDVRPlaybackTweak`: Disables Windows Game DVR background recording & Xbox Game Bar broadcast to eliminate input latency and micro-stuttering in competitive gaming.
+  - `Set-DeliveryOptimizationTweak`: Disables peer-to-peer Windows Update Delivery Optimization over the Internet, preventing background bandwidth consumption.
+  - `Set-TelemetryServiceTweak`: Safely sets Connected User Experiences and Telemetry background services (`DiagTrack` and `dmwappushservice`) to Disabled/Manual.
+  - `Set-StartMenuRecommendedTweak`: Hides Windows 11 Start Menu "Recommended" section clutter, recently opened files tracking, and account promo notifications.
+- **Shell & Explorer Customization (`ShellCustomization.psm1`):**
+  - `HideSearchHighlights`: Disables dynamic search box doodles and web highlights in the taskbar search bar.
+  - `ShowCompactExplorer`: Restores classic compact item padding in File Explorer for denser folder navigation.
+- **WPF Guided Assistant UI/UX (`src/UI/`):**
+  - Added dedicated **Gaming & Performance** tab in Stage 2 customization with one-click toggles.
+  - Added **Search Highlights**, **Start Menu Recommended**, and **Compact Explorer** options under Taskbar & Explorer.
+  - Added **Open Backups Folder** button (`BtnOpenBackups`) in Stage 5 to directly inspect pre-tweak registry snapshots and rollback files in `%LOCALAPPDATA%\NHWinDebloater\Backups`.
+  - Added DPI-safe uniform scaling for wide and square logo assets in the brand header.
+- **Official Branding Assets (`assets/logo/`):**
+  - Added official raster brand assets (`nhdigital-logo.png`, `logo.png`, `logo.ico`) matching [nhdigital.shop](https://nhdigital.shop) aesthetics.
+  - Tested and confirmed automatic window icon wiring and header rendering with seamless vector monogram fallback (`LogoFallbackBox`).
+- **Automated Quality Gate & Testing:**
+  - Expanded unit test suite in `tests/CoreModules.Tests.ps1` to 22 tests (100% pass rate).
+  - Maintained strict PSScriptAnalyzer quality standard: **0 errors, 0 warnings** across all 8 production scripts.
+
+---
+
 ## [0.1.0] - 2026-11-21
 
 ### Initial Open-Source Release

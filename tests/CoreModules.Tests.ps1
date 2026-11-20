@@ -69,6 +69,12 @@ Describe "ShellCustomization Module" {
     It "Executes shell setting WhatIf preview safely" {
         $res = Set-ShellSetting -SettingId "ShowFileExtensions" -WhatIf
         $res[0].Status | Should -Be "Preview"
+
+        $resHighlights = Set-ShellSetting -SettingId "HideSearchHighlights" -WhatIf
+        $resHighlights[0].Status | Should -Be "Preview"
+
+        $resCompact = Set-ShellSetting -SettingId "ShowCompactExplorer" -WhatIf
+        $resCompact[0].Status | Should -Be "Preview"
     }
 }
 
@@ -109,6 +115,26 @@ Describe "SystemTweaks Module" {
 
         $resWSL = Set-OptionalFeatureState -FeatureId "WSL" -Enable $true -WhatIf
         $resWSL.Status | Should -Be "Preview"
+    }
+
+    It "Executes GameDVR WhatIf safely" {
+        $res = Set-GameDVRPlaybackTweak -DisableGameDVR $true -WhatIf
+        $res[0].Status | Should -Be "Preview"
+    }
+
+    It "Executes DeliveryOptimization WhatIf safely" {
+        $res = Set-DeliveryOptimizationTweak -DisableP2P $true -WhatIf
+        $res[0].Status | Should -Be "Preview"
+    }
+
+    It "Executes TelemetryService WhatIf safely" {
+        $res = Set-TelemetryServiceTweak -DisableServices $true -WhatIf
+        $res[0].Status | Should -Be "Preview"
+    }
+
+    It "Executes StartMenuRecommended WhatIf safely" {
+        $res = Set-StartMenuRecommendedTweak -HideRecommended $true -WhatIf
+        $res[0].Status | Should -Be "Preview"
     }
 }
 

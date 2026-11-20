@@ -161,7 +161,7 @@ function Set-ShellSetting {
     [OutputType([PSCustomObject[]])]
     param(
         [Parameter(Mandatory = $true)]
-        [ValidateSet("TaskbarAlignLeft", "TaskbarAlignCenter", "HideSearch", "ShowSearchIcon", "ShowSearchBox", "HideWidgets", "HideChat", "HideTaskView", "EnableEndTask", "ShowFileExtensions", "ShowHiddenFiles", "ExplorerToThisPC", "HideOneDriveNav", "HideGalleryNav")]
+        [ValidateSet("TaskbarAlignLeft", "TaskbarAlignCenter", "HideSearch", "ShowSearchIcon", "ShowSearchBox", "HideWidgets", "HideChat", "HideTaskView", "EnableEndTask", "ShowFileExtensions", "ShowHiddenFiles", "ExplorerToThisPC", "HideOneDriveNav", "HideGalleryNav", "HideSearchHighlights", "ShowCompactExplorer")]
         [string]$SettingId
     )
 
@@ -225,6 +225,14 @@ function Set-ShellSetting {
             } else {
                 $ops.Add([PSCustomObject]@{ Path = $galleryPath; Name = ""; Value = "Removed"; Status = "Preview" })
             }
+        }
+        "HideSearchHighlights" {
+            $searchSettingsPath = "HKCU:\Software\Microsoft\Windows\CurrentVersion\SearchSettings"
+            $ops.Add((Set-RegistryPropertyHelper -Path $searchSettingsPath -Name "IsDeviceSearchHistoryEnabled" -Value 0 -PropertyType "DWord" -WhatIf:$WhatIfPreference))
+            $ops.Add((Set-RegistryPropertyHelper -Path $searchSettingsPath -Name "IsDynamicSearchBoxEnabled" -Value 0 -PropertyType "DWord" -WhatIf:$WhatIfPreference))
+        }
+        "ShowCompactExplorer" {
+            $ops.Add((Set-RegistryPropertyHelper -Path $advPath -Name "UseCompactMode" -Value 1 -PropertyType "DWord" -WhatIf:$WhatIfPreference))
         }
     }
 
