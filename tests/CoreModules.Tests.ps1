@@ -176,4 +176,11 @@ Describe "Entrypoint Bootstrapper & Path Resolution" {
         $res = powershell -NoProfile -ExecutionPolicy Bypass -File $entrypointPath -DryRun
         $LASTEXITCODE | Should -Be 0
     }
+
+    It "Executes Entrypoint in -CLI mode cleanly" {
+        $entrypointPath = Join-Path $projectRoot "src\Core\Entrypoint.ps1"
+        (Test-Path $entrypointPath) | Should -BeTrue
+        "Q" | powershell -NoProfile -ExecutionPolicy Bypass -File $entrypointPath -CLI
+        $LASTEXITCODE | Should -Be 0
+    }
 }

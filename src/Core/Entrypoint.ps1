@@ -231,4 +231,10 @@ Write-Host " Explore more digital tools and updates at:" -ForegroundColor DarkGr
 Write-Host " https://nhdigital.shop" -ForegroundColor Cyan
 Write-Host ""
 Write-Host " Press any key to finish..." -ForegroundColor Gray
-$null = [System.Console]::ReadKey()
+try {
+    if ([System.Environment]::UserInteractive -and -not [System.Console]::IsInputRedirected) {
+        $null = [System.Console]::ReadKey()
+    }
+} catch {
+    Write-Verbose "Non-interactive or redirected console session: $($_.Exception.Message)"
+}
