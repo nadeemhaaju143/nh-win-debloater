@@ -47,6 +47,20 @@ Describe "AppManager Module" {
         $mediaApps.Count | Should -BeGreaterThan 0
     }
 
+    It "Combines multi-select categories into deduplicated AppId collection" {
+        $recPreset = Get-DebloatPreset -PresetName "Default" -PresetsPath $presetsPath
+        $minPreset = Get-DebloatPreset -PresetName "Minimal" -PresetsPath $presetsPath
+        $deepPreset = Get-DebloatPreset -PresetName "Deep" -PresetsPath $presetsPath
+
+        $combinedMap = @{}
+        foreach ($app in $recPreset) { $combinedMap[$app.AppId] = $app }
+        foreach ($app in $minPreset) { $combinedMap[$app.AppId] = $app }
+        foreach ($app in $deepPreset) { $combinedMap[$app.AppId] = $app }
+
+        $combinedMap.Keys.Count | Should -BeGreaterOrEqual $recPreset.Count
+        $combinedMap.ContainsKey("Microsoft.BingNews") | Should -BeTrue
+    }
+
     It "Skips protected packages during removal" {
         $result = Remove-DebloatApp -AppIdList @("Microsoft.WindowsStore") -PresetsPath $presetsPath
         $result.Status | Should -Be "SkippedProtected"
@@ -164,6 +178,24 @@ Describe "SystemTweaks Module" {
 
     It "Executes Multitasking WhatIf safely" {
         $res = Set-MultitaskingTweak -DisableSnapSuggestions $true -WhatIf
+        $res[0].Status | Should -Be "Preview"
+    }
+
+    It "Executes Copilot AI WhatIf safely" {
+        $res = Set-CopilotAITweak -DisableCopilot $true -WhatIf
+        $res.Count | Should -BeGreaterThan 0
+        $res[0].Status | Should -Be "Preview"
+    }
+
+    It "Executes Windows Recall & Snapshots WhatIf safely" {
+        $res = Set-RecallAITweak -DisableRecall $true -WhatIf
+        $res.Count | Should -BeGreaterThan 0
+        $res[0].Status | Should -Be "Preview"
+    }
+
+    It "Executes App AI (Edge, Paint, Notepad) WhatIf safely" {
+        $res = Set-ApplicationAITweak -DisableEdgeAI $true -DisablePaintAI $true -DisableNotepadAI $true -WhatIf
+        $res.Count | Should -BeGreaterThan 0
         $res[0].Status | Should -Be "Preview"
     }
 }

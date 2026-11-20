@@ -671,4 +671,118 @@ function Set-MultitaskingTweak {
     return $ops.ToArray()
 }
 
-Export-ModuleMember -Function Set-ConsumerFeatureTweak, Set-LockScreenTweak, Set-ClassicContextMenuTweak, Set-MousePrecisionTweak, Set-StickyKeysTweak, Set-FastStartupTweak, Set-StorageSenseTweak, Set-WindowsUpdatePolicyTweak, Set-OptionalFeatureState, Set-GameDVRPlaybackTweak, Set-DeliveryOptimizationTweak, Set-TelemetryServiceTweak, Set-StartMenuRecommendedTweak, Set-EdgeBackgroundTweak, Set-TelemetryScheduledTasksTweak, Set-HibernationStorageTweak, Set-MultitaskingTweak, New-DebloatRestorePoint, Export-RegistrySnapshot, Restore-RegistrySnapshot
+function Set-CopilotAITweak {
+    <#
+        .SYNOPSIS
+            Disables Windows Copilot policies, taskbar button, and optionally removes Copilot AppX packages.
+    #>
+    [CmdletBinding(SupportsShouldProcess = $true)]
+    [OutputType([PSCustomObject[]])]
+    param(
+        [Parameter(Mandatory = $false)]
+        [bool]$DisableCopilot = $true,
+
+        [Parameter(Mandatory = $false)]
+        [bool]$RemoveAppxPackage = $false
+    )
+
+    $ops = [System.Collections.Generic.List[PSCustomObject]]::new()
+    $copilotVal = if ($DisableCopilot) { 1 } else { 0 }
+    $btnVal = if ($DisableCopilot) { 0 } else { 1 }
+
+    $ops.Add((Set-TweakRegistryValue -Path "HKCU:\Software\Policies\Microsoft\Windows\WindowsCopilot" -Name "TurnOffWindowsCopilot" -Value $copilotVal -PropertyType "DWord" -WhatIf:$WhatIfPreference))
+    $ops.Add((Set-TweakRegistryValue -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsCopilot" -Name "TurnOffWindowsCopilot" -Value $copilotVal -PropertyType "DWord" -WhatIf:$WhatIfPreference))
+    $ops.Add((Set-TweakRegistryValue -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "ShowCopilotButton" -Value $btnVal -PropertyType "DWord" -WhatIf:$WhatIfPreference))
+
+    if ($RemoveAppxPackage) {
+        $copilotPkgs = @("Microsoft.Copilot", "Microsoft.Windows.Copilot")
+        foreach ($pkg in $copilotPkgs) {
+            if ($PSCmdlet.ShouldProcess("AppX Package: $pkg", "Remove Copilot AppX Package")) {
+                try {
+                    $found = Get-AppxPackage -Name "*$pkg*" -ErrorAction SilentlyContinue
+                    if ($found) {
+                        Remove-AppxPackage -Package $found.PackageFullName -ErrorAction Stop
+                        $ops.Add([PSCustomObject]@{ Path = "AppX"; Name = $pkg; Value = "Removed"; Status = "Success" })
+                    } else {
+                        $ops.Add([PSCustomObject]@{ Path = "AppX"; Name = $pkg; Value = "Not Found"; Status = "Skipped" })
+                    }
+                } catch {
+                    $ops.Add([PSCustomObject]@{ Path = "AppX"; Name = $pkg; Value = "Error"; Status = "Error: $($_.Exception.Message)" })
+                }
+            } else {
+                $ops.Add([PSCustomObject]@{ Path = "AppX"; Name = $pkg; Value = "Remove Package"; Status = "Preview" })
+            }
+        }
+    }
+
+    return $ops.ToArray()
+}
+
+function Set-RecallAITweak {
+    <#
+        .SYNOPSIS
+            Disables Windows Recall, screen analysis, Click to Do, and snapshot stores.
+    #>
+    [CmdletBinding(SupportsShouldProcess = $true)]
+    [OutputType([PSCustomObject[]])]
+    param(
+        [Parameter(Mandatory = $false)]
+        [bool]$DisableRecall = $true
+    )
+
+    $ops = [System.Collections.Generic.List[PSCustomObject]]::new()
+    $aiVal = if ($DisableRecall) { 1 } else { 0 }
+    $snapVal = if ($DisableRecall) { 0 } else { 1 }
+
+    $ops.Add((Set-TweakRegistryValue -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsAI" -Name "DisableAIDataAnalysis" -Value $aiVal -PropertyType "DWord" -WhatIf:$WhatIfPreference))
+    $ops.Add((Set-TweakRegistryValue -Path "HKCU:\Software\Policies\Microsoft\Windows\WindowsAI" -Name "DisableAIDataAnalysis" -Value $aiVal -PropertyType "DWord" -WhatIf:$WhatIfPreference))
+    $ops.Add((Set-TweakRegistryValue -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsAI" -Name "AllowSnapshotStore" -Value $snapVal -PropertyType "DWord" -WhatIf:$WhatIfPreference))
+    $ops.Add((Set-TweakRegistryValue -Path "HKCU:\Software\Policies\Microsoft\Windows\WindowsAI" -Name "AllowSnapshotStore" -Value $snapVal -PropertyType "DWord" -WhatIf:$WhatIfPreference))
+    $ops.Add((Set-TweakRegistryValue -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\ClickToDo" -Name "ClickToDoAllowed" -Value $snapVal -PropertyType "DWord" -WhatIf:$WhatIfPreference))
+    $ops.Add((Set-TweakRegistryValue -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\ClickToDo" -Name "ClickToDoAllowed" -Value $snapVal -PropertyType "DWord" -WhatIf:$WhatIfPreference))
+
+    return $ops.ToArray()
+}
+
+function Set-ApplicationAITweak {
+    <#
+        .SYNOPSIS
+            Disables integrated AI features in Microsoft Edge, Paint (Cocreator), and Notepad (Cowriter).
+    #>
+    [CmdletBinding(SupportsShouldProcess = $true)]
+    [OutputType([PSCustomObject[]])]
+    param(
+        [Parameter(Mandatory = $false)]
+        [bool]$DisableEdgeAI = $true,
+
+        [Parameter(Mandatory = $false)]
+        [bool]$DisablePaintAI = $false,
+
+        [Parameter(Mandatory = $false)]
+        [bool]$DisableNotepadAI = $false
+    )
+
+    $ops = [System.Collections.Generic.List[PSCustomObject]]::new()
+
+    if ($DisableEdgeAI) {
+        $edgePath = "HKLM:\SOFTWARE\Policies\Microsoft\Edge"
+        $ops.Add((Set-TweakRegistryValue -Path $edgePath -Name "HubsSidebarEnabled" -Value 0 -PropertyType "DWord" -WhatIf:$WhatIfPreference))
+        $ops.Add((Set-TweakRegistryValue -Path $edgePath -Name "ComposeInlineEnabled" -Value 0 -PropertyType "DWord" -WhatIf:$WhatIfPreference))
+    }
+
+    if ($DisablePaintAI) {
+        $paintPath = "HKCU:\Software\Microsoft\Paint\Settings"
+        $ops.Add((Set-TweakRegistryValue -Path $paintPath -Name "EnableCocreator" -Value 0 -PropertyType "DWord" -WhatIf:$WhatIfPreference))
+        $ops.Add((Set-TweakRegistryValue -Path "HKCU:\Software\Policies\Microsoft\Paint" -Name "DisableCocreator" -Value 1 -PropertyType "DWord" -WhatIf:$WhatIfPreference))
+    }
+
+    if ($DisableNotepadAI) {
+        $notepadPath = "HKCU:\Software\Microsoft\Notepad"
+        $ops.Add((Set-TweakRegistryValue -Path $notepadPath -Name "EnableAI" -Value 0 -PropertyType "DWord" -WhatIf:$WhatIfPreference))
+        $ops.Add((Set-TweakRegistryValue -Path "HKCU:\Software\Policies\Microsoft\Notepad" -Name "DisableCowriter" -Value 1 -PropertyType "DWord" -WhatIf:$WhatIfPreference))
+    }
+
+    return $ops.ToArray()
+}
+
+Export-ModuleMember -Function Set-ConsumerFeatureTweak, Set-LockScreenTweak, Set-ClassicContextMenuTweak, Set-MousePrecisionTweak, Set-StickyKeysTweak, Set-FastStartupTweak, Set-StorageSenseTweak, Set-WindowsUpdatePolicyTweak, Set-OptionalFeatureState, Set-GameDVRPlaybackTweak, Set-DeliveryOptimizationTweak, Set-TelemetryServiceTweak, Set-StartMenuRecommendedTweak, Set-EdgeBackgroundTweak, Set-TelemetryScheduledTasksTweak, Set-HibernationStorageTweak, Set-MultitaskingTweak, Set-CopilotAITweak, Set-RecallAITweak, Set-ApplicationAITweak, New-DebloatRestorePoint, Export-RegistrySnapshot, Restore-RegistrySnapshot

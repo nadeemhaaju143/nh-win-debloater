@@ -6,7 +6,7 @@
         Supports both modern WPF Guided Assistant GUI and standalone CLI modes.
         Built by NH Digital (https://nhdigital.shop)
     .VERSION
-        0.2
+        0.4
 #>
 
 [CmdletBinding()]
@@ -27,7 +27,7 @@ $UiDirectory = Join-Path $SrcDirectory "UI"
 $AppControllerScript = Join-Path $UiDirectory "AppController.ps1"
 
 $versionFile = Join-Path $ProjectRootDirectory "VERSION.txt"
-$script:AppVersion = if (Test-Path $versionFile) { (Get-Content -Path $versionFile -Raw).Trim() } else { "0.2" }
+$script:AppVersion = if (Test-Path $versionFile) { (Get-Content -Path $versionFile -Raw).Trim() } else { "0.4" }
 
 if ($Host -and $Host.UI -and $Host.UI.RawUI) {
     $Host.UI.RawUI.WindowTitle = "NH Win Debloater v$($script:AppVersion) - NH Digital"
@@ -68,6 +68,9 @@ if ($DryRun) {
     Write-Host "Executing in DryRun preview mode..." -ForegroundColor Cyan
     Invoke-DebloatAction -ActionName "Disable Telemetry" -DryRun -ScriptBlock { Set-PrivacySetting -SettingId "DisableTelemetry" -WhatIf } | Out-Null
     Invoke-DebloatAction -ActionName "Disable Copilot" -DryRun -ScriptBlock { Set-PrivacySetting -SettingId "DisableCopilot" -WhatIf } | Out-Null
+    Invoke-DebloatAction -ActionName "Disable Windows Copilot AI Suite" -DryRun -ScriptBlock { Set-CopilotAITweak -DisableCopilot $true -WhatIf } | Out-Null
+    Invoke-DebloatAction -ActionName "Disable Windows Recall & Snapshots" -DryRun -ScriptBlock { Set-RecallAITweak -DisableRecall $true -WhatIf } | Out-Null
+    Invoke-DebloatAction -ActionName "Disable Edge, Paint & Notepad AI" -DryRun -ScriptBlock { Set-ApplicationAITweak -DisableEdgeAI $true -DisablePaintAI $true -DisableNotepadAI $true -WhatIf } | Out-Null
     Invoke-DebloatAction -ActionName "Show File Extensions" -DryRun -ScriptBlock { Set-ShellSetting -SettingId "ShowFileExtensions" -WhatIf } | Out-Null
     Invoke-DebloatAction -ActionName "Disable Game DVR" -DryRun -ScriptBlock { Set-GameDVRPlaybackTweak -DisableGameDVR $true -WhatIf } | Out-Null
     Invoke-DebloatAction -ActionName "Disable Delivery Optimization P2P" -DryRun -ScriptBlock { Set-DeliveryOptimizationTweak -DisableP2P $true -WhatIf } | Out-Null
@@ -146,10 +149,11 @@ Write-Host " [4] Apply System & Gaming Tweaks (Game DVR, Delivery Optimization, 
 Write-Host " [5] Scan Installed Bloatware Packages" -ForegroundColor White
 Write-Host " [6] View Existing Registry Snapshots (Rollback Inventory)" -ForegroundColor White
 Write-Host " [7] Re-register Default Windows Store Apps" -ForegroundColor White
+Write-Host " [8] Apply AI Integration Debloat (Copilot, Recall, Edge/Paint/Notepad AI)" -ForegroundColor White
 Write-Host " [Q] Exit" -ForegroundColor Gray
 Write-Host ""
 
-$choice = Read-Host " Enter choice (G, 1-7, Q)"
+$choice = Read-Host " Enter choice (G, 1-8, Q)"
 
 switch ($choice) {
     "G" {
@@ -167,6 +171,15 @@ switch ($choice) {
         } | Out-Null
         Invoke-DebloatAction -ActionName "Disable Copilot & Recall" -DryRun -ScriptBlock {
             Set-PrivacySetting -SettingId "DisableCopilot" -WhatIf
+        } | Out-Null
+        Invoke-DebloatAction -ActionName "Disable Windows Copilot AI Suite" -DryRun -ScriptBlock {
+            Set-CopilotAITweak -DisableCopilot $true -WhatIf
+        } | Out-Null
+        Invoke-DebloatAction -ActionName "Disable Windows Recall & Snapshots" -DryRun -ScriptBlock {
+            Set-RecallAITweak -DisableRecall $true -WhatIf
+        } | Out-Null
+        Invoke-DebloatAction -ActionName "Disable App AI (Edge, Paint, Notepad)" -DryRun -ScriptBlock {
+            Set-ApplicationAITweak -DisableEdgeAI $true -DisablePaintAI $true -DisableNotepadAI $true -WhatIf
         } | Out-Null
         Invoke-DebloatAction -ActionName "Disable Bing Search in Start" -DryRun -ScriptBlock {
             Set-PrivacySetting -SettingId "DisableBingSearch" -WhatIf
@@ -238,6 +251,14 @@ switch ($choice) {
     "7" {
         Write-Host "`nRe-registering default apps from WindowsApps store..." -ForegroundColor Yellow
         Restore-DefaultApp -AppId "All" | Select-Object -First 10 AppId, Status, Message | Format-Table -AutoSize
+    }
+    "8" {
+        Write-Host "`nApplying AI Integration Debloat..." -ForegroundColor Yellow
+        $aiResults = [System.Collections.Generic.List[PSCustomObject]]::new()
+        foreach ($item in (Set-CopilotAITweak -DisableCopilot $true)) { $aiResults.Add($item) }
+        foreach ($item in (Set-RecallAITweak -DisableRecall $true)) { $aiResults.Add($item) }
+        foreach ($item in (Set-ApplicationAITweak -DisableEdgeAI $true -DisablePaintAI $true -DisableNotepadAI $true)) { $aiResults.Add($item) }
+        $aiResults | Format-Table Path, Name, Status -AutoSize
     }
     Default {
         Write-Host "Exiting NH Win Debloater." -ForegroundColor Gray
