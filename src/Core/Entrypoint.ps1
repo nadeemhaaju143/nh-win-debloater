@@ -71,6 +71,9 @@ if ($DryRun) {
     Invoke-DebloatAction -ActionName "Show File Extensions" -DryRun -ScriptBlock { Set-ShellSetting -SettingId "ShowFileExtensions" -WhatIf } | Out-Null
     Invoke-DebloatAction -ActionName "Disable Game DVR" -DryRun -ScriptBlock { Set-GameDVRPlaybackTweak -DisableGameDVR $true -WhatIf } | Out-Null
     Invoke-DebloatAction -ActionName "Disable Delivery Optimization P2P" -DryRun -ScriptBlock { Set-DeliveryOptimizationTweak -DisableP2P $true -WhatIf } | Out-Null
+    Invoke-DebloatAction -ActionName "Disable Edge Background Mode" -DryRun -ScriptBlock { Set-EdgeBackgroundTweak -DisableEdgeBackground $true -WhatIf } | Out-Null
+    Invoke-DebloatAction -ActionName "Disable Telemetry Scheduled Tasks" -DryRun -ScriptBlock { Set-TelemetryScheduledTasksTweak -DisableTasks $true -WhatIf } | Out-Null
+    Invoke-DebloatAction -ActionName "Disable Multitasking Snap Suggestions" -DryRun -ScriptBlock { Set-MultitaskingTweak -DisableSnapSuggestions $true -WhatIf } | Out-Null
     exit 0
 }
 
@@ -81,6 +84,9 @@ if ($Silent) {
     Set-LockScreenTweak -Disable $true | Out-Null
     Set-GameDVRPlaybackTweak -DisableGameDVR $true | Out-Null
     Set-DeliveryOptimizationTweak -DisableP2P $true | Out-Null
+    Set-EdgeBackgroundTweak -DisableEdgeBackground $true | Out-Null
+    Set-TelemetryScheduledTasksTweak -DisableTasks $true | Out-Null
+    Set-MultitaskingTweak -DisableSnapSuggestions $true | Out-Null
     exit 0
 }
 
@@ -177,6 +183,15 @@ switch ($choice) {
         Invoke-DebloatAction -ActionName "Disable Delivery Optimization P2P" -DryRun -ScriptBlock {
             Set-DeliveryOptimizationTweak -DisableP2P $true -WhatIf
         } | Out-Null
+        Invoke-DebloatAction -ActionName "Disable Edge Background Mode" -DryRun -ScriptBlock {
+            Set-EdgeBackgroundTweak -DisableEdgeBackground $true -WhatIf
+        } | Out-Null
+        Invoke-DebloatAction -ActionName "Disable Telemetry Scheduled Tasks" -DryRun -ScriptBlock {
+            Set-TelemetryScheduledTasksTweak -DisableTasks $true -WhatIf
+        } | Out-Null
+        Invoke-DebloatAction -ActionName "Disable Multitasking Snap Suggestions" -DryRun -ScriptBlock {
+            Set-MultitaskingTweak -DisableSnapSuggestions $true -WhatIf
+        } | Out-Null
         Write-Host "`nDry-run preview completed. No system changes were made." -ForegroundColor Green
     }
     "2" {
@@ -200,6 +215,9 @@ switch ($choice) {
         Set-LockScreenTweak -Disable $true | Format-Table Path, Name, Status -AutoSize
         Set-GameDVRPlaybackTweak -DisableGameDVR $true | Format-Table Path, Name, Status -AutoSize
         Set-DeliveryOptimizationTweak -DisableP2P $true | Format-Table Path, Name, Status -AutoSize
+        Set-EdgeBackgroundTweak -DisableEdgeBackground $true | Format-Table Path, Name, Status -AutoSize
+        Set-TelemetryScheduledTasksTweak -DisableTasks $true | Format-Table Path, Name, Status -AutoSize
+        Set-MultitaskingTweak -DisableSnapSuggestions $true | Format-Table Path, Name, Status -AutoSize
     }
     "5" {
         Write-Host "`nScanning installed AppX packages..." -ForegroundColor Yellow

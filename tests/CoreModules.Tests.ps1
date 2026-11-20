@@ -35,6 +35,16 @@ Describe "AppManager Module" {
 
         $deepPreset = Get-DebloatPreset -PresetName "Deep" -PresetsPath $presetsPath
         $deepPreset.Count | Should -BeGreaterThan 100
+
+        # Category Slices for Power-User Selection
+        $oemApps = @($deepPreset | Where-Object { -not ($_.AppId -like "Microsoft.*") })
+        $oemApps.Count | Should -BeGreaterThan 0
+
+        $xboxApps = @($deepPreset | Where-Object { $_.AppId -like "*Xbox*" -or $_.AppId -like "*Gaming*" })
+        $xboxApps.Count | Should -BeGreaterThan 0
+
+        $mediaApps = @($deepPreset | Where-Object { $_.AppId -like "*BingNews*" -or $_.AppId -like "*Clipchamp*" -or $_.AppId -like "*Photos*" })
+        $mediaApps.Count | Should -BeGreaterThan 0
     }
 
     It "Skips protected packages during removal" {
@@ -136,6 +146,26 @@ Describe "SystemTweaks Module" {
         $res = Set-StartMenuRecommendedTweak -HideRecommended $true -WhatIf
         $res[0].Status | Should -Be "Preview"
     }
+
+    It "Executes EdgeBackground WhatIf safely" {
+        $res = Set-EdgeBackgroundTweak -DisableEdgeBackground $true -WhatIf
+        $res[0].Status | Should -Be "Preview"
+    }
+
+    It "Executes TelemetryScheduledTasks WhatIf safely" {
+        $res = Set-TelemetryScheduledTasksTweak -DisableTasks $true -WhatIf
+        $res[0].Status | Should -Be "Preview"
+    }
+
+    It "Executes HibernationStorage WhatIf safely" {
+        $res = Set-HibernationStorageTweak -DisableHibernation $true -WhatIf
+        $res.Status | Should -Be "Preview"
+    }
+
+    It "Executes Multitasking WhatIf safely" {
+        $res = Set-MultitaskingTweak -DisableSnapSuggestions $true -WhatIf
+        $res[0].Status | Should -Be "Preview"
+    }
 }
 
 Describe "ExecutionLog Module" {
@@ -182,5 +212,30 @@ Describe "Entrypoint Bootstrapper & Path Resolution" {
         (Test-Path $entrypointPath) | Should -BeTrue
         "Q" | powershell -NoProfile -ExecutionPolicy Bypass -File $entrypointPath -CLI
         $LASTEXITCODE | Should -Be 0
+    }
+
+    It "Dot-sources AppController.ps1 cleanly without InvalidOperationException" {
+        $appController = Join-Path $projectRoot "src\UI\AppController.ps1"
+        (Test-Path $appController) | Should -BeTrue
+        $res = powershell -NoProfile -Command ". '$appController'; if (Get-Command Show-DebloaterWindow -ErrorAction SilentlyContinue) { 'Loaded' }"
+        $res | Should -Match "Loaded"
+        $LASTEXITCODE | Should -Be 0
+    }
+
+    It "Validates Get-NHWinDebloater.ps1 syntax and parameter signature" {
+        $bootstrapperPath = Join-Path $projectRoot "Get-NHWinDebloater.ps1"
+        (Test-Path $bootstrapperPath) | Should -BeTrue
+        $content = Get-Content $bootstrapperPath -Raw
+        $content | Should -Match '\[switch\]\$DryRun'
+        $content | Should -Match '\[switch\]\$CLI'
+        $content | Should -Match '\[switch\]\$Silent'
+        $content | Should -Match '-STA'
+    }
+
+    It "Validates install.ps1 wrapper syntax and parameters" {
+        $installPath = Join-Path $projectRoot "install.ps1"
+        (Test-Path $installPath) | Should -BeTrue
+        $content = Get-Content $installPath -Raw
+        $content | Should -Match "Get-NHWinDebloater\.ps1"
     }
 }

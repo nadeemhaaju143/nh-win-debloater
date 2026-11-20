@@ -1,6 +1,6 @@
 # NH Win Debloater
 
-**Version:** 0.1  
+**Version:** 0.3  
 **Tagline:** Less Bloat. Better Windows.  
 **Developer:** NH Digital ([nhdigital.shop](https://nhdigital.shop))  
 
@@ -21,9 +21,9 @@ v0.1  -->  v0.2  -->  v0.3  -->  v0.4  --> ... -->  v1.0
 (Init)     (Core)     (UI/WPF)   (Presets)         (Stable Release)
 ```
 
-- **v0.1 (Current):** Project initialization, folder architecture, standalone launcher, and environment bootstrapper.
-- **v0.2:** Core engine integration (AppX removal, WinGet support, atomic registry tweaks, and baseline backup snapshots).
-- **v0.3:** Modern single-window WPF Guided Assistant interface with real-time progress reporting.
+- **v0.1:** Project initialization, folder architecture, standalone launcher, and core PowerShell modules.
+- **v0.2:** Gaming & performance engine, shell customizations, DPI-safe branding, and zero-error preflight gate.
+- **v0.3 (Current):** Material Design dark palette, power-user category slices & installed package filter, smooth animations, and advanced system tweaks (Edge background suppression, CEIP task cleaning, hibernation storage reclaim).
 - **v0.4+:** Expanded debloat presets, community package signatures, and advanced Windows 11 feature configurations.
 - **v1.0:** Consolidated, production-grade standalone utility.
 
@@ -35,8 +35,9 @@ Each increment introduces modular features, verified bloatware signatures, or sa
 
 ```
 NH Win Debloater/
+├── Get-NHWinDebloater.ps1      # One-line zero-install quick-launch bootstrapper
 ├── Run.bat                     # Standalone launcher (handles elevation & execution policy)
-├── VERSION.txt                 # Current version tracker (0.1)
+├── VERSION.txt                 # Current version tracker (0.3)
 ├── README.md                   # Project documentation and release workflow
 ├── src/
 │   ├── Core/                   # Modular PowerShell engines and bootstrap logic
@@ -52,9 +53,31 @@ NH Win Debloater/
 
 ## Quick Start
 
-1. Right-click `Run.bat` and select **Run as Administrator** (or double-click; `Run.bat` will request elevation automatically).
-2. The bootstrapper initializes the execution environment, verifies Windows build compatibility, and loads the active configuration.
-3. Follow the guided prompts to configure and review actions before applying changes.
+### Method 1: One-Line PowerShell Launch (Zero Download Required)
+
+Open **PowerShell** (Run as Administrator recommended) and paste:
+
+```powershell
+irm https://raw.githubusercontent.com/nadeemhaaju143/nh-win-debloater/main/Get-NHWinDebloater.ps1 | iex
+```
+
+*This automatically fetches the latest verified release from GitHub into a temporary sandbox and launches the modern WPF Guided Assistant in STA mode.*
+
+**Power-User CLI & Dry-Run Flags:**
+```powershell
+# Interactive CLI console mode
+& ([ScriptBlock]::Create((irm https://raw.githubusercontent.com/nadeemhaaju143/nh-win-debloater/main/Get-NHWinDebloater.ps1))) -CLI
+
+# Safe WhatIf simulation mode (zero system changes)
+& ([ScriptBlock]::Create((irm https://raw.githubusercontent.com/nadeemhaaju143/nh-win-debloater/main/Get-NHWinDebloater.ps1))) -DryRun
+```
+
+### Method 2: Manual Download & Offline Run
+
+1. Download or clone this repository to your local machine.
+2. Right-click `Run.bat` and select **Run as Administrator** (or double-click; `Run.bat` will request elevation automatically).
+3. The bootstrapper initializes the execution environment, verifies Windows build compatibility, and loads the active configuration.
+4. Follow the guided prompts to configure and review actions before applying changes.
 
 ---
 
