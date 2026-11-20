@@ -69,6 +69,7 @@ function Show-DebloaterWindow {
     $logoFallbackBox = $window.FindName("LogoFallbackBox")
     $txtOsCaption = $window.FindName("TxtOsCaption")
     $txtElevationStatus = $window.FindName("TxtElevationStatus")
+    $dotElevationStatus = $window.FindName("DotElevationStatus")
 
     $stepTag1 = $window.FindName("StepTag1")
     $stepTag2 = $window.FindName("StepTag2")
@@ -246,6 +247,9 @@ function Show-DebloaterWindow {
     } else {
         $txtElevationStatus.Text = "Standard User (Elevation Recommended)"
         $txtElevationStatus.Foreground = [System.Windows.Media.BrushConverter]::new().ConvertFromString("#F59E0B")
+    }
+    if ($dotElevationStatus) {
+        $dotElevationStatus.Fill = $txtElevationStatus.Foreground
     }
 
     # 6. Hyperlink Event Wiring
@@ -816,4 +820,6 @@ function Show-DebloaterWindow {
     $null = $window.ShowDialog()
 }
 
-Export-ModuleMember -Function Show-DebloaterWindow
+if ($ExecutionContext.SessionState.Module) {
+    Export-ModuleMember -Function Show-DebloaterWindow
+}

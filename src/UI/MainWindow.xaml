@@ -97,38 +97,56 @@
             <RowDefinition Height="64"/>  <!-- Footer & Navigation -->
         </Grid.RowDefinitions>
 
-        <!-- 1. Header Bar -->
+        <!-- 1. Header Bar with Accent Shimmer & Status Flourish -->
         <Border Grid.Row="0" Background="#131D31" BorderBrush="#2A384F" BorderThickness="0,0,0,1">
-            <Grid Margin="24,0">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="Auto"/>
-                </Grid.ColumnDefinitions>
+            <Grid>
+                <Grid Margin="24,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
 
-                <!-- Logo Area -->
-                <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
-                    <Border x:Name="LogoFallbackBox" Width="38" Height="38" CornerRadius="8" Background="#0EA5E9" VerticalAlignment="Center" Margin="0,0,14,0">
-                        <TextBlock Text="NH" FontWeight="Bold" FontSize="18" Foreground="#FFFFFF" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    </Border>
-                    <Image x:Name="ImgLogo" MaxWidth="120" MaxHeight="38" Stretch="Uniform" VerticalAlignment="Center" Visibility="Collapsed" Margin="0,0,14,0"/>
+                    <!-- Logo Area -->
+                    <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
+                        <Border x:Name="LogoFallbackBox" Width="38" Height="38" CornerRadius="8" Background="#0EA5E9" VerticalAlignment="Center" Margin="0,0,14,0">
+                            <TextBlock Text="NH" FontWeight="Bold" FontSize="18" Foreground="#FFFFFF" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <Image x:Name="ImgLogo" MaxWidth="120" MaxHeight="38" Stretch="Uniform" VerticalAlignment="Center" Visibility="Collapsed" Margin="0,0,14,0"/>
 
-                    <StackPanel VerticalAlignment="Center">
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="NH Win Debloater" FontWeight="Bold" FontSize="18" Foreground="#F8FAFC"/>
-                            <Border x:Name="BadgeVersion" CornerRadius="4" Background="#0284C7" Margin="10,2,0,2" Padding="6,1">
-                                <TextBlock x:Name="TxtVersion" Text="v0.3" FontSize="11" FontWeight="Bold" Foreground="#FFFFFF"/>
-                            </Border>
+                        <StackPanel VerticalAlignment="Center">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="NH Win Debloater" FontWeight="Bold" FontSize="18" Foreground="#F8FAFC"/>
+                                <Border x:Name="BadgeVersion" CornerRadius="4" Background="#0284C7" Margin="10,2,0,2" Padding="6,1">
+                                    <TextBlock x:Name="TxtVersion" Text="v0.3" FontSize="11" FontWeight="Bold" Foreground="#FFFFFF"/>
+                                </Border>
+                            </StackPanel>
+                            <TextBlock Text="Less Bloat. Better Windows. Built for performance." FontSize="12" Foreground="#94A3B8"/>
                         </StackPanel>
-                        <TextBlock Text="Less Bloat. Better Windows. Built for performance." FontSize="12" Foreground="#94A3B8"/>
                     </StackPanel>
-                </StackPanel>
 
-                <!-- System Info Badge -->
-                <StackPanel Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right">
-                    <TextBlock x:Name="TxtOsCaption" Text="Windows 11 Pro" FontSize="12" FontWeight="SemiBold" Foreground="#38BDF8" HorizontalAlignment="Right"/>
-                    <TextBlock x:Name="TxtElevationStatus" Text="Elevated Administrator" FontSize="11" Foreground="#10B981" HorizontalAlignment="Right"/>
-                </StackPanel>
+                    <!-- System Info & Status Flourish -->
+                    <StackPanel Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right">
+                        <TextBlock x:Name="TxtOsCaption" Text="Windows 11 Pro" FontSize="12" FontWeight="SemiBold" Foreground="#38BDF8" HorizontalAlignment="Right"/>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,3,0,0">
+                            <Ellipse x:Name="DotElevationStatus" Width="7" Height="7" Fill="#10B981" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                            <TextBlock x:Name="TxtElevationStatus" Text="Elevated Administrator" FontSize="11" Foreground="#10B981" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Grid>
+
+                <!-- Modern Cyan/Indigo Accent Shimmer Line -->
+                <Border Height="2" VerticalAlignment="Bottom" HorizontalAlignment="Stretch">
+                    <Border.Background>
+                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                            <GradientStop Color="#000EA5E9" Offset="0.0"/>
+                            <GradientStop Color="#FF0EA5E9" Offset="0.25"/>
+                            <GradientStop Color="#FF38BDF8" Offset="0.5"/>
+                            <GradientStop Color="#FF6366F1" Offset="0.75"/>
+                            <GradientStop Color="#006366F1" Offset="1.0"/>
+                        </LinearGradientBrush>
+                    </Border.Background>
+                </Border>
             </Grid>
         </Border>
 

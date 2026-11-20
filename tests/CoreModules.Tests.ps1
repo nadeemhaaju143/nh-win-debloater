@@ -213,4 +213,29 @@ Describe "Entrypoint Bootstrapper & Path Resolution" {
         "Q" | powershell -NoProfile -ExecutionPolicy Bypass -File $entrypointPath -CLI
         $LASTEXITCODE | Should -Be 0
     }
+
+    It "Dot-sources AppController.ps1 cleanly without InvalidOperationException" {
+        $appController = Join-Path $projectRoot "src\UI\AppController.ps1"
+        (Test-Path $appController) | Should -BeTrue
+        $res = powershell -NoProfile -Command ". '$appController'; if (Get-Command Show-DebloaterWindow -ErrorAction SilentlyContinue) { 'Loaded' }"
+        $res | Should -Match "Loaded"
+        $LASTEXITCODE | Should -Be 0
+    }
+
+    It "Validates Get-NHWinDebloater.ps1 syntax and parameter signature" {
+        $bootstrapperPath = Join-Path $projectRoot "Get-NHWinDebloater.ps1"
+        (Test-Path $bootstrapperPath) | Should -BeTrue
+        $content = Get-Content $bootstrapperPath -Raw
+        $content | Should -Match '\[switch\]\$DryRun'
+        $content | Should -Match '\[switch\]\$CLI'
+        $content | Should -Match '\[switch\]\$Silent'
+        $content | Should -Match '-STA'
+    }
+
+    It "Validates install.ps1 wrapper syntax and parameters" {
+        $installPath = Join-Path $projectRoot "install.ps1"
+        (Test-Path $installPath) | Should -BeTrue
+        $content = Get-Content $installPath -Raw
+        $content | Should -Match "Get-NHWinDebloater\.ps1"
+    }
 }
