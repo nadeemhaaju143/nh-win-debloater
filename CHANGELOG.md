@@ -25,11 +25,15 @@ The project follows a **progressive semantic minor versioning format**:
   - Added **Search Highlights**, **Start Menu Recommended**, and **Compact Explorer** options under Taskbar & Explorer.
   - Added **Open Backups Folder** button (`BtnOpenBackups`) in Stage 5 to directly inspect pre-tweak registry snapshots and rollback files in `%LOCALAPPDATA%\NHWinDebloater\Backups`.
   - Added DPI-safe uniform scaling for wide and square logo assets in the brand header.
+- **Launcher & Bootstrapper Engine (`Run.bat` & `Entrypoint.ps1`):**
+  - Fixed path resolution bug that caused `\src\src\UI\AppController.ps1` doubled-path errors when launching from outside the root or in VM copies.
+  - Added `-STA` mode enforcement in `Run.bat` and `Entrypoint.ps1` guaranteeing Single-Thread Apartment mode for the WPF Guided Assistant.
+  - Auto-launches the modern GUI directly by default while cleanly preserving the interactive console menu for `-CLI` mode.
 - **Official Branding Assets (`assets/logo/`):**
   - Added official raster brand assets (`nhdigital-logo.png`, `logo.png`, `logo.ico`) matching [nhdigital.shop](https://nhdigital.shop) aesthetics.
   - Tested and confirmed automatic window icon wiring and header rendering with seamless vector monogram fallback (`LogoFallbackBox`).
 - **Automated Quality Gate & Testing:**
-  - Expanded unit test suite in `tests/CoreModules.Tests.ps1` to 22 tests (100% pass rate).
+  - Expanded unit test suite in `tests/CoreModules.Tests.ps1` to 25 tests (100% pass rate).
   - Maintained strict PSScriptAnalyzer quality standard: **0 errors, 0 warnings** across all 8 production scripts.
 
 ---

@@ -149,3 +149,31 @@ Describe "ExecutionLog Module" {
         $res.Status | Should -Be "Preview"
     }
 }
+
+Describe "Entrypoint Bootstrapper & Path Resolution" {
+    It "Resolves AppController path to src\UI without path doubling" {
+        $coreDir = Join-Path $projectRoot "src\Core"
+        $srcDir = Split-Path -Parent $coreDir
+        $resolvedProjectRoot = Split-Path -Parent $srcDir
+        $uiDir = Join-Path $srcDir "UI"
+        $appController = Join-Path $uiDir "AppController.ps1"
+
+        $appController | Should -Not -Match "\\src\\src\\UI"
+        $resolvedProjectRoot | Should -Be $projectRoot
+        (Test-Path $appController) | Should -BeTrue
+    }
+
+    It "Ensures Run.bat contains -STA flag for WPF compatibility" {
+        $runBatPath = Join-Path $projectRoot "Run.bat"
+        (Test-Path $runBatPath) | Should -BeTrue
+        $batContent = Get-Content $runBatPath -Raw
+        $batContent | Should -Match "-STA"
+    }
+
+    It "Executes Entrypoint in -DryRun mode cleanly" {
+        $entrypointPath = Join-Path $projectRoot "src\Core\Entrypoint.ps1"
+        (Test-Path $entrypointPath) | Should -BeTrue
+        $res = powershell -NoProfile -ExecutionPolicy Bypass -File $entrypointPath -DryRun
+        $LASTEXITCODE | Should -Be 0
+    }
+}
