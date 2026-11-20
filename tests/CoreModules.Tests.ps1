@@ -69,6 +69,12 @@ Describe "ShellCustomization Module" {
     It "Executes shell setting WhatIf preview safely" {
         $res = Set-ShellSetting -SettingId "ShowFileExtensions" -WhatIf
         $res[0].Status | Should -Be "Preview"
+
+        $resHighlights = Set-ShellSetting -SettingId "HideSearchHighlights" -WhatIf
+        $resHighlights[0].Status | Should -Be "Preview"
+
+        $resCompact = Set-ShellSetting -SettingId "ShowCompactExplorer" -WhatIf
+        $resCompact[0].Status | Should -Be "Preview"
     }
 }
 
@@ -110,6 +116,26 @@ Describe "SystemTweaks Module" {
         $resWSL = Set-OptionalFeatureState -FeatureId "WSL" -Enable $true -WhatIf
         $resWSL.Status | Should -Be "Preview"
     }
+
+    It "Executes GameDVR WhatIf safely" {
+        $res = Set-GameDVRPlaybackTweak -DisableGameDVR $true -WhatIf
+        $res[0].Status | Should -Be "Preview"
+    }
+
+    It "Executes DeliveryOptimization WhatIf safely" {
+        $res = Set-DeliveryOptimizationTweak -DisableP2P $true -WhatIf
+        $res[0].Status | Should -Be "Preview"
+    }
+
+    It "Executes TelemetryService WhatIf safely" {
+        $res = Set-TelemetryServiceTweak -DisableServices $true -WhatIf
+        $res[0].Status | Should -Be "Preview"
+    }
+
+    It "Executes StartMenuRecommended WhatIf safely" {
+        $res = Set-StartMenuRecommendedTweak -HideRecommended $true -WhatIf
+        $res[0].Status | Should -Be "Preview"
+    }
 }
 
 Describe "ExecutionLog Module" {
@@ -121,5 +147,40 @@ Describe "ExecutionLog Module" {
     It "Executes DryRun without running script block" {
         $res = Invoke-DebloatAction -ActionName "Test Action" -DryRun -ScriptBlock { throw "Should not run" }
         $res.Status | Should -Be "Preview"
+    }
+}
+
+Describe "Entrypoint Bootstrapper & Path Resolution" {
+    It "Resolves AppController path to src\UI without path doubling" {
+        $coreDir = Join-Path $projectRoot "src\Core"
+        $srcDir = Split-Path -Parent $coreDir
+        $resolvedProjectRoot = Split-Path -Parent $srcDir
+        $uiDir = Join-Path $srcDir "UI"
+        $appController = Join-Path $uiDir "AppController.ps1"
+
+        $appController | Should -Not -Match "\\src\\src\\UI"
+        $resolvedProjectRoot | Should -Be $projectRoot
+        (Test-Path $appController) | Should -BeTrue
+    }
+
+    It "Ensures Run.bat contains -STA flag for WPF compatibility" {
+        $runBatPath = Join-Path $projectRoot "Run.bat"
+        (Test-Path $runBatPath) | Should -BeTrue
+        $batContent = Get-Content $runBatPath -Raw
+        $batContent | Should -Match "-STA"
+    }
+
+    It "Executes Entrypoint in -DryRun mode cleanly" {
+        $entrypointPath = Join-Path $projectRoot "src\Core\Entrypoint.ps1"
+        (Test-Path $entrypointPath) | Should -BeTrue
+        $res = powershell -NoProfile -ExecutionPolicy Bypass -File $entrypointPath -DryRun
+        $LASTEXITCODE | Should -Be 0
+    }
+
+    It "Executes Entrypoint in -CLI mode cleanly" {
+        $entrypointPath = Join-Path $projectRoot "src\Core\Entrypoint.ps1"
+        (Test-Path $entrypointPath) | Should -BeTrue
+        "Q" | powershell -NoProfile -ExecutionPolicy Bypass -File $entrypointPath -CLI
+        $LASTEXITCODE | Should -Be 0
     }
 }

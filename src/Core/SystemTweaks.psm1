@@ -444,4 +444,112 @@ function Restore-RegistrySnapshot {
     return @($results.ToArray())
 }
 
-Export-ModuleMember -Function Set-ConsumerFeatureTweak, Set-LockScreenTweak, Set-ClassicContextMenuTweak, Set-MousePrecisionTweak, Set-StickyKeysTweak, Set-FastStartupTweak, Set-StorageSenseTweak, Set-WindowsUpdatePolicyTweak, Set-OptionalFeatureState, New-DebloatRestorePoint, Export-RegistrySnapshot, Restore-RegistrySnapshot
+function Set-GameDVRPlaybackTweak {
+    <#
+        .SYNOPSIS
+            Disables Windows Game DVR background recording and Xbox Game Bar broadcast.
+    #>
+    [CmdletBinding(SupportsShouldProcess = $true)]
+    [OutputType([PSCustomObject[]])]
+    param(
+        [Parameter(Mandatory = $false)]
+        [bool]$DisableGameDVR = $true
+    )
+
+    $ops = [System.Collections.Generic.List[PSCustomObject]]::new()
+    $dvrVal = if ($DisableGameDVR) { 0 } else { 1 }
+    $fseVal = if ($DisableGameDVR) { 2 } else { 0 }
+
+    $ops.Add((Set-TweakRegistryValue -Path "HKCU:\System\GameConfigStore" -Name "GameDVR_Enabled" -Value $dvrVal -PropertyType "DWord" -WhatIf:$WhatIfPreference))
+    $ops.Add((Set-TweakRegistryValue -Path "HKCU:\System\GameConfigStore" -Name "GameDVR_FSEBehaviorMode" -Value $fseVal -PropertyType "DWord" -WhatIf:$WhatIfPreference))
+    $ops.Add((Set-TweakRegistryValue -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\GameDVR" -Name "AllowGameDVR" -Value $dvrVal -PropertyType "DWord" -WhatIf:$WhatIfPreference))
+    $ops.Add((Set-TweakRegistryValue -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\GameDVR" -Name "AppCaptureEnabled" -Value $dvrVal -PropertyType "DWord" -WhatIf:$WhatIfPreference))
+
+    return $ops.ToArray()
+}
+
+function Set-DeliveryOptimizationTweak {
+    <#
+        .SYNOPSIS
+            Disables peer-to-peer Windows Update Delivery Optimization over the Internet.
+    #>
+    [CmdletBinding(SupportsShouldProcess = $true)]
+    [OutputType([PSCustomObject[]])]
+    param(
+        [Parameter(Mandatory = $false)]
+        [bool]$DisableP2P = $true
+    )
+
+    $ops = [System.Collections.Generic.List[PSCustomObject]]::new()
+    $modeVal = if ($DisableP2P) { 0 } else { 3 }
+
+    $ops.Add((Set-TweakRegistryValue -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\DeliveryOptimization" -Name "DODownloadMode" -Value $modeVal -PropertyType "DWord" -WhatIf:$WhatIfPreference))
+    $ops.Add((Set-TweakRegistryValue -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\DeliveryOptimization" -Name "SystemSettingsDownloadMode" -Value $modeVal -PropertyType "DWord" -WhatIf:$WhatIfPreference))
+
+    return $ops.ToArray()
+}
+
+function Set-TelemetryServiceTweak {
+    <#
+        .SYNOPSIS
+            Disables the Connected User Experiences and Telemetry background services (DiagTrack and dmwappushservice).
+    #>
+    [CmdletBinding(SupportsShouldProcess = $true)]
+    [OutputType([PSCustomObject[]])]
+    param(
+        [Parameter(Mandatory = $false)]
+        [bool]$DisableServices = $true
+    )
+
+    $ops = [System.Collections.Generic.List[PSCustomObject]]::new()
+    $targetServices = @("DiagTrack", "dmwappushservice")
+    $startType = if ($DisableServices) { "Disabled" } else { "Automatic" }
+
+    foreach ($svcName in $targetServices) {
+        if ($PSCmdlet.ShouldProcess("Service: $svcName", "Set StartupType to $startType")) {
+            try {
+                $svc = Get-Service -Name $svcName -ErrorAction SilentlyContinue
+                if ($svc) {
+                    if ($DisableServices -and $svc.Status -eq "Running") {
+                        Stop-Service -Name $svcName -Force -ErrorAction SilentlyContinue
+                    }
+                    Set-Service -Name $svcName -StartupType $startType -ErrorAction SilentlyContinue
+                    $ops.Add([PSCustomObject]@{ Path = "Service:\$svcName"; Name = "StartupType"; Value = $startType; Status = "Success" })
+                } else {
+                    $ops.Add([PSCustomObject]@{ Path = "Service:\$svcName"; Name = "StartupType"; Value = $startType; Status = "Skipped (Not Found)" })
+                }
+            } catch {
+                $ops.Add([PSCustomObject]@{ Path = "Service:\$svcName"; Name = "StartupType"; Value = $startType; Status = "Error: $($_.Exception.Message)" })
+            }
+        } else {
+            $ops.Add([PSCustomObject]@{ Path = "Service:\$svcName"; Name = "StartupType"; Value = $startType; Status = "Preview" })
+        }
+    }
+
+    return $ops.ToArray()
+}
+
+function Set-StartMenuRecommendedTweak {
+    <#
+        .SYNOPSIS
+            Hides the Recommended section and recent item tracking in the Windows 11 Start Menu.
+    #>
+    [CmdletBinding(SupportsShouldProcess = $true)]
+    [OutputType([PSCustomObject[]])]
+    param(
+        [Parameter(Mandatory = $false)]
+        [bool]$HideRecommended = $true
+    )
+
+    $ops = [System.Collections.Generic.List[PSCustomObject]]::new()
+    $recVal = if ($HideRecommended) { 1 } else { 0 }
+    $trackVal = if ($HideRecommended) { 0 } else { 1 }
+
+    $ops.Add((Set-TweakRegistryValue -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Explorer" -Name "HideRecommendedSection" -Value $recVal -PropertyType "DWord" -WhatIf:$WhatIfPreference))
+    $ops.Add((Set-TweakRegistryValue -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "Start_TrackProgs" -Value $trackVal -PropertyType "DWord" -WhatIf:$WhatIfPreference))
+    $ops.Add((Set-TweakRegistryValue -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "Start_AccountNotifications" -Value $trackVal -PropertyType "DWord" -WhatIf:$WhatIfPreference))
+
+    return $ops.ToArray()
+}
+
+Export-ModuleMember -Function Set-ConsumerFeatureTweak, Set-LockScreenTweak, Set-ClassicContextMenuTweak, Set-MousePrecisionTweak, Set-StickyKeysTweak, Set-FastStartupTweak, Set-StorageSenseTweak, Set-WindowsUpdatePolicyTweak, Set-OptionalFeatureState, Set-GameDVRPlaybackTweak, Set-DeliveryOptimizationTweak, Set-TelemetryServiceTweak, Set-StartMenuRecommendedTweak, New-DebloatRestorePoint, Export-RegistrySnapshot, Restore-RegistrySnapshot

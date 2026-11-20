@@ -105,7 +105,7 @@
                     <Border x:Name="LogoFallbackBox" Width="38" Height="38" CornerRadius="8" Background="#0EA5E9" VerticalAlignment="Center" Margin="0,0,14,0">
                         <TextBlock Text="NH" FontWeight="Bold" FontSize="18" Foreground="#FFFFFF" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     </Border>
-                    <Image x:Name="ImgLogo" Width="120" Height="36" Stretch="Uniform" VerticalAlignment="Center" Visibility="Collapsed" Margin="0,0,14,0"/>
+                    <Image x:Name="ImgLogo" MaxWidth="120" MaxHeight="38" Stretch="Uniform" VerticalAlignment="Center" Visibility="Collapsed" Margin="0,0,14,0"/>
 
                     <StackPanel VerticalAlignment="Center">
                         <StackPanel Orientation="Horizontal">
@@ -305,11 +305,25 @@
                                 <CheckBox x:Name="ChkEndTask" Style="{StaticResource ModernCheckBox}" Content="Enable right-click 'End Task' directly on the Taskbar" IsChecked="True"/>
                                 <CheckBox x:Name="ChkAlignLeft" Style="{StaticResource ModernCheckBox}" Content="Align Windows 11 Taskbar icons to the Left (Classic style)" IsChecked="False"/>
                                 <CheckBox x:Name="ChkHideOneDriveNav" Style="{StaticResource ModernCheckBox}" Content="Hide OneDrive folder from File Explorer Navigation Pane" IsChecked="False"/>
+                                <CheckBox x:Name="ChkSearchHighlights" Style="{StaticResource ModernCheckBox}" Content="Disable Taskbar Search Highlights &amp; Doodles" IsChecked="True"/>
+                                <CheckBox x:Name="ChkStartRecommended" Style="{StaticResource ModernCheckBox}" Content="Hide Start Menu Recommended Section &amp; Recent Items" IsChecked="True"/>
+                                <CheckBox x:Name="ChkCompactExplorer" Style="{StaticResource ModernCheckBox}" Content="Enable Compact View in File Explorer (Tighter classic item padding)" IsChecked="False"/>
                             </StackPanel>
                         </ScrollViewer>
                     </TabItem>
 
-                    <!-- Tab 4: System Extras -->
+                    <!-- Tab 4: Gaming & Performance -->
+                    <TabItem Header="Gaming &amp; Performance" FontWeight="SemiBold">
+                        <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="16">
+                            <StackPanel>
+                                <CheckBox x:Name="ChkGameDVR" Style="{StaticResource ModernCheckBox}" Content="Disable Xbox Game DVR &amp; Background Video Capture (Reduces micro-stutter &amp; latency)" IsChecked="True"/>
+                                <CheckBox x:Name="ChkDeliveryOpt" Style="{StaticResource ModernCheckBox}" Content="Disable Delivery Optimization P2P (Stops Windows uploading updates to Internet hosts)" IsChecked="True"/>
+                                <CheckBox x:Name="ChkTelemetryService" Style="{StaticResource ModernCheckBox}" Content="Disable Connected User Experiences &amp; Telemetry Service (DiagTrack background service)" IsChecked="True"/>
+                            </StackPanel>
+                        </ScrollViewer>
+                    </TabItem>
+
+                    <!-- Tab 5: System Extras -->
                     <TabItem Header="System Extras" FontWeight="SemiBold">
                         <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="16">
                             <StackPanel>
@@ -453,6 +467,7 @@
                             <StackPanel Orientation="Horizontal" Margin="0,20,0,0">
                                 <Button x:Name="BtnRestartExplorer" Style="{StaticResource ModernBtn}" Content="↻ Restart Explorer" Margin="0,0,10,0"/>
                                 <Button x:Name="BtnOpenLog" Style="{StaticResource ModernBtn}" Content="📄 Open Session Log" Margin="0,0,10,0"/>
+                                <Button x:Name="BtnOpenBackups" Style="{StaticResource ModernBtn}" Content="🛡 Open Backups Folder" Margin="0,0,10,0"/>
                             </StackPanel>
                         </StackPanel>
                     </Border>

@@ -6,7 +6,7 @@
         Supports both modern WPF Guided Assistant GUI and standalone CLI modes.
         Built by NH Digital (https://nhdigital.shop)
     .VERSION
-        0.1
+        0.2
 #>
 
 [CmdletBinding()]
@@ -18,18 +18,27 @@ param(
     [switch]$CLI
 )
 
-$Host.UI.RawUI.WindowTitle = "NH Win Debloater v0.1 - NH Digital"
-$PSScriptRootDirectory = Split-Path -Parent $MyInvocation.MyCommand.Path
-$ProjectRootDirectory = Split-Path -Parent $PSScriptRootDirectory
-$PresetsDirectory = Join-Path $ProjectRootDirectory "Presets"
-$UiDirectory = Join-Path $ProjectRootDirectory "src\UI"
+# 1. Robust Path Resolution (Guaranteed <ProjectRoot>\src\UI regardless of working directory or VM placement)
+$CoreDirectory = if ($PSScriptRoot) { $PSScriptRoot } else { Split-Path -Parent $MyInvocation.MyCommand.Path }
+$SrcDirectory = Split-Path -Parent $CoreDirectory
+$ProjectRootDirectory = Split-Path -Parent $SrcDirectory
+$PresetsDirectory = Join-Path $SrcDirectory "Presets"
+$UiDirectory = Join-Path $SrcDirectory "UI"
+$AppControllerScript = Join-Path $UiDirectory "AppController.ps1"
 
-# Import Core Modules
-Import-Module (Join-Path $PSScriptRootDirectory "AppManager.psm1") -Force
-Import-Module (Join-Path $PSScriptRootDirectory "PrivacySearch.psm1") -Force
-Import-Module (Join-Path $PSScriptRootDirectory "ShellCustomization.psm1") -Force
-Import-Module (Join-Path $PSScriptRootDirectory "SystemTweaks.psm1") -Force
-Import-Module (Join-Path $PSScriptRootDirectory "ExecutionLog.psm1") -Force
+$versionFile = Join-Path $ProjectRootDirectory "VERSION.txt"
+$script:AppVersion = if (Test-Path $versionFile) { (Get-Content -Path $versionFile -Raw).Trim() } else { "0.2" }
+
+if ($Host -and $Host.UI -and $Host.UI.RawUI) {
+    $Host.UI.RawUI.WindowTitle = "NH Win Debloater v$($script:AppVersion) - NH Digital"
+}
+
+# 2. Import Core Modules
+Import-Module (Join-Path $CoreDirectory "AppManager.psm1") -Force
+Import-Module (Join-Path $CoreDirectory "PrivacySearch.psm1") -Force
+Import-Module (Join-Path $CoreDirectory "ShellCustomization.psm1") -Force
+Import-Module (Join-Path $CoreDirectory "SystemTweaks.psm1") -Force
+Import-Module (Join-Path $CoreDirectory "ExecutionLog.psm1") -Force
 
 # Initialize Logging
 Initialize-DebloatLogger | Out-Null
@@ -38,19 +47,19 @@ function Show-Header {
     Clear-Host
     Write-Host ""
     Write-Host " ======================================================================" -ForegroundColor Cyan
-    Write-Host "   NH WIN DEBLOATER v0.1" -ForegroundColor White
+    Write-Host "   NH WIN DEBLOATER v$($script:AppVersion)" -ForegroundColor White
     Write-Host "   Less Bloat. Better Windows." -ForegroundColor Gray
     Write-Host "   Developed by NH Digital | https://nhdigital.shop" -ForegroundColor DarkCyan
     Write-Host " ======================================================================" -ForegroundColor Cyan
     Write-Host ""
 }
 
-# 1. Platform Detection
+# 3. Platform Detection
 $os = Get-CimInstance Win32_OperatingSystem
 $buildNumber = [int](Get-ItemProperty "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion").CurrentBuild
 $isAdmin = ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
 
-# 2. Dry-Run Mode
+# 4. Dry-Run Mode
 if ($DryRun) {
     Show-Header
     Write-Host " [+] Operating System : $($os.Caption) (Build $buildNumber)" -ForegroundColor Green
@@ -60,21 +69,38 @@ if ($DryRun) {
     Invoke-DebloatAction -ActionName "Disable Telemetry" -DryRun -ScriptBlock { Set-PrivacySetting -SettingId "DisableTelemetry" -WhatIf } | Out-Null
     Invoke-DebloatAction -ActionName "Disable Copilot" -DryRun -ScriptBlock { Set-PrivacySetting -SettingId "DisableCopilot" -WhatIf } | Out-Null
     Invoke-DebloatAction -ActionName "Show File Extensions" -DryRun -ScriptBlock { Set-ShellSetting -SettingId "ShowFileExtensions" -WhatIf } | Out-Null
+    Invoke-DebloatAction -ActionName "Disable Game DVR" -DryRun -ScriptBlock { Set-GameDVRPlaybackTweak -DisableGameDVR $true -WhatIf } | Out-Null
+    Invoke-DebloatAction -ActionName "Disable Delivery Optimization P2P" -DryRun -ScriptBlock { Set-DeliveryOptimizationTweak -DisableP2P $true -WhatIf } | Out-Null
     exit 0
 }
 
-# 3. Silent Mode
+# 5. Silent Mode
 if ($Silent) {
     Set-PrivacySetting -SettingId "All" -Enable $true | Out-Null
     Set-ConsumerFeatureTweak -Disable $true | Out-Null
     Set-LockScreenTweak -Disable $true | Out-Null
+    Set-GameDVRPlaybackTweak -DisableGameDVR $true | Out-Null
+    Set-DeliveryOptimizationTweak -DisableP2P $true | Out-Null
     exit 0
 }
 
-# 4. GUI Launch Mode (Default when not explicitly in CLI)
+# 6. GUI Launch Mode (Default when not explicitly in CLI)
 if (-not $CLI) {
+    # Ensure Single-Thread Apartment (STA) mode required for WPF
+    if ([System.Threading.Thread]::CurrentThread.GetApartmentState() -ne [System.Threading.ApartmentState]::STA) {
+        Write-Verbose "Single-Thread Apartment (STA) mode required for WPF. Launching STA process..."
+        $entrypointFile = Join-Path $CoreDirectory "Entrypoint.ps1"
+        $psArgs = @("-NoProfile", "-ExecutionPolicy", "Bypass", "-STA", "-File", $entrypointFile)
+        $proc = Start-Process -FilePath "powershell.exe" -ArgumentList $psArgs -PassThru -Wait
+        exit $proc.ExitCode
+    }
+
     try {
-        Import-Module (Join-Path $UiDirectory "AppController.ps1") -Force
+        if (-not (Test-Path $AppControllerScript)) {
+            throw "UI Controller script not found at expected location: '$AppControllerScript'."
+        }
+
+        Import-Module $AppControllerScript -Force
         Show-DebloaterWindow -ProjectRoot $ProjectRootDirectory
         exit 0
     }
@@ -85,7 +111,7 @@ if (-not $CLI) {
     }
 }
 
-# 5. Interactive CLI Console
+# 7. Interactive CLI Console
 Show-Header
 
 Write-Host " [+] Operating System : " -NoNewline -ForegroundColor Gray
@@ -102,7 +128,7 @@ if ($isAdmin) {
 }
 
 Write-Host ""
-Write-Host " [i] Status: v0.1 Core Debloat Modules & UI Controller Loaded." -ForegroundColor Cyan
+Write-Host " [i] Status: v$($script:AppVersion) Core Debloat Modules & UI Controller Loaded." -ForegroundColor Cyan
 Write-Host ""
 
 Write-Host "Select an action to perform:" -ForegroundColor White
@@ -110,7 +136,7 @@ Write-Host " [G] Launch Graphical Setup Assistant (WPF)" -ForegroundColor Cyan
 Write-Host " [1] Preview Recommended Debloat Actions (Dry-Run Mode)" -ForegroundColor White
 Write-Host " [2] Apply Privacy & Telemetry Optimizations" -ForegroundColor White
 Write-Host " [3] Apply UI & File Explorer Optimizations" -ForegroundColor White
-Write-Host " [4] Apply System Extras (Disable Lock Screen Ads & Consumer Promos)" -ForegroundColor White
+Write-Host " [4] Apply System & Gaming Tweaks (Game DVR, Delivery Optimization, Lock Screen)" -ForegroundColor White
 Write-Host " [5] Scan Installed Bloatware Packages" -ForegroundColor White
 Write-Host " [6] View Existing Registry Snapshots (Rollback Inventory)" -ForegroundColor White
 Write-Host " [7] Re-register Default Windows Store Apps" -ForegroundColor White
@@ -121,8 +147,12 @@ $choice = Read-Host " Enter choice (G, 1-7, Q)"
 
 switch ($choice) {
     "G" {
-        Import-Module (Join-Path $UiDirectory "AppController.ps1") -Force
-        Show-DebloaterWindow -ProjectRoot $ProjectRootDirectory
+        if (Test-Path $AppControllerScript) {
+            Import-Module $AppControllerScript -Force
+            Show-DebloaterWindow -ProjectRoot $ProjectRootDirectory
+        } else {
+            Write-Error "UI Controller not found at: '$AppControllerScript'"
+        }
     }
     "1" {
         Write-Host "`n--- DRY-RUN PREVIEW OF RECOMMENDED ACTIONS ---" -ForegroundColor Cyan
@@ -140,6 +170,12 @@ switch ($choice) {
         } | Out-Null
         Invoke-DebloatAction -ActionName "Disable Consumer Features" -DryRun -ScriptBlock {
             Set-ConsumerFeatureTweak -WhatIf
+        } | Out-Null
+        Invoke-DebloatAction -ActionName "Disable Game DVR Background Recording" -DryRun -ScriptBlock {
+            Set-GameDVRPlaybackTweak -DisableGameDVR $true -WhatIf
+        } | Out-Null
+        Invoke-DebloatAction -ActionName "Disable Delivery Optimization P2P" -DryRun -ScriptBlock {
+            Set-DeliveryOptimizationTweak -DisableP2P $true -WhatIf
         } | Out-Null
         Write-Host "`nDry-run preview completed. No system changes were made." -ForegroundColor Green
     }
@@ -159,9 +195,11 @@ switch ($choice) {
         Restart-ShellExplorer
     }
     "4" {
-        Write-Host "`nApplying System Extras..." -ForegroundColor Yellow
+        Write-Host "`nApplying System & Gaming Extras..." -ForegroundColor Yellow
         Set-ConsumerFeatureTweak -Disable $true | Format-Table Path, Name, Status -AutoSize
         Set-LockScreenTweak -Disable $true | Format-Table Path, Name, Status -AutoSize
+        Set-GameDVRPlaybackTweak -DisableGameDVR $true | Format-Table Path, Name, Status -AutoSize
+        Set-DeliveryOptimizationTweak -DisableP2P $true | Format-Table Path, Name, Status -AutoSize
     }
     "5" {
         Write-Host "`nScanning installed AppX packages..." -ForegroundColor Yellow
@@ -193,4 +231,10 @@ Write-Host " Explore more digital tools and updates at:" -ForegroundColor DarkGr
 Write-Host " https://nhdigital.shop" -ForegroundColor Cyan
 Write-Host ""
 Write-Host " Press any key to finish..." -ForegroundColor Gray
-$null = [System.Console]::ReadKey()
+try {
+    if ([System.Environment]::UserInteractive -and -not [System.Console]::IsInputRedirected) {
+        $null = [System.Console]::ReadKey()
+    }
+} catch {
+    Write-Verbose "Non-interactive or redirected console session: $($_.Exception.Message)"
+}

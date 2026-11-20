@@ -109,6 +109,13 @@ function Show-DebloaterWindow {
     $chkEndTask = $window.FindName("ChkEndTask")
     $chkAlignLeft = $window.FindName("ChkAlignLeft")
     $chkHideOneDriveNav = $window.FindName("ChkHideOneDriveNav")
+    $chkSearchHighlights = $window.FindName("ChkSearchHighlights")
+    $chkStartRecommended = $window.FindName("ChkStartRecommended")
+    $chkCompactExplorer = $window.FindName("ChkCompactExplorer")
+
+    $chkGameDVR = $window.FindName("ChkGameDVR")
+    $chkDeliveryOpt = $window.FindName("ChkDeliveryOpt")
+    $chkTelemetryService = $window.FindName("ChkTelemetryService")
 
     $chkConsumerFeatures = $window.FindName("ChkConsumerFeatures")
     $chkLockScreenAds = $window.FindName("ChkLockScreenAds")
@@ -137,6 +144,7 @@ function Show-DebloaterWindow {
     $txtStatSkipped = $window.FindName("TxtStatSkipped")
     $btnRestartExplorer = $window.FindName("BtnRestartExplorer")
     $btnOpenLog = $window.FindName("BtnOpenLog")
+    $btnOpenBackups = $window.FindName("BtnOpenBackups")
 
     $btnBack = $window.FindName("BtnBack")
     $btnNext = $window.FindName("BtnNext")
@@ -171,8 +179,8 @@ function Show-DebloaterWindow {
 
     # Header Logo wiring (preferring raster official logo, falling back to stylish vector box)
     $logoCandidates = @(
-        (Join-Path $logoDir "logo.png"),
         (Join-Path $logoDir "nhdigital-logo.png"),
+        (Join-Path $logoDir "logo.png"),
         (Join-Path $logoDir "nh-digital-logo.png"),
         (Join-Path $logoDir "logo.jpg"),
         (Join-Path $logoDir "nhdigital.png")
@@ -371,6 +379,12 @@ function Show-DebloaterWindow {
         if ($chkStorageSense.IsChecked) { $logBuilder.AppendLine("WhatIf: Storage Sense automatic deletion policy would be disabled.") | Out-Null }
         if ($chkPreventAutoReboot.IsChecked) { $logBuilder.AppendLine("WhatIf: Windows Update automatic reboot while user logged on would be prevented.") | Out-Null }
         if ($chkExcludeDrivers.IsChecked) { $logBuilder.AppendLine("WhatIf: Third-party drivers would be excluded from Windows Quality Updates.") | Out-Null }
+        if ($chkSearchHighlights.IsChecked) { $logBuilder.AppendLine("WhatIf: Taskbar search highlights and doodles would be disabled.") | Out-Null }
+        if ($chkStartRecommended.IsChecked) { $logBuilder.AppendLine("WhatIf: Start Menu Recommended clutter would be hidden.") | Out-Null }
+        if ($chkCompactExplorer.IsChecked) { $logBuilder.AppendLine("WhatIf: File Explorer compact view would be enabled.") | Out-Null }
+        if ($chkGameDVR.IsChecked) { $logBuilder.AppendLine("WhatIf: Game DVR background recording & Xbox Game Bar would be disabled.") | Out-Null }
+        if ($chkDeliveryOpt.IsChecked) { $logBuilder.AppendLine("WhatIf: Delivery Optimization P2P updates would be disabled.") | Out-Null }
+        if ($chkTelemetryService.IsChecked) { $logBuilder.AppendLine("WhatIf: DiagTrack connected user experiences service would be disabled.") | Out-Null }
         if ($chkWindowsSandbox.IsChecked) { $logBuilder.AppendLine("WhatIf: Windows Sandbox optional feature would be enabled.") | Out-Null }
         if ($chkWSL.IsChecked) { $logBuilder.AppendLine("WhatIf: Windows Subsystem for Linux (WSL) would be enabled.") | Out-Null }
 
@@ -483,9 +497,17 @@ function Show-DebloaterWindow {
         if ($chkEndTask.IsChecked) { Set-ShellSetting -SettingId "EnableEndTask" | Out-Null; $totalOps++; $successOps++; & $appendLog "Taskbar End Task enabled." }
         if ($chkAlignLeft.IsChecked) { Set-ShellSetting -SettingId "TaskbarAlignLeft" | Out-Null; $totalOps++; $successOps++; & $appendLog "Taskbar aligned to left." }
         if ($chkHideOneDriveNav.IsChecked) { Set-ShellSetting -SettingId "HideOneDriveNav" | Out-Null; $totalOps++; $successOps++; & $appendLog "OneDrive hidden from Explorer navigation pane." }
+        if ($chkSearchHighlights.IsChecked) { Set-ShellSetting -SettingId "HideSearchHighlights" | Out-Null; $totalOps++; $successOps++; & $appendLog "Taskbar search highlights disabled." }
+        if ($chkStartRecommended.IsChecked) { Set-StartMenuRecommendedTweak -HideRecommended $true | Out-Null; $totalOps++; $successOps++; & $appendLog "Start Menu Recommended clutter hidden." }
+        if ($chkCompactExplorer.IsChecked) { Set-ShellSetting -SettingId "ShowCompactExplorer" | Out-Null; $totalOps++; $successOps++; & $appendLog "File Explorer compact view enabled." }
         $progExecution.Value = 65
 
-        # 5. System Extras
+        # 5. Gaming & Performance Tweaks
+        if ($chkGameDVR.IsChecked) { Set-GameDVRPlaybackTweak -DisableGameDVR $true | Out-Null; $totalOps++; $successOps++; & $appendLog "Game DVR background recording disabled." }
+        if ($chkDeliveryOpt.IsChecked) { Set-DeliveryOptimizationTweak -DisableP2P $true | Out-Null; $totalOps++; $successOps++; & $appendLog "Delivery Optimization P2P disabled." }
+        if ($chkTelemetryService.IsChecked) { Set-TelemetryServiceTweak -DisableServices $true | Out-Null; $totalOps++; $successOps++; & $appendLog "DiagTrack telemetry service disabled." }
+
+        # 6. System Extras
         if ($chkConsumerFeatures.IsChecked) { Set-ConsumerFeatureTweak -Disable $true | Out-Null; $totalOps++; $successOps++; & $appendLog "Windows consumer features disabled." }
         if ($chkLockScreenAds.IsChecked) { Set-LockScreenTweak -Disable $true | Out-Null; $totalOps++; $successOps++; & $appendLog "Lock screen promotional ads disabled." }
         if ($chkMousePrecision.IsChecked) { Set-MousePrecisionTweak -DisableAcceleration $true | Out-Null; $totalOps++; $successOps++; & $appendLog "Mouse pointer acceleration disabled (1:1 precision)." }
@@ -569,6 +591,17 @@ function Show-DebloaterWindow {
             [System.Windows.MessageBox]::Show("Session log file not found.", "NH Win Debloater", [System.Windows.MessageBoxButton]::OK, [System.Windows.MessageBoxImage]::Warning) | Out-Null
         }
     })
+
+    if ($btnOpenBackups) {
+        $btnOpenBackups.Add_Click({
+            param([object]$eventSource, [System.Windows.RoutedEventArgs]$eventArgs)
+            $backupDir = Join-Path $env:LOCALAPPDATA "NHWinDebloater\Backups"
+            if (-not (Test-Path $backupDir)) {
+                New-Item -ItemType Directory -Path $backupDir -Force | Out-Null
+            }
+            Start-Process explorer.exe -ArgumentList "`"$backupDir`""
+        })
+    }
 
     $btnFinish.Add_Click({
         $window.Close()
