@@ -96,6 +96,10 @@
                                 <Setter TargetName="border" Property="Background" Value="#2A384F"/>
                                 <Setter TargetName="border" Property="BorderBrush" Value="#0EA5E9"/>
                             </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#0F172A"/>
+                                <Setter TargetName="border" Property="BorderBrush" Value="#38BDF8"/>
+                            </Trigger>
                             <Trigger Property="IsEnabled" Value="False">
                                 <Setter TargetName="border" Property="Opacity" Value="0.4"/>
                             </Trigger>
@@ -120,6 +124,10 @@
                             <Trigger Property="IsMouseOver" Value="True">
                                 <Setter TargetName="border" Property="Background" Value="#38BDF8"/>
                                 <Setter TargetName="border" Property="BorderBrush" Value="#38BDF8"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#0284C7"/>
+                                <Setter TargetName="border" Property="BorderBrush" Value="#0284C7"/>
                             </Trigger>
                             <Trigger Property="IsEnabled" Value="False">
                                 <Setter TargetName="border" Property="Opacity" Value="0.4"/>
@@ -281,10 +289,10 @@
                     </StackPanel>
                 </Grid>
 
-                <!-- Modern Cyan/Indigo Accent Shimmer Line -->
+                <!-- Modern Cyan/Indigo Accent Shimmer Line with Continuous Sweep -->
                 <Border Height="2" VerticalAlignment="Bottom" HorizontalAlignment="Stretch">
                     <Border.Background>
-                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                        <LinearGradientBrush x:Name="ShimmerGradient" StartPoint="-1,0" EndPoint="0,0">
                             <GradientStop Color="#000EA5E9" Offset="0.0"/>
                             <GradientStop Color="#FF0EA5E9" Offset="0.25"/>
                             <GradientStop Color="#FF38BDF8" Offset="0.5"/>
@@ -292,6 +300,16 @@
                             <GradientStop Color="#006366F1" Offset="1.0"/>
                         </LinearGradientBrush>
                     </Border.Background>
+                    <Border.Triggers>
+                        <EventTrigger RoutedEvent="Loaded">
+                            <BeginStoryboard>
+                                <Storyboard RepeatBehavior="Forever">
+                                    <PointAnimation Storyboard.TargetProperty="Background.StartPoint" From="-1,0" To="1,0" Duration="0:0:3.5"/>
+                                    <PointAnimation Storyboard.TargetProperty="Background.EndPoint" From="0,0" To="2,0" Duration="0:0:3.5"/>
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </EventTrigger>
+                    </Border.Triggers>
                 </Border>
             </Grid>
         </Border>
@@ -316,20 +334,26 @@
 
             <!-- STAGE 1: Presets & Mode Selection -->
             <Grid x:Name="ViewStage1" Visibility="Visible">
+                <Grid.RenderTransform>
+                    <TransformGroup>
+                        <TranslateTransform X="0" Y="0"/>
+                        <ScaleTransform ScaleX="1.0" ScaleY="1.0"/>
+                    </TransformGroup>
+                </Grid.RenderTransform>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
 
-                <Grid Grid.Row="0" Margin="0,0,0,18">
+                <Grid Grid.Row="0" Margin="0,0,0,14">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
                     <StackPanel Grid.Column="0">
-                        <TextBlock Text="Select Optimization Profile &amp; Target Scope" FontSize="18" FontWeight="Bold" Foreground="#F8FAFC"/>
-                        <TextBlock Text="Choose a baseline debloat preset to get started. You can inspect and fine-tune every package in the next step." FontSize="13" Foreground="#94A3B8"/>
+                        <TextBlock Text="Select Optimization Profile &amp; Scope" FontSize="18" FontWeight="Bold" Foreground="#F8FAFC"/>
+                        <TextBlock Text="Choose a baseline preset or import a custom JSON configuration." FontSize="13" Foreground="#94A3B8"/>
                     </StackPanel>
                     <Button x:Name="BtnImportProfile" Grid.Column="1" Style="{StaticResource ModernBtn}" VerticalAlignment="Center" ToolTip="Import custom preset profile from a .json file">
                         <StackPanel Orientation="Horizontal">
@@ -348,7 +372,7 @@
                     </Grid.ColumnDefinitions>
 
                     <!-- Minimal Card -->
-                    <Border x:Name="CardPresetMinimal" Grid.Column="0" Style="{StaticResource PresetCardBorder}" Margin="0,0,10,0" Padding="18">
+                    <Border x:Name="CardPresetMinimal" Grid.Column="0" Style="{StaticResource PresetCardBorder}" Margin="0,0,10,0" Padding="16">
                         <Grid>
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto"/>
@@ -357,19 +381,19 @@
                                 <RowDefinition Height="Auto"/>
                             </Grid.RowDefinitions>
                             <RadioButton x:Name="RadioPresetMinimal" Content="Minimal Debloat" FontWeight="Bold" FontSize="15" GroupName="PresetGroup" Foreground="#F8FAFC"/>
-                            <TextBlock Grid.Row="1" Text="Lightweight &amp; Gentle" FontSize="12" Foreground="#38BDF8" Margin="0,6,0,12"/>
-                            <TextBlock Grid.Row="2" Text="Removes sponsored apps (TikTok, Spotify, Disney+) while keeping all Windows utilities, Xbox, and productivity apps untouched." TextWrapping="Wrap" FontSize="13" Foreground="#CBD5E1"/>
-                            <Border Grid.Row="3" Background="#0A0E17" CornerRadius="4" Padding="10,6" Margin="0,10,0,0">
+                            <TextBlock Grid.Row="1" Text="Lightweight &amp; Gentle" FontSize="12" Foreground="#38BDF8" Margin="0,4,0,8"/>
+                            <TextBlock Grid.Row="2" Text="Removes sponsored apps (Spotify, Disney+) while keeping Windows tools, Xbox, and productivity apps untouched." TextWrapping="Wrap" FontSize="12" Foreground="#CBD5E1"/>
+                            <Border Grid.Row="3" Background="#0A0E17" CornerRadius="4" Padding="10,5" Margin="0,8,0,0">
                                 <StackPanel Orientation="Horizontal">
                                     <Path Data="{StaticResource IconCheckCircle}" Fill="#10B981" Width="11" Height="11" Stretch="Uniform" Margin="0,0,6,0" VerticalAlignment="Center"/>
-                                    <TextBlock Text="Best for enterprise &amp; cautious users" FontSize="11" Foreground="#10B981" VerticalAlignment="Center"/>
+                                    <TextBlock Text="Best for cautious users" FontSize="11" Foreground="#10B981" VerticalAlignment="Center"/>
                                 </StackPanel>
                             </Border>
                         </Grid>
                     </Border>
 
                     <!-- Default / Recommended Card -->
-                    <Border x:Name="CardPresetDefault" Grid.Column="1" Style="{StaticResource PresetCardRecommendedBorder}" Margin="5,0,5,0" Padding="18">
+                    <Border x:Name="CardPresetDefault" Grid.Column="1" Style="{StaticResource PresetCardRecommendedBorder}" Margin="5,0,5,0" Padding="16">
                         <Grid>
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto"/>
@@ -378,19 +402,19 @@
                                 <RowDefinition Height="Auto"/>
                             </Grid.RowDefinitions>
                             <RadioButton x:Name="RadioPresetDefault" Content="Recommended Debloat" FontWeight="Bold" FontSize="15" IsChecked="True" GroupName="PresetGroup" Foreground="#F8FAFC"/>
-                            <TextBlock Grid.Row="1" Text="Balanced Performance &amp; Privacy" FontSize="12" Foreground="#10B981" Margin="0,6,0,12"/>
-                            <TextBlock Grid.Row="2" Text="Removes 80+ preinstalled bloatware packages, telemetry diagnostics, targeted ads, and web search suggestions. Protects all system-critical apps." TextWrapping="Wrap" FontSize="13" Foreground="#CBD5E1"/>
-                            <Border Grid.Row="3" Background="#0A0E17" CornerRadius="4" Padding="10,6" Margin="0,10,0,0">
+                            <TextBlock Grid.Row="1" Text="Balanced Performance &amp; Privacy" FontSize="12" Foreground="#10B981" Margin="0,4,0,8"/>
+                            <TextBlock Grid.Row="2" Text="Removes 80+ bloatware packages, telemetry, targeted ads, and web search suggestions. Protects core system apps." TextWrapping="Wrap" FontSize="12" Foreground="#CBD5E1"/>
+                            <Border Grid.Row="3" Background="#0A0E17" CornerRadius="4" Padding="10,5" Margin="0,8,0,0">
                                 <StackPanel Orientation="Horizontal">
                                     <Path Data="{StaticResource IconLightning}" Fill="#38BDF8" Width="11" Height="11" Stretch="Uniform" Margin="0,0,6,0" VerticalAlignment="Center"/>
-                                    <TextBlock Text="Recommended for most PCs &amp; gamers" FontSize="11" Foreground="#38BDF8" VerticalAlignment="Center"/>
+                                    <TextBlock Text="Recommended for most PCs" FontSize="11" Foreground="#38BDF8" VerticalAlignment="Center"/>
                                 </StackPanel>
                             </Border>
                         </Grid>
                     </Border>
 
                     <!-- Deep Debloat Card -->
-                    <Border x:Name="CardPresetDeep" Grid.Column="2" Style="{StaticResource PresetCardBorder}" Margin="10,0,0,0" Padding="18">
+                    <Border x:Name="CardPresetDeep" Grid.Column="2" Style="{StaticResource PresetCardBorder}" Margin="10,0,0,0" Padding="16">
                         <Grid>
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto"/>
@@ -399,12 +423,12 @@
                                 <RowDefinition Height="Auto"/>
                             </Grid.RowDefinitions>
                             <RadioButton x:Name="RadioPresetDeep" Content="Deep Debloat" FontWeight="Bold" FontSize="15" GroupName="PresetGroup" Foreground="#F8FAFC"/>
-                            <TextBlock Grid.Row="1" Text="Maximum Performance" FontSize="12" Foreground="#EAB308" Margin="0,6,0,12"/>
-                            <TextBlock Grid.Row="2" Text="Thorough debloating including optional Microsoft productivity utilities (OneNote, Sticky Notes, Voice Recorder). Fully customizable in the next step." TextWrapping="Wrap" FontSize="13" Foreground="#CBD5E1"/>
-                            <Border Grid.Row="3" Background="#0A0E17" CornerRadius="4" Padding="10,6" Margin="0,10,0,0">
+                            <TextBlock Grid.Row="1" Text="Maximum Optimization" FontSize="12" Foreground="#EAB308" Margin="0,4,0,8"/>
+                            <TextBlock Grid.Row="2" Text="Removes all removable non-essential packages including built-in media and notes tools for max performance." TextWrapping="Wrap" FontSize="12" Foreground="#CBD5E1"/>
+                            <Border Grid.Row="3" Background="#0A0E17" CornerRadius="4" Padding="10,5" Margin="0,8,0,0">
                                 <StackPanel Orientation="Horizontal">
                                     <Path Data="{StaticResource IconAlertTriangle}" Fill="#F59E0B" Width="11" Height="11" Stretch="Uniform" Margin="0,0,6,0" VerticalAlignment="Center"/>
-                                    <TextBlock Text="Recommended for power users" FontSize="11" Foreground="#F59E0B" VerticalAlignment="Center"/>
+                                    <TextBlock Text="For power users" FontSize="11" Foreground="#F59E0B" VerticalAlignment="Center"/>
                                 </StackPanel>
                             </Border>
                         </Grid>
@@ -430,6 +454,12 @@
 
             <!-- STAGE 2: App & Tweak Selection -->
             <Grid x:Name="ViewStage2" Visibility="Collapsed">
+                <Grid.RenderTransform>
+                    <TransformGroup>
+                        <TranslateTransform X="0" Y="0"/>
+                        <ScaleTransform ScaleX="1.0" ScaleY="1.0"/>
+                    </TransformGroup>
+                </Grid.RenderTransform>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="*"/>
@@ -443,7 +473,7 @@
                     </Grid.ColumnDefinitions>
                     <StackPanel Grid.Column="0">
                         <TextBlock Text="Refine Packages &amp; System Tweaks" FontSize="18" FontWeight="Bold" Foreground="#F8FAFC"/>
-                        <TextBlock Text="Batch-select multi-category packages and configure system optimization tweaks." FontSize="13" Foreground="#94A3B8"/>
+                        <TextBlock Text="Configure bloatware removals, privacy policies, shell options, and system tweaks." FontSize="13" Foreground="#94A3B8"/>
                     </StackPanel>
 
                     <!-- Live Badges & Filter Box -->
@@ -477,7 +507,13 @@
                     </StackPanel>
                 </Grid>
 
-                <TabControl Grid.Row="1" Background="#131D31" BorderBrush="#2A384F" Foreground="#F8FAFC">
+                <TabControl x:Name="TabStage2Controls" Grid.Row="1" Background="#131D31" BorderBrush="#2A384F" Foreground="#F8FAFC">
+                    <TabControl.RenderTransform>
+                        <TransformGroup>
+                            <TranslateTransform Y="0"/>
+                            <ScaleTransform ScaleX="1.0" ScaleY="1.0"/>
+                        </TransformGroup>
+                    </TabControl.RenderTransform>
                     <!-- Tab 1: Bloatware Apps -->
                     <TabItem FontWeight="SemiBold">
                         <TabItem.Header>
@@ -517,11 +553,28 @@
                                         </ToggleButton>
                                         <Popup x:Name="PopupAppCategories" PlacementTarget="{Binding ElementName=ToggleAppCategories}" Placement="Bottom" IsOpen="{Binding IsChecked, ElementName=ToggleAppCategories}" StaysOpen="False" PopupAnimation="Fade" AllowsTransparency="True">
                                             <Border Background="#131D31" BorderBrush="#2A384F" BorderThickness="1" CornerRadius="6" Padding="12" MinWidth="280">
+                                                <Border.RenderTransform>
+                                                    <TransformGroup>
+                                                        <ScaleTransform ScaleX="0.95" ScaleY="0.95"/>
+                                                        <TranslateTransform Y="-4"/>
+                                                    </TransformGroup>
+                                                </Border.RenderTransform>
                                                 <Border.Triggers>
                                                     <EventTrigger RoutedEvent="Loaded">
                                                         <BeginStoryboard>
                                                             <Storyboard>
-                                                                <DoubleAnimation Storyboard.TargetProperty="Opacity" From="0.0" To="1.0" Duration="0:0:0.18"/>
+                                                                <DoubleAnimation Storyboard.TargetProperty="Opacity" From="0.0" To="1.0" Duration="0:0:0.18">
+                                                                    <DoubleAnimation.EasingFunction><CubicEase EasingMode="EaseOut"/></DoubleAnimation.EasingFunction>
+                                                                </DoubleAnimation>
+                                                                <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleX)" From="0.95" To="1.0" Duration="0:0:0.18">
+                                                                    <DoubleAnimation.EasingFunction><CubicEase EasingMode="EaseOut"/></DoubleAnimation.EasingFunction>
+                                                                </DoubleAnimation>
+                                                                <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleY)" From="0.95" To="1.0" Duration="0:0:0.18">
+                                                                    <DoubleAnimation.EasingFunction><CubicEase EasingMode="EaseOut"/></DoubleAnimation.EasingFunction>
+                                                                </DoubleAnimation>
+                                                                <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[1].(TranslateTransform.Y)" From="-4" To="0" Duration="0:0:0.18">
+                                                                    <DoubleAnimation.EasingFunction><CubicEase EasingMode="EaseOut"/></DoubleAnimation.EasingFunction>
+                                                                </DoubleAnimation>
                                                             </Storyboard>
                                                         </BeginStoryboard>
                                                     </EventTrigger>
@@ -607,27 +660,51 @@
                                 </Grid.ColumnDefinitions>
 
                                 <Grid Grid.Column="0">
-                                    <ToggleButton x:Name="TogglePrivacyPresets" Style="{StaticResource ModernDropdownToggle}" MinWidth="140">
+                                    <ToggleButton x:Name="TogglePrivacyPresets" Style="{StaticResource ModernDropdownToggle}" MinWidth="180">
                                         <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                            <TextBlock Text="Quick Presets" Margin="0,0,6,0" VerticalAlignment="Center"/>
+                                            <TextBlock x:Name="TxtTogglePrivacyText" Text="Presets: All Active (5/5)" Margin="0,0,6,0" VerticalAlignment="Center"/>
                                             <Path Data="{StaticResource IconChevronDown}" Fill="#38BDF8" Width="10" Height="10" Stretch="Uniform" VerticalAlignment="Center"/>
                                         </StackPanel>
                                     </ToggleButton>
                                     <Popup x:Name="PopupPrivacyPresets" PlacementTarget="{Binding ElementName=TogglePrivacyPresets}" Placement="Bottom" IsOpen="{Binding IsChecked, ElementName=TogglePrivacyPresets}" StaysOpen="False" PopupAnimation="Fade" AllowsTransparency="True">
-                                        <Border Background="#131D31" BorderBrush="#2A384F" BorderThickness="1" CornerRadius="6" Padding="10" MinWidth="240">
+                                        <Border Background="#131D31" BorderBrush="#2A384F" BorderThickness="1" CornerRadius="6" Padding="12" MinWidth="260">
+                                            <Border.RenderTransform>
+                                                <TransformGroup>
+                                                    <ScaleTransform ScaleX="0.95" ScaleY="0.95"/>
+                                                    <TranslateTransform Y="-4"/>
+                                                </TransformGroup>
+                                            </Border.RenderTransform>
                                             <Border.Triggers>
                                                 <EventTrigger RoutedEvent="Loaded">
                                                     <BeginStoryboard>
                                                         <Storyboard>
-                                                            <DoubleAnimation Storyboard.TargetProperty="Opacity" From="0.0" To="1.0" Duration="0:0:0.18"/>
+                                                            <DoubleAnimation Storyboard.TargetProperty="Opacity" From="0.0" To="1.0" Duration="0:0:0.18">
+                                                                <DoubleAnimation.EasingFunction><CubicEase EasingMode="EaseOut"/></DoubleAnimation.EasingFunction>
+                                                            </DoubleAnimation>
+                                                            <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleX)" From="0.95" To="1.0" Duration="0:0:0.18">
+                                                                <DoubleAnimation.EasingFunction><CubicEase EasingMode="EaseOut"/></DoubleAnimation.EasingFunction>
+                                                            </DoubleAnimation>
+                                                            <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleY)" From="0.95" To="1.0" Duration="0:0:0.18">
+                                                                <DoubleAnimation.EasingFunction><CubicEase EasingMode="EaseOut"/></DoubleAnimation.EasingFunction>
+                                                            </DoubleAnimation>
+                                                            <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[1].(TranslateTransform.Y)" From="-4" To="0" Duration="0:0:0.18">
+                                                                <DoubleAnimation.EasingFunction><CubicEase EasingMode="EaseOut"/></DoubleAnimation.EasingFunction>
+                                                            </DoubleAnimation>
                                                         </Storyboard>
                                                     </BeginStoryboard>
                                                 </EventTrigger>
                                             </Border.Triggers>
                                             <StackPanel>
-                                                <TextBlock Text="Privacy Batch Presets:" FontSize="11" FontWeight="Bold" Foreground="#38BDF8" Margin="0,0,0,6"/>
-                                                <Button x:Name="BtnPrivacyRecommended" Style="{StaticResource DropdownActionBtn}" Content="• Recommended (Telemetry + Ads + Search)"/>
-                                                <Button x:Name="BtnPrivacyStrict" Style="{StaticResource DropdownActionBtn}" Content="• Strict Privacy (All Settings Disabled)"/>
+                                                <TextBlock Text="Select Privacy Presets:" FontSize="11" FontWeight="Bold" Foreground="#38BDF8" Margin="0,0,0,8"/>
+                                                <CheckBox x:Name="ChkPrivTelemetry" Style="{StaticResource ModernCheckBox}" Content="Telemetry &amp; Diagnostics" IsChecked="True"/>
+                                                <CheckBox x:Name="ChkPrivSearch" Style="{StaticResource ModernCheckBox}" Content="Web Search &amp; Bing in Start" IsChecked="True"/>
+                                                <CheckBox x:Name="ChkPrivActivity" Style="{StaticResource ModernCheckBox}" Content="Activity History &amp; Feedback" IsChecked="True"/>
+                                                <CheckBox x:Name="ChkPrivAds" Style="{StaticResource ModernCheckBox}" Content="Advertising ID &amp; Tailored Experiences" IsChecked="True"/>
+                                                <Border BorderBrush="#2A384F" BorderThickness="0,1,0,0" Margin="0,8,0,8"/>
+                                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                                                    <Button x:Name="BtnPrivSelectAll" Style="{StaticResource ModernBtn}" Content="Check All" Padding="8,2" Margin="0,0,6,0"/>
+                                                    <Button x:Name="BtnPrivClear" Style="{StaticResource ModernBtn}" Content="Clear" Padding="8,2"/>
+                                                </StackPanel>
                                             </StackPanel>
                                         </Border>
                                     </Popup>
@@ -732,27 +809,50 @@
                                 </Grid.ColumnDefinitions>
 
                                 <Grid Grid.Column="0">
-                                    <ToggleButton x:Name="ToggleShellPresets" Style="{StaticResource ModernDropdownToggle}" MinWidth="140">
+                                    <ToggleButton x:Name="ToggleShellPresets" Style="{StaticResource ModernDropdownToggle}" MinWidth="180">
                                         <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                            <TextBlock Text="Quick Presets" Margin="0,0,6,0" VerticalAlignment="Center"/>
+                                            <TextBlock x:Name="TxtToggleShellText" Text="Presets: Clean &amp; Power-User" Margin="0,0,6,0" VerticalAlignment="Center"/>
                                             <Path Data="{StaticResource IconChevronDown}" Fill="#38BDF8" Width="10" Height="10" Stretch="Uniform" VerticalAlignment="Center"/>
                                         </StackPanel>
                                     </ToggleButton>
                                     <Popup x:Name="PopupShellPresets" PlacementTarget="{Binding ElementName=ToggleShellPresets}" Placement="Bottom" IsOpen="{Binding IsChecked, ElementName=ToggleShellPresets}" StaysOpen="False" PopupAnimation="Fade" AllowsTransparency="True">
-                                        <Border Background="#131D31" BorderBrush="#2A384F" BorderThickness="1" CornerRadius="6" Padding="10" MinWidth="250">
+                                        <Border Background="#131D31" BorderBrush="#2A384F" BorderThickness="1" CornerRadius="6" Padding="12" MinWidth="260">
+                                            <Border.RenderTransform>
+                                                <TransformGroup>
+                                                    <ScaleTransform ScaleX="0.95" ScaleY="0.95"/>
+                                                    <TranslateTransform Y="-4"/>
+                                                </TransformGroup>
+                                            </Border.RenderTransform>
                                             <Border.Triggers>
                                                 <EventTrigger RoutedEvent="Loaded">
                                                     <BeginStoryboard>
                                                         <Storyboard>
-                                                            <DoubleAnimation Storyboard.TargetProperty="Opacity" From="0.0" To="1.0" Duration="0:0:0.18"/>
+                                                            <DoubleAnimation Storyboard.TargetProperty="Opacity" From="0.0" To="1.0" Duration="0:0:0.18">
+                                                                <DoubleAnimation.EasingFunction><CubicEase EasingMode="EaseOut"/></DoubleAnimation.EasingFunction>
+                                                            </DoubleAnimation>
+                                                            <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleX)" From="0.95" To="1.0" Duration="0:0:0.18">
+                                                                <DoubleAnimation.EasingFunction><CubicEase EasingMode="EaseOut"/></DoubleAnimation.EasingFunction>
+                                                            </DoubleAnimation>
+                                                            <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleY)" From="0.95" To="1.0" Duration="0:0:0.18">
+                                                                <DoubleAnimation.EasingFunction><CubicEase EasingMode="EaseOut"/></DoubleAnimation.EasingFunction>
+                                                            </DoubleAnimation>
+                                                            <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[1].(TranslateTransform.Y)" From="-4" To="0" Duration="0:0:0.18">
+                                                                <DoubleAnimation.EasingFunction><CubicEase EasingMode="EaseOut"/></DoubleAnimation.EasingFunction>
+                                                            </DoubleAnimation>
                                                         </Storyboard>
                                                     </BeginStoryboard>
                                                 </EventTrigger>
                                             </Border.Triggers>
                                             <StackPanel>
-                                                <TextBlock Text="Shell Batch Presets:" FontSize="11" FontWeight="Bold" Foreground="#38BDF8" Margin="0,0,0,6"/>
-                                                <Button x:Name="BtnShellClean" Style="{StaticResource DropdownActionBtn}" Content="• Clean Windows 11 Desktop (Widgets/Chat off)"/>
-                                                <Button x:Name="BtnShellPowerUser" Style="{StaticResource DropdownActionBtn}" Content="• Power-User Explorer (Ext/Hidden/ThisPC)"/>
+                                                <TextBlock Text="Select Shell Presets:" FontSize="11" FontWeight="Bold" Foreground="#38BDF8" Margin="0,0,0,8"/>
+                                                <CheckBox x:Name="ChkShellClean" Style="{StaticResource ModernCheckBox}" Content="Clean Desktop (Widgets/Chat Off)" IsChecked="True"/>
+                                                <CheckBox x:Name="ChkShellPowerUser" Style="{StaticResource ModernCheckBox}" Content="Power-User View (Ext/Hidden/Compact)" IsChecked="True"/>
+                                                <CheckBox x:Name="ChkShellTaskbar" Style="{StaticResource ModernCheckBox}" Content="Taskbar Tweaks (Left Align/End Task)" IsChecked="True"/>
+                                                <Border BorderBrush="#2A384F" BorderThickness="0,1,0,0" Margin="0,8,0,8"/>
+                                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                                                    <Button x:Name="BtnShellSelectAll" Style="{StaticResource ModernBtn}" Content="Check All" Padding="8,2" Margin="0,0,6,0"/>
+                                                    <Button x:Name="BtnShellClear" Style="{StaticResource ModernBtn}" Content="Clear" Padding="8,2"/>
+                                                </StackPanel>
                                             </StackPanel>
                                         </Border>
                                     </Popup>
@@ -798,7 +898,7 @@
                                     </Grid>
                                     <Grid Margin="0,4">
                                         <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
-                                        <CheckBox x:Name="ChkExplorerThisPC" Grid.Column="0" Style="{StaticResource ModernCheckBox}" Content="Set File Explorer to open 'This PC' instead of Home/Quick Access" IsChecked="True"/>
+                                        <CheckBox x:Name="ChkLaunchToThisPC" Grid.Column="0" Style="{StaticResource ModernCheckBox}" Content="Set File Explorer to open 'This PC' instead of Home/Quick Access" IsChecked="True"/>
                                         <Border Grid.Column="1" Background="#064E3B" CornerRadius="10" Padding="8,3" VerticalAlignment="Center">
                                             <StackPanel Orientation="Horizontal">
                                                 <Path Data="{StaticResource IconCheckCircle}" Fill="#34D399" Width="10" Height="10" Stretch="Uniform" Margin="0,0,4,0" VerticalAlignment="Center"/>
@@ -906,6 +1006,27 @@
                                             </StackPanel>
                                         </Border>
                                     </Grid>
+                                    <Grid Margin="0,4">
+                                        <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                                        <CheckBox x:Name="ChkSnapFlyout" Grid.Column="0" Style="{StaticResource ModernCheckBox}" Content="Disable Snap Layouts flyout on window maximize button" IsChecked="False"/>
+                                        <Border Grid.Column="1" Background="#1E293B" CornerRadius="10" Padding="8,3" VerticalAlignment="Center">
+                                            <StackPanel Orientation="Horizontal">
+                                                <Path Data="{StaticResource IconSettingsExtras}" Fill="#94A3B8" Width="9" Height="9" Stretch="Uniform" Margin="0,0,4,0" VerticalAlignment="Center"/>
+                                                <TextBlock Text="OPTIONAL" FontSize="9" FontWeight="Bold" Foreground="#94A3B8" VerticalAlignment="Center"/>
+                                            </StackPanel>
+                                        </Border>
+                                    </Grid>
+                                    <Grid Margin="0,4">
+                                        <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                                        <CheckBox x:Name="ChkHideGalleryNav" Grid.Column="0" Style="{StaticResource ModernCheckBox}" Content="Hide Gallery from File Explorer Navigation Pane" IsChecked="False"/>
+                                        <Border Grid.Column="1" Background="#1E293B" CornerRadius="10" Padding="8,3" VerticalAlignment="Center">
+                                            <StackPanel Orientation="Horizontal">
+                                                <Path Data="{StaticResource IconSettingsExtras}" Fill="#94A3B8" Width="9" Height="9" Stretch="Uniform" Margin="0,0,4,0" VerticalAlignment="Center"/>
+                                                <TextBlock Text="OPTIONAL" FontSize="9" FontWeight="Bold" Foreground="#94A3B8" VerticalAlignment="Center"/>
+                                            </StackPanel>
+                                        </Border>
+                                    </Grid>
+
                                 </StackPanel>
                             </ScrollViewer>
                         </Grid>
@@ -937,27 +1058,51 @@
                                 </Grid.ColumnDefinitions>
 
                                 <Grid Grid.Column="0">
-                                    <ToggleButton x:Name="ToggleGamingPresets" Style="{StaticResource ModernDropdownToggle}" MinWidth="140">
+                                    <ToggleButton x:Name="ToggleGamingPresets" Style="{StaticResource ModernDropdownToggle}" MinWidth="180">
                                         <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                            <TextBlock Text="Quick Presets" Margin="0,0,6,0" VerticalAlignment="Center"/>
+                                            <TextBlock x:Name="TxtToggleGamingText" Text="Presets: Max Performance" Margin="0,0,6,0" VerticalAlignment="Center"/>
                                             <Path Data="{StaticResource IconChevronDown}" Fill="#38BDF8" Width="10" Height="10" Stretch="Uniform" VerticalAlignment="Center"/>
                                         </StackPanel>
                                     </ToggleButton>
                                     <Popup x:Name="PopupGamingPresets" PlacementTarget="{Binding ElementName=ToggleGamingPresets}" Placement="Bottom" IsOpen="{Binding IsChecked, ElementName=ToggleGamingPresets}" StaysOpen="False" PopupAnimation="Fade" AllowsTransparency="True">
-                                        <Border Background="#131D31" BorderBrush="#2A384F" BorderThickness="1" CornerRadius="6" Padding="10" MinWidth="250">
+                                        <Border Background="#131D31" BorderBrush="#2A384F" BorderThickness="1" CornerRadius="6" Padding="12" MinWidth="260">
+                                            <Border.RenderTransform>
+                                                <TransformGroup>
+                                                    <ScaleTransform ScaleX="0.95" ScaleY="0.95"/>
+                                                    <TranslateTransform Y="-4"/>
+                                                </TransformGroup>
+                                            </Border.RenderTransform>
                                             <Border.Triggers>
                                                 <EventTrigger RoutedEvent="Loaded">
                                                     <BeginStoryboard>
                                                         <Storyboard>
-                                                            <DoubleAnimation Storyboard.TargetProperty="Opacity" From="0.0" To="1.0" Duration="0:0:0.18"/>
+                                                            <DoubleAnimation Storyboard.TargetProperty="Opacity" From="0.0" To="1.0" Duration="0:0:0.18">
+                                                                <DoubleAnimation.EasingFunction><CubicEase EasingMode="EaseOut"/></DoubleAnimation.EasingFunction>
+                                                            </DoubleAnimation>
+                                                            <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleX)" From="0.95" To="1.0" Duration="0:0:0.18">
+                                                                <DoubleAnimation.EasingFunction><CubicEase EasingMode="EaseOut"/></DoubleAnimation.EasingFunction>
+                                                            </DoubleAnimation>
+                                                            <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleY)" From="0.95" To="1.0" Duration="0:0:0.18">
+                                                                <DoubleAnimation.EasingFunction><CubicEase EasingMode="EaseOut"/></DoubleAnimation.EasingFunction>
+                                                            </DoubleAnimation>
+                                                            <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[1].(TranslateTransform.Y)" From="-4" To="0" Duration="0:0:0.18">
+                                                                <DoubleAnimation.EasingFunction><CubicEase EasingMode="EaseOut"/></DoubleAnimation.EasingFunction>
+                                                            </DoubleAnimation>
                                                         </Storyboard>
                                                     </BeginStoryboard>
                                                 </EventTrigger>
                                             </Border.Triggers>
                                             <StackPanel>
-                                                <TextBlock Text="Gaming Batch Presets:" FontSize="11" FontWeight="Bold" Foreground="#38BDF8" Margin="0,0,0,6"/>
-                                                <Button x:Name="BtnGamingMaxPerformance" Style="{StaticResource DropdownActionBtn}" Content="• Maximum Gaming Performance (DVR/Edge/CEIP off)"/>
-                                                <Button x:Name="BtnGamingStorage" Style="{StaticResource DropdownActionBtn}" Content="• Storage Reclaim (Hibernation off)"/>
+                                                <TextBlock Text="Select Gaming Presets:" FontSize="11" FontWeight="Bold" Foreground="#38BDF8" Margin="0,0,0,8"/>
+                                                <CheckBox x:Name="ChkGamingDVR" Style="{StaticResource ModernCheckBox}" Content="Game DVR &amp; Background Capture" IsChecked="True"/>
+                                                <CheckBox x:Name="ChkGamingBackground" Style="{StaticResource ModernCheckBox}" Content="Background Apps &amp; Edge Startup" IsChecked="True"/>
+                                                <CheckBox x:Name="ChkGamingOptimization" Style="{StaticResource ModernCheckBox}" Content="Delivery Optimization &amp; CEIP Tasks" IsChecked="True"/>
+                                                <CheckBox x:Name="ChkGamingStorage" Style="{StaticResource ModernCheckBox}" Content="Hibernation Storage Reclaim" IsChecked="False"/>
+                                                <Border BorderBrush="#2A384F" BorderThickness="0,1,0,0" Margin="0,8,0,8"/>
+                                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                                                    <Button x:Name="BtnGamingSelectAll" Style="{StaticResource ModernBtn}" Content="Check All" Padding="8,2" Margin="0,0,6,0"/>
+                                                    <Button x:Name="BtnGamingClear" Style="{StaticResource ModernBtn}" Content="Clear" Padding="8,2"/>
+                                                </StackPanel>
                                             </StackPanel>
                                         </Border>
                                     </Popup>
@@ -1072,26 +1217,51 @@
                                 </Grid.ColumnDefinitions>
 
                                 <Grid Grid.Column="0">
-                                    <ToggleButton x:Name="ToggleExtrasPresets" Style="{StaticResource ModernDropdownToggle}" MinWidth="140">
+                                    <ToggleButton x:Name="ToggleExtrasPresets" Style="{StaticResource ModernDropdownToggle}" MinWidth="180">
                                         <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                            <TextBlock Text="Quick Presets" Margin="0,0,6,0" VerticalAlignment="Center"/>
+                                            <TextBlock x:Name="TxtToggleExtrasText" Text="Presets: Recommended Extras" Margin="0,0,6,0" VerticalAlignment="Center"/>
                                             <Path Data="{StaticResource IconChevronDown}" Fill="#38BDF8" Width="10" Height="10" Stretch="Uniform" VerticalAlignment="Center"/>
                                         </StackPanel>
                                     </ToggleButton>
                                     <Popup x:Name="PopupExtrasPresets" PlacementTarget="{Binding ElementName=ToggleExtrasPresets}" Placement="Bottom" IsOpen="{Binding IsChecked, ElementName=ToggleExtrasPresets}" StaysOpen="False" PopupAnimation="Fade" AllowsTransparency="True">
-                                        <Border Background="#131D31" BorderBrush="#2A384F" BorderThickness="1" CornerRadius="6" Padding="10" MinWidth="250">
+                                        <Border Background="#131D31" BorderBrush="#2A384F" BorderThickness="1" CornerRadius="6" Padding="12" MinWidth="260">
+                                            <Border.RenderTransform>
+                                                <TransformGroup>
+                                                    <ScaleTransform ScaleX="0.95" ScaleY="0.95"/>
+                                                    <TranslateTransform Y="-4"/>
+                                                </TransformGroup>
+                                            </Border.RenderTransform>
                                             <Border.Triggers>
                                                 <EventTrigger RoutedEvent="Loaded">
                                                     <BeginStoryboard>
                                                         <Storyboard>
-                                                            <DoubleAnimation Storyboard.TargetProperty="Opacity" From="0.0" To="1.0" Duration="0:0:0.18"/>
+                                                            <DoubleAnimation Storyboard.TargetProperty="Opacity" From="0.0" To="1.0" Duration="0:0:0.18">
+                                                                <DoubleAnimation.EasingFunction><CubicEase EasingMode="EaseOut"/></DoubleAnimation.EasingFunction>
+                                                            </DoubleAnimation>
+                                                            <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleX)" From="0.95" To="1.0" Duration="0:0:0.18">
+                                                                <DoubleAnimation.EasingFunction><CubicEase EasingMode="EaseOut"/></DoubleAnimation.EasingFunction>
+                                                            </DoubleAnimation>
+                                                            <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleY)" From="0.95" To="1.0" Duration="0:0:0.18">
+                                                                <DoubleAnimation.EasingFunction><CubicEase EasingMode="EaseOut"/></DoubleAnimation.EasingFunction>
+                                                            </DoubleAnimation>
+                                                            <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[1].(TranslateTransform.Y)" From="-4" To="0" Duration="0:0:0.18">
+                                                                <DoubleAnimation.EasingFunction><CubicEase EasingMode="EaseOut"/></DoubleAnimation.EasingFunction>
+                                                            </DoubleAnimation>
                                                         </Storyboard>
                                                     </BeginStoryboard>
                                                 </EventTrigger>
                                             </Border.Triggers>
                                             <StackPanel>
-                                                <TextBlock Text="System Extras Presets:" FontSize="11" FontWeight="Bold" Foreground="#38BDF8" Margin="0,0,0,6"/>
-                                                <Button x:Name="BtnExtrasRecommended" Style="{StaticResource DropdownActionBtn}" Content="• Recommended (Consumer Promos + Precision)"/>
+                                                <TextBlock Text="Select System Extras Presets:" FontSize="11" FontWeight="Bold" Foreground="#38BDF8" Margin="0,0,0,8"/>
+                                                <CheckBox x:Name="ChkExtrasPromos" Style="{StaticResource ModernCheckBox}" Content="Consumer Promos &amp; Lock Screen Tips" IsChecked="True"/>
+                                                <CheckBox x:Name="ChkExtrasDesktop" Style="{StaticResource ModernCheckBox}" Content="Classic Context Menu &amp; Mouse Precision" IsChecked="True"/>
+                                                <CheckBox x:Name="ChkExtrasAccessibility" Style="{StaticResource ModernCheckBox}" Content="Disable Sticky Keys Shortcut" IsChecked="True"/>
+                                                <CheckBox x:Name="ChkExtrasPower" Style="{StaticResource ModernCheckBox}" Content="Fast Startup &amp; Storage Sense" IsChecked="False"/>
+                                                <Border BorderBrush="#2A384F" BorderThickness="0,1,0,0" Margin="0,8,0,8"/>
+                                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                                                    <Button x:Name="BtnExtrasSelectAll" Style="{StaticResource ModernBtn}" Content="Check All" Padding="8,2" Margin="0,0,6,0"/>
+                                                    <Button x:Name="BtnExtrasClear" Style="{StaticResource ModernBtn}" Content="Clear" Padding="8,2"/>
+                                                </StackPanel>
                                             </StackPanel>
                                         </Border>
                                     </Popup>
@@ -1195,6 +1365,16 @@
                                             </StackPanel>
                                         </Border>
                                     </Grid>
+                                    <Grid Margin="0,4">
+                                        <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                                        <CheckBox x:Name="ChkSettingsHome" Grid.Column="0" Style="{StaticResource ModernCheckBox}" Content="Disable recommended cards &amp; promotional suggestions on Settings home page" IsChecked="True"/>
+                                        <Border Grid.Column="1" Background="#064E3B" CornerRadius="10" Padding="8,3" VerticalAlignment="Center">
+                                            <StackPanel Orientation="Horizontal">
+                                                <Path Data="{StaticResource IconCheckCircle}" Fill="#34D399" Width="10" Height="10" Stretch="Uniform" Margin="0,0,4,0" VerticalAlignment="Center"/>
+                                                <TextBlock Text="SAFE" FontSize="9" FontWeight="Bold" Foreground="#34D399" VerticalAlignment="Center"/>
+                                            </StackPanel>
+                                        </Border>
+                                    </Grid>
                                 </StackPanel>
                             </ScrollViewer>
                         </Grid>
@@ -1226,28 +1406,50 @@
                                 </Grid.ColumnDefinitions>
 
                                 <Grid Grid.Column="0">
-                                    <ToggleButton x:Name="ToggleAIPresets" Style="{StaticResource ModernDropdownToggle}" MinWidth="140">
+                                    <ToggleButton x:Name="ToggleAIPresets" Style="{StaticResource ModernDropdownToggle}" MinWidth="180">
                                         <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                            <TextBlock Text="Quick Presets" Margin="0,0,6,0" VerticalAlignment="Center"/>
+                                            <TextBlock x:Name="TxtToggleAIText" Text="Presets: All AI Disabled" Margin="0,0,6,0" VerticalAlignment="Center"/>
                                             <Path Data="{StaticResource IconChevronDown}" Fill="#38BDF8" Width="10" Height="10" Stretch="Uniform" VerticalAlignment="Center"/>
                                         </StackPanel>
                                     </ToggleButton>
                                     <Popup x:Name="PopupAIPresets" PlacementTarget="{Binding ElementName=ToggleAIPresets}" Placement="Bottom" IsOpen="{Binding IsChecked, ElementName=ToggleAIPresets}" StaysOpen="False" PopupAnimation="Fade" AllowsTransparency="True">
-                                        <Border Background="#131D31" BorderBrush="#2A384F" BorderThickness="1" CornerRadius="6" Padding="10" MinWidth="260">
+                                        <Border Background="#131D31" BorderBrush="#2A384F" BorderThickness="1" CornerRadius="6" Padding="12" MinWidth="260">
+                                            <Border.RenderTransform>
+                                                <TransformGroup>
+                                                    <ScaleTransform ScaleX="0.95" ScaleY="0.95"/>
+                                                    <TranslateTransform Y="-4"/>
+                                                </TransformGroup>
+                                            </Border.RenderTransform>
                                             <Border.Triggers>
                                                 <EventTrigger RoutedEvent="Loaded">
                                                     <BeginStoryboard>
                                                         <Storyboard>
-                                                            <DoubleAnimation Storyboard.TargetProperty="Opacity" From="0.0" To="1.0" Duration="0:0:0.18"/>
+                                                            <DoubleAnimation Storyboard.TargetProperty="Opacity" From="0.0" To="1.0" Duration="0:0:0.18">
+                                                                <DoubleAnimation.EasingFunction><CubicEase EasingMode="EaseOut"/></DoubleAnimation.EasingFunction>
+                                                            </DoubleAnimation>
+                                                            <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleX)" From="0.95" To="1.0" Duration="0:0:0.18">
+                                                                <DoubleAnimation.EasingFunction><CubicEase EasingMode="EaseOut"/></DoubleAnimation.EasingFunction>
+                                                            </DoubleAnimation>
+                                                            <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleY)" From="0.95" To="1.0" Duration="0:0:0.18">
+                                                                <DoubleAnimation.EasingFunction><CubicEase EasingMode="EaseOut"/></DoubleAnimation.EasingFunction>
+                                                            </DoubleAnimation>
+                                                            <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[1].(TranslateTransform.Y)" From="-4" To="0" Duration="0:0:0.18">
+                                                                <DoubleAnimation.EasingFunction><CubicEase EasingMode="EaseOut"/></DoubleAnimation.EasingFunction>
+                                                            </DoubleAnimation>
                                                         </Storyboard>
                                                     </BeginStoryboard>
                                                 </EventTrigger>
                                             </Border.Triggers>
                                             <StackPanel>
-                                                <TextBlock Text="AI Batch Presets:" FontSize="11" FontWeight="Bold" Foreground="#38BDF8" Margin="0,0,0,6"/>
-                                                <Button x:Name="BtnAIAll" Style="{StaticResource DropdownActionBtn}" Content="• Disable All AI Features (Copilot + Recall + Apps)"/>
-                                                <Button x:Name="BtnAISystemOnly" Style="{StaticResource DropdownActionBtn}" Content="• System AI Only (Copilot &amp; Recall)"/>
-                                                <Button x:Name="BtnAIAppsOnly" Style="{StaticResource DropdownActionBtn}" Content="• App AI Only (Edge + Paint + Notepad)"/>
+                                                <TextBlock Text="Select AI Batch Presets:" FontSize="11" FontWeight="Bold" Foreground="#38BDF8" Margin="0,0,0,8"/>
+                                                <CheckBox x:Name="ChkAISystem" Style="{StaticResource ModernCheckBox}" Content="System AI (Copilot &amp; Recall)" IsChecked="True"/>
+                                                <CheckBox x:Name="ChkAIEdge" Style="{StaticResource ModernCheckBox}" Content="Edge Browser AI (Sidebar &amp; Compose)" IsChecked="True"/>
+                                                <CheckBox x:Name="ChkAIApps" Style="{StaticResource ModernCheckBox}" Content="App AI (Paint Cocreator &amp; Notepad AI)" IsChecked="True"/>
+                                                <Border BorderBrush="#2A384F" BorderThickness="0,1,0,0" Margin="0,8,0,8"/>
+                                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                                                    <Button x:Name="BtnAISelectAll" Style="{StaticResource ModernBtn}" Content="Check All" Padding="8,2" Margin="0,0,6,0"/>
+                                                    <Button x:Name="BtnAIClear" Style="{StaticResource ModernBtn}" Content="Clear" Padding="8,2"/>
+                                                </StackPanel>
                                             </StackPanel>
                                         </Border>
                                     </Popup>
@@ -1357,9 +1559,64 @@
                                 <RowDefinition Height="*"/>
                             </Grid.RowDefinitions>
 
-                            <!-- Toolbar: Action Buttons with Vector Icons -->
+                            <!-- Toolbar: Dark Multi-Select Batch Actions -->
                             <Grid Grid.Row="0" Margin="0,0,0,12">
-                                <StackPanel HorizontalAlignment="Right" Orientation="Horizontal" VerticalAlignment="Center">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+
+                                <Grid Grid.Column="0">
+                                    <ToggleButton x:Name="ToggleFeaturesPresets" Style="{StaticResource ModernDropdownToggle}" MinWidth="180">
+                                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                            <TextBlock x:Name="TxtToggleFeaturesText" Text="Presets: Optional Features" Margin="0,0,6,0" VerticalAlignment="Center"/>
+                                            <Path Data="{StaticResource IconChevronDown}" Fill="#38BDF8" Width="10" Height="10" Stretch="Uniform" VerticalAlignment="Center"/>
+                                        </StackPanel>
+                                    </ToggleButton>
+                                    <Popup x:Name="PopupFeaturesPresets" PlacementTarget="{Binding ElementName=ToggleFeaturesPresets}" Placement="Bottom" IsOpen="{Binding IsChecked, ElementName=ToggleFeaturesPresets}" StaysOpen="False" PopupAnimation="Fade" AllowsTransparency="True">
+                                        <Border Background="#131D31" BorderBrush="#2A384F" BorderThickness="1" CornerRadius="6" Padding="12" MinWidth="260">
+                                            <Border.RenderTransform>
+                                                <TransformGroup>
+                                                    <ScaleTransform ScaleX="0.95" ScaleY="0.95"/>
+                                                    <TranslateTransform Y="-4"/>
+                                                </TransformGroup>
+                                            </Border.RenderTransform>
+                                            <Border.Triggers>
+                                                <EventTrigger RoutedEvent="Loaded">
+                                                    <BeginStoryboard>
+                                                        <Storyboard>
+                                                            <DoubleAnimation Storyboard.TargetProperty="Opacity" From="0.0" To="1.0" Duration="0:0:0.18">
+                                                                <DoubleAnimation.EasingFunction><CubicEase EasingMode="EaseOut"/></DoubleAnimation.EasingFunction>
+                                                            </DoubleAnimation>
+                                                            <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleX)" From="0.95" To="1.0" Duration="0:0:0.18">
+                                                                <DoubleAnimation.EasingFunction><CubicEase EasingMode="EaseOut"/></DoubleAnimation.EasingFunction>
+                                                            </DoubleAnimation>
+                                                            <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleY)" From="0.95" To="1.0" Duration="0:0:0.18">
+                                                                <DoubleAnimation.EasingFunction><CubicEase EasingMode="EaseOut"/></DoubleAnimation.EasingFunction>
+                                                            </DoubleAnimation>
+                                                            <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[1].(TranslateTransform.Y)" From="-4" To="0" Duration="0:0:0.18">
+                                                                <DoubleAnimation.EasingFunction><CubicEase EasingMode="EaseOut"/></DoubleAnimation.EasingFunction>
+                                                            </DoubleAnimation>
+                                                        </Storyboard>
+                                                    </BeginStoryboard>
+                                                </EventTrigger>
+                                            </Border.Triggers>
+                                            <StackPanel>
+                                                <TextBlock Text="Select Optional Features:" FontSize="11" FontWeight="Bold" Foreground="#38BDF8" Margin="0,0,0,8"/>
+                                                <CheckBox x:Name="ChkFeatSandbox" Style="{StaticResource ModernCheckBox}" Content="Windows Sandbox (Disposable VM)" IsChecked="False"/>
+                                                <CheckBox x:Name="ChkFeatWSL" Style="{StaticResource ModernCheckBox}" Content="Windows Subsystem for Linux (WSL)" IsChecked="False"/>
+                                                <Border BorderBrush="#2A384F" BorderThickness="0,1,0,0" Margin="0,8,0,8"/>
+                                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                                                    <Button x:Name="BtnFeatSelectAll" Style="{StaticResource ModernBtn}" Content="Check All" Padding="8,2" Margin="0,0,6,0"/>
+                                                    <Button x:Name="BtnFeatClear" Style="{StaticResource ModernBtn}" Content="Clear" Padding="8,2"/>
+                                                </StackPanel>
+                                            </StackPanel>
+                                        </Border>
+                                    </Popup>
+                                </Grid>
+
+                                <StackPanel Grid.Column="2" HorizontalAlignment="Right" Orientation="Horizontal" VerticalAlignment="Center">
                                     <Button x:Name="BtnSelectAllFeatures" Style="{StaticResource ModernBtn}" Margin="0,0,6,0" Padding="10,4">
                                         <StackPanel Orientation="Horizontal">
                                             <Path Data="{StaticResource IconCheckDouble}" Fill="#34D399" Width="12" Height="12" Stretch="Uniform" Margin="0,0,6,0" VerticalAlignment="Center"/>
@@ -1408,6 +1665,12 @@
 
             <!-- STAGE 3: Safety & Dry-Run Preview -->
             <Grid x:Name="ViewStage3" Visibility="Collapsed">
+                <Grid.RenderTransform>
+                    <TransformGroup>
+                        <TranslateTransform X="0" Y="0"/>
+                        <ScaleTransform ScaleX="1.0" ScaleY="1.0"/>
+                    </TransformGroup>
+                </Grid.RenderTransform>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
@@ -1415,13 +1678,13 @@
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
 
-                <StackPanel Grid.Row="0" Margin="0,0,0,12">
+                <StackPanel Grid.Row="0" Margin="0,0,0,10">
                     <TextBlock Text="Safety Guard &amp; Pre-Execution Check" FontSize="18" FontWeight="Bold" Foreground="#F8FAFC"/>
-                    <TextBlock Text="Ensure system recovery safeguards are engaged before modifying any Windows state." FontSize="13" Foreground="#94A3B8"/>
+                    <TextBlock Text="Review recovery safeguards and run an optional WhatIf preview simulation." FontSize="13" Foreground="#94A3B8"/>
                 </StackPanel>
 
                 <!-- Live Target Execution Plan & Overall Safety Rating Card -->
-                <Border Grid.Row="1" Background="#131D31" CornerRadius="8" BorderBrush="#2A384F" BorderThickness="1" Padding="14,10" Margin="0,0,0,12">
+                <Border Grid.Row="1" Background="#131D31" CornerRadius="8" BorderBrush="#2A384F" BorderThickness="1" Padding="14,10" Margin="0,0,0,10">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
@@ -1441,18 +1704,15 @@
                 </Border>
 
                 <!-- Safety Options -->
-                <Border Grid.Row="2" Background="#131D31" CornerRadius="8" BorderBrush="#2A384F" BorderThickness="1" Padding="16" Margin="0,0,0,12">
+                <Border Grid.Row="2" Background="#131D31" CornerRadius="8" BorderBrush="#2A384F" BorderThickness="1" Padding="14,10" Margin="0,0,0,10">
                     <StackPanel>
-                        <CheckBox x:Name="ChkCreateRestorePoint" Style="{StaticResource ModernCheckBox}" Content="Create Windows System Restore Point (Recommended)" IsChecked="True" FontWeight="Bold"/>
-                        <TextBlock Text="Creates an immediate restore point checkpoint allowing rollback through Windows Recovery if needed." FontSize="12" Foreground="#94A3B8" Margin="24,0,0,10"/>
-
-                        <CheckBox x:Name="ChkRegistrySnapshot" Style="{StaticResource ModernCheckBox}" Content="Capture Pre-Tweak Registry Snapshot to Local Storage" IsChecked="True" FontWeight="Bold"/>
-                        <TextBlock Text="Captures exact original values of all targeted registry keys into %LOCALAPPDATA%\NHWinDebloater\Backups\." FontSize="12" Foreground="#94A3B8" Margin="24,0,0,0"/>
+                        <CheckBox x:Name="ChkCreateRestorePoint" Style="{StaticResource ModernCheckBox}" Content="Create Windows System Restore Point checkpoint" IsChecked="True" FontWeight="Bold"/>
+                        <CheckBox x:Name="ChkRegistrySnapshot" Style="{StaticResource ModernCheckBox}" Content="Capture Pre-Tweak Registry Snapshot to %LOCALAPPDATA%\NHWinDebloater\Backups\" IsChecked="True" FontWeight="Bold" Margin="0,8,0,0"/>
                     </StackPanel>
                 </Border>
 
                 <!-- Dry-Run Preview Box -->
-                <Border Grid.Row="3" Background="#0A0E17" CornerRadius="8" BorderBrush="#2A384F" BorderThickness="1" Padding="14">
+                <Border Grid.Row="3" Background="#0A0E17" CornerRadius="8" BorderBrush="#2A384F" BorderThickness="1" Padding="12">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
@@ -1474,6 +1734,12 @@
 
             <!-- STAGE 4: Execution & Real-Time Progress -->
             <Grid x:Name="ViewStage4" Visibility="Collapsed">
+                <Grid.RenderTransform>
+                    <TransformGroup>
+                        <TranslateTransform X="0" Y="0"/>
+                        <ScaleTransform ScaleX="1.0" ScaleY="1.0"/>
+                    </TransformGroup>
+                </Grid.RenderTransform>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
@@ -1494,15 +1760,21 @@
 
             <!-- STAGE 5: Summary & Post-Optimization -->
             <Grid x:Name="ViewStage5" Visibility="Collapsed">
+                <Grid.RenderTransform>
+                    <TransformGroup>
+                        <TranslateTransform X="0" Y="0"/>
+                        <ScaleTransform ScaleX="1.0" ScaleY="1.0"/>
+                    </TransformGroup>
+                </Grid.RenderTransform>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
 
-                <StackPanel Grid.Row="0" Margin="0,0,0,18">
+                <StackPanel Grid.Row="0" Margin="0,0,0,14">
                     <TextBlock Text="Optimization Complete!" FontSize="20" FontWeight="Bold" Foreground="#10B981"/>
-                    <TextBlock Text="All selected debloating steps, registry policies, and performance enhancements have been executed." FontSize="13" Foreground="#94A3B8"/>
+                    <TextBlock Text="All selected debloating steps, registry policies, and tweaks have executed." FontSize="13" Foreground="#94A3B8"/>
                 </StackPanel>
 
                 <Grid Grid.Row="1">

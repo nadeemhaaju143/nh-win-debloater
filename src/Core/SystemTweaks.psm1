@@ -110,7 +110,9 @@ function Set-LockScreenTweak {
 
     $ops.Add((Set-TweakRegistryValue -Path $cdmPath -Name "SubscribedContent-338387Enabled" -Value $cdmVal -PropertyType "DWord" -WhatIf:$WhatIfPreference))
     $ops.Add((Set-TweakRegistryValue -Path $cdmPath -Name "SubscribedContent-338388Enabled" -Value $cdmVal -PropertyType "DWord" -WhatIf:$WhatIfPreference))
+    $ops.Add((Set-TweakRegistryValue -Path $cdmPath -Name "SubscribedContent-338389Enabled" -Value $cdmVal -PropertyType "DWord" -WhatIf:$WhatIfPreference))
     $ops.Add((Set-TweakRegistryValue -Path $cdmPath -Name "SubscribedContent-310093Enabled" -Value $cdmVal -PropertyType "DWord" -WhatIf:$WhatIfPreference))
+    $ops.Add((Set-TweakRegistryValue -Path $cdmPath -Name "RotatingLockScreenOverlayEnabled" -Value $cdmVal -PropertyType "DWord" -WhatIf:$WhatIfPreference))
 
     return $ops.ToArray()
 }
@@ -667,7 +669,29 @@ function Set-MultitaskingTweak {
 
     $ops.Add((Set-TweakRegistryValue -Path $advPath -Name "SnapAssist" -Value $val -PropertyType "DWord" -WhatIf:$WhatIfPreference))
     $ops.Add((Set-TweakRegistryValue -Path $advPath -Name "EnableTaskGroups" -Value $val -PropertyType "DWord" -WhatIf:$WhatIfPreference))
+    $ops.Add((Set-TweakRegistryValue -Path $advPath -Name "EnableSnapAssistFlyout" -Value $val -PropertyType "DWord" -WhatIf:$WhatIfPreference))
+    $ops.Add((Set-TweakRegistryValue -Path $advPath -Name "EnableSnapBar" -Value $val -PropertyType "DWord" -WhatIf:$WhatIfPreference))
 
+    return $ops.ToArray()
+}
+
+function Set-SettingsHomeTweak {
+    <#
+        .SYNOPSIS
+            Disables recommended cards and suggestions on the Windows 11 Settings home page.
+    #>
+    [CmdletBinding(SupportsShouldProcess = $true)]
+    [OutputType([PSCustomObject[]])]
+    param(
+        [Parameter(Mandatory = $false)]
+        [bool]$DisableHomeRecommendations = $true
+    )
+
+    $ops = [System.Collections.Generic.List[PSCustomObject]]::new()
+    $advPath = "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced"
+    $val = if ($DisableHomeRecommendations) { 0 } else { 1 }
+
+    $ops.Add((Set-TweakRegistryValue -Path $advPath -Name "ShowSettingsHome" -Value $val -PropertyType "DWord" -WhatIf:$WhatIfPreference))
     return $ops.ToArray()
 }
 
@@ -874,4 +898,4 @@ function Get-DebloatSafetyImpact {
     }
 }
 
-Export-ModuleMember -Function Set-ConsumerFeatureTweak, Set-LockScreenTweak, Set-ClassicContextMenuTweak, Set-MousePrecisionTweak, Set-StickyKeysTweak, Set-FastStartupTweak, Set-StorageSenseTweak, Set-WindowsUpdatePolicyTweak, Set-OptionalFeatureState, Set-GameDVRPlaybackTweak, Set-DeliveryOptimizationTweak, Set-TelemetryServiceTweak, Set-StartMenuRecommendedTweak, Set-EdgeBackgroundTweak, Set-TelemetryScheduledTasksTweak, Set-HibernationStorageTweak, Set-MultitaskingTweak, Set-CopilotAITweak, Set-RecallAITweak, Set-ApplicationAITweak, Get-DebloatSafetyImpact, New-DebloatRestorePoint, Export-RegistrySnapshot, Restore-RegistrySnapshot
+Export-ModuleMember -Function Set-ConsumerFeatureTweak, Set-LockScreenTweak, Set-ClassicContextMenuTweak, Set-MousePrecisionTweak, Set-StickyKeysTweak, Set-FastStartupTweak, Set-StorageSenseTweak, Set-WindowsUpdatePolicyTweak, Set-OptionalFeatureState, Set-GameDVRPlaybackTweak, Set-DeliveryOptimizationTweak, Set-TelemetryServiceTweak, Set-StartMenuRecommendedTweak, Set-EdgeBackgroundTweak, Set-TelemetryScheduledTasksTweak, Set-HibernationStorageTweak, Set-MultitaskingTweak, Set-SettingsHomeTweak, Set-CopilotAITweak, Set-RecallAITweak, Set-ApplicationAITweak, Get-DebloatSafetyImpact, New-DebloatRestorePoint, Export-RegistrySnapshot, Restore-RegistrySnapshot

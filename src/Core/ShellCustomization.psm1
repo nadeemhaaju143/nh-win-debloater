@@ -161,7 +161,7 @@ function Set-ShellSetting {
     [OutputType([PSCustomObject[]])]
     param(
         [Parameter(Mandatory = $true)]
-        [ValidateSet("TaskbarAlignLeft", "TaskbarAlignCenter", "HideSearch", "ShowSearchIcon", "ShowSearchBox", "HideWidgets", "HideChat", "HideTaskView", "EnableEndTask", "ShowFileExtensions", "ShowHiddenFiles", "ExplorerToThisPC", "HideOneDriveNav", "HideGalleryNav", "HideSearchHighlights", "ShowCompactExplorer")]
+        [ValidateSet("TaskbarAlignLeft", "TaskbarAlignCenter", "HideSearch", "ShowSearchIcon", "ShowSearchBox", "HideWidgets", "HideChat", "HideTaskView", "EnableEndTask", "ShowFileExtensions", "ShowHiddenFiles", "ExplorerToThisPC", "HideOneDriveNav", "HideGalleryNav", "HideSearchHighlights", "ShowCompactExplorer", "DisableSnapFlyout")]
         [string]$SettingId
     )
 
@@ -233,6 +233,9 @@ function Set-ShellSetting {
         }
         "ShowCompactExplorer" {
             $ops.Add((Set-RegistryPropertyHelper -Path $advPath -Name "UseCompactMode" -Value 1 -PropertyType "DWord" -WhatIf:$WhatIfPreference))
+        }
+        "DisableSnapFlyout" {
+            $ops.Add((Set-RegistryPropertyHelper -Path $advPath -Name "EnableSnapAssistFlyout" -Value 0 -PropertyType "DWord" -WhatIf:$WhatIfPreference))
         }
     }
 
