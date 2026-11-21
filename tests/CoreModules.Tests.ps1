@@ -101,6 +101,12 @@ Describe "ShellCustomization Module" {
 
         $resCompact = Set-ShellSetting -SettingId "ShowCompactExplorer" -WhatIf
         $resCompact[0].Status | Should -Be "Preview"
+
+        $resSnap = Set-ShellSetting -SettingId "DisableSnapFlyout" -WhatIf
+        $resSnap[0].Status | Should -Be "Preview"
+
+        $resGallery = Set-ShellSetting -SettingId "HideGalleryNav" -WhatIf
+        $resGallery[0].Status | Should -Be "Preview"
     }
 }
 
@@ -199,6 +205,11 @@ Describe "SystemTweaks Module" {
         $res = Set-ApplicationAITweak -DisableEdgeAI $true -DisablePaintAI $true -DisableNotepadAI $true -WhatIf
         $res.Count | Should -BeGreaterThan 0
         $res[0].Status | Should -Be "Preview"
+    }
+
+    It "Executes SettingsHome WhatIf safely" {
+        $res = Set-SettingsHomeTweak -DisableHomeRecommendations $true -WhatIf
+        $res.Status | Should -Be "Preview"
     }
 
     It "Evaluates LOW / SAFE impact when only safe tweaks are selected" {
@@ -374,6 +385,48 @@ Describe "UI Motion & Vector Icon Architecture" {
         $win.FindName("ModalReinstallApps") | Should -Not -BeNullOrEmpty
         $win.FindName("BtnExecuteReinstallApps") | Should -Not -BeNullOrEmpty
         $win.FindName("TxtReinstallLog") | Should -Not -BeNullOrEmpty
+    }
+
+    It "Verifies presence of multi-select CheckBox dropdowns and Raphire parity tweaks across all tabs in XAML" {
+        $xamlPath = Join-Path $projectRoot "src\UI\MainWindow.xaml"
+        $xamlContent = Get-Content $xamlPath -Raw
+        $reader = [System.Xml.XmlReader]::Create([System.IO.StringReader]::new($xamlContent))
+        $win = $null
+        try {
+            $win = [System.Windows.Markup.XamlReader]::Load($reader)
+        } finally {
+            $reader.Close()
+        }
+        # Dropdown ToggleButtons
+        $win.FindName("ToggleAppCategories") | Should -Not -BeNullOrEmpty
+        $win.FindName("TogglePrivacyPresets") | Should -Not -BeNullOrEmpty
+        $win.FindName("ToggleShellPresets") | Should -Not -BeNullOrEmpty
+        $win.FindName("ToggleGamingPresets") | Should -Not -BeNullOrEmpty
+        $win.FindName("ToggleExtrasPresets") | Should -Not -BeNullOrEmpty
+        $win.FindName("ToggleAIPresets") | Should -Not -BeNullOrEmpty
+        $win.FindName("ToggleFeaturesPresets") | Should -Not -BeNullOrEmpty
+
+        # Dropdown Preset CheckBoxes
+        $win.FindName("ChkPrivTelemetry") | Should -Not -BeNullOrEmpty
+        $win.FindName("ChkShellClean") | Should -Not -BeNullOrEmpty
+        $win.FindName("ChkGamingDVR") | Should -Not -BeNullOrEmpty
+        $win.FindName("ChkExtrasPromos") | Should -Not -BeNullOrEmpty
+        $win.FindName("ChkAISystem") | Should -Not -BeNullOrEmpty
+        $win.FindName("ChkFeatSandbox") | Should -Not -BeNullOrEmpty
+
+        # Raphire Parity Tweaks
+        $win.FindName("ChkLaunchToThisPC") | Should -Not -BeNullOrEmpty
+        $win.FindName("ChkHideGalleryNav") | Should -Not -BeNullOrEmpty
+        $win.FindName("ChkSnapFlyout") | Should -Not -BeNullOrEmpty
+        $win.FindName("ChkSettingsHome") | Should -Not -BeNullOrEmpty
+
+        # Pre-declared RenderTransform on Stages and TabStage2Controls
+        $win.FindName("ViewStage1").RenderTransform | Should -Not -BeNullOrEmpty
+        $win.FindName("ViewStage2").RenderTransform | Should -Not -BeNullOrEmpty
+        $win.FindName("ViewStage3").RenderTransform | Should -Not -BeNullOrEmpty
+        $win.FindName("ViewStage4").RenderTransform | Should -Not -BeNullOrEmpty
+        $win.FindName("ViewStage5").RenderTransform | Should -Not -BeNullOrEmpty
+        $win.FindName("TabStage2Controls").RenderTransform | Should -Not -BeNullOrEmpty
     }
 }
 

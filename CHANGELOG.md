@@ -9,6 +9,31 @@ The project follows a **progressive semantic minor versioning format**:
 
 ---
 
+## [0.5.2] - 2026-11-21
+
+### Multi-Select CheckBox Dropdowns Across All Tabs, Fluid Motion & Minimal UI
+- **Multi-Select CheckBox Tick Dropdowns Across ALL Tabs (`MainWindow.xaml` & `AppController.ps1`):**
+  - Upgraded **Privacy & Search**, **Taskbar & Explorer**, **Gaming & Performance**, **System Extras**, **AI Integration**, and **Optional Features** to use dark Material multi-select dropdowns (`ToggleButton` + `Popup` containing `CheckBox` items with visible tick marks and Select All / Clear actions).
+  - Wired live two-way synchronization: ticking dropdown preset CheckBoxes dynamically updates underlying tweak checkboxes, and manual checkbox edits keep dropdown presets and header summaries (`Presets: X of Y Selected`) synchronized in real-time.
+- **Fluid WPF Motion, Continuous Shimmer & Tactile Feedback (`MainWindow.xaml` & `AppController.ps1`):**
+  - Attached pre-declared `RenderTransform` (`TranslateTransform` + `ScaleTransform`) to `ViewStage1` through `ViewStage5` and `TabStage2Controls` to eliminate first-frame WPF layout stutter.
+  - Upgraded stage transitions and tab switching to fluid 220ms `CubicEase` slide-fade animations (`TranslateTransform.Y` + `Opacity`).
+  - Added smooth scale-fade entrance animations on all popup dropdowns.
+  - Added continuous gradient shimmer animation (`Storyboard` on `LinearGradientBrush.StartPoint` / `EndPoint`) across the top header accent bar.
+  - Added physical tactile button feedback (`IsPressed` scale and brightness compression) across all buttons.
+- **Raphire Win11Debloat Feature Parity (`SystemTweaks.psm1`, `ShellCustomization.psm1`, `MainWindow.xaml` & `AppController.ps1`):**
+  - Added **Launch to This PC** (`ChkLaunchToThisPC`) to configure File Explorer to open directly to "This PC" instead of Home/Quick Access.
+  - Added **Hide Gallery from Navigation Pane** (`ChkHideGalleryNav`) via namespace removal with full `-WhatIf` preview.
+  - Added **Disable Snap Assist Suggestions Flyout** (`ChkSnapFlyout`) with registry policy safeguards (`EnableSnapAssistFlyout = 0`).
+  - Added **Disable Settings Home Recommendations** (`ChkSettingsHome` / `Set-SettingsHomeTweak`) to disable sponsored cards on the Windows 11 Settings home page.
+- **Minimalist Scannable UI (`MainWindow.xaml`):**
+  - Streamlined stage descriptions, cards, and summaries, stripping verbose paragraph clutter across stages 1–5 for maximum clarity and fast user decision-making.
+- **Automated Quality Gate & Testing (`tests/CoreModules.Tests.ps1`):**
+  - Expanded test suite to **55 tests** verifying multi-tab dropdown elements, parity tweaks, pre-declared render transforms, and WhatIf behavior.
+  - Maintained strict standard: **0 PSScriptAnalyzer errors and 0 warnings** across all 11 PowerShell files.
+
+---
+
 ## [0.5.1] - 2026-11-21
 
 ### Short Branded One-Line Launcher & Automatic Session Cleanup
