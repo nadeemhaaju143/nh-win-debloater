@@ -9,6 +9,19 @@ The project follows a **progressive semantic minor versioning format**:
 
 ---
 
+## [0.5.1] - 2026-11-21
+
+### Short Branded One-Line Launcher & Automatic Session Cleanup
+- **Ultra-Short Branded Launcher (`irm nhdigital.shop/debloat | iex` & `run.ps1`):**
+  - Added lightweight root `run.ps1` wrapper that forwards all flags (`-CLI`, `-DryRun`, `-Silent`, `-Branch`) directly to `Get-NHWinDebloater.ps1` (keeping `install.ps1` and `Get-NHWinDebloater.ps1` backwards-compatible).
+  - Promoted branded command `irm nhdigital.shop/debloat | iex` as primary zero-install one-liner with direct GitHub raw URL as fallback.
+  - Documented exact 4-line Cloudflare Worker and Next.js redirect recipes for `nhdigital.shop/debloat`.
+- **Automatic Post-Exit Temp & Session Cleanup (`Get-NHWinDebloater.ps1`, `install.ps1`, `run.ps1`, `Entrypoint.ps1`, `AppController.ps1`, `ExecutionLog.psm1`):**
+  - Added `Clear-DebloatTempSession` in `ExecutionLog.psm1` to safely clean temporary sandbox artifacts in `%TEMP%\NHWinDebloater*` while strictly protecting user registry backups in `%LOCALAPPDATA%\NHWinDebloater\Backups\` and logs.
+  - Added `try / finally` blocks across all launchers and Entrypoint, and attached WPF `Closed` event handlers in `AppController.ps1` guaranteeing temporary downloaded `.zip` files and extracted directories are deleted on normal or abnormal exit.
+
+---
+
 ## [0.5.0] - 2026-11-21
 
 ### Custom Preset Profiles, 1-Click Rollback & App Reinstall Engine

@@ -5,7 +5,10 @@
         Downloads the latest verified release archive of NH Win Debloater directly from
         GitHub into a sandboxed temp environment, verifies archive integrity, and
         launches the modern WPF Guided Assistant or CLI in Single-Thread Apartment (STA) mode.
+        Automatically cleans up downloaded archives and temporary sandboxes on exit.
         Developed by NH Digital (https://nhdigital.shop).
+    .EXAMPLE
+        irm nhdigital.shop/debloat | iex
     .EXAMPLE
         irm https://raw.githubusercontent.com/nadeemhaaju143/nh-win-debloater/main/Get-NHWinDebloater.ps1 | iex
     .EXAMPLE
@@ -17,6 +20,7 @@
 [CmdletBinding()]
 [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '')]
 [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSProvideCommentHelp', '')]
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingEmptyCatchBlock', '')]
 param(
     [switch]$DryRun,
     [switch]$CLI,
@@ -47,54 +51,76 @@ $tempDir = Join-Path $env:TEMP "NHWinDebloater"
 $zipFile = Join-Path $tempDir "nh-win-debloater-$Branch.zip"
 $archiveUrl = "$RepoUrl/archive/refs/heads/$Branch.zip"
 
-if (-not (Test-Path $tempDir)) {
-    New-Item -ItemType Directory -Path $tempDir -Force | Out-Null
-}
-
-# 3. Download Latest Archive
-Write-Host " [+] Fetching latest '$Branch' release from GitHub..." -ForegroundColor Cyan
 try {
-    Invoke-WebRequest -Uri $archiveUrl -OutFile $zipFile -UseBasicParsing -ErrorAction Stop
-    Write-Host " [✓] Download completed successfully." -ForegroundColor Green
-} catch {
-    Write-Error "Failed to download NH Win Debloater archive from '$archiveUrl': $($_.Exception.Message)"
-    exit 1
+    if (-not (Test-Path $tempDir)) {
+        New-Item -ItemType Directory -Path $tempDir -Force | Out-Null
+    }
+
+    # 3. Download Latest Archive
+    Write-Host " [+] Fetching latest '$Branch' release from GitHub..." -ForegroundColor Cyan
+    try {
+        Invoke-WebRequest -Uri $archiveUrl -OutFile $zipFile -UseBasicParsing -ErrorAction Stop
+        Write-Host " [✓] Download completed successfully." -ForegroundColor Green
+    } catch {
+        Write-Error "Failed to download NH Win Debloater archive from '$archiveUrl': $($_.Exception.Message)"
+        exit 1
+    }
+
+    # 4. Extract Archive Cleanly
+    Write-Host " [+] Extracting release archive..." -ForegroundColor Cyan
+    try {
+        Expand-Archive -Path $zipFile -DestinationPath $tempDir -Force -ErrorAction Stop
+        Write-Host " [✓] Extraction completed." -ForegroundColor Green
+    } catch {
+        Write-Error "Failed to extract release archive: $($_.Exception.Message)"
+        exit 1
+    }
+
+    # 5. Resolve Entrypoint
+    $entrypoint = Get-ChildItem -Path $tempDir -Recurse -Filter "Entrypoint.ps1" -ErrorAction SilentlyContinue |
+        Select-Object -First 1 -ExpandProperty FullName
+
+    if (-not $entrypoint -or -not (Test-Path $entrypoint)) {
+        Write-Error "Entrypoint.ps1 not found in extracted directory '$tempDir'."
+        exit 1
+    }
+
+    Write-Host " [✓] Launching NH Win Debloater ($entrypoint)..." -ForegroundColor Green
+    Write-Host ""
+
+    # 6. Execute in Single-Thread Apartment (STA) Mode
+    $psArgs = [System.Collections.Generic.List[string]]::new()
+    $psArgs.Add("-NoProfile")
+    $psArgs.Add("-ExecutionPolicy")
+    $psArgs.Add("Bypass")
+    $psArgs.Add("-STA")
+    $psArgs.Add("-File")
+    $psArgs.Add("`"$entrypoint`"")
+
+    if ($DryRun) { $psArgs.Add("-DryRun") }
+    if ($CLI) { $psArgs.Add("-CLI") }
+    if ($Silent) { $psArgs.Add("-Silent") }
+
+    $proc = Start-Process -FilePath "powershell.exe" -ArgumentList $psArgs -PassThru -Wait
+    $exitCode = if ($proc) { $proc.ExitCode } else { 0 }
+    exit $exitCode
 }
-
-# 4. Extract Archive Cleanly
-Write-Host " [+] Extracting release archive..." -ForegroundColor Cyan
-try {
-    Expand-Archive -Path $zipFile -DestinationPath $tempDir -Force -ErrorAction Stop
-    Write-Host " [✓] Extraction completed." -ForegroundColor Green
-} catch {
-    Write-Error "Failed to extract release archive: $($_.Exception.Message)"
-    exit 1
+finally {
+    # Post-Exit Temp & Session Cleanup (Preserving Backups in %LOCALAPPDATA%\NHWinDebloater\Backups)
+    $cleanPatterns = @(
+        "NHWinDebloater*",
+        "nh-win-debloater*"
+    )
+    foreach ($pattern in $cleanPatterns) {
+        $tempTargets = Get-Item -Path (Join-Path $env:TEMP $pattern) -ErrorAction SilentlyContinue
+        foreach ($target in $tempTargets) {
+            if ($target.FullName -notlike "*LOCALAPPDATA*" -and $target.FullName -notlike "*Backups*" -and $target.FullName -notlike "*Logs*") {
+                try {
+                    Remove-Item -Path $target.FullName -Recurse -Force -ErrorAction SilentlyContinue
+                } catch {
+                    Write-Verbose "Could not remove '$($target.FullName)': $($_.Exception.Message)"
+                }
+            }
+        }
+    }
 }
-
-# 5. Resolve Entrypoint
-$entrypoint = Get-ChildItem -Path $tempDir -Recurse -Filter "Entrypoint.ps1" -ErrorAction SilentlyContinue |
-    Select-Object -First 1 -ExpandProperty FullName
-
-if (-not $entrypoint -or -not (Test-Path $entrypoint)) {
-    Write-Error "Entrypoint.ps1 not found in extracted directory '$tempDir'."
-    exit 1
-}
-
-Write-Host " [✓] Launching NH Win Debloater ($entrypoint)..." -ForegroundColor Green
-Write-Host ""
-
-# 6. Execute in Single-Thread Apartment (STA) Mode
-$psArgs = [System.Collections.Generic.List[string]]::new()
-$psArgs.Add("-NoProfile")
-$psArgs.Add("-ExecutionPolicy")
-$psArgs.Add("Bypass")
-$psArgs.Add("-STA")
-$psArgs.Add("-File")
-$psArgs.Add("`"$entrypoint`"")
-
-if ($DryRun) { $psArgs.Add("-DryRun") }
-if ($CLI) { $psArgs.Add("-CLI") }
-if ($Silent) { $psArgs.Add("-Silent") }
-
-$proc = Start-Process -FilePath "powershell.exe" -ArgumentList $psArgs -PassThru -Wait
-exit $proc.ExitCode

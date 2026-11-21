@@ -290,6 +290,18 @@ Describe "Entrypoint Bootstrapper & Path Resolution" {
         (Test-Path $installPath) | Should -BeTrue
         $content = Get-Content $installPath -Raw
         $content | Should -Match "Get-NHWinDebloater\.ps1"
+        $content | Should -Match "finally"
+    }
+
+    It "Validates run.ps1 root launcher syntax and parameter forwarding" {
+        $runPath = Join-Path $projectRoot "run.ps1"
+        (Test-Path $runPath) | Should -BeTrue
+        $content = Get-Content $runPath -Raw
+        $content | Should -Match '\[switch\]\$DryRun'
+        $content | Should -Match '\[switch\]\$CLI'
+        $content | Should -Match '\[switch\]\$Silent'
+        $content | Should -Match "Get-NHWinDebloater\.ps1"
+        $content | Should -Match "finally"
     }
 }
 
@@ -452,5 +464,57 @@ Describe "App Reinstall Helper Engine" {
             $res.AppName | Should -Be $app
             $res.Status | Should -Be "Preview"
         }
+    }
+}
+
+Describe "Post-Exit Temp & Session Cleanup" {
+    BeforeAll {
+        $testTempSandbox = Join-Path $env:TEMP "NHWinDebloater_UnitTest_Sandbox"
+        if (-not (Test-Path $testTempSandbox)) {
+            New-Item -Path $testTempSandbox -ItemType Directory -Force | Out-Null
+        }
+        $dummyFile = Join-Path $testTempSandbox "dummy_payload.tmp"
+        Set-Content -Path $dummyFile -Value "Test temporary artifact" -Encoding UTF8
+
+        # Create simulated protected backup directory
+        $testProtectedBackups = Join-Path $env:LOCALAPPDATA "NHWinDebloater\Backups"
+        if (-not (Test-Path $testProtectedBackups)) {
+            New-Item -Path $testProtectedBackups -ItemType Directory -Force | Out-Null
+        }
+        $testSnapshotFile = Join-Path $testProtectedBackups "RegistrySnapshot_KeepMe.json"
+        Set-Content -Path $testSnapshotFile -Value "{}" -Encoding UTF8
+    }
+
+    AfterAll {
+        $testTempSandbox = Join-Path $env:TEMP "NHWinDebloater_UnitTest_Sandbox"
+        if ($testTempSandbox -and (Test-Path $testTempSandbox)) {
+            Remove-Item -Path $testTempSandbox -Recurse -Force -ErrorAction SilentlyContinue
+        }
+        $testProtectedBackups = Join-Path $env:LOCALAPPDATA "NHWinDebloater\Backups"
+        $testSnapshotFile = Join-Path $testProtectedBackups "RegistrySnapshot_KeepMe.json"
+        if (Test-Path $testSnapshotFile) {
+            Remove-Item -Path $testSnapshotFile -Force -ErrorAction SilentlyContinue
+        }
+    }
+
+    It "Cleans up transient sandbox folder in temporary directory" {
+        $testTempSandbox = Join-Path $env:TEMP "NHWinDebloater_UnitTest_Sandbox"
+        (Test-Path $testTempSandbox) | Should -BeTrue
+        $removed = Clear-DebloatTempSession -TempRoot $env:TEMP
+        (Test-Path $testTempSandbox) | Should -BeFalse
+    }
+
+    It "Strictly preserves %LOCALAPPDATA%\NHWinDebloater\Backups during cleanup" {
+        $testProtectedBackups = Join-Path $env:LOCALAPPDATA "NHWinDebloater\Backups"
+        $testSnapshotFile = Join-Path $testProtectedBackups "RegistrySnapshot_KeepMe.json"
+        (Test-Path $testProtectedBackups) | Should -BeTrue
+        (Test-Path $testSnapshotFile) | Should -BeTrue
+
+        # Run cleanup again
+        $null = Clear-DebloatTempSession -TempRoot $env:TEMP
+
+        # Ensure backup folder and snapshot file are 100% untouched
+        (Test-Path $testProtectedBackups) | Should -BeTrue
+        (Test-Path $testSnapshotFile) | Should -BeTrue
     }
 }

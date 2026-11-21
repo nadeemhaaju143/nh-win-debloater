@@ -16,6 +16,7 @@
 [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '')]
 [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidAssignmentToAutomaticVariable', '')]
 [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseDeclaredVarsMoreThanAssignments', '')]
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingEmptyCatchBlock', '')]
 param()
 
 function Show-DebloaterWindow {
@@ -1706,11 +1707,25 @@ function Show-DebloaterWindow {
         $window.Close()
     })
 
+    # Window Closed Handler: Ensure post-exit temp & session cleanup (preserving backups/logs)
+    $window.Add_Closed({
+        if (Get-Command Clear-DebloatTempSession -ErrorAction SilentlyContinue) {
+            Clear-DebloatTempSession
+        }
+    })
+
     # Initial view setup
     & $updateStageView 1
 
-    # Show Modal Window
-    $null = $window.ShowDialog()
+    # Show Modal Window with guaranteed cleanup
+    try {
+        $null = $window.ShowDialog()
+    }
+    finally {
+        if (Get-Command Clear-DebloatTempSession -ErrorAction SilentlyContinue) {
+            Clear-DebloatTempSession
+        }
+    }
 }
 
 if ($ExecutionContext.SessionState.Module) {
