@@ -9,6 +9,31 @@ The project follows a **progressive semantic minor versioning format**:
 
 ---
 
+## [1.0.0] - 2026-11-21
+
+### Milestone: Consolidated Production-Ready Release
+- **Official Branded Launcher (`irm nhdigital.shop/debloat | iex`):**
+  - Fully integrated with `nhdigital.shop/debloat` (and `/w` alias) 302 edge redirects and direct GitHub raw fallback.
+  - Zero manual download required, STA mode automatic elevation, and post-exit transient sandbox cleanup.
+- **Dark Material UI & Fluid WPF Motion:**
+  - Modern dark slate theme (`#0F172A`), pre-declared `RenderTransform` hardware acceleration, smooth 220ms slide-fade transitions, and Segoe Fluent vector icon set.
+  - Dynamic live impact evaluators, selection counters, and zero console error noise.
+- **Granular Multi-Select CheckBox Dropdowns:**
+  - Consistent Material multi-select checkboxes across all tabs (**Bloatware Apps**, **Privacy & Search**, **Taskbar & Explorer**, **Gaming & Performance**, **System Extras**, **AI Integration**, and **Optional Features**).
+- **Dedicated AI Integration Suite:**
+  - Complete control to disable Windows Copilot policies, remove Copilot AppX, block Recall/Click-to-Do background telemetry, suppress Edge background AI processes, and disable Paint/Notepad AI coprocessors.
+- **Start-Screen Restore Shortcut & Selective Multi-Select Restore:**
+  - Immediate header and Stage 1 Restore shortcuts for returning users with smart back navigation.
+  - Selective restore scope for **Apps Only**, **Tweaks Only**, or specific categories (`AI`, `Privacy`, `Shell`, `Gaming`, `Extras`) alongside 1-Click Full Rollback and WhatIf Dry-Run previews.
+  - Built-in Windows Application Reinstaller for Microsoft Store, Calculator, Notepad, Paint, Photos, and Terminal.
+- **Custom Preset Profile Engine:**
+  - Export and import custom configurations via portable `.json` profiles.
+- **Automated Quality Gates & Cloud VM Verification:**
+  - 100% test pass rate across 61 Pester unit/integration tests and 0 PSScriptAnalyzer issues across 12 files.
+  - End-to-end verified on real cloud Windows VM environments via LambdaTest HyperExecute.
+
+---
+
 ## [0.5.4] - 2026-11-21
 
 ### Start-Screen Restore Shortcut & Selective Multi-Select Restore

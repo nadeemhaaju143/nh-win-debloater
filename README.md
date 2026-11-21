@@ -1,6 +1,6 @@
 # NH Win Debloater
 
-**Version:** 0.5  
+**Version:** 1.0.0  
 **Tagline:** Less Bloat. Better Windows.  
 **Developer:** NH Digital ([nhdigital.shop](https://nhdigital.shop))  
 
@@ -12,12 +12,12 @@
 
 ---
 
-## Semantic Minor-Style Release Flow
+## Semantic Release Flow
 
-NH Win Debloater adopts a progressive **minor-style semantic versioning cadence** starting at `v0.1`:
+NH Win Debloater follows a structured release progression reaching its production-grade consolidated milestone at `v1.0.0`:
 
 ```
-v0.1  -->  v0.2  -->  v0.3  -->  v0.4  -->  v0.5 (Current)  -->  v1.0
+v0.1  -->  v0.2  -->  v0.3  -->  v0.4  -->  v0.5  -->  v1.0.0 (Production Release)
 (Init)     (Core)     (UI/WPF)   (AI/Select) (Profiles/Rollback)   (Stable Release)
 ```
 
@@ -25,11 +25,8 @@ v0.1  -->  v0.2  -->  v0.3  -->  v0.4  -->  v0.5 (Current)  -->  v1.0
 - **v0.2:** Gaming & performance engine, shell customizations, DPI-safe branding, and zero-error preflight gate.
 - **v0.3:** Material Design dark palette, power-user category slices & installed package filter, smooth animations, and advanced system tweaks (Edge background suppression, CEIP task cleaning, hibernation storage reclaim).
 - **v0.4:** Dark Material multi-select CheckBox dropdowns across all tabs, multi-category aggregation, dedicated AI Integration suite (Copilot policy/AppX, Recall/Click to Do, Edge/Paint/Notepad AI), and expanded registry backups.
-- **v0.5 (Current):** Exportable & importable custom JSON preset profiles, in-app registry snapshot & 1-click rollback manager, and App Reinstall Helper for Microsoft Store and core Windows utilities.
-- **v0.6+:** Expanded community debloat signatures, context menu enhancements, and cloud backup sync.
-- **v1.0:** Consolidated, production-grade standalone utility.
-
-Each increment introduces modular features, verified bloatware signatures, or safety refinements while maintaining backward compatibility and zero host system damage.
+- **v0.5:** Exportable & importable custom JSON preset profiles, in-app registry snapshot & 1-click rollback manager, and App Reinstall Helper for Microsoft Store and core Windows utilities.
+- **v1.0.0 (Current):** Consolidated production release featuring Start-Screen Restore shortcut, selective multi-select rollback (`Apps Only`, `Tweaks Only`, and granular categories), branded `nhdigital.shop/debloat` one-line launcher redirect, fluid 220ms WPF motion, and 100% cloud-verified stability.
 
 ---
 
@@ -101,9 +98,11 @@ irm https://raw.githubusercontent.com/nadeemhaaju143/nh-win-debloater/main/Get-N
 
 ---
 
-### Webmaster Setup: Branded `nhdigital.shop/debloat` Redirect
+### Live Branded One-Line Redirect: `nhdigital.shop/debloat`
 
-To wire the branded one-liner `irm nhdigital.shop/debloat | iex` to your website or edge worker, use either snippet below:
+The branded one-liner `irm nhdigital.shop/debloat | iex` is now officially active and hosted at **[nhdigital.shop/debloat](https://nhdigital.shop/debloat)** via Edge 302 routing pointing directly to `Get-NHWinDebloater.ps1`.
+
+For self-hosting or mirrors on your own domain or edge worker, use either snippet below:
 
 #### Option A: Cloudflare Worker (4 Lines)
 ```javascript
@@ -115,13 +114,17 @@ export default {
 };
 ```
 
-#### Option B: Next.js (`next.config.js`)
-```javascript
-module.exports = {
-  async redirects() {
-    return [{ source: '/debloat', destination: 'https://raw.githubusercontent.com/nadeemhaaju143/nh-win-debloater/main/Get-NHWinDebloater.ps1', permanent: false }];
-  },
-};
+#### Option B: Next.js (`next.config.ts`)
+```typescript
+async redirects() {
+  return [
+    {
+      source: '/debloat',
+      destination: 'https://raw.githubusercontent.com/nadeemhaaju143/nh-win-debloater/main/Get-NHWinDebloater.ps1',
+      permanent: false,
+    },
+  ];
+}
 ```
 
 ## Safety & Invariants
