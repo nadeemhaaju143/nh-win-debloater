@@ -1,4 +1,4 @@
-﻿<#
+<#
     .SYNOPSIS
         NH Win Debloater - One-Line Zero-Install PowerShell Quick-Launcher
     .DESCRIPTION
@@ -61,7 +61,7 @@ function Invoke-NHWinDebloaterBootstrap {
         Write-Host " [+] Fetching latest '$Branch' release from GitHub..." -ForegroundColor Cyan
         try {
             Invoke-WebRequest -Uri $archiveUrl -OutFile $zipFile -UseBasicParsing -ErrorAction Stop
-            Write-Host " [✓] Download completed successfully." -ForegroundColor Green
+            Write-Host " [OK] Download completed successfully." -ForegroundColor Green
         } catch {
             Write-Error "Failed to download NH Win Debloater archive from '$archiveUrl': $($_.Exception.Message)"
             return
@@ -71,7 +71,7 @@ function Invoke-NHWinDebloaterBootstrap {
         Write-Host " [+] Extracting release archive..." -ForegroundColor Cyan
         try {
             Expand-Archive -Path $zipFile -DestinationPath $tempDir -Force -ErrorAction Stop
-            Write-Host " [✓] Extraction completed." -ForegroundColor Green
+            Write-Host " [OK] Extraction completed." -ForegroundColor Green
         } catch {
             Write-Error "Failed to extract release archive: $($_.Exception.Message)"
             return
@@ -86,7 +86,7 @@ function Invoke-NHWinDebloaterBootstrap {
             return
         }
 
-        Write-Host " [✓] Launching NH Win Debloater ($entrypoint)..." -ForegroundColor Green
+        Write-Host " [OK] Launching NH Win Debloater ($entrypoint)..." -ForegroundColor Green
         Write-Host ""
 
         # 6. Execute in Single-Thread Apartment (STA) Mode
@@ -120,7 +120,7 @@ function Invoke-NHWinDebloaterBootstrap {
                     try {
                         Remove-Item -Path $target.FullName -Recurse -Force -ErrorAction SilentlyContinue
                     } catch {
-                        Write-Verbose "Could not remove '$($target.FullName)': $($_.Exception.Message)"
+                        # Transient lock ignored
                     }
                 }
             }
