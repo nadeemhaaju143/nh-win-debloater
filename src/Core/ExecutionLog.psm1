@@ -5,12 +5,13 @@
         Provides structured level-based logging, dry-run preview support,
         execution tracking, and backup inventory discovery.
     .MODULEVERSION
-        0.1.0
+        0.5.3
 #>
 
 [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '')]
 [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSProvideCommentHelp', '')]
 [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseOutputTypeCorrectly', '')]
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingEmptyCatchBlock', '')]
 param()
 
 $script:LogFilePath = $null
@@ -31,7 +32,10 @@ function Initialize-DebloatLogger {
     [OutputType([string])]
     param(
         [Parameter(Mandatory = $false)]
-        [string]$LogDirectory
+        [string]$LogDirectory,
+
+        [Parameter(Mandatory = $false)]
+        [string]$Version
     )
 
     if ([string]::IsNullOrWhiteSpace($LogDirectory)) {
@@ -44,8 +48,43 @@ function Initialize-DebloatLogger {
 
     $script:LogFilePath = Join-Path $LogDirectory "NHWinDebloater.log"
 
-    $initMsg = "=== NH Win Debloater v0.1 Session Initialized: $(Get-Date -Format 'yyyy-MM-dd HH:mm:ss') ==="
-    Add-Content -Path $script:LogFilePath -Value $initMsg -Encoding UTF8
+    if ([string]::IsNullOrWhiteSpace($Version)) {
+        $projRoot = Split-Path -Parent (Split-Path -Parent $PSScriptRoot)
+        $vFile = Join-Path $projRoot "VERSION.txt"
+        if (Test-Path $vFile) {
+            $Version = (Get-Content -Path $vFile -Raw).Trim()
+        } else {
+            $Version = "0.5"
+        }
+    }
+    $verDisplay = if ($Version.StartsWith("v")) { $Version } else { "v$Version" }
+
+    # Suppress duplicate session initialization header within 10 seconds (e.g. during STA / elevation handoffs)
+    $shouldWriteInit = $true
+    if (Test-Path $script:LogFilePath) {
+        $lastLines = Get-Content -Path $script:LogFilePath -Tail 5 -ErrorAction SilentlyContinue
+        if ($lastLines) {
+            foreach ($line in ($lastLines | Select-Object -Last 2)) {
+                if ($line -match '=== NH Win Debloater .* Session Initialized: (.*) ===') {
+                    $lastDateStr = $Matches[1]
+                    try {
+                        $lastDate = [datetime]::ParseExact($lastDateStr, 'yyyy-MM-dd HH:mm:ss', [System.Globalization.CultureInfo]::InvariantCulture)
+                        if (((Get-Date) - $lastDate).TotalSeconds -lt 10) {
+                            $shouldWriteInit = $false
+                            break
+                        }
+                    } catch {
+                        # Ignore parse errors
+                    }
+                }
+            }
+        }
+    }
+
+    if ($shouldWriteInit) {
+        $initMsg = "=== NH Win Debloater $verDisplay Session Initialized: $((Get-Date).ToString('yyyy-MM-dd HH:mm:ss')) ==="
+        Add-Content -Path $script:LogFilePath -Value $initMsg -Encoding UTF8
+    }
 
     return $script:LogFilePath
 }
@@ -68,6 +107,10 @@ function Write-DebloatLog {
 
     $timestamp = (Get-Date).ToString("yyyy-MM-dd HH:mm:ss")
     $logEntry = "[$timestamp] [$Level] $Message"
+
+    if ($null -eq $script:LogFilePath) {
+        Initialize-DebloatLogger | Out-Null
+    }
 
     if ($null -ne $script:LogFilePath -and (Test-Path (Split-Path $script:LogFilePath))) {
         try {

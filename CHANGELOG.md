@@ -9,6 +9,24 @@ The project follows a **progressive semantic minor versioning format**:
 
 ---
 
+## [0.5.3] - 2026-11-21
+
+### Stage 5 Registry Snapshot Dropdown, Structured Logging & Elevation Guard
+- **Registry Snapshot Dropdown Visibility & Dark Material Styling (`MainWindow.xaml` & `AppController.ps1`):**
+  - Resolved ComboBox item rendering by binding native `ComboBoxItem` controls with human-readable formatting (`yyyy-MM-dd HH:mm:ss — RegistrySnapshot_*.json (XX.X KB)`) and `.Tag` reference.
+  - Applied high-contrast dark Material item container styles (`Background="#1E1E2E"`, `Foreground="#F8FAFC"`, hover `#0EA5E9`, selected `#0284C7`).
+  - Added `ClipToBounds="False"` across `ViewStage5` cards and grid containers, and auto-selects `SelectedIndex = 0` whenever snapshots are present.
+- **Dynamic Version Header & Structured Execution Logging (`ExecutionLog.psm1`, `Entrypoint.ps1`, `AppController.ps1`):**
+  - Replaced hardcoded `v0.1` log header with dynamic version loaded from `VERSION.txt` or `-Version` parameter.
+  - Added duplicate session initialization suppression within 10 seconds during elevation and STA process restarts.
+  - Integrated `Write-DebloatLog` directly into `$appendLog`, saving all stage 4 debloating actions, app removals, and tweaks into `%LOCALAPPDATA%\NHWinDebloater\Logs\NHWinDebloater.log`.
+  - Wired structured file logging for registry snapshot creation, 1-Click Rollback restore/preview, and App Reinstallation operations.
+- **Automated Quality Gate & Testing (`tests/CoreModules.Tests.ps1`):**
+  - Added Pester tests for dynamic version logger headers, duplicate suppression, structured log writing, and Stage 5 snapshot ComboBox item formatting (59 total passing tests).
+  - Verified 0 PSScriptAnalyzer errors and 0 warnings across all files.
+
+---
+
 ## [0.5.2] - 2026-11-21
 
 ### Multi-Select CheckBox Dropdowns Across All Tabs, Fluid Motion & Minimal UI
