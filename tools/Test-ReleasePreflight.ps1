@@ -78,7 +78,7 @@ if ($pesterResults.FailedCount -eq 0) {
 # 4. Git Branch & PR Guidance
 Write-Host "`n [Git & Branch Protection Check]" -ForegroundColor Cyan
 try {
-    $currentBranch = (git branch --show-current).Trim()
+    $currentBranch = (git -C "$PSScriptRoot\.." branch --show-current 2>$null).Trim()
     Write-Host " [+] Active Git Branch: $currentBranch" -ForegroundColor Gray
 
     if ($currentBranch -eq "main") {
