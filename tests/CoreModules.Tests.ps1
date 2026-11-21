@@ -326,14 +326,40 @@ Describe "Entrypoint Bootstrapper & Path Resolution" {
         $LASTEXITCODE | Should -Be 0
     }
 
-    It "Validates Get-NHWinDebloater.ps1 syntax and parameter signature" {
+    It "Validates Get-NHWinDebloater.ps1 syntax, parameters, and function-wrapped bootstrap" {
         $bootstrapperPath = Join-Path $projectRoot "Get-NHWinDebloater.ps1"
         (Test-Path $bootstrapperPath) | Should -BeTrue
         $content = Get-Content $bootstrapperPath -Raw
+        $content | Should -Match 'function\s+Invoke-NHWinDebloaterBootstrap'
         $content | Should -Match '\[switch\]\$DryRun'
         $content | Should -Match '\[switch\]\$CLI'
         $content | Should -Match '\[switch\]\$Silent'
         $content | Should -Match '-STA'
+        $content | Should -Match 'Invoke-NHWinDebloaterBootstrap\s+@args'
+    }
+
+    It "Verifies Get-NHWinDebloater.ps1 compiles via [ScriptBlock]::Create and AST parser with 0 errors" {
+        $bootstrapperPath = Join-Path $projectRoot "Get-NHWinDebloater.ps1"
+        $content = Get-Content $bootstrapperPath -Raw
+
+        $tokens = $null
+        $errors = $null
+        $ast = [System.Management.Automation.Language.Parser]::ParseInput($content, [ref]$tokens, [ref]$errors)
+        $errors.Count | Should -Be 0
+        $ast | Should -Not -BeNullOrEmpty
+
+        $sb = [ScriptBlock]::Create($content)
+        $sb | Should -Not -BeNullOrEmpty
+    }
+
+    It "Verifies Get-NHWinDebloater.ps1 has no top-level param block to prevent Invoke-Expression parse errors" {
+        $bootstrapperPath = Join-Path $projectRoot "Get-NHWinDebloater.ps1"
+        $content = Get-Content $bootstrapperPath -Raw
+
+        $tokens = $null
+        $errors = $null
+        $ast = [System.Management.Automation.Language.Parser]::ParseInput($content, [ref]$tokens, [ref]$errors)
+        $ast.ParamBlock | Should -BeNullOrEmpty
     }
 
     It "Validates install.ps1 wrapper syntax and parameters" {
@@ -342,6 +368,19 @@ Describe "Entrypoint Bootstrapper & Path Resolution" {
         $content = Get-Content $installPath -Raw
         $content | Should -Match "Get-NHWinDebloater\.ps1"
         $content | Should -Match "finally"
+    }
+
+    It "Verifies install.ps1 compiles via [ScriptBlock]::Create and AST parser with 0 errors" {
+        $installPath = Join-Path $projectRoot "install.ps1"
+        $content = Get-Content $installPath -Raw
+
+        $tokens = $null
+        $errors = $null
+        $ast = [System.Management.Automation.Language.Parser]::ParseInput($content, [ref]$tokens, [ref]$errors)
+        $errors.Count | Should -Be 0
+
+        $sb = [ScriptBlock]::Create($content)
+        $sb | Should -Not -BeNullOrEmpty
     }
 
     It "Validates run.ps1 root launcher syntax and parameter forwarding" {
@@ -353,6 +392,19 @@ Describe "Entrypoint Bootstrapper & Path Resolution" {
         $content | Should -Match '\[switch\]\$Silent'
         $content | Should -Match "Get-NHWinDebloater\.ps1"
         $content | Should -Match "finally"
+    }
+
+    It "Verifies run.ps1 compiles via [ScriptBlock]::Create and AST parser with 0 errors" {
+        $runPath = Join-Path $projectRoot "run.ps1"
+        $content = Get-Content $runPath -Raw
+
+        $tokens = $null
+        $errors = $null
+        $ast = [System.Management.Automation.Language.Parser]::ParseInput($content, [ref]$tokens, [ref]$errors)
+        $errors.Count | Should -Be 0
+
+        $sb = [ScriptBlock]::Create($content)
+        $sb | Should -Not -BeNullOrEmpty
     }
 }
 
