@@ -40,6 +40,7 @@ function Show-DebloaterWindow {
     $presetsPath = Join-Path $ProjectRoot "src\Presets"
     $xamlPath = Join-Path $ProjectRoot "src\UI\MainWindow.xaml"
     $versionPath = Join-Path $ProjectRoot "VERSION.txt"
+    $script:AppVersion = if (Test-Path $versionPath) { (Get-Content -Path $versionPath -Raw).Trim() } else { "0.5" }
     $logoDir = Join-Path $ProjectRoot "assets\logo"
 
     # 2. Import Core Modules
@@ -49,7 +50,7 @@ function Show-DebloaterWindow {
     Import-Module (Join-Path $corePath "SystemTweaks.psm1") -Force
     Import-Module (Join-Path $corePath "ExecutionLog.psm1") -Force
 
-    Initialize-DebloatLogger | Out-Null
+    Initialize-DebloatLogger -Version $script:AppVersion | Out-Null
 
     # 3. Load XAML
     if (-not (Test-Path $xamlPath)) {
@@ -497,26 +498,37 @@ function Show-DebloaterWindow {
         })
     }
 
+    $getSnapshotFromItem = {
+        param($item)
+        if ($null -eq $item) { return $null }
+        if ($item -is [System.Windows.Controls.ComboBoxItem]) {
+            return $item.Tag
+        }
+        return $item
+    }
+
     # Function to update stage views
     $refreshSnapshotsList = {
         if ($cboRegistrySnapshots) {
             $cboRegistrySnapshots.Items.Clear()
             $backups = Get-DebloatBackup
             if ($backups.Count -eq 0) {
-                $null = $cboRegistrySnapshots.Items.Add("No registry snapshots found")
+                $noItem = [System.Windows.Controls.ComboBoxItem]::new()
+                $noItem.Content = "No registry snapshots found"
+                $noItem.Tag = $null
+                $noItem.IsEnabled = $false
+                $noItem.Foreground = [System.Windows.Media.BrushConverter]::new().ConvertFromString("#94A3B8")
+                $null = $cboRegistrySnapshots.Items.Add($noItem)
                 $cboRegistrySnapshots.SelectedIndex = 0
                 if ($btnRestoreSnapshot) { $btnRestoreSnapshot.IsEnabled = $false }
                 if ($btnPreviewSnapshot) { $btnPreviewSnapshot.IsEnabled = $false }
             } else {
                 foreach ($b in $backups) {
-                    $item = [PSCustomObject]@{
-                        Display  = "$($b.FileName) ($($b.LastModified) - $($b.SizeKb) KB)"
-                        FilePath = $b.FilePath
-                        FileName = $b.FileName
-                    }
-                    $null = $cboRegistrySnapshots.Items.Add($item)
+                    $cboItem = [System.Windows.Controls.ComboBoxItem]::new()
+                    $cboItem.Content = "$($b.LastModified) — $($b.FileName) ($($b.SizeKb) KB)"
+                    $cboItem.Tag = $b
+                    $null = $cboRegistrySnapshots.Items.Add($cboItem)
                 }
-                $cboRegistrySnapshots.DisplayMemberPath = "Display"
                 $cboRegistrySnapshots.SelectedIndex = 0
                 if ($btnRestoreSnapshot) { $btnRestoreSnapshot.IsEnabled = $true }
                 if ($btnPreviewSnapshot) { $btnPreviewSnapshot.IsEnabled = $true }
@@ -1644,16 +1656,25 @@ function Show-DebloaterWindow {
         $txtLiveLog.Clear()
 
         $appendLog = {
-            param([string]$text)
+            param(
+                [string]$text,
+                [string]$level = "INFO"
+            )
             $txtLiveLog.AppendText("[$((Get-Date).ToString('HH:mm:ss'))] $text`r`n")
             $txtLiveLog.ScrollToEnd()
             [System.Windows.Forms.Application]::DoEvents()
+
+            try {
+                Write-DebloatLog -Message $text -Level $level -NoConsole
+            } catch {
+                # Fallback safeguard
+            }
         }
 
-        & $appendLog "Starting NH Win Debloater optimization pipeline..."
+        & $appendLog "Starting NH Win Debloater optimization pipeline..." "INFO"
 
         $targetScope = if ($radioScopeCurrentUser.IsChecked) { "CurrentUser" } elseif ($radioScopeDefaultUser.IsChecked) { "DefaultUser" } else { "AllUsers" }
-        & $appendLog "Selected execution scope: $targetScope"
+        & $appendLog "Selected execution scope: $targetScope" "INFO"
 
         $totalOps = 0
         $successOps = 0
@@ -1661,18 +1682,18 @@ function Show-DebloaterWindow {
 
         # 1. Restore Point
         if ($chkCreateRestorePoint.IsChecked) {
-            & $appendLog "Creating Windows System Restore Point..."
+            & $appendLog "Creating Windows System Restore Point..." "INFO"
             $txtProgressStatus.Text = "Creating System Restore checkpoint..."
             $rp = New-DebloatRestorePoint -Description "NH Win Debloater Checkpoint"
             $totalOps++
-            if ($rp.Status -eq "Success") { $successOps++; & $appendLog "System Restore Point created successfully." }
-            else { $skippedOps++; & $appendLog "System Restore Point skipped/warning: $($rp.Message)" }
+            if ($rp.Status -eq "Success") { $successOps++; & $appendLog "System Restore Point created successfully." "SUCCESS" }
+            else { $skippedOps++; & $appendLog "System Restore Point skipped/warning: $($rp.Message)" "WARN" }
         }
         $progExecution.Value = 20
 
         # 2. Registry Snapshot
         if ($chkRegistrySnapshot.IsChecked) {
-            & $appendLog "Capturing pre-tweak registry snapshot..."
+            & $appendLog "Capturing pre-tweak registry snapshot..." "INFO"
             $regPaths = @(
                 "HKLM:\SOFTWARE\Policies\Microsoft\Windows\DataCollection",
                 "HKCU:\Software\Microsoft\Windows\CurrentVersion\Privacy",
@@ -1699,7 +1720,7 @@ function Show-DebloaterWindow {
             $snapFile = Export-RegistrySnapshot -RegistryPaths $regPaths
             $totalOps++
             $successOps++
-            & $appendLog "Registry snapshot saved: $(Split-Path $snapFile -Leaf)"
+            & $appendLog "Registry snapshot saved: $(Split-Path $snapFile -Leaf)" "SUCCESS"
         }
         $progExecution.Value = 35
 
@@ -1795,26 +1816,26 @@ function Show-DebloaterWindow {
         }
 
         if ($appsToRemove.Count -gt 0) {
-            & $appendLog "Removing $($appsToRemove.Count) selected bloatware packages (Scope: $targetScope)..."
+            & $appendLog "Removing $($appsToRemove.Count) selected bloatware packages (Scope: $targetScope)..." "INFO"
             $txtProgressStatus.Text = "Removing selected packages..."
             $remResults = Remove-DebloatApp -AppIdList $appsToRemove.ToArray() -TargetScope $targetScope -PresetsPath $presetsPath
             foreach ($res in $remResults) {
                 $totalOps++
                 if ($res.Status -eq "Success" -or $res.Status -eq "Warning") {
                     $successOps++
-                    & $appendLog "Removed package: $($res.AppId)"
+                    & $appendLog "Removed package: $($res.AppId)" "SUCCESS"
                 } elseif ($res.Status -eq "SkippedProtected") {
                     $skippedOps++
-                    & $appendLog "Protected package skipped: $($res.AppId)"
+                    & $appendLog "Protected package skipped: $($res.AppId)" "WARN"
                 } else {
                     $skippedOps++
-                    & $appendLog "Package not found on system: $($res.AppId)"
+                    & $appendLog "Package not found on system: $($res.AppId)" "INFO"
                 }
             }
         }
         $progExecution.Value = 100
 
-        & $appendLog "Pipeline execution finished successfully."
+        & $appendLog "Pipeline execution finished successfully." "SUCCESS"
         $txtProgressStatus.Text = "Optimization complete."
 
         # Update Summary Stats
@@ -2029,7 +2050,7 @@ function Show-DebloaterWindow {
     if ($btnPreviewSnapshot) {
         $btnPreviewSnapshot.Add_Click({
             param([object]$eventSource, [System.Windows.RoutedEventArgs]$eventArgs)
-            $selected = $cboRegistrySnapshots.SelectedItem
+            $selected = & $getSnapshotFromItem $cboRegistrySnapshots.SelectedItem
             if (-not $selected -or -not $selected.FilePath) {
                 if ($txtRestoreStatus) { $txtRestoreStatus.Text = "Please select a valid snapshot to preview." }
                 return
@@ -2040,11 +2061,13 @@ function Show-DebloaterWindow {
                     $txtRestoreStatus.Text = "Dry-Run Preview: $($results.Count) registry keys would be restored from $($selected.FileName)."
                     $txtRestoreStatus.Foreground = [System.Windows.Media.Brushes]::MediumAquamarine
                 }
+                Write-DebloatLog -Message "Dry-Run Preview: $($results.Count) registry keys would be restored from $($selected.FileName)" -Level "PREVIEW" -NoConsole
             } catch {
                 if ($txtRestoreStatus) {
                     $txtRestoreStatus.Text = "Preview Error: $($_.Exception.Message)"
                     $txtRestoreStatus.Foreground = [System.Windows.Media.Brushes]::Coral
                 }
+                Write-DebloatLog -Message "Preview Error for $($selected.FileName): $($_.Exception.Message)" -Level "ERROR" -NoConsole
             }
         })
     }
@@ -2052,7 +2075,7 @@ function Show-DebloaterWindow {
     if ($btnRestoreSnapshot) {
         $btnRestoreSnapshot.Add_Click({
             param([object]$eventSource, [System.Windows.RoutedEventArgs]$eventArgs)
-            $selected = $cboRegistrySnapshots.SelectedItem
+            $selected = & $getSnapshotFromItem $cboRegistrySnapshots.SelectedItem
             if (-not $selected -or -not $selected.FilePath) {
                 if ($txtRestoreStatus) { $txtRestoreStatus.Text = "Please select a valid snapshot to restore." }
                 return
@@ -2066,12 +2089,14 @@ function Show-DebloaterWindow {
                         $txtRestoreStatus.Text = "Successfully restored $($results.Count) registry values from $($selected.FileName)."
                         $txtRestoreStatus.Foreground = [System.Windows.Media.Brushes]::MediumAquamarine
                     }
+                    Write-DebloatLog -Message "1-Click Rollback executed: restored $($results.Count) registry values from $($selected.FileName)" -Level "SUCCESS" -NoConsole
                     [System.Windows.MessageBox]::Show("Registry snapshot restored successfully ($($results.Count) entries updated).`nRestarting Explorer or rebooting your PC is recommended to apply changes.", "Rollback Complete", [System.Windows.MessageBoxButton]::OK, [System.Windows.MessageBoxImage]::Information) | Out-Null
                 } catch {
                     if ($txtRestoreStatus) {
                         $txtRestoreStatus.Text = "Restore Error: $($_.Exception.Message)"
                         $txtRestoreStatus.Foreground = [System.Windows.Media.Brushes]::Coral
                     }
+                    Write-DebloatLog -Message "Rollback Error for $($selected.FileName): $($_.Exception.Message)" -Level "ERROR" -NoConsole
                 }
             }
         })
@@ -2141,6 +2166,7 @@ function Show-DebloaterWindow {
             $logBuilder = [System.Text.StringBuilder]::new()
             $modeTag = if ($isDryRun) { "[PREVIEW / DRY-RUN]" } else { "[INSTALLING]" }
             $logBuilder.AppendLine("$modeTag Starting reinstallation for $($appsToReinstall.Count) selected apps...") | Out-Null
+            Write-DebloatLog -Message "$modeTag Starting reinstallation for $($appsToReinstall.Count) selected apps..." -Level (if ($isDryRun) { "PREVIEW" } else { "INFO" }) -NoConsole
 
             foreach ($appName in $appsToReinstall) {
                 $logBuilder.AppendLine(" -> Processing: $appName...") | Out-Null
@@ -2148,10 +2174,13 @@ function Show-DebloaterWindow {
 
                 $res = Install-CommonWindowsApp -AppName $appName -WhatIf:$isDryRun
                 $logBuilder.AppendLine("    [$($res.Status)] $($res.DisplayName): $($res.Message)") | Out-Null
+                $logLevel = if ($res.Status -eq "Success") { "SUCCESS" } elseif ($res.Status -eq "Warning" -or $res.Status -eq "Preview") { "PREVIEW" } else { "ERROR" }
+                Write-DebloatLog -Message "[$($res.Status)] Reinstall $($res.DisplayName): $($res.Message)" -Level $logLevel -NoConsole
             }
 
             $logBuilder.AppendLine("Reinstallation task finished.") | Out-Null
             if ($txtReinstallLog) { $txtReinstallLog.Text = $logBuilder.ToString() }
+            Write-DebloatLog -Message "App reinstallation task finished." -Level (if ($isDryRun) { "PREVIEW" } else { "SUCCESS" }) -NoConsole
         })
     }
 

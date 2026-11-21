@@ -42,7 +42,7 @@ Import-Module (Join-Path $CoreDirectory "SystemTweaks.psm1") -Force
 Import-Module (Join-Path $CoreDirectory "ExecutionLog.psm1") -Force
 
 # Initialize Logging
-Initialize-DebloatLogger | Out-Null
+Initialize-DebloatLogger -Version $script:AppVersion | Out-Null
 
 function Show-Header {
     Clear-Host

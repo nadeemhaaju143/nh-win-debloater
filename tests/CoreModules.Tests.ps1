@@ -1,4 +1,4 @@
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseDeclaredVarsMoreThanAssignments', '')]
+﻿[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseDeclaredVarsMoreThanAssignments', '')]
 param()
 
 BeforeAll {
@@ -236,6 +236,46 @@ Describe "ExecutionLog Module" {
     It "Initializes log file without error" {
         $logPath = Initialize-DebloatLogger
         (Test-Path $logPath) | Should -BeTrue
+    }
+
+    It "Initializes log file with dynamic version header" {
+        $testLogDir = Join-Path $env:TEMP "NHWinDebloater_LogTest"
+        if (Test-Path $testLogDir) { Remove-Item -Path $testLogDir -Recurse -Force }
+        $logPath = Initialize-DebloatLogger -LogDirectory $testLogDir -Version "0.5.3"
+        (Test-Path $logPath) | Should -BeTrue
+        $content = Get-Content -Path $logPath -Raw
+        $content | Should -Match "=== NH Win Debloater v0.5.3 Session Initialized:"
+        Remove-Item -Path $testLogDir -Recurse -Force -ErrorAction SilentlyContinue
+    }
+
+    It "Suppresses duplicate Session Initialized lines within 10 seconds" {
+        $testLogDir = Join-Path $env:TEMP "NHWinDebloater_LogDedupTest"
+        if (Test-Path $testLogDir) { Remove-Item -Path $testLogDir -Recurse -Force }
+        $logPath = Initialize-DebloatLogger -LogDirectory $testLogDir -Version "0.5.3"
+        $null = Initialize-DebloatLogger -LogDirectory $testLogDir -Version "0.5.3"
+        $lines = Get-Content -Path $logPath | Where-Object { $_ -match "=== NH Win Debloater" }
+        @($lines).Count | Should -Be 1
+        Remove-Item -Path $testLogDir -Recurse -Force -ErrorAction SilentlyContinue
+    }
+
+    It "Persists structured log entries to file via Write-DebloatLog" {
+        $testLogDir = Join-Path $env:TEMP "NHWinDebloater_WriteLogTest"
+        if (Test-Path $testLogDir) { Remove-Item -Path $testLogDir -Recurse -Force }
+        $null = Initialize-DebloatLogger -LogDirectory $testLogDir -Version "0.5.3"
+        Write-DebloatLog -Message "Test Information Event" -Level "INFO" -NoConsole
+        Write-DebloatLog -Message "Test Success Event" -Level "SUCCESS" -NoConsole
+        Write-DebloatLog -Message "Test Warning Event" -Level "WARN" -NoConsole
+        Write-DebloatLog -Message "Test Error Event" -Level "ERROR" -NoConsole
+        Write-DebloatLog -Message "Test Preview Event" -Level "PREVIEW" -NoConsole
+
+        $logPath = Join-Path $testLogDir "NHWinDebloater.log"
+        $content = Get-Content -Path $logPath -Raw
+        $content | Should -Match "\[INFO\] Test Information Event"
+        $content | Should -Match "\[SUCCESS\] Test Success Event"
+        $content | Should -Match "\[WARN\] Test Warning Event"
+        $content | Should -Match "\[ERROR\] Test Error Event"
+        $content | Should -Match "\[PREVIEW\] Test Preview Event"
+        Remove-Item -Path $testLogDir -Recurse -Force -ErrorAction SilentlyContinue
     }
 
     It "Executes DryRun without running script block" {
@@ -500,6 +540,21 @@ Describe "Registry Snapshot & Rollback Engine" {
         $results = @(Restore-RegistrySnapshot -SnapshotPath $tempSnapshotPath -WhatIf)
         $results.Count | Should -Be 1
         $results[0].Status | Should -Be "Preview"
+    }
+
+    It "Verifies Stage 5 ComboBox item formatting with date, filename, and size" {
+        $backups = @(Get-DebloatBackup -BackupDirectory $tempBackupDir)
+        $backups.Count | Should -BeGreaterOrEqual 1
+        $b = $backups[0]
+        $formatted = "$($b.LastModified) — $($b.FileName) ($($b.SizeKb) KB)"
+        $formatted | Should -Match "RegistrySnapshot_.*\.json"
+        $formatted | Should -Match "KB\)"
+
+        $cboItem = [System.Windows.Controls.ComboBoxItem]::new()
+        $cboItem.Content = $formatted
+        $cboItem.Tag = $b
+        $cboItem.Content | Should -Be $formatted
+        $cboItem.Tag.FileName | Should -Be $b.FileName
     }
 }
 

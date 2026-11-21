@@ -1759,7 +1759,7 @@
             </Grid>
 
             <!-- STAGE 5: Summary & Post-Optimization -->
-            <Grid x:Name="ViewStage5" Visibility="Collapsed">
+            <Grid x:Name="ViewStage5" Visibility="Collapsed" ClipToBounds="False">
                 <Grid.RenderTransform>
                     <TransformGroup>
                         <TranslateTransform X="0" Y="0"/>
@@ -1777,7 +1777,7 @@
                     <TextBlock Text="All selected debloating steps, registry policies, and tweaks have executed." FontSize="13" Foreground="#94A3B8"/>
                 </StackPanel>
 
-                <Grid Grid.Row="1">
+                <Grid Grid.Row="1" ClipToBounds="False">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="*"/>
@@ -1810,8 +1810,8 @@
                         </Border>
                     </Grid>
 
-                    <Border Grid.Row="1" Background="#131D31" CornerRadius="8" BorderBrush="#2A384F" BorderThickness="1" Padding="18">
-                        <StackPanel>
+                    <Border Grid.Row="1" Background="#131D31" CornerRadius="8" BorderBrush="#2A384F" BorderThickness="1" Padding="18" ClipToBounds="False">
+                        <StackPanel ClipToBounds="False">
                             <TextBlock Text="Recommended Next Steps:" FontSize="14" FontWeight="Bold" Foreground="#F8FAFC" Margin="0,0,0,10"/>
                             <TextBlock Text="• Restart Windows Explorer to immediately refresh Taskbar and desktop icons." FontSize="13" Foreground="#CBD5E1" Margin="0,2"/>
                             <TextBlock Text="• For complete policy enforcement (Fast Startup / Driver exclusions), a system reboot is recommended." FontSize="13" Foreground="#CBD5E1" Margin="0,2"/>
@@ -1845,8 +1845,8 @@
                             </StackPanel>
 
                             <!-- Registry Snapshots & 1-Click Rollback Manager Card -->
-                            <Border Background="#0A0E17" CornerRadius="8" BorderBrush="#2A384F" BorderThickness="1" Padding="14">
-                                <Grid>
+                            <Border Background="#0A0E17" CornerRadius="8" BorderBrush="#2A384F" BorderThickness="1" Padding="14" ClipToBounds="False">
+                                <Grid ClipToBounds="False">
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="Auto"/>
                                         <RowDefinition Height="Auto"/>
@@ -1856,21 +1856,41 @@
                                         <Path Data="{StaticResource IconShieldLock}" Fill="#38BDF8" Width="13" Height="13" Stretch="Uniform" Margin="0,0,8,0" VerticalAlignment="Center"/>
                                         <TextBlock Text="Registry Snapshots &amp; 1-Click Rollback Manager" FontWeight="Bold" FontSize="13" Foreground="#F8FAFC" VerticalAlignment="Center"/>
                                     </StackPanel>
-                                    <Grid Grid.Row="1" Margin="0,0,0,8">
+                                    <Grid Grid.Row="1" Margin="0,0,0,8" ClipToBounds="False">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="*"/>
                                             <ColumnDefinition Width="Auto"/>
                                             <ColumnDefinition Width="Auto"/>
                                             <ColumnDefinition Width="Auto"/>
                                         </Grid.ColumnDefinitions>
-                                        <ComboBox x:Name="CboRegistrySnapshots" Grid.Column="0" Height="30" Background="#1E293B" Foreground="#F8FAFC" BorderBrush="#334155" Margin="0,0,8,0"/>
-                                        <Button x:Name="BtnRefreshSnapshots" Grid.Column="1" Style="{StaticResource ModernBtn}" Height="30" Padding="8,0" Margin="0,0,8,0" ToolTip="Refresh snapshot list">
+                                        <ComboBox x:Name="CboRegistrySnapshots" Grid.Column="0" Height="32" MinHeight="32" MaxDropDownHeight="240" Background="#1E1E2E" Foreground="#F8FAFC" BorderBrush="#3B4261" BorderThickness="1" Margin="0,0,8,0" VerticalContentAlignment="Center" FontSize="11">
+                                            <ComboBox.ItemContainerStyle>
+                                                <Style TargetType="ComboBoxItem">
+                                                    <Setter Property="Background" Value="#1E1E2E"/>
+                                                    <Setter Property="Foreground" Value="#F8FAFC"/>
+                                                    <Setter Property="Padding" Value="8,6"/>
+                                                    <Setter Property="BorderThickness" Value="0,0,0,1"/>
+                                                    <Setter Property="BorderBrush" Value="#2A384F"/>
+                                                    <Style.Triggers>
+                                                        <Trigger Property="IsHighlighted" Value="True">
+                                                            <Setter Property="Background" Value="#0EA5E9"/>
+                                                            <Setter Property="Foreground" Value="#FFFFFF"/>
+                                                        </Trigger>
+                                                        <Trigger Property="IsSelected" Value="True">
+                                                            <Setter Property="Background" Value="#0284C7"/>
+                                                            <Setter Property="Foreground" Value="#FFFFFF"/>
+                                                        </Trigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </ComboBox.ItemContainerStyle>
+                                        </ComboBox>
+                                        <Button x:Name="BtnRefreshSnapshots" Grid.Column="1" Style="{StaticResource ModernBtn}" Height="32" Padding="8,0" Margin="0,0,8,0" ToolTip="Refresh snapshot list">
                                             <Path Data="{StaticResource IconRefresh}" Fill="#38BDF8" Width="11" Height="11" Stretch="Uniform"/>
                                         </Button>
-                                        <Button x:Name="BtnPreviewSnapshot" Grid.Column="2" Style="{StaticResource ModernBtn}" Height="30" Padding="10,0" Margin="0,0,8,0">
+                                        <Button x:Name="BtnPreviewSnapshot" Grid.Column="2" Style="{StaticResource ModernBtn}" Height="32" Padding="10,0" Margin="0,0,8,0">
                                             <TextBlock Text="Preview (Dry-Run)" FontSize="11" VerticalAlignment="Center"/>
                                         </Button>
-                                        <Button x:Name="BtnRestoreSnapshot" Grid.Column="3" Style="{StaticResource PrimaryBtn}" Height="30" Padding="12,0" Background="#0284C7" BorderBrush="#38BDF8">
+                                        <Button x:Name="BtnRestoreSnapshot" Grid.Column="3" Style="{StaticResource PrimaryBtn}" Height="32" Padding="12,0" Background="#0284C7" BorderBrush="#38BDF8">
                                             <StackPanel Orientation="Horizontal">
                                                 <Path Data="{StaticResource IconCheckCircle}" Fill="#FFFFFF" Width="11" Height="11" Stretch="Uniform" Margin="0,0,6,0" VerticalAlignment="Center"/>
                                                 <TextBlock Text="1-Click Restore" FontSize="11" FontWeight="Bold" Foreground="#FFFFFF" VerticalAlignment="Center"/>
