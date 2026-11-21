@@ -44,7 +44,11 @@ if (-not [string]::IsNullOrWhiteSpace($TargetVersion)) {
 
 # 2. PSScriptAnalyzer Quality Gate
 Write-Host "`n [Step 1/2] Running PSScriptAnalyzer Quality Gate..." -ForegroundColor Yellow
-$scriptFiles = Get-ChildItem -Path $projectRoot -Recurse -Include "*.ps1", "*.psm1" | Where-Object { $_.FullName -notmatch "\\tests\\" }
+$scriptFiles = Get-ChildItem -Path $projectRoot -Recurse -Include "*.ps1", "*.psm1" | Where-Object {
+    $_.FullName -notmatch "\\tests\\" -and
+    $_.FullName -notmatch "\\logs\\" -and
+    $_.FullName -notmatch "\\artifacts\\"
+}
 $issues = [System.Collections.Generic.List[PSCustomObject]]::new()
 
 foreach ($file in $scriptFiles) {
