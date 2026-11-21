@@ -6,3 +6,11 @@ backups/
 logs/
 .vs/
 .vscode/
+
+# HyperExecute & Cloud VM Testing Artifacts
+.hyperexecute/
+artifacts/
+hyperexecuteupdate
+hyperexecute-code-*.zip
+mask-*.yaml
+.updatedhyperexecute.yaml

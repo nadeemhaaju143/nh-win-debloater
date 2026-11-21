@@ -1,0 +1,15 @@
+version: 0.1
+runson: win
+concurrency: 1
+autosplit: false
+
+pre:
+  - powershell -NoProfile -ExecutionPolicy Bypass -Command "Get-CimInstance Win32_OperatingSystem | Select-Object Caption, Version, BuildNumber"
+
+testSuites:
+  - powershell -NoProfile -ExecutionPolicy Bypass -File .\tools\Test-VMCloudVerification.ps1
+
+uploadArtefacts:
+  - name: debloater-vm-audit-artifacts
+    path:
+      - "artifacts/**"

@@ -3,7 +3,11 @@ param()
 
 BeforeAll {
     $projectRoot = Split-Path -Parent $PSScriptRoot
-    $scriptFiles = Get-ChildItem -Path $projectRoot -Recurse -Include "*.ps1", "*.psm1" | Where-Object { $_.FullName -notmatch "\\tests\\" }
+    $scriptFiles = Get-ChildItem -Path $projectRoot -Recurse -Include "*.ps1", "*.psm1" | Where-Object {
+        $_.FullName -notmatch "\\tests\\" -and
+        $_.FullName -notmatch "\\logs\\" -and
+        $_.FullName -notmatch "\\artifacts\\"
+    }
 }
 
 Describe "PSScriptAnalyzer Zero Warnings / Zero Errors Gate" {
