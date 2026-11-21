@@ -7,7 +7,7 @@
         supports multi-user and default-user Sysprep environments,
         and provides reinstall capability for default/Store apps.
     .MODULEVERSION
-        0.1.0
+        1.1.0
 #>
 
 [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '')]

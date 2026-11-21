@@ -9,6 +9,43 @@ The project follows a **progressive semantic minor versioning format**:
 
 ---
 
+## [1.1.0] - 2026-11-22
+
+### Milestone: Fluent UX, Deep Debloat & Service Optimization
+- **Integrated Single-Canvas Top Bar (`MainWindow.xaml` & `AppController.ps1`):**
+  - Removed Minimize and Maximize caption buttons, merging controls directly into the top-right canvas:
+    1) Heart Support (`♥` / `BtnSupport`) — popover with One-Time and Monthly (₹199/mo) Razorpay options.
+    2) Settings (`⚙` / `BtnPreferences`) — opens the integrated Preferences modal.
+    3) 3-Line Menu (`☰` / `BtnQuickActions`) — opens the Quick Actions dropdown.
+    4) Close (`✕` / `BtnClose`) — exits app cleanly with automated session cleanup.
+- **Hero Welcome Screen & Vector 4-Color Windows Emblem:**
+  - Redesigned Stage 1 with a centered hero layout featuring a custom vector 4-pane multi-color Windows emblem (Coral Red `#EF4444`, Emerald Green `#10B981`, Azure Blue `#0EA5E9`, Amber Gold `#F59E0B`), scope bar, and side-by-side action paths: **Recommended Setup** (curated safe optimizations) and **Custom Tuning** (fine-grained control wizard).
+- **Preferences Modal (`⚙` / `ModalPreferences`):**
+  - Theme switcher (`System Auto`, `Light Mode`, `Dark Mode`) with real-time brush updates.
+  - Interface language selector and safety behavior toggles (System Restore Point, temporary file exit cleanup, ripple & motion effects).
+- **3-Line Quick Actions Menu (`☰`) & Custom Modals:**
+  - `Load JSON Profile`: file picker for `*.json` configuration import.
+  - `Save JSON Profile`: confirmation modal with checkboxes to export Selected Apps, System & Privacy Tweaks, or Target & Safety Options.
+  - `Recovery & Rollback`: modal with 3 distinct utilities: **1-Click Full System Rollback** (Registry + Services + Start Menu), **Restore Registry Snapshot**, and **Restore Start Menu Layout**.
+  - `Documentation`, `Report an Issue`, `Open Session Logs`, and `About NH Win Debloater`.
+- **App Selection Safety Indicators & Legend:**
+  - Color-coded status dots and badges on every app row: `Recommended` (Green `#10B981`), `Optional` (Amber `#F59E0B`), and `Not Recommended` (Red `#EF4444`).
+  - Added bottom safety legend bar in the App Removal tab.
+- **Deep App, Stub & Cloud Bloat Removal:**
+  - Deep OneDrive removal: terminates processes, runs setup `/uninstall`, removes Appx sync packages, cleans CLSID namespace pinning, and purges Run keys.
+  - Deep Windows Copilot removal: purges Copilot Appx packages and providers, enforces `TurnOffWindowsCopilot = 1`, and hides taskbar buttons.
+  - Start Menu cloud stub purge: disables consumer features (`DisableWindowsConsumerFeatures = 1`), disables silent installed apps (`SilentInstalledAppsEnabled = 0`), clears `SubscribedContent-*`, and backs up & cleans pinned stub layouts.
+- **Safe Background Service & Startup Optimization:**
+  - Curated reversible optimization for non-essential services: `DiagTrack`, `dmwappushservice`, `RetailDemo`, `MapsBroker`, `WerSvc`, `wisvc`, `Fax`, and `PhoneSvc`.
+  - High-RAM autostart trimming: disables Edge Startup Boost and background boost mode.
+  - Zero modification to protected critical services (Windows Defender, Windows Update, Audio, Network, Bluetooth, GPU).
+- **Performance Benchmarking Suite (`tools/Invoke-VMBenchmark.ps1` & `docs/BENCHMARKS.md`):**
+  - Verified on clean Windows 11 VM: **1,285 MB total RAM freed** (+605 MB improvement over v1.0.0), idle CPU reduced from 4.4% to 1.9%, 14 background services optimized, and 32 background tasks trimmed.
+- **Automatic Exit Cleanup:**
+  - Guaranteed `$window.Add_Closed` cleanup purging temporary launcher sandbox directories (`%TEMP%\NHWinDebloater*`) while preserving user backups and logs.
+
+---
+
 ## [1.0.0] - 2026-11-21
 
 ### Milestone: Consolidated Production-Ready Release

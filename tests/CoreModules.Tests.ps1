@@ -754,3 +754,39 @@ Describe "Post-Exit Temp & Session Cleanup" {
         (Test-Path $testSnapshotFile) | Should -BeTrue
     }
 }
+
+Describe "Deep Debloat, Service Optimization & Start Menu Recovery" {
+    It "Executes Remove-OneDriveDeep in preview mode without error" {
+        $ops = Remove-OneDriveDeep -WhatIf
+        $ops | Should -Not -BeNullOrEmpty
+    }
+
+    It "Executes Clear-StartMenuCloudStubs in preview mode without error" {
+        $ops = Clear-StartMenuCloudStubs -WhatIf
+        $ops | Should -Not -BeNullOrEmpty
+    }
+
+    It "Backs up and restores Start Menu layout in test sandbox" {
+        $testDir = Join-Path $env:TEMP "NHWinDebloater_StartMenu_Test"
+        if (-not (Test-Path $testDir)) { New-Item -Path $testDir -ItemType Directory -Force | Out-Null }
+        $backupDir = Join-Path $testDir "Backups"
+        $testFile = Join-Path $testDir "start_test.bin"
+        Set-Content -Path $testFile -Value "MockStartMenuData" -Encoding UTF8
+
+        $backed = Backup-StartMenuLayout -BackupDirectory $backupDir
+        $backed | Should -Not -BeNullOrEmpty
+
+        $restoreOps = Restore-StartMenuLayout -BackupFile $testFile -WhatIf
+        $restoreOps | Should -Not -BeNullOrEmpty
+
+        Remove-Item -Path $testDir -Recurse -Force -ErrorAction SilentlyContinue
+    }
+
+    It "Optimizes and restores background services in preview mode" {
+        $ops = Set-SafeServiceOptimization -WhatIf
+        $ops | Should -Not -BeNullOrEmpty
+
+        $restoreOps = Restore-ServiceOptimization -WhatIf
+        $restoreOps | Should -Not -BeNullOrEmpty
+    }
+}

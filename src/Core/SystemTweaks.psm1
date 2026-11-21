@@ -8,12 +8,14 @@
         (Sandbox, WSL), creates System Restore Points, and captures pre-modification
         registry snapshots for transactional rollback.
     .MODULEVERSION
-        0.1.0
+        1.1.0
 #>
 
 [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '')]
 [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSProvideCommentHelp', '')]
 [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseOutputTypeCorrectly', '')]
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '')]
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingEmptyCatchBlock', '')]
 param()
 
 function Set-TweakRegistryValue {
@@ -917,4 +919,432 @@ function Get-DebloatSafetyImpact {
     }
 }
 
-Export-ModuleMember -Function Set-ConsumerFeatureTweak, Set-LockScreenTweak, Set-ClassicContextMenuTweak, Set-MousePrecisionTweak, Set-StickyKeysTweak, Set-FastStartupTweak, Set-StorageSenseTweak, Set-WindowsUpdatePolicyTweak, Set-OptionalFeatureState, Set-GameDVRPlaybackTweak, Set-DeliveryOptimizationTweak, Set-TelemetryServiceTweak, Set-StartMenuRecommendedTweak, Set-EdgeBackgroundTweak, Set-TelemetryScheduledTasksTweak, Set-HibernationStorageTweak, Set-MultitaskingTweak, Set-SettingsHomeTweak, Set-CopilotAITweak, Set-RecallAITweak, Set-ApplicationAITweak, Get-DebloatSafetyImpact, New-DebloatRestorePoint, Export-RegistrySnapshot, Restore-RegistrySnapshot
+
+function Remove-OneDriveDeep {
+    <#
+        .SYNOPSIS
+            Performs complete deep removal of Microsoft OneDrive including processes, setup uninstall, AppX sync packages, Explorer navigation pane CLSID, and autostart keys.
+    #>
+    [CmdletBinding(SupportsShouldProcess = $true)]
+    [OutputType([PSCustomObject[]])]
+    param(
+        [Parameter(Mandatory = $false)]
+        [bool]$DisableOnly = $false
+    )
+
+    $ops = [System.Collections.Generic.List[PSCustomObject]]::new()
+
+    # 1. Terminate running OneDrive processes
+    if ($PSCmdlet.ShouldProcess("Process: OneDrive", "Terminate process")) {
+        try {
+            $oneDriveProc = Get-Process -Name "OneDrive" -ErrorAction SilentlyContinue
+            if ($oneDriveProc) {
+                Stop-Process -Name "OneDrive" -Force -ErrorAction SilentlyContinue
+                $ops.Add([PSCustomObject]@{ Path = "Process"; Name = "OneDrive"; Value = "Terminated"; Status = "Success" })
+            }
+        } catch {
+            $ops.Add([PSCustomObject]@{ Path = "Process"; Name = "OneDrive"; Value = "Error"; Status = "Error: $($_.Exception.Message)" })
+        }
+    }
+
+    # 2. Execute OneDriveSetup /uninstall if not disable-only
+    if (-not $DisableOnly) {
+        $setupPaths = @(
+            "$env:SystemRoot\System32\OneDriveSetup.exe",
+            "$env:SystemRoot\SysWOW64\OneDriveSetup.exe",
+            "$env:LOCALAPPDATA\Microsoft\OneDrive\Update\OneDriveSetup.exe"
+        )
+        foreach ($setupExe in $setupPaths) {
+            if (Test-Path $setupExe) {
+                if ($PSCmdlet.ShouldProcess("Executable: $setupExe", "Run uninstall")) {
+                    try {
+                        Start-Process -FilePath $setupExe -ArgumentList "/uninstall" -Wait -WindowStyle Hidden -ErrorAction SilentlyContinue
+                        $ops.Add([PSCustomObject]@{ Path = "Setup"; Name = $setupExe; Value = "/uninstall"; Status = "Success" })
+                        break
+                    } catch {
+                        $ops.Add([PSCustomObject]@{ Path = "Setup"; Name = $setupExe; Value = "/uninstall"; Status = "Error: $($_.Exception.Message)" })
+                    }
+                }
+            }
+        }
+
+        # 3. Remove Microsoft.OneDriveSync AppX package if present
+        $syncPkgs = @("Microsoft.OneDriveSync", "*OneDrive*")
+        foreach ($pkgName in $syncPkgs) {
+            try {
+                $found = Get-AppxPackage -Name $pkgName -AllUsers -ErrorAction SilentlyContinue
+                foreach ($f in $found) {
+                    if ($PSCmdlet.ShouldProcess("AppX: $($f.Name)", "Remove AppX Package")) {
+                        Remove-AppxPackage -Package $f.PackageFullName -AllUsers -ErrorAction SilentlyContinue
+                        $ops.Add([PSCustomObject]@{ Path = "AppX"; Name = $f.Name; Value = "Removed"; Status = "Success" })
+                    }
+                }
+            } catch {
+                # Ignore AppX query failures
+            }
+        }
+    }
+
+    # 4. Remove Explorer Navigation Pane CLSID Pinning
+    $clsidPaths = @(
+        "HKCR:\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}",
+        "HKCU:\Software\Classes\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}",
+        "HKLM:\SOFTWARE\Classes\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}",
+        "HKLM:\SOFTWARE\Wow6432Node\Classes\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}"
+    )
+    foreach ($cPath in $clsidPaths) {
+        $ops.Add((Set-TweakRegistryValue -Path $cPath -Name "System.IsPinnedToNameSpaceTree" -Value 0 -PropertyType "DWord" -WhatIf:$WhatIfPreference))
+    }
+
+    # 5. Remove Autostart / Run Keys
+    $runPaths = @(
+        "HKCU:\Software\Microsoft\Windows\CurrentVersion\Run",
+        "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Run"
+    )
+    foreach ($rPath in $runPaths) {
+        if ($PSCmdlet.ShouldProcess("Registry Key: $rPath", "Remove OneDrive autostart value")) {
+            try {
+                if (Test-Path $rPath) {
+                    $item = Get-ItemProperty -Path $rPath -Name "OneDrive" -ErrorAction SilentlyContinue
+                    if ($item) {
+                        Remove-ItemProperty -Path $rPath -Name "OneDrive" -Force -ErrorAction SilentlyContinue
+                        $ops.Add([PSCustomObject]@{ Path = $rPath; Name = "OneDrive"; Value = "Removed"; Status = "Success" })
+                    }
+                }
+            } catch {
+                $ops.Add([PSCustomObject]@{ Path = $rPath; Name = "OneDrive"; Value = "Error"; Status = "Error: $($_.Exception.Message)" })
+            }
+        }
+    }
+
+    # 6. Prevent OneDrive file synchronization policy
+    $ops.Add((Set-TweakRegistryValue -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\OneDrive" -Name "DisableFileSyncNGSC" -Value 1 -PropertyType "DWord" -WhatIf:$WhatIfPreference))
+
+    return $ops.ToArray()
+}
+
+function Backup-StartMenuLayout {
+    <#
+        .SYNOPSIS
+            Backs up the Windows Start Menu pinned layout files (start.bin and start2.bin) before layout reset.
+    #>
+    [CmdletBinding()]
+    [OutputType([string[]])]
+    param(
+        [Parameter(Mandatory = $false)]
+        [string]$BackupDirectory
+    )
+
+    if ([string]::IsNullOrWhiteSpace($BackupDirectory)) {
+        $BackupDirectory = Join-Path $env:LOCALAPPDATA "NHWinDebloater\Backups\StartMenu"
+    }
+
+    if (-not (Test-Path $BackupDirectory)) {
+        New-Item -Path $BackupDirectory -ItemType Directory -Force -ErrorAction Stop | Out-Null
+    }
+
+    $timestamp = (Get-Date).ToString("yyyyMMdd_HHmmss")
+    $backedFiles = [System.Collections.Generic.List[string]]::new()
+
+    $startMenuDirs = @(
+        "$env:LOCALAPPDATA\Packages\Microsoft.Windows.StartMenuExperienceHost_cw5n1h2txyewy\LocalState"
+    )
+
+    foreach ($dir in $startMenuDirs) {
+        if (Test-Path $dir) {
+            $bins = Get-ChildItem -Path $dir -Filter "start*.bin" -ErrorAction SilentlyContinue
+            foreach ($bin in $bins) {
+                $dest = Join-Path $BackupDirectory "$($bin.BaseName)_$timestamp$($bin.Extension)"
+                Copy-Item -Path $bin.FullName -Destination $dest -Force -ErrorAction SilentlyContinue
+                $backedFiles.Add($dest)
+            }
+        }
+    }
+
+    return $backedFiles.ToArray()
+}
+
+function Restore-StartMenuLayout {
+    <#
+        .SYNOPSIS
+            Restores the Windows Start Menu pinned layout from a previous backup.
+    #>
+    [CmdletBinding(SupportsShouldProcess = $true)]
+    [OutputType([PSCustomObject[]])]
+    param(
+        [Parameter(Mandatory = $false)]
+        [string]$BackupFile
+    )
+
+    $ops = [System.Collections.Generic.List[PSCustomObject]]::new()
+    $backupDir = Join-Path $env:LOCALAPPDATA "NHWinDebloater\Backups\StartMenu"
+
+    if ([string]::IsNullOrWhiteSpace($BackupFile)) {
+        if (Test-Path $backupDir) {
+            $latest = Get-ChildItem -Path $backupDir -Filter "start*_*.bin" -ErrorAction SilentlyContinue |
+                Sort-Object LastWriteTime -Descending |
+                Select-Object -First 1
+            if ($latest) {
+                $BackupFile = $latest.FullName
+            }
+        }
+    }
+
+    if (-not $BackupFile -or -not (Test-Path $BackupFile)) {
+        Write-Warning "No Start Menu layout backup file found in: $backupDir"
+        $ops.Add([PSCustomObject]@{ Path = "StartMenu"; Name = "start.bin"; Value = "Not Found"; Status = "Skipped" })
+        return $ops.ToArray()
+    }
+
+    $targetDir = "$env:LOCALAPPDATA\Packages\Microsoft.Windows.StartMenuExperienceHost_cw5n1h2txyewy\LocalState"
+    if (-not (Test-Path $targetDir)) {
+        New-Item -Path $targetDir -ItemType Directory -Force -ErrorAction SilentlyContinue | Out-Null
+    }
+
+    $targetFileName = if ($BackupFile -match "start2_") { "start2.bin" } else { "start.bin" }
+    $targetPath = Join-Path $targetDir $targetFileName
+
+    if ($PSCmdlet.ShouldProcess("Start Menu Layout: $targetPath", "Restore from backup $BackupFile")) {
+        try {
+            Copy-Item -Path $BackupFile -Destination $targetPath -Force -ErrorAction Stop
+            Stop-Process -Name "StartMenuExperienceHost" -Force -ErrorAction SilentlyContinue
+            $ops.Add([PSCustomObject]@{ Path = $targetPath; Name = $targetFileName; Value = $BackupFile; Status = "Restored" })
+        } catch {
+            $ops.Add([PSCustomObject]@{ Path = $targetPath; Name = $targetFileName; Value = $BackupFile; Status = "Error: $($_.Exception.Message)" })
+        }
+    } else {
+        $ops.Add([PSCustomObject]@{ Path = $targetPath; Name = $targetFileName; Value = $BackupFile; Status = "Preview" })
+    }
+
+    return $ops.ToArray()
+}
+
+function Clear-StartMenuCloudStubs {
+    <#
+        .SYNOPSIS
+            Cleans pre-installed cloud advertisement stubs and prevents silent download of promotional apps in the Start Menu.
+    #>
+    [CmdletBinding(SupportsShouldProcess = $true)]
+    [OutputType([PSCustomObject[]])]
+    param(
+        [Parameter(Mandatory = $false)]
+        [bool]$CleanLayout = $true
+    )
+
+    $ops = [System.Collections.Generic.List[PSCustomObject]]::new()
+
+    # 1. Back up Start Menu layout first
+    Backup-StartMenuLayout | Out-Null
+
+    # 2. Disable Consumer Features & Cloud Content
+    $ops.Add((Set-TweakRegistryValue -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\CloudContent" -Name "DisableWindowsConsumerFeatures" -Value 1 -PropertyType "DWord" -WhatIf:$WhatIfPreference))
+    $ops.Add((Set-TweakRegistryValue -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\CloudContent" -Name "DisableCloudOptimizedContent" -Value 1 -PropertyType "DWord" -WhatIf:$WhatIfPreference))
+
+    # 3. Disable ContentDeliveryManager silent app installs & suggested content
+    $cdmPath = "HKCU:\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager"
+    $cdmKeys = @(
+        "ContentDeliveryAllowed",
+        "OemPreInstalledAppsEnabled",
+        "PreInstalledAppsEnabled",
+        "PreInstalledAppsEverEnabled",
+        "SilentInstalledAppsEnabled",
+        "SubscribedContent-310093Enabled",
+        "SubscribedContent-338387Enabled",
+        "SubscribedContent-338388Enabled",
+        "SubscribedContent-338389Enabled",
+        "SubscribedContent-353694Enabled",
+        "SubscribedContent-353696Enabled",
+        "SubscribedContent-353698Enabled",
+        "SystemPaneSuggestionsEnabled"
+    )
+
+    foreach ($k in $cdmKeys) {
+        $ops.Add((Set-TweakRegistryValue -Path $cdmPath -Name $k -Value 0 -PropertyType "DWord" -WhatIf:$WhatIfPreference))
+    }
+
+    # 4. Clean pinned stubs if requested
+    if ($CleanLayout) {
+        $localState = "$env:LOCALAPPDATA\Packages\Microsoft.Windows.StartMenuExperienceHost_cw5n1h2txyewy\LocalState"
+        if (Test-Path $localState) {
+            $stubs = Get-ChildItem -Path $localState -Filter "start*.bin" -ErrorAction SilentlyContinue
+            foreach ($s in $stubs) {
+                if ($PSCmdlet.ShouldProcess("Layout File: $($s.FullName)", "Reset pinned cloud stub layout")) {
+                    try {
+                        Remove-Item -Path $s.FullName -Force -ErrorAction SilentlyContinue
+                        $ops.Add([PSCustomObject]@{ Path = $s.FullName; Name = $s.Name; Value = "Reset"; Status = "Success" })
+                    } catch {
+                        $ops.Add([PSCustomObject]@{ Path = $s.FullName; Name = $s.Name; Value = "Error"; Status = "Error: $($_.Exception.Message)" })
+                    }
+                }
+            }
+        }
+    }
+
+    return $ops.ToArray()
+}
+
+function Set-SafeServiceOptimization {
+    <#
+        .SYNOPSIS
+            Safely optimizes non-essential background services (telemetry, retail demo, maps, error reporting) and trims high-RAM autostart bloat.
+    #>
+    [CmdletBinding(SupportsShouldProcess = $true)]
+    [OutputType([PSCustomObject[]])]
+    param(
+        [Parameter(Mandatory = $false)]
+        [bool]$DisableServices = $true,
+
+        [Parameter(Mandatory = $false)]
+        [string]$SnapshotPath
+    )
+
+    $ops = [System.Collections.Generic.List[PSCustomObject]]::new()
+
+    $safeServices = @(
+        @{ Name = "DiagTrack"; TargetStartup = "Disabled" },
+        @{ Name = "dmwappushservice"; TargetStartup = "Disabled" },
+        @{ Name = "RetailDemo"; TargetStartup = "Disabled" },
+        @{ Name = "MapsBroker"; TargetStartup = "Manual" },
+        @{ Name = "WerSvc"; TargetStartup = "Manual" },
+        @{ Name = "wisvc"; TargetStartup = "Manual" },
+        @{ Name = "Fax"; TargetStartup = "Manual" },
+        @{ Name = "PhoneSvc"; TargetStartup = "Manual" }
+    )
+
+    $protectedServices = @("WinDefend", "wuauserv", "AudioSrv", "AudioEndpointBuilder", "Dhcp", "Dnscache", "BFE", "mpssvc", "bthserv")
+
+    $serviceBackupDir = Join-Path $env:LOCALAPPDATA "NHWinDebloater\Backups"
+    if (-not (Test-Path $serviceBackupDir)) {
+        New-Item -Path $serviceBackupDir -ItemType Directory -Force -ErrorAction SilentlyContinue | Out-Null
+    }
+    $timestamp = (Get-Date).ToString("yyyyMMdd_HHmmss")
+    $serviceBackupFile = if (-not [string]::IsNullOrWhiteSpace($SnapshotPath)) {
+        $SnapshotPath
+    } else {
+        Join-Path $serviceBackupDir "ServiceSnapshot_$timestamp.json"
+    }
+    $backupData = [System.Collections.Generic.List[PSCustomObject]]::new()
+
+    foreach ($svcItem in $safeServices) {
+        $svcName = $svcItem.Name
+        if ($protectedServices -contains $svcName) { continue }
+
+        $svc = Get-Service -Name $svcName -ErrorAction SilentlyContinue
+        if ($svc) {
+            $wmiSvc = Get-CimInstance -ClassName Win32_Service -Filter "Name='$svcName'" -ErrorAction SilentlyContinue
+            $currentMode = if ($wmiSvc) { $wmiSvc.StartMode } else { "Unknown" }
+            $backupData.Add([PSCustomObject]@{
+                Name        = $svcName
+                StartupType = $currentMode
+            })
+
+            $targetStartup = if ($DisableServices) { $svcItem.TargetStartup } else { "Automatic" }
+            if ($PSCmdlet.ShouldProcess("Service: $svcName", "Set startup to $targetStartup")) {
+                try {
+                    if ($DisableServices -and $svc.Status -eq "Running") {
+                        Stop-Service -Name $svcName -Force -ErrorAction SilentlyContinue
+                    }
+                    Set-Service -Name $svcName -StartupType $targetStartup -ErrorAction SilentlyContinue
+                    $ops.Add([PSCustomObject]@{ Path = "Service:\$svcName"; Name = "StartupType"; Value = $targetStartup; Status = "Success" })
+                } catch {
+                    $ops.Add([PSCustomObject]@{ Path = "Service:\$svcName"; Name = "StartupType"; Value = $targetStartup; Status = "Error: $($_.Exception.Message)" })
+                }
+            } else {
+                $ops.Add([PSCustomObject]@{ Path = "Service:\$svcName"; Name = "StartupType"; Value = $targetStartup; Status = "Preview" })
+            }
+        }
+    }
+
+    if ($backupData.Count -gt 0 -and -not $WhatIfPreference) {
+        $backupData | ConvertTo-Json -Depth 3 | Set-Content -Path $serviceBackupFile -Encoding UTF8 -ErrorAction SilentlyContinue
+    }
+
+    # Safe Autostart & RAM trimming
+    $ops.Add((Set-TweakRegistryValue -Path "HKLM:\SOFTWARE\Policies\Microsoft\Edge" -Name "StartupBoostEnabled" -Value 0 -PropertyType "DWord" -WhatIf:$WhatIfPreference))
+    $ops.Add((Set-TweakRegistryValue -Path "HKLM:\SOFTWARE\Policies\Microsoft\Edge" -Name "BackgroundModeEnabled" -Value 0 -PropertyType "DWord" -WhatIf:$WhatIfPreference))
+
+    $teamsPath = "HKCU:\Software\Microsoft\Windows\CurrentVersion\Run"
+    if (Test-Path $teamsPath) {
+        $teamsProp = Get-ItemProperty -Path $teamsPath -Name "com.squirrel.Teams.Teams" -ErrorAction SilentlyContinue
+        if ($teamsProp -and $PSCmdlet.ShouldProcess("Registry: $teamsPath", "Remove Teams auto-start")) {
+            Remove-ItemProperty -Path $teamsPath -Name "com.squirrel.Teams.Teams" -Force -ErrorAction SilentlyContinue
+            $ops.Add([PSCustomObject]@{ Path = $teamsPath; Name = "com.squirrel.Teams.Teams"; Value = "Removed"; Status = "Success" })
+        }
+    }
+
+    return $ops.ToArray()
+}
+
+function Restore-ServiceOptimization {
+    <#
+        .SYNOPSIS
+            Restores background services to their previous startup types from a service snapshot or defaults.
+    #>
+    [CmdletBinding(SupportsShouldProcess = $true)]
+    [OutputType([PSCustomObject[]])]
+    param(
+        [Parameter(Mandatory = $false)]
+        [string]$SnapshotPath
+    )
+
+    $ops = [System.Collections.Generic.List[PSCustomObject]]::new()
+    $serviceBackupDir = Join-Path $env:LOCALAPPDATA "NHWinDebloater\Backups"
+
+    $serviceEntries = @()
+    if ([string]::IsNullOrWhiteSpace($SnapshotPath) -and (Test-Path $serviceBackupDir)) {
+        $latest = Get-ChildItem -Path $serviceBackupDir -Filter "ServiceSnapshot_*.json" -ErrorAction SilentlyContinue |
+            Sort-Object LastWriteTime -Descending |
+            Select-Object -First 1
+        if ($latest) { $SnapshotPath = $latest.FullName }
+    }
+
+    if ($SnapshotPath -and (Test-Path $SnapshotPath)) {
+        try {
+            $serviceEntries = Get-Content -Path $SnapshotPath -Raw -Encoding UTF8 | ConvertFrom-Json
+        } catch {
+            Write-Warning "Could not parse service snapshot: $SnapshotPath"
+        }
+    }
+
+    if ($serviceEntries.Count -eq 0) {
+        $serviceEntries = @(
+            [PSCustomObject]@{ Name = "DiagTrack"; StartupType = "Automatic" },
+            [PSCustomObject]@{ Name = "dmwappushservice"; StartupType = "Manual" },
+            [PSCustomObject]@{ Name = "RetailDemo"; StartupType = "Manual" },
+            [PSCustomObject]@{ Name = "MapsBroker"; StartupType = "Automatic" },
+            [PSCustomObject]@{ Name = "WerSvc"; StartupType = "Manual" },
+            [PSCustomObject]@{ Name = "wisvc"; StartupType = "Manual" },
+            [PSCustomObject]@{ Name = "Fax"; StartupType = "Manual" },
+            [PSCustomObject]@{ Name = "PhoneSvc"; StartupType = "Manual" }
+        )
+    }
+
+    foreach ($entry in $serviceEntries) {
+        $svcName = $entry.Name
+        $targetMode = switch ($entry.StartupType) {
+            "Auto" { "Automatic" }
+            "Automatic" { "Automatic" }
+            "Manual" { "Manual" }
+            "Disabled" { "Disabled" }
+            default { "Manual" }
+        }
+
+        if ($PSCmdlet.ShouldProcess("Service: $svcName", "Restore startup type to $targetMode")) {
+            try {
+                $svc = Get-Service -Name $svcName -ErrorAction SilentlyContinue
+                if ($svc) {
+                    Set-Service -Name $svcName -StartupType $targetMode -ErrorAction SilentlyContinue
+                    $ops.Add([PSCustomObject]@{ Path = "Service:\$svcName"; Name = "StartupType"; Value = $targetMode; Status = "Restored" })
+                }
+            } catch {
+                $ops.Add([PSCustomObject]@{ Path = "Service:\$svcName"; Name = "StartupType"; Value = $targetMode; Status = "Error: $($_.Exception.Message)" })
+            }
+        } else {
+            $ops.Add([PSCustomObject]@{ Path = "Service:\$svcName"; Name = "StartupType"; Value = $targetMode; Status = "Preview" })
+        }
+    }
+
+    return $ops.ToArray()
+}
+
+Export-ModuleMember -Function Set-ConsumerFeatureTweak, Set-LockScreenTweak, Set-ClassicContextMenuTweak, Set-MousePrecisionTweak, Set-StickyKeysTweak, Set-FastStartupTweak, Set-StorageSenseTweak, Set-WindowsUpdatePolicyTweak, Set-OptionalFeatureState, Set-GameDVRPlaybackTweak, Set-DeliveryOptimizationTweak, Set-TelemetryServiceTweak, Set-StartMenuRecommendedTweak, Set-EdgeBackgroundTweak, Set-TelemetryScheduledTasksTweak, Set-HibernationStorageTweak, Set-MultitaskingTweak, Set-SettingsHomeTweak, Set-CopilotAITweak, Set-RecallAITweak, Set-ApplicationAITweak, Get-DebloatSafetyImpact, New-DebloatRestorePoint, Export-RegistrySnapshot, Restore-RegistrySnapshot, Remove-OneDriveDeep, Backup-StartMenuLayout, Restore-StartMenuLayout, Clear-StartMenuCloudStubs, Set-SafeServiceOptimization, Restore-ServiceOptimization

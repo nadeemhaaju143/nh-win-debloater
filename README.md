@@ -1,7 +1,7 @@
 # NH Win Debloater
 
 <p align="center">
-  <a href="https://github.com/nadeemhaaju143/nh-win-debloater/releases/tag/v1.0.0"><img src="https://img.shields.io/badge/version-1.0.0-0EA5E9.svg" alt="Version 1.0.0"></a>
+  <a href="https://github.com/nadeemhaaju143/nh-win-debloater/releases/tag/v1.1.0"><img src="https://img.shields.io/badge/version-1.1.0-0EA5E9.svg" alt="Version 1.1.0"></a>
   <a href="https://microsoft.com/powershell"><img src="https://img.shields.io/badge/PowerShell-5.1%20%7C%207%2B-blue.svg" alt="PowerShell 5.1/7+"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT"></a>
   <a href="https://github.com/nadeemhaaju143/nh-win-debloater/wiki"><img src="https://img.shields.io/badge/docs-GitHub%20Wiki-10B981.svg" alt="GitHub Wiki"></a>
@@ -11,35 +11,52 @@
 </p>
 
 <p align="center">
-  <strong>Less Bloat. Better Windows. Built for pure performance and privacy.</strong><br>
-  A modern, lightweight, temporary Windows 10 & 11 optimization assistant crafted with native Material Design 3 and Windows 11 Fluent UI.
+  <strong>Less Bloat. Better Windows. Built for pure performance, privacy, and full control.</strong><br>
+  A modern, lightweight Windows 10 & 11 optimization assistant crafted with native Material Design 3 and Windows 11 Fluent UI.
 </p>
 
 ---
 
 ## Overview
 
-**NH Win Debloater** is an advanced open-source utility designed, architected, and maintained by **Mohammed Nadeem BM** (**NH Digital**). It safely removes intrusive pre-installed bloatware packages, halts diagnostic telemetry pipelines, suppresses background AI surveillance mechanisms, and unlocks peak gaming and workstation responsiveness—without persistent background services, scheduled tasks, or permanent disk overhead.
+**NH Win Debloater** is an advanced open-source utility designed, architected, and maintained by **Mohammed Nadeem BM** (**NH Digital**). It safely removes intrusive pre-installed bloatware packages, halts diagnostic telemetry pipelines, suppresses background AI surveillance mechanisms, optimizes non-essential background services, and unlocks peak gaming and workstation responsiveness—without persistent background services, scheduled tasks, or permanent disk overhead.
 
 - 📖 **Comprehensive Documentation:** Full technical specifications, package lists, and rollback guides are available on the **[GitHub Wiki](https://github.com/nadeemhaaju143/nh-win-debloater/wiki)**.
 - ☕ **Support Open-Source Engineering:** Support ongoing Windows update parity research, cloud test matrices, and development via **[One-Time Support Tip](https://rzp.io/rzp/nh-win-debloater)** or become a **[Monthly Supporter (₹199/mo)](https://rzp.io/rzp/j9CGaaRR)**.
 
 ---
 
+## Performance & Resource Benchmarks
+
+Tested on a clean isolated Windows 11 Enterprise (x64) environment measuring exact resource consumption before debloating, after standard debloat (`v1.0.0`), and after **`v1.1.0`** (`Recommended Setup` with Deep App/Stub Removal and Safe Service & Startup Optimization):
+
+| Benchmark Metric | Stock Windows Baseline (Before) | After v1.0.0 (`main`) | After v1.1.0 (`Recommended Setup`) | Improvement (v1.0.0 → v1.1.0) | Total Optimization vs. Baseline |
+| :--- | :---: | :---: | :---: | :---: | :---: |
+| **RAM In-Use (MB)** | **8,505.7 MB** | **7,825.7 MB** | **7,220.7 MB** | **-605.0 MB RAM** | **-1,285.0 MB RAM** |
+| **Memory Utilization (%)** | **52.8%** | **48.6%** | **44.8%** | **-3.8%** | **-8.0%** |
+| **Total RAM Freed (MB)** | — | +680.0 MB | **+1,285.0 MB** | **+605.0 MB extra** | **+1,285.0 MB reclaimed** |
+| **Idle CPU Utilization (%)** | **4.4%** | **3.2%** | **1.9%** | **-1.3% CPU** | **-2.5% CPU** |
+| **Active Running Services** | **136** | **130** | **122** | **-8 services** | **-14 services** |
+| **Running Background Processes** | **269** | **253** | **237** | **-16 processes** | **-32 background tasks** |
+
+> Complete benchmark breakdowns and hardware configuration notes are available in **[docs/BENCHMARKS.md](docs/BENCHMARKS.md)**.
+
+---
+
 ## User Interface & Experience
 
-Built natively in pure Windows Presentation Foundation (WPF) with 0 third-party binaries or external DLLs, featuring borderless `WindowChrome`, Material Stepper Pill navigation, and custom rounded controls.
+Built natively in pure Windows Presentation Foundation (WPF) with 0 third-party binaries or external DLLs, featuring an integrated single-canvas top bar, custom vector 4-color Windows emblem, and fluid tactile feedback.
 
-### 1. Stage 1: Optimization Profile & Target Scope
-Select from curated presets (Minimal, Recommended, Deep) or import portable JSON configurations.
-![Stage 1: Main Window & Presets](assets/screenshots/main-window.png)
+### 1. Stage 1: Centered Welcome Screen & Dual Action Paths
+Features the custom 4-Pane Multi-Color Windows Emblem, user scope dropdown, and side-by-side action buttons: **Recommended Setup** (curated safe optimizations) and **Custom Tuning** (fine-grained control wizard).
+![Stage 1: Main Window & Hero Welcome Screen](assets/screenshots/main-window.png)
 
 ### 2. Stage 2: Fine-Grained Tweak Dropdowns & Dedicated AI Suite
 Dark Material multi-select CheckBox dropdowns across all tabs, live selection counters, and safety impact badges.
 ![Stage 2: Multi-Select Tweak Dropdowns & AI Suite](assets/screenshots/tweak-dropdowns.png)
 
 ### 3. Stage 5: Summary, Snapshot Rollback & Selective Restore
-Automatic pre-tweak registry snapshot selector and selective restore checkboxes (Apps Only, Tweaks Only, or individual categories).
+Automatic pre-tweak registry snapshot selector, Start Menu layout recovery, and selective restore checkboxes (Apps Only, Tweaks Only, or individual categories).
 ![Stage 5: Restore & Rollback Manager](assets/screenshots/restore-manager.png)
 
 ---
@@ -65,7 +82,7 @@ irm https://raw.githubusercontent.com/nadeemhaaju143/nh-win-debloater/main/Get-N
 ```
 
 > [!TIP]
-> **Pre-Tweak Registry Backups:** Before applying any modifications, NH Win Debloater automatically captures a complete registry snapshot saved safely to `%LOCALAPPDATA%\NHWinDebloater\Backups`.
+> **Pre-Tweak Registry Backups:** Before applying any modifications, NH Win Debloater automatically captures a complete registry snapshot and Start Menu layout backup saved safely to `%LOCALAPPDATA%\NHWinDebloater\Backups`.
 
 > [!IMPORTANT]
 > **Selective Restore & 1-Click Rollback:** Returning users can click the **Restore / Rollback** button directly in the top header or on Stage 1 to restore pre-tweak registry states, selectively reinstall apps, or reverse specific tweak categories without re-running optimizations.
@@ -97,6 +114,19 @@ For air-gapped systems or manual offline execution:
 
 ---
 
+## What's New in v1.1.0
+
+- **Integrated Single-Canvas Top Bar:** Unified borderless canvas with 4 top-right controls: Heart Support (`♥`), Settings (`⚙`), 3-Line Menu (`☰`), and Close (`✕`).
+- **Hero Welcome Screen:** Centered landing view with custom vector 4-pane multi-color Windows emblem (`#EF4444`, `#10B981`, `#0EA5E9`, `#F59E0B`), scope bar, and dual action buttons (**Recommended Setup** & **Custom Tuning**).
+- **Preferences Modal (`⚙`):** Live color theme switching (`System Auto`, `Light Mode`, `Dark Mode`), interface language selection, and safety behavior toggles.
+- **3-Line Quick Actions Menu (`☰`):** Direct access to `Load JSON Profile`, `Save JSON Profile` (with category modal), `Recovery & Rollback` (3 recovery utilities), `Documentation`, `Report an Issue`, `Open Session Logs`, and `About NH Win Debloater`.
+- **Deep Bloat & Stub Removal:** Deep OneDrive removal (processes, setup, Appx sync, CLSID, Run keys), deep Windows Copilot removal, and Start Menu cloud stub clearing (`DisableWindowsConsumerFeatures = 1`, `SilentInstalledAppsEnabled = 0`, layout backup/reset).
+- **Safe Background Service & Startup Optimization:** Curated reversible background service tuning (`DiagTrack`, `dmwappushservice`, `RetailDemo`, `MapsBroker`, `WerSvc`, `wisvc`, `Fax`, `PhoneSvc`) and high-RAM autostart trimming, while safeguarding Windows Defender, Windows Update, Network, Audio, and GPU.
+- **App Safety Indicators & Legend:** Color-coded status dots and badges (`Recommended` Green `#10B981`, `Optional` Amber `#F59E0B`, `Not Recommended` Red `#EF4444`) with a bottom legend bar.
+- **Automatic Exit Cleanup:** Automatic purge of temporary launcher sandbox files (`%TEMP%\NHWinDebloater*`) on exit, preserving logs and backups.
+
+---
+
 ## Features Overview
 
 For complete breakdowns, key paths, and policy documentation, refer to the **[GitHub Wiki](https://github.com/nadeemhaaju143/nh-win-debloater/wiki)**:
@@ -106,8 +136,8 @@ For complete breakdowns, key paths, and policy documentation, refer to the **[Gi
 - **[Shell & Explorer Customization](https://github.com/nadeemhaaju143/nh-win-debloater/wiki/Features#3-shell--taskbar-customization):** Classic Windows 10 right-click context menu, Taskbar left/center alignment, Bing search highlight suppression, Gallery namespace removal, Launch Explorer to "This PC", and compact folder spacing.
 - **[Gaming & Hardware Performance](https://github.com/nadeemhaaju143/nh-win-debloater/wiki/Features#4-gaming--hardware-performance):** Disables Game DVR background recording, disables Windows Power Throttling, enforces 1:1 linear mouse acceleration curve, eliminates Sticky Keys popups, and reclaims SSD storage from `hiberfil.sys`.
 - **[System Extras & Promos](https://github.com/nadeemhaaju143/nh-win-debloater/wiki/Features#5-system-extras--commercial-promos):** Blocks automatic consumer application installs, lock screen tips/nudges, and Edge background pre-launching.
-- **[App Removal & Protected Core Packages](https://github.com/nadeemhaaju143/nh-win-debloater/wiki/App-Removal):** Multi-select removal across 80+ bloatware packages while strictly safeguarding Microsoft Store, Windows Security (`Microsoft.SecHealthUI`), and WinGet. Includes 1-click built-in app reinstaller.
-- **[Reverting Changes & Safety Recovery](https://github.com/nadeemhaaju143/nh-win-debloater/wiki/Reverting-Changes):** Start-Screen Restore shortcut, selective multi-select rollback, 1-click full `.reg` restore, and native Windows System Restore integration.
+- **[App Removal & Protected Core Packages](https://github.com/nadeemhaaju143/nh-win-debloater/wiki/App-Removal):** Multi-select removal across 80+ bloatware packages with safety dots and badges while strictly safeguarding Microsoft Store, Windows Security (`Microsoft.SecHealthUI`), and WinGet. Includes 1-click built-in app reinstaller.
+- **[Reverting Changes & Safety Recovery](https://github.com/nadeemhaaju143/nh-win-debloater/wiki/Reverting-Changes):** Start-Screen Restore shortcut, selective multi-select rollback, 1-Click Full System Rollback, and Start Menu layout recovery.
 
 ---
 
@@ -116,7 +146,7 @@ For complete breakdowns, key paths, and policy documentation, refer to the **[Gi
 - **Zero Persistent Overhead:** Does not install background daemons, drivers, polling services, or startup items.
 - **Automatic Sandbox Cleanup:** Temporary bootstrap files in `%TEMP%\NHWinDebloater_*` are purged immediately on exit. User backups and logs in `%LOCALAPPDATA%\NHWinDebloater\` are strictly preserved.
 - **Zero Third-Party Binaries:** Contains 0 compiled `.exe` or `.dll` files. 100% human-readable PowerShell and XAML.
-- **DPI-Safe & Fluent Visuals:** Native vector SVG path icons, Segoe UI Variable typography, and smooth 150ms–200ms cubic transitions.
+- **DPI-Safe & Fluent Visuals:** Native vector SVG path icons, Segoe UI Variable typography, and smooth 150ms cubic transitions.
 
 ---
 

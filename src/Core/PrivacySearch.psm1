@@ -5,7 +5,7 @@
         Manages Windows telemetry, diagnostic data, personalized suggestions,
         AI assistants (Copilot, Recall), Activity History, and Bing Search integration.
     .MODULEVERSION
-        0.1.0
+        1.1.0
 #>
 
 [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '')]

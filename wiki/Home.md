@@ -1,6 +1,6 @@
 # Welcome to NH Win Debloater Documentation
 
-**NH Win Debloater** is an advanced, lightweight, temporary Windows optimization utility designed to safely remove pre-installed bloatware applications, disable invasive system telemetry, suppress background AI surveillance services, and optimize Windows 10 and Windows 11 performance without persistent overhead or background processes.
+**NH Win Debloater** is an advanced, lightweight, temporary Windows optimization utility designed to safely remove pre-installed bloatware applications, disable invasive system telemetry, suppress background AI surveillance services, optimize background system services, and maximize Windows 10 and Windows 11 performance without persistent overhead or background processes.
 
 ---
 
@@ -8,10 +8,25 @@
 
 | Document | Description |
 | :--- | :--- |
-| **[[How-To-Use\|How To Use]]** | 1-line launcher, CLI flags, offline ZIP execution, and custom JSON profiles |
-| **[[Features\|Features]]** | In-depth breakdown of Privacy, AI, Shell, Gaming, and System Tweaks |
-| **[[App-Removal\|App Removal]]** | Removable UWP/Store packages, protected core apps, and Reinstall Helper |
-| **[[Reverting-Changes\|Reverting Changes]]** | 1-Click snapshot rollback, Selective Multi-Select Restore, and safety checkpoints |
+| **[[How-To-Use|How To Use]]** | 1-line launcher, CLI flags, offline ZIP execution, and custom JSON profiles |
+| **[[Features|Features]]** | In-depth breakdown of Privacy, AI, Shell, Gaming, and System Tweaks |
+| **[[App-Removal|App Removal]]** | Removable UWP/Store packages, protected core apps, safety indicators, and Reinstall Helper |
+| **[[Reverting-Changes|Reverting Changes]]** | 1-Click Full System Rollback, snapshot restore, Start Menu layout recovery, and safety checkpoints |
+
+---
+
+## Performance & Resource Benchmarks (v1.1.0)
+
+Tested on clean isolated Windows 11 Enterprise (x64) measuring resource consumption before debloating, after standard debloat (`v1.0.0`), and after **`v1.1.0`** (`Recommended Setup` with Deep App/Stub Removal and Safe Service & Startup Optimization):
+
+| Benchmark Metric | Stock Windows Baseline (Before) | After v1.0.0 (`main`) | After v1.1.0 (`Recommended Setup`) | Improvement (v1.0.0 → v1.1.0) | Total Optimization vs. Baseline |
+| :--- | :---: | :---: | :---: | :---: | :---: |
+| **RAM In-Use (MB)** | **8,505.7 MB** | **7,825.7 MB** | **7,220.7 MB** | **-605.0 MB RAM** | **-1,285.0 MB RAM** |
+| **Memory Utilization (%)** | **52.8%** | **48.6%** | **44.8%** | **-3.8%** | **-8.0%** |
+| **Total RAM Freed (MB)** | — | +680.0 MB | **+1,285.0 MB** | **+605.0 MB extra** | **+1,285.0 MB reclaimed** |
+| **Idle CPU Utilization (%)** | **4.4%** | **3.2%** | **1.9%** | **-1.3% CPU** | **-2.5% CPU** |
+| **Active Running Services** | **136** | **130** | **122** | **-8 services** | **-14 services** |
+| **Running Background Processes** | **269** | **253** | **237** | **-16 processes** | **-32 background tasks** |
 
 ---
 
@@ -23,6 +38,7 @@
    - **Automatic Pre-Tweak Registry Snapshots:** A complete `.reg` backup is captured to `%LOCALAPPDATA%\NHWinDebloater\Backups` prior to applying any system modifications.
    - **Windows System Restore Checkpoint:** Initiates native Windows System Restore checkpoints.
    - **Selective Multi-Select Rollback:** Allows restoring specific tweak categories (Privacy, Shell, Gaming, AI, Extras) or reinstalling removed apps without reverting desired settings.
+   - **1-Click Full System Rollback:** Atomically restores registry snapshots, resets service startup modes, and recovers original Start Menu layout in a single click.
    - **Protected System Packages:** Essential system components like Microsoft Store, Windows Security (`Microsoft.SecHealthUI`), and core runtime frameworks are strictly safeguarded and prevented from accidental deletion.
 4. **Pure Native PowerShell & WPF:** Built using 100% native PowerShell 5.1/7+ and Windows Presentation Foundation (WPF) with zero third-party compiled binaries or external DLLs.
 
@@ -31,15 +47,17 @@
 ## Frequently Asked Questions (FAQ)
 
 ### Is NH Win Debloater safe for daily productivity and work PCs?
-Yes. The default **Recommended Debloat** profile is intentionally curated to remove sponsored consumer bloatware (games, promotional apps, targeted ads) while keeping essential productivity tools, Microsoft Store, Windows Security, Xbox gaming services, and system frameworks completely intact.
+Yes. The default **Recommended Setup** profile is intentionally curated to remove sponsored consumer bloatware (games, promotional apps, targeted ads) and non-essential background services while keeping essential productivity tools, Microsoft Store, Windows Security, Xbox gaming services, and system frameworks completely intact.
 
 ### Will running NH Win Debloater break Windows Updates?
-No. NH Win Debloater does not disable core Windows Update services or tamper with security patch distribution. It disables consumer content delivery and search suggestions, leaving update mechanisms fully operational.
+No. NH Win Debloater does not disable core Windows Update services (`wuauserv`) or tamper with security patch distribution. It disables consumer content delivery and search suggestions, leaving update mechanisms fully operational.
 
 ### Can I revert changes if I change my mind?
-Yes! NH Win Debloater includes a dedicated **Restore & Rollback Manager**:
-- **1-Click Full Restore:** Re-applies your original pre-tweak registry snapshot.
-- **Selective Restore:** Ticked multi-select checkboxes allow reinstalling apps only, restoring registry tweaks only, or restoring specific categories (e.g., re-enabling Copilot without restoring other bloatware).
+Yes! NH Win Debloater includes a dedicated **Recovery & Rollback Manager**:
+- **1-Click Full System Rollback:** Re-applies your original pre-tweak registry snapshot, resets services, and recovers Start Menu layout.
+- **Restore Registry Snapshot:** Reverts registry tweaks from your choice of timestamped snapshots.
+- **Restore Start Menu Layout:** Restores your backed-up pinned Start Menu layout (`start.bin` / `start2.bin`).
+- **Selective Restore:** Ticked multi-select checkboxes allow reinstalling apps only, restoring registry tweaks only, or restoring specific categories.
 - **App Reinstall Helper:** Re-registers built-in Windows applications (Calculator, Notepad, Paint, Photos, Terminal, Microsoft Store) with a single click.
 
 ---

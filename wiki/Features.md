@@ -20,7 +20,7 @@ Windows 10 and 11 collect extensive diagnostic data, user behavior logs, and typ
 
 Modern Windows releases integrate AI assistants, cloud neural processing, and continuous activity snapshots directly into the operating system shell. The **AI Integration** module provides granular control:
 
-- **Disable Windows Copilot:** Enforces `TurnOffWindowsCopilot = 1` across `HKCU` and `HKLM` policies, removing Copilot taskbar icons, sidebar flyouts, and shortcut hotkeys (`Win + C`).
+- **Deep Windows Copilot Removal:** Disables Copilot policies (`TurnOffWindowsCopilot = 1`), removes `Microsoft.Copilot` and `Microsoft.Windows.Ai.Copilot.Provider` Appx packages, and hides taskbar Copilot buttons.
 - **Disable Windows Recall (Copilot+ PCs):** Disables snapshot capture and local image indexing (`DisableAIDataAnalysis = 1`), preventing screenshots of active applications from being recorded.
 - **Disable Click To Do:** Disables contextual AI object recognition flyouts on desktop content (`ClickToDoEnabled = 0`).
 - **Disable Paint AI Generation:** Suppresses cloud-based Image Creator and Cocreator neural network generation inside Microsoft Paint.
@@ -65,3 +65,21 @@ Cleans up commercial bloatware and sponsored consumer nudges embedded into Windo
 - **Disable Consumer Promos & Automatic App Installs:** Enforces `DisableWindowsConsumerFeatures = 1` to stop Windows from silently installing Candy Crush, TikTok, or streaming apps.
 - **Disable Start Menu & Lock Screen Tips:** Removes "Fun Facts", advertising tips, and Microsoft Edge nudges from the lock screen.
 - **Disable Edge Background Pre-launch:** Stops Microsoft Edge processes from running at system startup when Edge is not your active browser.
+
+---
+
+## 6. Safe Background Service & Startup Optimization
+
+Safely reclaims hundreds of megabytes of working memory by tuning non-essential background daemons to `Manual` or `Disabled`:
+
+- **Curated Safe Services:** `DiagTrack` (Connected User Experiences and Telemetry), `dmwappushservice` (WAP Push Message Routing), `RetailDemo` (Retail Demo Service), `MapsBroker` (Downloaded Maps Manager), `WerSvc` (Windows Error Reporting), `wisvc` (Windows Insider Service), `Fax`, and `PhoneSvc`.
+- **High-RAM Autostart Trimming:** Trims Edge Startup Boost (`StartupBoostEnabled = 0`, `BackgroundModeEnabled = 0`), OneDrive autostart polling, and Teams auto-updater routines.
+- **Strict Safety Protection:** Guarantees 0 modification to Windows Defender (`WinDefend`), Windows Update (`wuauserv`), Audio Endpoint (`AudioSrv`), Network/DHCP (`Dhcp`), Bluetooth (`bthserv`), and GPU drivers.
+- **Reversibility:** Original service startup modes are automatically captured in timestamped snapshots and can be restored in 1 click.
+
+---
+
+## 7. Deep App, Stub & Cloud Bloat Removal
+
+- **Deep OneDrive Removal:** Terminates running processes, runs official uninstaller (`OneDriveSetup.exe /uninstall`), removes `Microsoft.OneDriveSync` Appx packages, unpins Explorer navigation namespace `{018D5C66-4533-4307-9B53-224DE2ED1FE6}`, and clears Run registry keys.
+- **Start Menu Cloud Stub Purge:** Disables Content Delivery Manager pre-installed application stubs (`SubscribedContent-*`), stops silent downloads, and backs up & cleans pinned stub layouts (`start.bin` / `start2.bin`).
