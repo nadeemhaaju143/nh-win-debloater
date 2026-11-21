@@ -6,7 +6,7 @@
         GitHub into a sandboxed temp environment, verifies archive integrity, and
         launches the modern WPF Guided Assistant or CLI in Single-Thread Apartment (STA) mode.
         Automatically cleans up downloaded archives and temporary sandboxes on exit.
-        Developed by NH Digital (https://nhdigital.shop).
+        Developed by Mohammed Nadeem BM - NH Digital (https://nhdigital.shop).
     .EXAMPLE
         irm nhdigital.shop/debloat | iex
     .EXAMPLE
@@ -36,7 +36,7 @@ function Invoke-NHWinDebloaterBootstrap {
     Write-Host ""
     Write-Host " ======================================================================" -ForegroundColor Cyan
     Write-Host "   NH WIN DEBLOATER - ZERO-INSTALL QUICK-LAUNCH BOOTSTRAPPER" -ForegroundColor White
-    Write-Host "   Developed by NH Digital | https://nhdigital.shop" -ForegroundColor DarkCyan
+    Write-Host "   Developed by Mohammed Nadeem BM - NH Digital | https://nhdigital.shop" -ForegroundColor DarkCyan
     Write-Host " ======================================================================" -ForegroundColor Cyan
     Write-Host ""
 

@@ -324,7 +324,7 @@ function Show-DebloaterWindow {
         $v = (Get-Content -Path $versionPath -Raw).Trim()
         $txtVersion.Text = "v$v"
     } else {
-        $txtVersion.Text = "v0.5"
+        $txtVersion.Text = "v1.0.0"
     }
 
     # Window Icon wiring

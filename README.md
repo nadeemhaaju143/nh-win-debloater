@@ -2,7 +2,7 @@
 
 **Version:** 1.0.0  
 **Tagline:** Less Bloat. Better Windows.  
-**Developer:** NH Digital ([nhdigital.shop](https://nhdigital.shop))  
+**Creator & Maintainer:** Mohammed Nadeem BM • NH Digital ([nhdigital.shop](https://nhdigital.shop))  
 
 ---
 
@@ -38,7 +38,7 @@ NH Win Debloater/
 ├── Get-NHWinDebloater.ps1      # One-line zero-install quick-launch bootstrapper
 ├── install.ps1                 # Convenience bootstrap wrapper
 ├── Run.bat                     # Standalone launcher (handles elevation & execution policy)
-├── VERSION.txt                 # Current version tracker (0.5)
+├── VERSION.txt                 # Current version tracker (1.0.0)
 ├── README.md                   # Project documentation and release workflow
 ├── src/
 │   ├── Core/                   # Modular PowerShell engines and bootstrap logic
@@ -166,6 +166,22 @@ When downloading scripts or tools directly from GitHub, Windows may display a **
 
 ---
 
+## Author & Maintainer
+
+**NH Win Debloater** is conceived, created, and actively maintained by **Mohammed Nadeem BM** under **NH Digital**.
+
+- **Creator & Lead Developer:** **Mohammed Nadeem BM**
+- **Brand / Studio:** **NH Digital** ([https://nhdigital.shop](https://nhdigital.shop))
+- **GitHub:** [@nadeemhaaju143](https://github.com/nadeemhaaju143)
+- **Official Live Release & Launcher:** [https://nhdigital.shop/debloat](https://nhdigital.shop/debloat)
+- **Repository:** [https://github.com/nadeemhaaju143/nh-win-debloater](https://github.com/nadeemhaaju143/nh-win-debloater)
+- **Copyright:** Copyright (c) 2026 Mohammed Nadeem BM (NH Digital)
+
+### Editorial & Press Verification
+Tech journalists, reviewers, and publications (such as Windows Latest, Neowin, gHacks, BleepingComputer, XDA Developers) evaluating or covering **NH Win Debloater** can cite and attribute **Mohammed Nadeem BM** (`NH Digital`) as the creator and lead developer. Official releases, changelogs, and source code are cryptographically verified and publicly hosted on GitHub at `nadeemhaaju143/nh-win-debloater`.
+
+---
+
 ## About NH Digital
 
 > **Crafted with care by NH Digital**  
@@ -178,5 +194,6 @@ When downloading scripts or tools directly from GitHub, Windows may display a **
 
 ## License & Attribution
 
-- Built and maintained by **NH Digital**.
+- Built and maintained by **Mohammed Nadeem BM** (**NH Digital**).
+- Released under the MIT License (`Copyright (c) 2026 Mohammed Nadeem BM (NH Digital)`).
 - Third-party registry discoveries and package definitions are credited under the MIT License in [THIRD_PARTY_LICENSES.md](docs/THIRD_PARTY_LICENSES.md).
