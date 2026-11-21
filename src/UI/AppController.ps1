@@ -232,6 +232,31 @@ function Show-DebloaterWindow {
     $btnRestartExplorer = $window.FindName("BtnRestartExplorer")
     $btnOpenLog = $window.FindName("BtnOpenLog")
     $btnOpenBackups = $window.FindName("BtnOpenBackups")
+    $btnStage5ReinstallApps = $window.FindName("BtnStage5ReinstallApps")
+    $cboRegistrySnapshots = $window.FindName("CboRegistrySnapshots")
+    $btnRefreshSnapshots = $window.FindName("BtnRefreshSnapshots")
+    $btnPreviewSnapshot = $window.FindName("BtnPreviewSnapshot")
+    $btnRestoreSnapshot = $window.FindName("BtnRestoreSnapshot")
+    $txtRestoreStatus = $window.FindName("TxtRestoreStatus")
+
+    # Header & Stage 1/2 Actions
+    $btnHeaderReinstallApps = $window.FindName("BtnHeaderReinstallApps")
+    $btnImportProfile = $window.FindName("BtnImportProfile")
+    $btnExportProfile = $window.FindName("BtnExportProfile")
+
+    # App Reinstall Modal
+    $modalReinstallApps = $window.FindName("ModalReinstallApps")
+    $btnCloseReinstallModal = $window.FindName("BtnCloseReinstallModal")
+    $btnCloseReinstallModalBottom = $window.FindName("BtnCloseReinstallModalBottom")
+    $chkReinstallStore = $window.FindName("ChkReinstallStore")
+    $chkReinstallCalculator = $window.FindName("ChkReinstallCalculator")
+    $chkReinstallNotepad = $window.FindName("ChkReinstallNotepad")
+    $chkReinstallPaint = $window.FindName("ChkReinstallPaint")
+    $chkReinstallPhotos = $window.FindName("ChkReinstallPhotos")
+    $chkReinstallTerminal = $window.FindName("ChkReinstallTerminal")
+    $chkReinstallDryRun = $window.FindName("ChkReinstallDryRun")
+    $btnExecuteReinstallApps = $window.FindName("BtnExecuteReinstallApps")
+    $txtReinstallLog = $window.FindName("TxtReinstallLog")
 
     # Navigation & Promotion
     $btnBack = $window.FindName("BtnBack")
@@ -245,7 +270,7 @@ function Show-DebloaterWindow {
         $v = (Get-Content -Path $versionPath -Raw).Trim()
         $txtVersion.Text = "v$v"
     } else {
-        $txtVersion.Text = "v0.4"
+        $txtVersion.Text = "v0.5"
     }
 
     # Window Icon wiring
@@ -387,6 +412,32 @@ function Show-DebloaterWindow {
     }
 
     # Function to update stage views
+    $refreshSnapshotsList = {
+        if ($cboRegistrySnapshots) {
+            $cboRegistrySnapshots.Items.Clear()
+            $backups = Get-DebloatBackup
+            if ($backups.Count -eq 0) {
+                $null = $cboRegistrySnapshots.Items.Add("No registry snapshots found")
+                $cboRegistrySnapshots.SelectedIndex = 0
+                if ($btnRestoreSnapshot) { $btnRestoreSnapshot.IsEnabled = $false }
+                if ($btnPreviewSnapshot) { $btnPreviewSnapshot.IsEnabled = $false }
+            } else {
+                foreach ($b in $backups) {
+                    $item = [PSCustomObject]@{
+                        Display  = "$($b.FileName) ($($b.LastModified) - $($b.SizeKb) KB)"
+                        FilePath = $b.FilePath
+                        FileName = $b.FileName
+                    }
+                    $null = $cboRegistrySnapshots.Items.Add($item)
+                }
+                $cboRegistrySnapshots.DisplayMemberPath = "Display"
+                $cboRegistrySnapshots.SelectedIndex = 0
+                if ($btnRestoreSnapshot) { $btnRestoreSnapshot.IsEnabled = $true }
+                if ($btnPreviewSnapshot) { $btnPreviewSnapshot.IsEnabled = $true }
+            }
+        }
+    }
+
     $updateStageView = {
         param([int]$stage)
         $script:CurrentStage = $stage
@@ -451,6 +502,7 @@ function Show-DebloaterWindow {
                 $btnNext.Visibility = [System.Windows.Visibility]::Collapsed
                 $btnApply.Visibility = [System.Windows.Visibility]::Collapsed
                 $btnFinish.Visibility = [System.Windows.Visibility]::Visible
+                & $refreshSnapshotsList
             }
         }
     }
@@ -1359,6 +1411,293 @@ function Show-DebloaterWindow {
                 New-Item -ItemType Directory -Path $backupDir -Force | Out-Null
             }
             Start-Process explorer.exe -ArgumentList "`"$backupDir`""
+        })
+    }
+
+    # Custom Preset Profile: Export
+    if ($btnExportProfile) {
+        $btnExportProfile.Add_Click({
+            param([object]$eventSource, [System.Windows.RoutedEventArgs]$eventArgs)
+
+            $selectedApps = [System.Collections.Generic.List[string]]::new()
+            foreach ($cb in $script:AppCheckboxes) {
+                if ($cb.IsChecked) {
+                    $selectedApps.Add([string]$cb.Tag)
+                }
+            }
+
+            $selectedTweaks = @{
+                Telemetry           = [bool]($chkTelemetry -and $chkTelemetry.IsChecked)
+                BingSearch          = [bool]($chkBingSearch -and $chkBingSearch.IsChecked)
+                AdvertisingId       = [bool]($chkAdvertisingId -and $chkAdvertisingId.IsChecked)
+                ActivityHistory     = [bool]($chkActivityHistory -and $chkActivityHistory.IsChecked)
+                TailoredExp         = [bool]($chkTailoredExp -and $chkTailoredExp.IsChecked)
+                ShowExt             = [bool]($chkShowExt -and $chkShowExt.IsChecked)
+                ShowHidden          = [bool]($chkShowHidden -and $chkShowHidden.IsChecked)
+                ExplorerThisPC      = [bool]($chkExplorerThisPC -and $chkExplorerThisPC.IsChecked)
+                ClassicContextMenu  = [bool]($chkClassicContextMenu -and $chkClassicContextMenu.IsChecked)
+                HideWidgets         = [bool]($chkHideWidgets -and $chkHideWidgets.IsChecked)
+                HideChat            = [bool]($chkHideChat -and $chkHideChat.IsChecked)
+                EnableEndTask       = [bool]($chkEndTask -and $chkEndTask.IsChecked)
+                AlignLeft           = [bool]($chkAlignLeft -and $chkAlignLeft.IsChecked)
+                HideOneDriveNav     = [bool]($chkHideOneDriveNav -and $chkHideOneDriveNav.IsChecked)
+                SearchHighlights    = [bool]($chkSearchHighlights -and $chkSearchHighlights.IsChecked)
+                StartRecommended    = [bool]($chkStartRecommended -and $chkStartRecommended.IsChecked)
+                CompactExplorer     = [bool]($chkCompactExplorer -and $chkCompactExplorer.IsChecked)
+                Multitasking        = [bool]($chkMultitasking -and $chkMultitasking.IsChecked)
+                GameDVR             = [bool]($chkGameDVR -and $chkGameDVR.IsChecked)
+                DeliveryOpt         = [bool]($chkDeliveryOpt -and $chkDeliveryOpt.IsChecked)
+                EdgeBackground      = [bool]($chkEdgeBackground -and $chkEdgeBackground.IsChecked)
+                ScheduledTasks      = [bool]($chkScheduledTasks -and $chkScheduledTasks.IsChecked)
+                TelemetryService    = [bool]($chkTelemetryService -and $chkTelemetryService.IsChecked)
+                Hibernation         = [bool]($chkHibernation -and $chkHibernation.IsChecked)
+                ConsumerFeatures    = [bool]($chkConsumerFeatures -and $chkConsumerFeatures.IsChecked)
+                LockScreenAds       = [bool]($chkLockScreenAds -and $chkLockScreenAds.IsChecked)
+                MousePrecision      = [bool]($chkMousePrecision -and $chkMousePrecision.IsChecked)
+                StickyKeys          = [bool]($chkStickyKeys -and $chkStickyKeys.IsChecked)
+                FastStartup         = [bool]($chkFastStartup -and $chkFastStartup.IsChecked)
+                StorageSense        = [bool]($chkStorageSense -and $chkStorageSense.IsChecked)
+                PreventAutoReboot   = [bool]($chkPreventAutoReboot -and $chkPreventAutoReboot.IsChecked)
+                ExcludeDrivers      = [bool]($chkExcludeDrivers -and $chkExcludeDrivers.IsChecked)
+                CopilotPolicy       = [bool]($chkCopilotPolicy -and $chkCopilotPolicy.IsChecked)
+                CopilotAppx         = [bool]($chkCopilotAppx -and $chkCopilotAppx.IsChecked)
+                RecallAI            = [bool]($chkRecallAI -and $chkRecallAI.IsChecked)
+                EdgeAI              = [bool]($chkEdgeAI -and $chkEdgeAI.IsChecked)
+                PaintAI             = [bool]($chkPaintAI -and $chkPaintAI.IsChecked)
+                NotepadAI           = [bool]($chkNotepadAI -and $chkNotepadAI.IsChecked)
+                WindowsSandbox      = [bool]($chkWindowsSandbox -and $chkWindowsSandbox.IsChecked)
+                WSL                 = [bool]($chkWSL -and $chkWSL.IsChecked)
+            }
+
+            $sfd = [Microsoft.Win32.SaveFileDialog]::new()
+            $sfd.Filter = "Debloat Preset Profile (*.json)|*.json"
+            $sfd.FileName = "NHWinDebloater_CustomPreset.json"
+            $sfd.Title = "Export Custom Debloat Preset Profile"
+
+            if ($sfd.ShowDialog() -eq $true) {
+                try {
+                    Export-DebloatProfile -FilePath $sfd.FileName -ProfileName "Custom Preset Profile" -SelectedApps $selectedApps.ToArray() -SelectedTweaks $selectedTweaks -AppVersion $script:AppVersion | Out-Null
+                    [System.Windows.MessageBox]::Show("Preset profile exported successfully to:`n$($sfd.FileName)", "NH Win Debloater", [System.Windows.MessageBoxButton]::OK, [System.Windows.MessageBoxImage]::Information) | Out-Null
+                } catch {
+                    [System.Windows.MessageBox]::Show("Failed to export preset profile:`n$($_.Exception.Message)", "Export Error", [System.Windows.MessageBoxButton]::OK, [System.Windows.MessageBoxImage]::Error) | Out-Null
+                }
+            }
+        })
+    }
+
+    # Custom Preset Profile: Import
+    if ($btnImportProfile) {
+        $btnImportProfile.Add_Click({
+            param([object]$eventSource, [System.Windows.RoutedEventArgs]$eventArgs)
+
+            $ofd = [Microsoft.Win32.OpenFileDialog]::new()
+            $ofd.Filter = "Debloat Preset Profile (*.json)|*.json|All Files (*.*)|*.*"
+            $ofd.Title = "Import Custom Debloat Preset Profile"
+
+            if ($ofd.ShowDialog() -eq $true) {
+                try {
+                    $imported = Import-DebloatProfile -FilePath $ofd.FileName
+
+                    # Update Apps Checkboxes
+                    $appLookup = @{}
+                    foreach ($app in $imported.SelectedApps) {
+                        $appLookup[$app] = $true
+                    }
+                    foreach ($cb in $script:AppCheckboxes) {
+                        $appId = [string]$cb.Tag
+                        $cb.IsChecked = ($null -ne $appLookup[$appId])
+                    }
+
+                    # Update Tweaks Checkboxes
+                    $t = $imported.SelectedTweaks
+                    if ($t) {
+                        if ($chkTelemetry -and $t.ContainsKey("Telemetry")) { $chkTelemetry.IsChecked = [bool]$t["Telemetry"] }
+                        if ($chkBingSearch -and $t.ContainsKey("BingSearch")) { $chkBingSearch.IsChecked = [bool]$t["BingSearch"] }
+                        if ($chkAdvertisingId -and $t.ContainsKey("AdvertisingId")) { $chkAdvertisingId.IsChecked = [bool]$t["AdvertisingId"] }
+                        if ($chkActivityHistory -and $t.ContainsKey("ActivityHistory")) { $chkActivityHistory.IsChecked = [bool]$t["ActivityHistory"] }
+                        if ($chkTailoredExp -and $t.ContainsKey("TailoredExp")) { $chkTailoredExp.IsChecked = [bool]$t["TailoredExp"] }
+                        if ($chkShowExt -and $t.ContainsKey("ShowExt")) { $chkShowExt.IsChecked = [bool]$t["ShowExt"] }
+                        if ($chkShowHidden -and $t.ContainsKey("ShowHidden")) { $chkShowHidden.IsChecked = [bool]$t["ShowHidden"] }
+                        if ($chkExplorerThisPC -and $t.ContainsKey("ExplorerThisPC")) { $chkExplorerThisPC.IsChecked = [bool]$t["ExplorerThisPC"] }
+                        if ($chkClassicContextMenu -and $t.ContainsKey("ClassicContextMenu")) { $chkClassicContextMenu.IsChecked = [bool]$t["ClassicContextMenu"] }
+                        if ($chkHideWidgets -and $t.ContainsKey("HideWidgets")) { $chkHideWidgets.IsChecked = [bool]$t["HideWidgets"] }
+                        if ($chkHideChat -and $t.ContainsKey("HideChat")) { $chkHideChat.IsChecked = [bool]$t["HideChat"] }
+                        if ($chkEndTask -and $t.ContainsKey("EnableEndTask")) { $chkEndTask.IsChecked = [bool]$t["EnableEndTask"] }
+                        if ($chkAlignLeft -and $t.ContainsKey("AlignLeft")) { $chkAlignLeft.IsChecked = [bool]$t["AlignLeft"] }
+                        if ($chkHideOneDriveNav -and $t.ContainsKey("HideOneDriveNav")) { $chkHideOneDriveNav.IsChecked = [bool]$t["HideOneDriveNav"] }
+                        if ($chkSearchHighlights -and $t.ContainsKey("SearchHighlights")) { $chkSearchHighlights.IsChecked = [bool]$t["SearchHighlights"] }
+                        if ($chkStartRecommended -and $t.ContainsKey("StartRecommended")) { $chkStartRecommended.IsChecked = [bool]$t["StartRecommended"] }
+                        if ($chkCompactExplorer -and $t.ContainsKey("CompactExplorer")) { $chkCompactExplorer.IsChecked = [bool]$t["CompactExplorer"] }
+                        if ($chkMultitasking -and $t.ContainsKey("Multitasking")) { $chkMultitasking.IsChecked = [bool]$t["Multitasking"] }
+                        if ($chkGameDVR -and $t.ContainsKey("GameDVR")) { $chkGameDVR.IsChecked = [bool]$t["GameDVR"] }
+                        if ($chkDeliveryOpt -and $t.ContainsKey("DeliveryOpt")) { $chkDeliveryOpt.IsChecked = [bool]$t["DeliveryOpt"] }
+                        if ($chkEdgeBackground -and $t.ContainsKey("EdgeBackground")) { $chkEdgeBackground.IsChecked = [bool]$t["EdgeBackground"] }
+                        if ($chkScheduledTasks -and $t.ContainsKey("ScheduledTasks")) { $chkScheduledTasks.IsChecked = [bool]$t["ScheduledTasks"] }
+                        if ($chkTelemetryService -and $t.ContainsKey("TelemetryService")) { $chkTelemetryService.IsChecked = [bool]$t["TelemetryService"] }
+                        if ($chkHibernation -and $t.ContainsKey("Hibernation")) { $chkHibernation.IsChecked = [bool]$t["Hibernation"] }
+                        if ($chkConsumerFeatures -and $t.ContainsKey("ConsumerFeatures")) { $chkConsumerFeatures.IsChecked = [bool]$t["ConsumerFeatures"] }
+                        if ($chkLockScreenAds -and $t.ContainsKey("LockScreenAds")) { $chkLockScreenAds.IsChecked = [bool]$t["LockScreenAds"] }
+                        if ($chkMousePrecision -and $t.ContainsKey("MousePrecision")) { $chkMousePrecision.IsChecked = [bool]$t["MousePrecision"] }
+                        if ($chkStickyKeys -and $t.ContainsKey("StickyKeys")) { $chkStickyKeys.IsChecked = [bool]$t["StickyKeys"] }
+                        if ($chkFastStartup -and $t.ContainsKey("FastStartup")) { $chkFastStartup.IsChecked = [bool]$t["FastStartup"] }
+                        if ($chkStorageSense -and $t.ContainsKey("StorageSense")) { $chkStorageSense.IsChecked = [bool]$t["StorageSense"] }
+                        if ($chkPreventAutoReboot -and $t.ContainsKey("PreventAutoReboot")) { $chkPreventAutoReboot.IsChecked = [bool]$t["PreventAutoReboot"] }
+                        if ($chkExcludeDrivers -and $t.ContainsKey("ExcludeDrivers")) { $chkExcludeDrivers.IsChecked = [bool]$t["ExcludeDrivers"] }
+                        if ($chkCopilotPolicy -and $t.ContainsKey("CopilotPolicy")) { $chkCopilotPolicy.IsChecked = [bool]$t["CopilotPolicy"] }
+                        if ($chkCopilotAppx -and $t.ContainsKey("CopilotAppx")) { $chkCopilotAppx.IsChecked = [bool]$t["CopilotAppx"] }
+                        if ($chkRecallAI -and $t.ContainsKey("RecallAI")) { $chkRecallAI.IsChecked = [bool]$t["RecallAI"] }
+                        if ($chkEdgeAI -and $t.ContainsKey("EdgeAI")) { $chkEdgeAI.IsChecked = [bool]$t["EdgeAI"] }
+                        if ($chkPaintAI -and $t.ContainsKey("PaintAI")) { $chkPaintAI.IsChecked = [bool]$t["PaintAI"] }
+                        if ($chkNotepadAI -and $t.ContainsKey("NotepadAI")) { $chkNotepadAI.IsChecked = [bool]$t["NotepadAI"] }
+                        if ($chkWindowsSandbox -and $t.ContainsKey("WindowsSandbox")) { $chkWindowsSandbox.IsChecked = [bool]$t["WindowsSandbox"] }
+                        if ($chkWSL -and $t.ContainsKey("WSL")) { $chkWSL.IsChecked = [bool]$t["WSL"] }
+                    }
+
+                    & $updateLiveImpactSummary
+                    & $updateStageView 2
+
+                    [System.Windows.MessageBox]::Show("Preset profile '$($imported.ProfileName)' loaded successfully!`n$($imported.SelectedApps.Count) Apps and $($imported.SelectedTweaks.Count) Tweaks configured.", "NH Win Debloater", [System.Windows.MessageBoxButton]::OK, [System.Windows.MessageBoxImage]::Information) | Out-Null
+                } catch {
+                    [System.Windows.MessageBox]::Show("Failed to import preset profile:`n$($_.Exception.Message)", "Import Error", [System.Windows.MessageBoxButton]::OK, [System.Windows.MessageBoxImage]::Error) | Out-Null
+                }
+            }
+        })
+    }
+
+    # Registry Snapshot Rollback Handlers
+    if ($btnRefreshSnapshots) {
+        $btnRefreshSnapshots.Add_Click({
+            param([object]$eventSource, [System.Windows.RoutedEventArgs]$eventArgs)
+            & $refreshSnapshotsList
+        })
+    }
+
+    if ($btnPreviewSnapshot) {
+        $btnPreviewSnapshot.Add_Click({
+            param([object]$eventSource, [System.Windows.RoutedEventArgs]$eventArgs)
+            $selected = $cboRegistrySnapshots.SelectedItem
+            if (-not $selected -or -not $selected.FilePath) {
+                if ($txtRestoreStatus) { $txtRestoreStatus.Text = "Please select a valid snapshot to preview." }
+                return
+            }
+            try {
+                $results = Restore-RegistrySnapshot -SnapshotPath $selected.FilePath -WhatIf
+                if ($txtRestoreStatus) {
+                    $txtRestoreStatus.Text = "Dry-Run Preview: $($results.Count) registry keys would be restored from $($selected.FileName)."
+                    $txtRestoreStatus.Foreground = [System.Windows.Media.Brushes]::MediumAquamarine
+                }
+            } catch {
+                if ($txtRestoreStatus) {
+                    $txtRestoreStatus.Text = "Preview Error: $($_.Exception.Message)"
+                    $txtRestoreStatus.Foreground = [System.Windows.Media.Brushes]::Coral
+                }
+            }
+        })
+    }
+
+    if ($btnRestoreSnapshot) {
+        $btnRestoreSnapshot.Add_Click({
+            param([object]$eventSource, [System.Windows.RoutedEventArgs]$eventArgs)
+            $selected = $cboRegistrySnapshots.SelectedItem
+            if (-not $selected -or -not $selected.FilePath) {
+                if ($txtRestoreStatus) { $txtRestoreStatus.Text = "Please select a valid snapshot to restore." }
+                return
+            }
+
+            $confirm = [System.Windows.MessageBox]::Show("Are you sure you want to restore registry snapshot:`n$($selected.FileName)?`n`nThis will overwrite current registry policies with the values saved in this backup.", "Confirm Registry Rollback", [System.Windows.MessageBoxButton]::YesNo, [System.Windows.MessageBoxImage]::Question)
+            if ($confirm -eq [System.Windows.MessageBoxResult]::Yes) {
+                try {
+                    $results = Restore-RegistrySnapshot -SnapshotPath $selected.FilePath
+                    if ($txtRestoreStatus) {
+                        $txtRestoreStatus.Text = "Successfully restored $($results.Count) registry values from $($selected.FileName)."
+                        $txtRestoreStatus.Foreground = [System.Windows.Media.Brushes]::MediumAquamarine
+                    }
+                    [System.Windows.MessageBox]::Show("Registry snapshot restored successfully ($($results.Count) entries updated).`nRestarting Explorer or rebooting your PC is recommended to apply changes.", "Rollback Complete", [System.Windows.MessageBoxButton]::OK, [System.Windows.MessageBoxImage]::Information) | Out-Null
+                } catch {
+                    if ($txtRestoreStatus) {
+                        $txtRestoreStatus.Text = "Restore Error: $($_.Exception.Message)"
+                        $txtRestoreStatus.Foreground = [System.Windows.Media.Brushes]::Coral
+                    }
+                }
+            }
+        })
+    }
+
+    # App Reinstall Modal Open/Close & Execution
+    $openReinstallModal = {
+        if ($modalReinstallApps) {
+            $modalReinstallApps.Visibility = [System.Windows.Visibility]::Visible
+            if ($txtReinstallLog) {
+                $txtReinstallLog.Text = "Ready. Select applications to reinstall and click 'Reinstall Selected'."
+            }
+        }
+    }
+
+    if ($btnHeaderReinstallApps) {
+        $btnHeaderReinstallApps.Add_Click({
+            param([object]$eventSource, [System.Windows.RoutedEventArgs]$eventArgs)
+            & $openReinstallModal
+        })
+    }
+
+    if ($btnStage5ReinstallApps) {
+        $btnStage5ReinstallApps.Add_Click({
+            param([object]$eventSource, [System.Windows.RoutedEventArgs]$eventArgs)
+            & $openReinstallModal
+        })
+    }
+
+    $closeReinstallModal = {
+        if ($modalReinstallApps) {
+            $modalReinstallApps.Visibility = [System.Windows.Visibility]::Collapsed
+        }
+    }
+
+    if ($btnCloseReinstallModal) {
+        $btnCloseReinstallModal.Add_Click({
+            param([object]$eventSource, [System.Windows.RoutedEventArgs]$eventArgs)
+            & $closeReinstallModal
+        })
+    }
+
+    if ($btnCloseReinstallModalBottom) {
+        $btnCloseReinstallModalBottom.Add_Click({
+            param([object]$eventSource, [System.Windows.RoutedEventArgs]$eventArgs)
+            & $closeReinstallModal
+        })
+    }
+
+    if ($btnExecuteReinstallApps) {
+        $btnExecuteReinstallApps.Add_Click({
+            param([object]$eventSource, [System.Windows.RoutedEventArgs]$eventArgs)
+            $appsToReinstall = [System.Collections.Generic.List[string]]::new()
+            if ($chkReinstallStore -and $chkReinstallStore.IsChecked) { $appsToReinstall.Add("Store") }
+            if ($chkReinstallCalculator -and $chkReinstallCalculator.IsChecked) { $appsToReinstall.Add("Calculator") }
+            if ($chkReinstallNotepad -and $chkReinstallNotepad.IsChecked) { $appsToReinstall.Add("Notepad") }
+            if ($chkReinstallPaint -and $chkReinstallPaint.IsChecked) { $appsToReinstall.Add("Paint") }
+            if ($chkReinstallPhotos -and $chkReinstallPhotos.IsChecked) { $appsToReinstall.Add("Photos") }
+            if ($chkReinstallTerminal -and $chkReinstallTerminal.IsChecked) { $appsToReinstall.Add("Terminal") }
+
+            if ($appsToReinstall.Count -eq 0) {
+                if ($txtReinstallLog) { $txtReinstallLog.Text = "No apps selected. Please tick at least one application." }
+                return
+            }
+
+            $isDryRun = [bool]($chkReinstallDryRun -and $chkReinstallDryRun.IsChecked)
+            $logBuilder = [System.Text.StringBuilder]::new()
+            $modeTag = if ($isDryRun) { "[PREVIEW / DRY-RUN]" } else { "[INSTALLING]" }
+            $logBuilder.AppendLine("$modeTag Starting reinstallation for $($appsToReinstall.Count) selected apps...") | Out-Null
+
+            foreach ($appName in $appsToReinstall) {
+                $logBuilder.AppendLine(" -> Processing: $appName...") | Out-Null
+                if ($txtReinstallLog) { $txtReinstallLog.Text = $logBuilder.ToString() }
+
+                $res = Install-CommonWindowsApp -AppName $appName -WhatIf:$isDryRun
+                $logBuilder.AppendLine("    [$($res.Status)] $($res.DisplayName): $($res.Message)") | Out-Null
+            }
+
+            $logBuilder.AppendLine("Reinstallation task finished.") | Out-Null
+            if ($txtReinstallLog) { $txtReinstallLog.Text = $logBuilder.ToString() }
         })
     }
 
