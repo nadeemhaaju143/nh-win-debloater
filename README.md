@@ -37,7 +37,9 @@ Each increment introduces modular features, verified bloatware signatures, or sa
 
 ```
 NH Win Debloater/
+├── run.ps1                     # Lightweight root launcher forwarding to Get-NHWinDebloater.ps1
 ├── Get-NHWinDebloater.ps1      # One-line zero-install quick-launch bootstrapper
+├── install.ps1                 # Convenience bootstrap wrapper
 ├── Run.bat                     # Standalone launcher (handles elevation & execution policy)
 ├── VERSION.txt                 # Current version tracker (0.5)
 ├── README.md                   # Project documentation and release workflow
@@ -55,33 +57,72 @@ NH Win Debloater/
 
 ## Quick Start
 
-### Method 1: One-Line PowerShell Launch (Zero Download Required)
+### Method 1: Ultra-Short Branded One-Line Launch (Zero Download Required)
 
 Open **PowerShell** (Run as Administrator recommended) and paste:
 
 ```powershell
+irm nhdigital.shop/debloat | iex
+```
+
+*Direct GitHub fallback (if custom domain is not yet routed):*
+```powershell
 irm https://raw.githubusercontent.com/nadeemhaaju143/nh-win-debloater/main/Get-NHWinDebloater.ps1 | iex
 ```
 
-*This automatically fetches the latest verified release from GitHub into a temporary sandbox and launches the modern WPF Guided Assistant in STA mode.*
+*This automatically fetches the latest verified release from GitHub into a temporary sandbox, launches the modern WPF Guided Assistant in STA mode, and cleanly removes all temporary sandbox files upon exit.*
 
 **Power-User CLI & Dry-Run Flags:**
 ```powershell
 # Interactive CLI console mode
+& ([ScriptBlock]::Create((irm nhdigital.shop/debloat))) -CLI
+# Fallback:
 & ([ScriptBlock]::Create((irm https://raw.githubusercontent.com/nadeemhaaju143/nh-win-debloater/main/Get-NHWinDebloater.ps1))) -CLI
 
 # Safe WhatIf simulation mode (zero system changes)
+& ([ScriptBlock]::Create((irm nhdigital.shop/debloat))) -DryRun
+# Fallback:
 & ([ScriptBlock]::Create((irm https://raw.githubusercontent.com/nadeemhaaju143/nh-win-debloater/main/Get-NHWinDebloater.ps1))) -DryRun
 ```
 
 ### Method 2: Manual Download & Offline Run
 
 1. Download or clone this repository to your local machine.
-2. Right-click `Run.bat` and select **Run as Administrator** (or double-click; `Run.bat` will request elevation automatically).
-3. The bootstrapper initializes the execution environment, verifies Windows build compatibility, and loads the active configuration.
-4. Follow the guided prompts to configure and review actions before applying changes.
+2. Run via PowerShell wrapper:
+   ```powershell
+   .\run.ps1
+   # Or with parameters:
+   .\run.ps1 -CLI
+   .\run.ps1 -DryRun
+   ```
+3. Or right-click `Run.bat` and select **Run as Administrator** (or double-click; `Run.bat` will request elevation automatically).
+4. The bootstrapper initializes the execution environment, verifies Windows build compatibility, and loads the active configuration.
+5. Follow the guided prompts to configure and review actions before applying changes.
 
 ---
+
+### Webmaster Setup: Branded `nhdigital.shop/debloat` Redirect
+
+To wire the branded one-liner `irm nhdigital.shop/debloat | iex` to your website or edge worker, use either snippet below:
+
+#### Option A: Cloudflare Worker (4 Lines)
+```javascript
+export default {
+  fetch(req) {
+    if (new URL(req.url).pathname.replace(/\/$/, '') === "/debloat") return Response.redirect("https://raw.githubusercontent.com/nadeemhaaju143/nh-win-debloater/main/Get-NHWinDebloater.ps1", 302);
+    return fetch(req);
+  }
+};
+```
+
+#### Option B: Next.js (`next.config.js`)
+```javascript
+module.exports = {
+  async redirects() {
+    return [{ source: '/debloat', destination: 'https://raw.githubusercontent.com/nadeemhaaju143/nh-win-debloater/main/Get-NHWinDebloater.ps1', permanent: false }];
+  },
+};
+```
 
 ## Safety & Invariants
 
@@ -89,6 +130,7 @@ irm https://raw.githubusercontent.com/nadeemhaaju143/nh-win-debloater/main/Get-N
 - **Explicit Authorization:** No modifications occur without explicit user confirmation.
 - **System Safeguards:** Core system components (Windows Store, Windows Security, Essential Frameworks) are protected against removal.
 - **Pre-Tweak Registry Snapshots:** Automatic `.reg` backup snapshots generated before applying modifications with one-click folder inspection.
+- **Automatic Sandbox & Session Cleanup:** Downloaded release archives and extracted temporary files in `%TEMP%\NHWinDebloater*` are automatically purged upon GUI or CLI exit, while user backups in `%LOCALAPPDATA%\NHWinDebloater\Backups` and session logs in `%LOCALAPPDATA%\NHWinDebloater\Logs` are strictly preserved.
 
 ---
 

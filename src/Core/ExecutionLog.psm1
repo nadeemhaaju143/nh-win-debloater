@@ -196,4 +196,51 @@ function Get-DebloatBackup {
     return @($results.ToArray())
 }
 
-Export-ModuleMember -Function Initialize-DebloatLogger, Write-DebloatLog, Get-DebloatLog, Invoke-DebloatAction, Get-DebloatBackup
+function Clear-DebloatTempSession {
+    <#
+        .SYNOPSIS
+            Cleans up transient runtime staging, lock, and temporary sandbox directories
+            in %TEMP%\NHWinDebloater* while strictly preserving backups and logs in %LOCALAPPDATA%.
+    #>
+    [CmdletBinding(SupportsShouldProcess = $true)]
+    [OutputType([string[]])]
+    param(
+        [Parameter(Mandatory = $false)]
+        [string]$TempRoot
+    )
+
+    if ([string]::IsNullOrWhiteSpace($TempRoot)) {
+        $TempRoot = $env:TEMP
+    }
+
+    $removedItems = [System.Collections.Generic.List[string]]::new()
+    $cleanPatterns = @(
+        "NHWinDebloater*",
+        "nh-win-debloater*"
+    )
+
+    foreach ($pattern in $cleanPatterns) {
+        $searchPath = Join-Path $TempRoot $pattern
+        $targets = Get-Item -Path $searchPath -ErrorAction SilentlyContinue
+        foreach ($target in $targets) {
+            # Critical Safety Check: Never touch anything in LOCALAPPDATA, Backups, or Logs
+            $fullPath = $target.FullName
+            if ($fullPath -like "*LOCALAPPDATA*" -or $fullPath -like "*Backups*" -or $fullPath -like "*Logs*") {
+                continue
+            }
+
+            if ($PSCmdlet.ShouldProcess($fullPath, "Remove transient temporary item")) {
+                try {
+                    Remove-Item -Path $fullPath -Recurse -Force -ErrorAction SilentlyContinue
+                    $removedItems.Add($fullPath)
+                } catch {
+                    Write-Verbose "Could not remove '$fullPath': $($_.Exception.Message)"
+                }
+            }
+        }
+    }
+
+    return @($removedItems.ToArray())
+}
+
+Export-ModuleMember -Function Initialize-DebloatLogger, Write-DebloatLog, Get-DebloatLog, Invoke-DebloatAction, Get-DebloatBackup, Clear-DebloatTempSession

@@ -12,6 +12,7 @@
 [CmdletBinding()]
 [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '')]
 [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSProvideCommentHelp', '')]
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingEmptyCatchBlock', '')]
 param(
     [switch]$DryRun,
     [switch]$Silent,
@@ -59,7 +60,8 @@ $os = Get-CimInstance Win32_OperatingSystem
 $buildNumber = [int](Get-ItemProperty "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion").CurrentBuild
 $isAdmin = ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
 
-# 4. Dry-Run Mode
+try {
+    # 4. Dry-Run Mode
 if ($DryRun) {
     Show-Header
     Write-Host " [+] Operating System : $($os.Caption) (Build $buildNumber)" -ForegroundColor Green
@@ -332,10 +334,17 @@ Write-Host " Explore more digital tools and updates at:" -ForegroundColor DarkGr
 Write-Host " https://nhdigital.shop" -ForegroundColor Cyan
 Write-Host ""
 Write-Host " Press any key to finish..." -ForegroundColor Gray
-try {
-    if ([System.Environment]::UserInteractive -and -not [System.Console]::IsInputRedirected) {
-        $null = [System.Console]::ReadKey()
+    try {
+        if ([System.Environment]::UserInteractive -and -not [System.Console]::IsInputRedirected) {
+            $null = [System.Console]::ReadKey()
+        }
+    } catch {
+        Write-Verbose "Non-interactive or redirected console session: $($_.Exception.Message)"
     }
-} catch {
-    Write-Verbose "Non-interactive or redirected console session: $($_.Exception.Message)"
+}
+finally {
+    # Post-Exit Temp & Session Cleanup (Preserving Backups in %LOCALAPPDATA%\NHWinDebloater\Backups)
+    if (Get-Command Clear-DebloatTempSession -ErrorAction SilentlyContinue) {
+        Clear-DebloatTempSession
+    }
 }
