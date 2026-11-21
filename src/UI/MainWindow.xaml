@@ -256,19 +256,27 @@
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Text="NH Win Debloater" FontWeight="Bold" FontSize="18" Foreground="#F8FAFC"/>
                                 <Border x:Name="BadgeVersion" CornerRadius="4" Background="#0284C7" Margin="10,2,0,2" Padding="6,1">
-                                    <TextBlock x:Name="TxtVersion" Text="v0.4" FontSize="11" FontWeight="Bold" Foreground="#FFFFFF"/>
+                                    <TextBlock x:Name="TxtVersion" Text="v0.5" FontSize="11" FontWeight="Bold" Foreground="#FFFFFF"/>
                                 </Border>
                             </StackPanel>
                             <TextBlock Text="Less Bloat. Better Windows. Built for performance." FontSize="12" Foreground="#94A3B8"/>
                         </StackPanel>
                     </StackPanel>
 
-                    <!-- System Info & Status Flourish -->
-                    <StackPanel Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right">
-                        <TextBlock x:Name="TxtOsCaption" Text="Windows 11 Pro" FontSize="12" FontWeight="SemiBold" Foreground="#38BDF8" HorizontalAlignment="Right"/>
-                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,3,0,0">
-                            <Ellipse x:Name="DotElevationStatus" Width="7" Height="7" Fill="#10B981" VerticalAlignment="Center" Margin="0,0,6,0"/>
-                            <TextBlock x:Name="TxtElevationStatus" Text="Elevated Administrator" FontSize="11" Foreground="#10B981" VerticalAlignment="Center"/>
+                    <!-- System Info, Quick Action & Status Flourish -->
+                    <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Right">
+                        <Button x:Name="BtnHeaderReinstallApps" Style="{StaticResource ModernBtn}" Height="30" Padding="10,0" Margin="0,0,16,0" ToolTip="Quick Action: Reinstall built-in Windows applications and Microsoft Store">
+                            <StackPanel Orientation="Horizontal">
+                                <Path Data="{StaticResource IconAppGrid}" Fill="#38BDF8" Width="12" Height="12" Stretch="Uniform" Margin="0,0,6,0" VerticalAlignment="Center"/>
+                                <TextBlock Text="Reinstall Apps" FontSize="11" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Button>
+                        <StackPanel VerticalAlignment="Center" HorizontalAlignment="Right">
+                            <TextBlock x:Name="TxtOsCaption" Text="Windows 11 Pro" FontSize="12" FontWeight="SemiBold" Foreground="#38BDF8" HorizontalAlignment="Right"/>
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,3,0,0">
+                                <Ellipse x:Name="DotElevationStatus" Width="7" Height="7" Fill="#10B981" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                                <TextBlock x:Name="TxtElevationStatus" Text="Elevated Administrator" FontSize="11" Foreground="#10B981" VerticalAlignment="Center"/>
+                            </StackPanel>
                         </StackPanel>
                     </StackPanel>
                 </Grid>
@@ -314,10 +322,22 @@
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
 
-                <StackPanel Grid.Row="0" Margin="0,0,0,18">
-                    <TextBlock Text="Select Optimization Profile &amp; Target Scope" FontSize="18" FontWeight="Bold" Foreground="#F8FAFC"/>
-                    <TextBlock Text="Choose a baseline debloat preset to get started. You can inspect and fine-tune every package in the next step." FontSize="13" Foreground="#94A3B8"/>
-                </StackPanel>
+                <Grid Grid.Row="0" Margin="0,0,0,18">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Grid.Column="0">
+                        <TextBlock Text="Select Optimization Profile &amp; Target Scope" FontSize="18" FontWeight="Bold" Foreground="#F8FAFC"/>
+                        <TextBlock Text="Choose a baseline debloat preset to get started. You can inspect and fine-tune every package in the next step." FontSize="13" Foreground="#94A3B8"/>
+                    </StackPanel>
+                    <Button x:Name="BtnImportProfile" Grid.Column="1" Style="{StaticResource ModernBtn}" VerticalAlignment="Center" ToolTip="Import custom preset profile from a .json file">
+                        <StackPanel Orientation="Horizontal">
+                            <Path Data="{StaticResource IconFolder}" Fill="#38BDF8" Width="12" Height="12" Stretch="Uniform" Margin="0,0,6,0" VerticalAlignment="Center"/>
+                            <TextBlock Text="Import Preset (.json)" FontSize="12" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Button>
+                </Grid>
 
                 <!-- Preset Cards Grid with Interactive Motion Hover -->
                 <Grid Grid.Row="1">
@@ -443,6 +463,14 @@
                                 <TextBlock x:Name="TxtLiveImpact" Text="LOW / SAFE" FontSize="11" FontWeight="Bold" Foreground="#34D399" VerticalAlignment="Center"/>
                             </StackPanel>
                         </Border>
+
+                        <!-- Export Profile Button -->
+                        <Button x:Name="BtnExportProfile" Style="{StaticResource ModernBtn}" Height="30" Padding="10,0" Margin="0,0,10,0" ToolTip="Export current ticked apps &amp; tweaks to a reusable .json preset">
+                            <StackPanel Orientation="Horizontal">
+                                <Path Data="{StaticResource IconFileText}" Fill="#38BDF8" Width="12" Height="12" Stretch="Uniform" Margin="0,0,6,0" VerticalAlignment="Center"/>
+                                <TextBlock Text="Export Profile (.json)" FontSize="11" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Button>
 
                         <!-- App Search Filter -->
                         <TextBox x:Name="TxtAppFilter" Width="180" Height="30" VerticalContentAlignment="Center" Padding="8,0" Background="#1E293B" Foreground="#F8FAFC" BorderBrush="#334155"/>
@@ -1517,11 +1545,11 @@
                             <TextBlock Text="• For complete policy enforcement (Fast Startup / Driver exclusions), a system reboot is recommended." FontSize="13" Foreground="#CBD5E1" Margin="0,2"/>
                             <TextBlock Text="• Review session execution log file or backup snapshots at any time." FontSize="13" Foreground="#CBD5E1" Margin="0,2"/>
 
-                            <StackPanel Orientation="Horizontal" Margin="0,18,0,0">
+                            <StackPanel Orientation="Horizontal" Margin="0,14,0,16">
                                 <Button x:Name="BtnRestartExplorer" Style="{StaticResource ModernBtn}" Margin="0,0,10,0">
                                     <StackPanel Orientation="Horizontal">
                                         <Path Data="{StaticResource IconRefresh}" Fill="#38BDF8" Width="12" Height="12" Stretch="Uniform" Margin="0,0,6,0" VerticalAlignment="Center"/>
-                                        <TextBlock Text="Restart Windows Explorer" VerticalAlignment="Center"/>
+                                        <TextBlock Text="Restart Explorer" VerticalAlignment="Center"/>
                                     </StackPanel>
                                 </Button>
                                 <Button x:Name="BtnOpenLog" Style="{StaticResource ModernBtn}" Margin="0,0,10,0">
@@ -1530,13 +1558,56 @@
                                         <TextBlock Text="View Execution Log" VerticalAlignment="Center"/>
                                     </StackPanel>
                                 </Button>
-                                <Button x:Name="BtnOpenBackups" Style="{StaticResource ModernBtn}">
+                                <Button x:Name="BtnOpenBackups" Style="{StaticResource ModernBtn}" Margin="0,0,10,0">
                                     <StackPanel Orientation="Horizontal">
                                         <Path Data="{StaticResource IconFolder}" Fill="#38BDF8" Width="12" Height="12" Stretch="Uniform" Margin="0,0,6,0" VerticalAlignment="Center"/>
                                         <TextBlock Text="Open Backups Folder" VerticalAlignment="Center"/>
                                     </StackPanel>
                                 </Button>
+                                <Button x:Name="BtnStage5ReinstallApps" Style="{StaticResource ModernBtn}">
+                                    <StackPanel Orientation="Horizontal">
+                                        <Path Data="{StaticResource IconAppGrid}" Fill="#38BDF8" Width="12" Height="12" Stretch="Uniform" Margin="0,0,6,0" VerticalAlignment="Center"/>
+                                        <TextBlock Text="Reinstall Built-in Apps" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </Button>
                             </StackPanel>
+
+                            <!-- Registry Snapshots & 1-Click Rollback Manager Card -->
+                            <Border Background="#0A0E17" CornerRadius="8" BorderBrush="#2A384F" BorderThickness="1" Padding="14">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+                                    <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,10">
+                                        <Path Data="{StaticResource IconShieldLock}" Fill="#38BDF8" Width="13" Height="13" Stretch="Uniform" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                                        <TextBlock Text="Registry Snapshots &amp; 1-Click Rollback Manager" FontWeight="Bold" FontSize="13" Foreground="#F8FAFC" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                    <Grid Grid.Row="1" Margin="0,0,0,8">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <ComboBox x:Name="CboRegistrySnapshots" Grid.Column="0" Height="30" Background="#1E293B" Foreground="#F8FAFC" BorderBrush="#334155" Margin="0,0,8,0"/>
+                                        <Button x:Name="BtnRefreshSnapshots" Grid.Column="1" Style="{StaticResource ModernBtn}" Height="30" Padding="8,0" Margin="0,0,8,0" ToolTip="Refresh snapshot list">
+                                            <Path Data="{StaticResource IconRefresh}" Fill="#38BDF8" Width="11" Height="11" Stretch="Uniform"/>
+                                        </Button>
+                                        <Button x:Name="BtnPreviewSnapshot" Grid.Column="2" Style="{StaticResource ModernBtn}" Height="30" Padding="10,0" Margin="0,0,8,0">
+                                            <TextBlock Text="Preview (Dry-Run)" FontSize="11" VerticalAlignment="Center"/>
+                                        </Button>
+                                        <Button x:Name="BtnRestoreSnapshot" Grid.Column="3" Style="{StaticResource PrimaryBtn}" Height="30" Padding="12,0" Background="#0284C7" BorderBrush="#38BDF8">
+                                            <StackPanel Orientation="Horizontal">
+                                                <Path Data="{StaticResource IconCheckCircle}" Fill="#FFFFFF" Width="11" Height="11" Stretch="Uniform" Margin="0,0,6,0" VerticalAlignment="Center"/>
+                                                <TextBlock Text="1-Click Restore" FontSize="11" FontWeight="Bold" Foreground="#FFFFFF" VerticalAlignment="Center"/>
+                                            </StackPanel>
+                                        </Button>
+                                    </Grid>
+                                    <TextBlock x:Name="TxtRestoreStatus" Grid.Row="2" Text="Select a pre-debloat snapshot to restore previous Windows registry settings." FontSize="11" Foreground="#94A3B8"/>
+                                </Grid>
+                            </Border>
                         </StackPanel>
                     </Border>
                 </Grid>
@@ -1596,5 +1667,85 @@
                 </StackPanel>
             </Grid>
         </Border>
+
+        <!-- 5. App Reinstall Helper Modal Overlay -->
+        <Grid x:Name="ModalReinstallApps" Grid.RowSpan="4" Background="#CC0A0E17" Visibility="Collapsed">
+            <Border Background="#131D31" BorderBrush="#38BDF8" BorderThickness="1" CornerRadius="10" Width="680" MaxHeight="520" VerticalAlignment="Center" HorizontalAlignment="Center" Padding="22">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- Header -->
+                    <Grid Grid.Row="0" Margin="0,0,0,14">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0">
+                            <StackPanel Orientation="Horizontal">
+                                <Path Data="{StaticResource IconAppGrid}" Fill="#38BDF8" Width="14" Height="14" Stretch="Uniform" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                                <TextBlock Text="Windows Built-in App Reinstall Helper" FontSize="16" FontWeight="Bold" Foreground="#F8FAFC"/>
+                            </StackPanel>
+                            <TextBlock Text="Reinstall or re-register essential Windows utilities and Microsoft Store." FontSize="12" Foreground="#94A3B8" Margin="0,2,0,0"/>
+                        </StackPanel>
+                        <Button x:Name="BtnCloseReinstallModal" Style="{StaticResource ModernBtn}" Grid.Column="1" Width="28" Height="28" Padding="0">
+                            <Path Data="{StaticResource IconClose}" Fill="#94A3B8" Width="10" Height="10" Stretch="Uniform"/>
+                        </Button>
+                    </Grid>
+
+                    <!-- App Checklist Cards -->
+                    <Border Grid.Row="1" Background="#0A0E17" CornerRadius="6" BorderBrush="#2A384F" BorderThickness="1" Padding="14" Margin="0,0,0,12">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="0">
+                                <CheckBox x:Name="ChkReinstallStore" Content="Microsoft Store (wsreset -i)" IsChecked="True" Foreground="#F8FAFC" Margin="0,4"/>
+                                <CheckBox x:Name="ChkReinstallCalculator" Content="Windows Calculator" IsChecked="True" Foreground="#F8FAFC" Margin="0,4"/>
+                                <CheckBox x:Name="ChkReinstallNotepad" Content="Windows Notepad" IsChecked="True" Foreground="#F8FAFC" Margin="0,4"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="1">
+                                <CheckBox x:Name="ChkReinstallPaint" Content="Paint" IsChecked="True" Foreground="#F8FAFC" Margin="0,4"/>
+                                <CheckBox x:Name="ChkReinstallPhotos" Content="Microsoft Photos" IsChecked="True" Foreground="#F8FAFC" Margin="0,4"/>
+                                <CheckBox x:Name="ChkReinstallTerminal" Content="Windows Terminal" IsChecked="True" Foreground="#F8FAFC" Margin="0,4"/>
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+
+                    <!-- Live Log Box -->
+                    <Border Grid.Row="2" Background="#0A0E17" CornerRadius="6" BorderBrush="#2A384F" BorderThickness="1" Padding="10" MinHeight="110" Margin="0,0,0,14">
+                        <ScrollViewer VerticalScrollBarVisibility="Auto">
+                            <TextBlock x:Name="TxtReinstallLog" Text="Ready. Select applications to reinstall and click 'Reinstall Selected'." Foreground="#94A3B8" FontFamily="Consolas, Lucida Console" FontSize="11" TextWrapping="Wrap"/>
+                        </ScrollViewer>
+                    </Border>
+
+                    <!-- Action Bar -->
+                    <Grid Grid.Row="3">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <CheckBox x:Name="ChkReinstallDryRun" Grid.Column="0" Content="Dry-Run Preview Only" Foreground="#38BDF8" VerticalAlignment="Center"/>
+                        <StackPanel Grid.Column="2" Orientation="Horizontal">
+                            <Button x:Name="BtnCloseReinstallModalBottom" Style="{StaticResource ModernBtn}" Margin="0,0,10,0">
+                                <TextBlock Text="Close" VerticalAlignment="Center"/>
+                            </Button>
+                            <Button x:Name="BtnExecuteReinstallApps" Style="{StaticResource PrimaryBtn}" Background="#0EA5E9" Foreground="#FFFFFF" Padding="16,6">
+                                <StackPanel Orientation="Horizontal">
+                                    <Path Data="{StaticResource IconLightning}" Fill="#FFFFFF" Width="11" Height="11" Stretch="Uniform" Margin="0,0,6,0" VerticalAlignment="Center"/>
+                                    <TextBlock Text="Reinstall Selected" FontWeight="Bold" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Button>
+                        </StackPanel>
+                    </Grid>
+                </Grid>
+            </Border>
+        </Grid>
     </Grid>
 </Window>

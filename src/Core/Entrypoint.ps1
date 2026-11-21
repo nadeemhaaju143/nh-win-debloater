@@ -27,7 +27,7 @@ $UiDirectory = Join-Path $SrcDirectory "UI"
 $AppControllerScript = Join-Path $UiDirectory "AppController.ps1"
 
 $versionFile = Join-Path $ProjectRootDirectory "VERSION.txt"
-$script:AppVersion = if (Test-Path $versionFile) { (Get-Content -Path $versionFile -Raw).Trim() } else { "0.4" }
+$script:AppVersion = if (Test-Path $versionFile) { (Get-Content -Path $versionFile -Raw).Trim() } else { "0.5" }
 
 if ($Host -and $Host.UI -and $Host.UI.RawUI) {
     $Host.UI.RawUI.WindowTitle = "NH Win Debloater v$($script:AppVersion) - NH Digital"
@@ -147,13 +147,14 @@ Write-Host " [2] Apply Privacy & Telemetry Optimizations" -ForegroundColor White
 Write-Host " [3] Apply UI & File Explorer Optimizations" -ForegroundColor White
 Write-Host " [4] Apply System & Gaming Tweaks (Game DVR, Delivery Optimization, Lock Screen)" -ForegroundColor White
 Write-Host " [5] Scan Installed Bloatware Packages" -ForegroundColor White
-Write-Host " [6] View Existing Registry Snapshots (Rollback Inventory)" -ForegroundColor White
+Write-Host " [6] Registry Snapshot & Rollback Manager (Restore / Preview)" -ForegroundColor White
 Write-Host " [7] Re-register Default Windows Store Apps" -ForegroundColor White
 Write-Host " [8] Apply AI Integration Debloat (Copilot, Recall, Edge/Paint/Notepad AI)" -ForegroundColor White
+Write-Host " [9] Reinstall Common Built-in Windows Apps (Store, Calculator, Notepad, Paint, Photos, Terminal)" -ForegroundColor White
 Write-Host " [Q] Exit" -ForegroundColor Gray
 Write-Host ""
 
-$choice = Read-Host " Enter choice (G, 1-8, Q)"
+$choice = Read-Host " Enter choice (G, 1-9, Q)"
 
 switch ($choice) {
     "G" {
@@ -240,12 +241,42 @@ switch ($choice) {
         $installed | Select-Object -First 20 AppId, IsProvisioned, IsProtected | Format-Table -AutoSize
     }
     "6" {
-        Write-Host "`nChecking backup registry snapshots..." -ForegroundColor Yellow
+        Write-Host "`n=== REGISTRY SNAPSHOT & ROLLBACK MANAGER ===" -ForegroundColor Cyan
         $backups = Get-DebloatBackup
         if ($backups.Count -eq 0) {
             Write-Host "No registry snapshots found in local backup store." -ForegroundColor Gray
         } else {
-            $backups | Format-Table FileName, SizeKb, LastModified -AutoSize
+            Write-Host "Available Registry Snapshots:" -ForegroundColor White
+            for ($i = 0; $i -lt $backups.Count; $i++) {
+                $b = $backups[$i]
+                Write-Host " [$($i + 1)] $($b.FileName) ($($b.LastModified) - $($b.SizeKb) KB)" -ForegroundColor Yellow
+            }
+            Write-Host ""
+            $snapChoice = Read-Host " Enter snapshot number to restore (e.g. 1), or prefix 'P' for dry-run preview (e.g. P1), or press Enter to cancel"
+            if (-not [string]::IsNullOrWhiteSpace($snapChoice)) {
+                $isPreview = $snapChoice -match "^[Pp]"
+                $idxStr = $snapChoice -replace "^[Pp]", ""
+                $idx = 0
+                if ([int]::TryParse($idxStr, [ref]$idx) -and $idx -ge 1 -and $idx -le $backups.Count) {
+                    $targetBackup = $backups[$idx - 1]
+                    if ($isPreview) {
+                        Write-Host "`nPreviewing rollback for $($targetBackup.FileName)..." -ForegroundColor Cyan
+                        $res = Restore-RegistrySnapshot -SnapshotPath $targetBackup.FilePath -WhatIf
+                        Write-Host "Preview complete: $($res.Count) registry keys would be restored." -ForegroundColor Green
+                    } else {
+                        $confirm = Read-Host " Confirm restore of snapshot '$($targetBackup.FileName)'? (Y/N)"
+                        if ($confirm -eq "Y" -or $confirm -eq "y") {
+                            Write-Host "`nRestoring registry values from $($targetBackup.FileName)..." -ForegroundColor Yellow
+                            $res = Restore-RegistrySnapshot -SnapshotPath $targetBackup.FilePath
+                            Write-Host "Rollback complete: $($res.Count) registry values restored successfully." -ForegroundColor Green
+                        } else {
+                            Write-Host "Restore cancelled." -ForegroundColor Gray
+                        }
+                    }
+                } else {
+                    Write-Host "Invalid snapshot selection." -ForegroundColor Red
+                }
+            }
         }
     }
     "7" {
@@ -259,6 +290,37 @@ switch ($choice) {
         foreach ($item in (Set-RecallAITweak -DisableRecall $true)) { $aiResults.Add($item) }
         foreach ($item in (Set-ApplicationAITweak -DisableEdgeAI $true -DisablePaintAI $true -DisableNotepadAI $true)) { $aiResults.Add($item) }
         $aiResults | Format-Table Path, Name, Status -AutoSize
+    }
+    "9" {
+        Write-Host "`n=== REINSTALL COMMON BUILT-IN WINDOWS APPS ===" -ForegroundColor Cyan
+        Write-Host " [1] Microsoft Store (wsreset -i)" -ForegroundColor White
+        Write-Host " [2] Windows Calculator" -ForegroundColor White
+        Write-Host " [3] Windows Notepad" -ForegroundColor White
+        Write-Host " [4] Paint" -ForegroundColor White
+        Write-Host " [5] Microsoft Photos" -ForegroundColor White
+        Write-Host " [6] Windows Terminal" -ForegroundColor White
+        Write-Host " [A] Reinstall All Common Apps" -ForegroundColor Yellow
+        Write-Host ""
+        $appChoice = Read-Host " Enter app number (1-6, A) or press Enter to cancel"
+        $appsToInstall = @()
+        switch ($appChoice) {
+            "1" { $appsToInstall = @("Store") }
+            "2" { $appsToInstall = @("Calculator") }
+            "3" { $appsToInstall = @("Notepad") }
+            "4" { $appsToInstall = @("Paint") }
+            "5" { $appsToInstall = @("Photos") }
+            "6" { $appsToInstall = @("Terminal") }
+            "A" { $appsToInstall = @("Store", "Calculator", "Notepad", "Paint", "Photos", "Terminal") }
+        }
+        if ($appsToInstall.Count -gt 0) {
+            $dryConfirm = Read-Host " Run in Dry-Run preview mode first? (Y/N)"
+            $isDry = ($dryConfirm -eq "Y" -or $dryConfirm -eq "y")
+            foreach ($app in $appsToInstall) {
+                Write-Host " -> Processing: $app..." -ForegroundColor Cyan
+                $res = Install-CommonWindowsApp -AppName $app -WhatIf:$isDry
+                Write-Host "    [$($res.Status)] $($res.DisplayName): $($res.Message)" -ForegroundColor Green
+            }
+        }
     }
     Default {
         Write-Host "Exiting NH Win Debloater." -ForegroundColor Gray

@@ -340,4 +340,117 @@ Describe "UI Motion & Vector Icon Architecture" {
         $win.FindName("TxtTabAICount") | Should -Not -BeNullOrEmpty
         $win.FindName("TxtTabFeaturesCount") | Should -Not -BeNullOrEmpty
     }
+
+    It "Verifies presence of v0.5 profile export/import, snapshot rollback, and reinstall modal controls" {
+        $xamlPath = Join-Path $projectRoot "src\UI\MainWindow.xaml"
+        $xamlContent = Get-Content $xamlPath -Raw
+        $reader = [System.Xml.XmlReader]::Create([System.IO.StringReader]::new($xamlContent))
+        $win = $null
+        try {
+            $win = [System.Windows.Markup.XamlReader]::Load($reader)
+        } finally {
+            $reader.Close()
+        }
+        $win.FindName("BtnImportProfile") | Should -Not -BeNullOrEmpty
+        $win.FindName("BtnExportProfile") | Should -Not -BeNullOrEmpty
+        $win.FindName("BtnHeaderReinstallApps") | Should -Not -BeNullOrEmpty
+        $win.FindName("BtnStage5ReinstallApps") | Should -Not -BeNullOrEmpty
+        $win.FindName("CboRegistrySnapshots") | Should -Not -BeNullOrEmpty
+        $win.FindName("BtnPreviewSnapshot") | Should -Not -BeNullOrEmpty
+        $win.FindName("BtnRestoreSnapshot") | Should -Not -BeNullOrEmpty
+        $win.FindName("TxtRestoreStatus") | Should -Not -BeNullOrEmpty
+        $win.FindName("ModalReinstallApps") | Should -Not -BeNullOrEmpty
+        $win.FindName("BtnExecuteReinstallApps") | Should -Not -BeNullOrEmpty
+        $win.FindName("TxtReinstallLog") | Should -Not -BeNullOrEmpty
+    }
+}
+
+Describe "Custom Preset Profiles Export/Import" {
+    BeforeAll {
+        $tempProfilePath = Join-Path $env:TEMP "TestDebloatProfile.json"
+    }
+
+    AfterAll {
+        if ($tempProfilePath -and (Test-Path $tempProfilePath)) {
+            Remove-Item -Path $tempProfilePath -Force -ErrorAction SilentlyContinue
+        }
+    }
+
+    It "Exports custom preset profile to JSON cleanly" {
+        $apps = @("Microsoft.BingNews", "Microsoft.GetHelp", "Microsoft.ZuneVideo")
+        $tweaks = @{
+            Telemetry          = $true
+            ClassicContextMenu = $true
+            DisableCopilot     = $true
+        }
+        $res = Export-DebloatProfile -FilePath $tempProfilePath -ProfileName "Gaming Profile" -SelectedApps $apps -SelectedTweaks $tweaks -AppVersion "0.5"
+        (Test-Path $res) | Should -BeTrue
+
+        $jsonContent = Get-Content -Path $res -Raw | ConvertFrom-Json
+        $jsonContent.ProfileName | Should -Be "Gaming Profile"
+        $jsonContent.AppVersion | Should -Be "0.5"
+        $jsonContent.SelectedApps.Count | Should -Be 3
+        $jsonContent.SelectedTweaks.Telemetry | Should -BeTrue
+    }
+
+    It "Imports and validates custom preset profile safely" {
+        $imported = Import-DebloatProfile -FilePath $tempProfilePath
+        $imported.ProfileName | Should -Be "Gaming Profile"
+        $imported.AppVersion | Should -Be "0.5"
+        $imported.SelectedApps | Should -Contain "Microsoft.BingNews"
+        $imported.SelectedTweaks["ClassicContextMenu"] | Should -BeTrue
+    }
+
+    It "Throws expected error on non-existent profile file" {
+        { Import-DebloatProfile -FilePath "C:\NonExistent\Profile.json" } | Should -Throw
+    }
+}
+
+Describe "Registry Snapshot & Rollback Engine" {
+    BeforeAll {
+        $tempBackupDir = Join-Path $env:TEMP "NHWinDebloaterTestBackups"
+        if (-not (Test-Path $tempBackupDir)) {
+            New-Item -Path $tempBackupDir -ItemType Directory -Force | Out-Null
+        }
+        $tempSnapshotPath = Join-Path $tempBackupDir "RegistrySnapshot_20261121_120000.json"
+        $sampleSnapshot = @(
+            @{ Path = "HKCU:\Software\NHWinDebloaterTest"; Name = "TestTweak"; Value = 1 }
+        )
+        $sampleSnapshot | ConvertTo-Json | Set-Content -Path $tempSnapshotPath -Encoding UTF8
+    }
+
+    AfterAll {
+        if ($tempBackupDir -and (Test-Path $tempBackupDir)) {
+            Remove-Item -Path $tempBackupDir -Recurse -Force -ErrorAction SilentlyContinue
+        }
+    }
+
+    It "Discovers existing registry backup snapshots" {
+        $backups = @(Get-DebloatBackup -BackupDirectory $tempBackupDir)
+        $backups | Should -Not -BeNullOrEmpty
+        $backups.Count | Should -BeGreaterOrEqual 1
+    }
+
+    It "Executes Restore-RegistrySnapshot in WhatIf preview mode safely" {
+        $results = @(Restore-RegistrySnapshot -SnapshotPath $tempSnapshotPath -WhatIf)
+        $results.Count | Should -Be 1
+        $results[0].Status | Should -Be "Preview"
+    }
+}
+
+Describe "App Reinstall Helper Engine" {
+    It "Generates WhatIf preview for Microsoft Store" {
+        $res = Install-CommonWindowsApp -AppName "Store" -WhatIf
+        $res.AppName | Should -Be "Store"
+        $res.Status | Should -Be "Preview"
+    }
+
+    It "Generates WhatIf preview for Calculator, Notepad, Paint, Photos, Terminal" {
+        $apps = @("Calculator", "Notepad", "Paint", "Photos", "Terminal")
+        foreach ($app in $apps) {
+            $res = Install-CommonWindowsApp -AppName $app -WhatIf
+            $res.AppName | Should -Be $app
+            $res.Status | Should -Be "Preview"
+        }
+    }
 }

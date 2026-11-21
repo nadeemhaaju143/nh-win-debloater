@@ -9,6 +9,37 @@ The project follows a **progressive semantic minor versioning format**:
 
 ---
 
+## [0.5.0] - 2026-11-21
+
+### Custom Preset Profiles, 1-Click Rollback & App Reinstall Engine
+- **Exportable & Importable Custom Preset Profiles (`.json`) (`AppManager.psm1`, `MainWindow.xaml` & `AppController.ps1`):**
+  - Added `Export-DebloatProfile` and `Import-DebloatProfile` for saving and reloading custom debloat configurations.
+  - Added **Export Profile (.json)** button in Stage 2 allowing users to export ticked bloatware apps and system/AI tweaks to portable JSON files (e.g. `GamingRig.json`, `CleanWorkstation.json`).
+  - Added **Import Preset (.json)** button in Stage 1 enabling 1-click loading, strict schema validation, automatic CheckBox state restoration, and instant live counter/safety badge recalculation.
+- **In-App Registry Snapshot & 1-Click Rollback Manager (`SystemTweaks.psm1`, `MainWindow.xaml`, `AppController.ps1` & `Entrypoint.ps1`):**
+  - Added interactive snapshot manager card in Stage 5 displaying previous pre-debloat backups from `%LOCALAPPDATA%\NHWinDebloater\Backups\`.
+  - Added **Preview (Dry-Run)** to safely simulate rollback operations before applying changes.
+  - Added **1-Click Restore** with safety confirmation dialog and atomic registry value restoration via `Restore-RegistrySnapshot`.
+  - Upgraded CLI menu option `[6]` into an interactive Snapshot Rollback & Preview Manager with numbered snapshot selection and preview triggers.
+- **App Reinstall Helper Dialog (`AppManager.psm1`, `MainWindow.xaml`, `AppController.ps1` & `Entrypoint.ps1`):**
+  - Added dedicated **App Reinstall Helper** overlay modal (accessible via Header quick action and Stage 5) to restore commonly removed built-in Windows applications:
+    - Microsoft Store via `wsreset -i` and AppX registration
+    - Windows Calculator (`Microsoft.WindowsCalculator`)
+    - Windows Notepad (`Microsoft.WindowsNotepad`)
+    - Paint (`Microsoft.Paint`)
+    - Microsoft Photos (`Microsoft.Windows.Photos`)
+    - Windows Terminal (`Microsoft.WindowsTerminal`)
+  - Added CLI menu option `[9]` supporting individual or batch common app reinstallation.
+  - Integrated live execution log output and `-DryRun` preview support.
+- **Launcher Resilience & Multi-Directory Execution (`Run.bat`):**
+  - Added immediate directory resolution (`cd /d "%~dp0"` and `"%~dp0src\Core\Entrypoint.ps1"`) allowing `Run.bat` to be invoked cleanly from any working directory.
+  - Added automatic elevation bypass for `-DryRun` preview executions.
+- **Automated Quality Gate & Testing (`tests/CoreModules.Tests.ps1`):**
+  - Expanded test suite to **50 tests** covering profile export/import, snapshot discovery/restore, app reinstall generation, and XAML element verification.
+  - Maintained strict standard: **0 PSScriptAnalyzer errors and 0 warnings** across all 10 scripts.
+
+---
+
 ## [0.4.0] - 2026-11-21
 
 ### Dark Material Multi-Select Dropdowns & Dedicated AI Integration Suite

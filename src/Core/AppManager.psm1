@@ -343,4 +343,201 @@ function Restore-DefaultApp {
     }
 }
 
-Export-ModuleMember -Function Get-ProtectedApp, Test-IsProtectedApp, Get-DebloatPreset, Get-InstalledDebloatApp, Remove-DebloatApp, Restore-DefaultApp
+function Export-DebloatProfile {
+    <#
+        .SYNOPSIS
+            Exports current selection of bloatware packages and system tweaks to a portable JSON profile.
+    #>
+    [CmdletBinding()]
+    [OutputType([string])]
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$FilePath,
+
+        [Parameter(Mandatory = $false)]
+        [string]$ProfileName = "Custom Preset Profile",
+
+        [Parameter(Mandatory = $false)]
+        [string[]]$SelectedApps = @(),
+
+        [Parameter(Mandatory = $false)]
+        [hashtable]$SelectedTweaks = @{},
+
+        [Parameter(Mandatory = $false)]
+        [string]$AppVersion = "0.5"
+    )
+
+    $parentDir = Split-Path -Parent $FilePath
+    if (-not [string]::IsNullOrWhiteSpace($parentDir) -and -not (Test-Path $parentDir)) {
+        New-Item -Path $parentDir -ItemType Directory -Force | Out-Null
+    }
+
+    $profileData = [ordered]@{
+        SchemaVersion  = "1.0"
+        ProfileName    = $ProfileName
+        AppVersion     = $AppVersion
+        ExportedAt     = (Get-Date).ToString("yyyy-MM-ddTHH:mm:ssZ")
+        SelectedApps   = @($SelectedApps | Sort-Object -Unique)
+        SelectedTweaks = $SelectedTweaks
+    }
+
+    $json = $profileData | ConvertTo-Json -Depth 5
+    Set-Content -Path $FilePath -Value $json -Encoding UTF8 -Force
+    return $FilePath
+}
+
+function Import-DebloatProfile {
+    <#
+        .SYNOPSIS
+            Imports and validates a debloat preset JSON profile.
+    #>
+    [CmdletBinding()]
+    [OutputType([PSCustomObject])]
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$FilePath
+    )
+
+    if (-not (Test-Path $FilePath)) {
+        throw "Profile file not found: '$FilePath'."
+    }
+
+    $rawContent = Get-Content -Path $FilePath -Raw -Encoding UTF8
+    if ([string]::IsNullOrWhiteSpace($rawContent)) {
+        throw "Profile file is empty: '$FilePath'."
+    }
+
+    try {
+        $data = $rawContent | ConvertFrom-Json
+    } catch {
+        throw "Failed to parse JSON in profile '$FilePath': $($_.Exception.Message)"
+    }
+
+    if (-not $data) {
+        throw "Invalid profile structure in '$FilePath'."
+    }
+
+    $apps = [System.Collections.Generic.List[string]]::new()
+    if ($data.SelectedApps) {
+        foreach ($app in $data.SelectedApps) {
+            if (-not [string]::IsNullOrWhiteSpace($app)) {
+                $apps.Add([string]$app)
+            }
+        }
+    }
+
+    $tweaks = @{}
+    if ($data.SelectedTweaks) {
+        foreach ($prop in $data.SelectedTweaks.PSObject.Properties) {
+            $tweaks[$prop.Name] = [bool]$prop.Value
+        }
+    }
+
+    $name = if ($data.ProfileName) { [string]$data.ProfileName } else { "Imported Profile" }
+    $ver = if ($data.AppVersion) { [string]$data.AppVersion } else { "0.5" }
+
+    return [PSCustomObject]@{
+        ProfileName    = $name
+        AppVersion     = $ver
+        ExportedAt     = [string]$data.ExportedAt
+        SelectedApps   = $apps.ToArray()
+        SelectedTweaks = $tweaks
+    }
+}
+
+function Install-CommonWindowsApp {
+    <#
+        .SYNOPSIS
+            Reinstalls commonly needed built-in Windows applications and Microsoft Store.
+    #>
+    [CmdletBinding(SupportsShouldProcess = $true)]
+    [OutputType([PSCustomObject])]
+    param(
+        [Parameter(Mandatory = $true)]
+        [ValidateSet("Store", "Calculator", "Notepad", "Paint", "Photos", "Terminal")]
+        [string]$AppName
+    )
+
+    $appCatalog = @{
+        "Store"      = @{ Name = "Microsoft Store"; Package = "Microsoft.WindowsStore"; WingetId = "9WZDNCRFJBMP"; WsReset = $true }
+        "Calculator" = @{ Name = "Windows Calculator"; Package = "Microsoft.WindowsCalculator"; WingetId = "9WZDNCRFHVN5"; WsReset = $false }
+        "Notepad"    = @{ Name = "Windows Notepad"; Package = "Microsoft.WindowsNotepad"; WingetId = "9MSMLRH6LZF0"; WsReset = $false }
+        "Paint"      = @{ Name = "Paint"; Package = "Microsoft.Paint"; WingetId = "9PCFS5B6T72H"; WsReset = $false }
+        "Photos"     = @{ Name = "Microsoft Photos"; Package = "Microsoft.Windows.Photos"; WingetId = "9WZDNCRFJ3Q2"; WsReset = $false }
+        "Terminal"   = @{ Name = "Windows Terminal"; Package = "Microsoft.WindowsTerminal"; WingetId = "9N0DX20HK701"; WsReset = $false }
+    }
+
+    $info = $appCatalog[$AppName]
+
+    if ($PSCmdlet.ShouldProcess("App: $($info.Name)", "Reinstall/Register package")) {
+        try {
+            # Method 1: Store wsreset
+            if ($info.WsReset) {
+                Start-Process -FilePath "wsreset.exe" -ArgumentList "-i" -NoNewWindow -Wait -ErrorAction SilentlyContinue
+                return [PSCustomObject]@{
+                    AppName     = $AppName
+                    DisplayName = $info.Name
+                    Method      = "wsreset -i"
+                    Status      = "Success"
+                    Message     = "Microsoft Store registration initiated via wsreset -i"
+                }
+            }
+
+            # Method 2: Re-register from WindowsApps manifest if present on system
+            $manifest = Get-ChildItem -Path "$env:ProgramFiles\WindowsApps\*$($info.Package)*\AppxManifest.xml" -ErrorAction SilentlyContinue | Select-Object -First 1
+            if ($manifest) {
+                Add-AppxPackage -DisableDevelopmentMode -Register $manifest.FullName -ErrorAction Stop
+                return [PSCustomObject]@{
+                    AppName     = $AppName
+                    DisplayName = $info.Name
+                    Method      = "AppX Manifest"
+                    Status      = "Success"
+                    Message     = "Re-registered from $($manifest.FullName)"
+                }
+            }
+
+            # Method 3: Winget install fallback
+            $wingetCmd = Get-Command "winget.exe" -ErrorAction SilentlyContinue
+            if ($wingetCmd) {
+                $wingetArgs = "install --id $($info.WingetId) --silent --accept-package-agreements --accept-source-agreements"
+                $p = Start-Process -FilePath "winget.exe" -ArgumentList $wingetArgs -NoNewWindow -PassThru -Wait
+                $status = if ($p.ExitCode -eq 0) { "Success" } else { "Notice" }
+                return [PSCustomObject]@{
+                    AppName     = $AppName
+                    DisplayName = $info.Name
+                    Method      = "winget"
+                    Status      = $status
+                    Message     = "Winget completed with exit code $($p.ExitCode)"
+                }
+            }
+
+            return [PSCustomObject]@{
+                AppName     = $AppName
+                DisplayName = $info.Name
+                Method      = "None"
+                Status      = "Error"
+                Message     = "Could not locate package manifest in WindowsApps and winget is not available."
+            }
+        }
+        catch {
+            return [PSCustomObject]@{
+                AppName     = $AppName
+                DisplayName = $info.Name
+                Method      = "Exception"
+                Status      = "Error"
+                Message     = $_.Exception.Message
+            }
+        }
+    }
+    else {
+        return [PSCustomObject]@{
+            AppName     = $AppName
+            DisplayName = $info.Name
+            Method      = "WhatIf"
+            Status      = "Preview"
+            Message     = "Would reinstall / re-register $($info.Name) using AppX Manifest or winget ($($info.WingetId))."
+        }
+    }
+}
+
+Export-ModuleMember -Function Get-ProtectedApp, Test-IsProtectedApp, Get-DebloatPreset, Get-InstalledDebloatApp, Remove-DebloatApp, Restore-DefaultApp, Export-DebloatProfile, Import-DebloatProfile, Install-CommonWindowsApp

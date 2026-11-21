@@ -1,6 +1,6 @@
 # NH Win Debloater
 
-**Version:** 0.4  
+**Version:** 0.5  
 **Tagline:** Less Bloat. Better Windows.  
 **Developer:** NH Digital ([nhdigital.shop](https://nhdigital.shop))  
 
@@ -17,15 +17,16 @@
 NH Win Debloater adopts a progressive **minor-style semantic versioning cadence** starting at `v0.1`:
 
 ```
-v0.1  -->  v0.2  -->  v0.3  -->  v0.4  -->  v0.5+  -->  v1.0
-(Init)     (Core)     (UI/WPF)   (AI/Select) (Cloud)     (Stable Release)
+v0.1  -->  v0.2  -->  v0.3  -->  v0.4  -->  v0.5 (Current)  -->  v1.0
+(Init)     (Core)     (UI/WPF)   (AI/Select) (Profiles/Rollback)   (Stable Release)
 ```
 
 - **v0.1:** Project initialization, folder architecture, standalone launcher, and core PowerShell modules.
 - **v0.2:** Gaming & performance engine, shell customizations, DPI-safe branding, and zero-error preflight gate.
 - **v0.3:** Material Design dark palette, power-user category slices & installed package filter, smooth animations, and advanced system tweaks (Edge background suppression, CEIP task cleaning, hibernation storage reclaim).
-- **v0.4 (Current):** Dark Material multi-select CheckBox dropdowns across all tabs, multi-category aggregation, dedicated AI Integration suite (Copilot policy/AppX, Recall/Click to Do, Edge/Paint/Notepad AI), and expanded registry backups.
-- **v0.5+:** Expanded community debloat signatures, context menu enhancements, and cloud backup sync.
+- **v0.4:** Dark Material multi-select CheckBox dropdowns across all tabs, multi-category aggregation, dedicated AI Integration suite (Copilot policy/AppX, Recall/Click to Do, Edge/Paint/Notepad AI), and expanded registry backups.
+- **v0.5 (Current):** Exportable & importable custom JSON preset profiles, in-app registry snapshot & 1-click rollback manager, and App Reinstall Helper for Microsoft Store and core Windows utilities.
+- **v0.6+:** Expanded community debloat signatures, context menu enhancements, and cloud backup sync.
 - **v1.0:** Consolidated, production-grade standalone utility.
 
 Each increment introduces modular features, verified bloatware signatures, or safety refinements while maintaining backward compatibility and zero host system damage.
@@ -38,7 +39,7 @@ Each increment introduces modular features, verified bloatware signatures, or sa
 NH Win Debloater/
 ├── Get-NHWinDebloater.ps1      # One-line zero-install quick-launch bootstrapper
 ├── Run.bat                     # Standalone launcher (handles elevation & execution policy)
-├── VERSION.txt                 # Current version tracker (0.4)
+├── VERSION.txt                 # Current version tracker (0.5)
 ├── README.md                   # Project documentation and release workflow
 ├── src/
 │   ├── Core/                   # Modular PowerShell engines and bootstrap logic
