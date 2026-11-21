@@ -273,6 +273,12 @@
 
                     <!-- System Info, Quick Action & Status Flourish -->
                     <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Right">
+                        <Button x:Name="BtnHeaderRestore" Style="{StaticResource ModernBtn}" Height="30" Padding="10,0" Margin="0,0,10,0" ToolTip="Quick Action: Jump directly to Restore &amp; Rollback Manager">
+                            <StackPanel Orientation="Horizontal">
+                                <Path Data="{StaticResource IconShieldLock}" Fill="#38BDF8" Width="12" Height="12" Stretch="Uniform" Margin="0,0,6,0" VerticalAlignment="Center"/>
+                                <TextBlock Text="Restore / Rollback" FontSize="11" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Button>
                         <Button x:Name="BtnHeaderReinstallApps" Style="{StaticResource ModernBtn}" Height="30" Padding="10,0" Margin="0,0,16,0" ToolTip="Quick Action: Reinstall built-in Windows applications and Microsoft Store">
                             <StackPanel Orientation="Horizontal">
                                 <Path Data="{StaticResource IconAppGrid}" Fill="#38BDF8" Width="12" Height="12" Stretch="Uniform" Margin="0,0,6,0" VerticalAlignment="Center"/>
@@ -355,12 +361,20 @@
                         <TextBlock Text="Select Optimization Profile &amp; Scope" FontSize="18" FontWeight="Bold" Foreground="#F8FAFC"/>
                         <TextBlock Text="Choose a baseline preset or import a custom JSON configuration." FontSize="13" Foreground="#94A3B8"/>
                     </StackPanel>
-                    <Button x:Name="BtnImportProfile" Grid.Column="1" Style="{StaticResource ModernBtn}" VerticalAlignment="Center" ToolTip="Import custom preset profile from a .json file">
-                        <StackPanel Orientation="Horizontal">
-                            <Path Data="{StaticResource IconFolder}" Fill="#38BDF8" Width="12" Height="12" Stretch="Uniform" Margin="0,0,6,0" VerticalAlignment="Center"/>
-                            <TextBlock Text="Import Preset (.json)" FontSize="12" FontWeight="SemiBold" VerticalAlignment="Center"/>
-                        </StackPanel>
-                    </Button>
+                    <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                        <Button x:Name="BtnStage1Restore" Style="{StaticResource ModernBtn}" Margin="0,0,10,0" VerticalAlignment="Center" ToolTip="Returning user? Open Restore &amp; Rollback panel immediately">
+                            <StackPanel Orientation="Horizontal">
+                                <Path Data="{StaticResource IconShieldLock}" Fill="#38BDF8" Width="12" Height="12" Stretch="Uniform" Margin="0,0,6,0" VerticalAlignment="Center"/>
+                                <TextBlock Text="Restore / Rollback" FontSize="12" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Button>
+                        <Button x:Name="BtnImportProfile" Style="{StaticResource ModernBtn}" VerticalAlignment="Center" ToolTip="Import custom preset profile from a .json file">
+                            <StackPanel Orientation="Horizontal">
+                                <Path Data="{StaticResource IconFolder}" Fill="#38BDF8" Width="12" Height="12" Stretch="Uniform" Margin="0,0,6,0" VerticalAlignment="Center"/>
+                                <TextBlock Text="Import Preset (.json)" FontSize="12" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Button>
+                    </StackPanel>
                 </Grid>
 
                 <!-- Preset Cards Grid with Interactive Motion Hover -->
@@ -1851,15 +1865,15 @@
                                         <RowDefinition Height="Auto"/>
                                         <RowDefinition Height="Auto"/>
                                         <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
                                     </Grid.RowDefinitions>
                                     <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,10">
                                         <Path Data="{StaticResource IconShieldLock}" Fill="#38BDF8" Width="13" Height="13" Stretch="Uniform" Margin="0,0,8,0" VerticalAlignment="Center"/>
-                                        <TextBlock Text="Registry Snapshots &amp; 1-Click Rollback Manager" FontWeight="Bold" FontSize="13" Foreground="#F8FAFC" VerticalAlignment="Center"/>
+                                        <TextBlock Text="Registry Snapshots &amp; Selective Rollback Manager" FontWeight="Bold" FontSize="13" Foreground="#F8FAFC" VerticalAlignment="Center"/>
                                     </StackPanel>
                                     <Grid Grid.Row="1" Margin="0,0,0,8" ClipToBounds="False">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="*"/>
-                                            <ColumnDefinition Width="Auto"/>
                                             <ColumnDefinition Width="Auto"/>
                                             <ColumnDefinition Width="Auto"/>
                                         </Grid.ColumnDefinitions>
@@ -1887,17 +1901,75 @@
                                         <Button x:Name="BtnRefreshSnapshots" Grid.Column="1" Style="{StaticResource ModernBtn}" Height="32" Padding="8,0" Margin="0,0,8,0" ToolTip="Refresh snapshot list">
                                             <Path Data="{StaticResource IconRefresh}" Fill="#38BDF8" Width="11" Height="11" Stretch="Uniform"/>
                                         </Button>
-                                        <Button x:Name="BtnPreviewSnapshot" Grid.Column="2" Style="{StaticResource ModernBtn}" Height="32" Padding="10,0" Margin="0,0,8,0">
-                                            <TextBlock Text="Preview (Dry-Run)" FontSize="11" VerticalAlignment="Center"/>
+
+                                        <!-- Multi-Select Scope Dropdown -->
+                                        <Grid Grid.Column="2">
+                                            <ToggleButton x:Name="ToggleSelectiveRestore" Style="{StaticResource ModernDropdownToggle}" MinWidth="220">
+                                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                                    <Path Data="{StaticResource IconCheckDouble}" Fill="#38BDF8" Width="11" Height="11" Stretch="Uniform" Margin="0,0,6,0" VerticalAlignment="Center"/>
+                                                    <TextBlock x:Name="TxtToggleSelectiveRestoreText" Text="Scope: All Tweaks &amp; Apps" Margin="0,0,6,0" VerticalAlignment="Center"/>
+                                                    <Path Data="{StaticResource IconChevronDown}" Fill="#38BDF8" Width="10" Height="10" Stretch="Uniform" VerticalAlignment="Center"/>
+                                                </StackPanel>
+                                            </ToggleButton>
+                                            <Popup x:Name="PopupSelectiveRestore" PlacementTarget="{Binding ElementName=ToggleSelectiveRestore}" Placement="Bottom" IsOpen="{Binding IsChecked, ElementName=ToggleSelectiveRestore}" StaysOpen="False" PopupAnimation="Fade" AllowsTransparency="True">
+                                                <Border Background="#131D31" BorderBrush="#2A384F" BorderThickness="1" CornerRadius="6" Padding="12" MinWidth="260">
+                                                    <StackPanel>
+                                                        <TextBlock Text="Select Restore Scope:" FontSize="11" FontWeight="Bold" Foreground="#38BDF8" Margin="0,0,0,8"/>
+                                                        <CheckBox x:Name="ChkRestoreScopeApps" Style="{StaticResource ModernCheckBox}" Content="Reinstall Removed Built-in Apps" IsChecked="True"/>
+                                                        <CheckBox x:Name="ChkRestoreScopePrivacy" Style="{StaticResource ModernCheckBox}" Content="Privacy &amp; Diagnostic Policies" IsChecked="True"/>
+                                                        <CheckBox x:Name="ChkRestoreScopeShell" Style="{StaticResource ModernCheckBox}" Content="Taskbar, Explorer &amp; Context Menu" IsChecked="True"/>
+                                                        <CheckBox x:Name="ChkRestoreScopeGaming" Style="{StaticResource ModernCheckBox}" Content="Gaming &amp; Performance Settings" IsChecked="True"/>
+                                                        <CheckBox x:Name="ChkRestoreScopeAI" Style="{StaticResource ModernCheckBox}" Content="AI Integration (Copilot/Recall/Apps)" IsChecked="True"/>
+                                                        <CheckBox x:Name="ChkRestoreScopeExtras" Style="{StaticResource ModernCheckBox}" Content="System Extras &amp; Hardware Policies" IsChecked="True"/>
+                                                        <Border BorderBrush="#2A384F" BorderThickness="0,1,0,0" Margin="0,8,0,8"/>
+                                                        <Grid>
+                                                            <Grid.ColumnDefinitions>
+                                                                <ColumnDefinition Width="*"/>
+                                                                <ColumnDefinition Width="Auto"/>
+                                                            </Grid.ColumnDefinitions>
+                                                            <StackPanel Grid.Column="0" Orientation="Horizontal">
+                                                                <Button x:Name="BtnRestoreScopeTweaksOnly" Style="{StaticResource ModernBtn}" Content="Tweaks Only" Padding="6,2" Margin="0,0,4,0" ToolTip="Restore all registry tweaks without reinstalling apps"/>
+                                                                <Button x:Name="BtnRestoreScopeAppsOnly" Style="{StaticResource ModernBtn}" Content="Apps Only" Padding="6,2" ToolTip="Only reinstall removed applications"/>
+                                                            </StackPanel>
+                                                            <StackPanel Grid.Column="1" Orientation="Horizontal">
+                                                                <Button x:Name="BtnRestoreScopeAll" Style="{StaticResource ModernBtn}" Content="All" Padding="6,2" Margin="0,0,4,0"/>
+                                                                <Button x:Name="BtnRestoreScopeClear" Style="{StaticResource ModernBtn}" Content="Clear" Padding="6,2"/>
+                                                            </StackPanel>
+                                                        </Grid>
+                                                    </StackPanel>
+                                                </Border>
+                                            </Popup>
+                                        </Grid>
+                                    </Grid>
+
+                                    <!-- Row 2: Actions Row -->
+                                    <Grid Grid.Row="2" Margin="0,0,0,8">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Button x:Name="BtnPreviewSnapshot" Grid.Column="0" Style="{StaticResource ModernBtn}" Height="32" Padding="12,0" Margin="0,0,8,0" ToolTip="Preview registry keys and apps eligible for restore without modifying anything">
+                                            <StackPanel Orientation="Horizontal">
+                                                <Path Data="{StaticResource IconPlay}" Fill="#38BDF8" Width="10" Height="10" Stretch="Uniform" Margin="0,0,6,0" VerticalAlignment="Center"/>
+                                                <TextBlock Text="Preview (Dry-Run)" FontSize="11" VerticalAlignment="Center"/>
+                                            </StackPanel>
                                         </Button>
-                                        <Button x:Name="BtnRestoreSnapshot" Grid.Column="3" Style="{StaticResource PrimaryBtn}" Height="32" Padding="12,0" Background="#0284C7" BorderBrush="#38BDF8">
+                                        <Button x:Name="BtnRestoreSelective" Grid.Column="2" Style="{StaticResource ModernBtn}" Height="32" Padding="14,0" Margin="0,0,8,0" Background="#1E293B" BorderBrush="#0EA5E9" ToolTip="Restore only the categories and components checked in the selective scope">
+                                            <StackPanel Orientation="Horizontal">
+                                                <Path Data="{StaticResource IconCheckDouble}" Fill="#38BDF8" Width="11" Height="11" Stretch="Uniform" Margin="0,0,6,0" VerticalAlignment="Center"/>
+                                                <TextBlock Text="Restore Selected" FontSize="11" FontWeight="Bold" Foreground="#38BDF8" VerticalAlignment="Center"/>
+                                            </StackPanel>
+                                        </Button>
+                                        <Button x:Name="BtnRestoreSnapshot" Grid.Column="3" Style="{StaticResource PrimaryBtn}" Height="32" Padding="14,0" Background="#0284C7" BorderBrush="#38BDF8" ToolTip="Full 1-Click Rollback: Restores all saved registry settings from snapshot">
                                             <StackPanel Orientation="Horizontal">
                                                 <Path Data="{StaticResource IconCheckCircle}" Fill="#FFFFFF" Width="11" Height="11" Stretch="Uniform" Margin="0,0,6,0" VerticalAlignment="Center"/>
-                                                <TextBlock Text="1-Click Restore" FontSize="11" FontWeight="Bold" Foreground="#FFFFFF" VerticalAlignment="Center"/>
+                                                <TextBlock Text="1-Click Full Restore" FontSize="11" FontWeight="Bold" Foreground="#FFFFFF" VerticalAlignment="Center"/>
                                             </StackPanel>
                                         </Button>
                                     </Grid>
-                                    <TextBlock x:Name="TxtRestoreStatus" Grid.Row="2" Text="Select a pre-debloat snapshot to restore previous Windows registry settings." FontSize="11" Foreground="#94A3B8"/>
+                                    <TextBlock x:Name="TxtRestoreStatus" Grid.Row="3" Text="Select a pre-debloat snapshot and choose your restore scope to revert Windows policies or reinstall built-in apps." FontSize="11" Foreground="#94A3B8"/>
                                 </Grid>
                             </Border>
                         </StackPanel>

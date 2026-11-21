@@ -399,7 +399,10 @@ function Restore-RegistrySnapshot {
     [CmdletBinding(SupportsShouldProcess = $true)]
     param(
         [Parameter(Mandatory = $true)]
-        [string]$SnapshotPath
+        [string]$SnapshotPath,
+
+        [Parameter(Mandatory = $false)]
+        [string[]]$Categories
     )
 
     if (-not (Test-Path $SnapshotPath)) {
@@ -410,7 +413,20 @@ function Restore-RegistrySnapshot {
     $data = Get-Content -Path $SnapshotPath -Raw -Encoding UTF8 | ConvertFrom-Json
     $results = [System.Collections.Generic.List[PSCustomObject]]::new()
 
+    $hasCategoryFilter = ($null -ne $Categories -and $Categories.Count -gt 0 -and ($Categories -notcontains "All") -and ($Categories -notcontains "Tweaks"))
+
     foreach ($entry in $data) {
+        $entryCategory = "Tweaks"
+        if ($entry.Path -match "Copilot|WindowsAI|ClickToDo|Paint|Notepad|\\Edge") { $entryCategory = "AI" }
+        elseif ($entry.Path -match "DataCollection|Privacy|AdvertisingInfo|SearchSettings") { $entryCategory = "Privacy" }
+        elseif ($entry.Path -match "Explorer|ContentDeliveryManager") { $entryCategory = "Shell" }
+        elseif ($entry.Path -match "GameDVR|DeliveryOptimization|DiagTrack") { $entryCategory = "Gaming" }
+        elseif ($entry.Path -match "Control Panel|StickyKeys|Power|WindowsUpdate|StorageSense") { $entryCategory = "Extras" }
+
+        if ($hasCategoryFilter -and ($Categories -notcontains $entryCategory)) {
+            continue
+        }
+
         if ($PSCmdlet.ShouldProcess("Registry Key: $($entry.Path), Name: $($entry.Name)", "Restore previous value: $($entry.Value)")) {
             try {
                 if (-not (Test-Path $entry.Path)) {
@@ -418,27 +434,30 @@ function Restore-RegistrySnapshot {
                 }
                 New-ItemProperty -Path $entry.Path -Name $entry.Name -Value $entry.Value -Force -ErrorAction Stop | Out-Null
                 $results.Add([PSCustomObject]@{
-                    Path   = $entry.Path
-                    Name   = $entry.Name
-                    Value  = $entry.Value
-                    Status = "Restored"
+                    Path     = $entry.Path
+                    Name     = $entry.Name
+                    Value    = $entry.Value
+                    Category = $entryCategory
+                    Status   = "Restored"
                 })
             }
             catch {
                 $results.Add([PSCustomObject]@{
-                    Path   = $entry.Path
-                    Name   = $entry.Name
-                    Value  = $entry.Value
-                    Status = "Error: $($_.Exception.Message)"
+                    Path     = $entry.Path
+                    Name     = $entry.Name
+                    Value    = $entry.Value
+                    Category = $entryCategory
+                    Status   = "Error: $($_.Exception.Message)"
                 })
             }
         }
         else {
             $results.Add([PSCustomObject]@{
-                Path   = $entry.Path
-                Name   = $entry.Name
-                Value  = $entry.Value
-                Status = "Preview"
+                Path     = $entry.Path
+                Name     = $entry.Name
+                Value    = $entry.Value
+                Category = $entryCategory
+                Status   = "Preview"
             })
         }
     }
