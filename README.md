@@ -1,199 +1,142 @@
 # NH Win Debloater
 
-**Version:** 1.0.0  
-**Tagline:** Less Bloat. Better Windows.  
-**Creator & Maintainer:** Mohammed Nadeem BM • NH Digital ([nhdigital.shop](https://nhdigital.shop))  
+<p align="center">
+  <a href="https://github.com/nadeemhaaju143/nh-win-debloater/releases/tag/v1.0.0"><img src="https://img.shields.io/badge/version-1.0.0-0EA5E9.svg" alt="Version 1.0.0"></a>
+  <a href="https://microsoft.com/powershell"><img src="https://img.shields.io/badge/PowerShell-5.1%20%7C%207%2B-blue.svg" alt="PowerShell 5.1/7+"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT"></a>
+  <a href="https://github.com/nadeemhaaju143/nh-win-debloater/wiki"><img src="https://img.shields.io/badge/docs-GitHub%20Wiki-10B981.svg" alt="GitHub Wiki"></a>
+  <a href="https://nhdigital.shop"><img src="https://img.shields.io/badge/website-nhdigital.shop-38BDF8.svg" alt="nhdigital.shop"></a>
+  <a href="https://rzp.io/rzp/nh-win-debloater"><img src="https://img.shields.io/badge/Support-One--Time%20Tip-F59E0B.svg" alt="One-Time Tip"></a>
+  <a href="https://rzp.io/rzp/j9CGaaRR"><img src="https://img.shields.io/badge/Sponsor-₹199%2Fmo-EC4899.svg" alt="Monthly Supporter"></a>
+</p>
+
+<p align="center">
+  <strong>Less Bloat. Better Windows. Built for pure performance and privacy.</strong><br>
+  A modern, lightweight, temporary Windows 10 & 11 optimization assistant crafted with native Material Design 3 and Windows 11 Fluent UI.
+</p>
 
 ---
 
 ## Overview
 
-**NH Win Debloater** is a modern, lightweight, temporary Windows utility designed to remove unnecessary pre-installed applications, streamline system telemetry, remove intrusive AI background tracking, and optimize Windows 10 and 11 environments without persistent overhead or background services.
+**NH Win Debloater** is an advanced open-source utility designed, architected, and maintained by **Mohammed Nadeem BM** (**NH Digital**). It safely removes intrusive pre-installed bloatware packages, halts diagnostic telemetry pipelines, suppresses background AI surveillance mechanisms, and unlocks peak gaming and workstation responsiveness—without persistent background services, scheduled tasks, or permanent disk overhead.
+
+- 📖 **Comprehensive Documentation:** Full technical specifications, package lists, and rollback guides are available on the **[GitHub Wiki](https://github.com/nadeemhaaju143/nh-win-debloater/wiki)**.
+- ☕ **Support Open-Source Engineering:** Support ongoing Windows update parity research, cloud test matrices, and development via **[One-Time Support Tip](https://rzp.io/rzp/nh-win-debloater)** or become a **[Monthly Supporter (₹199/mo)](https://rzp.io/rzp/j9CGaaRR)**.
 
 ---
 
-## Semantic Release Flow
+## User Interface & Experience
 
-NH Win Debloater follows a structured release progression reaching its production-grade consolidated milestone at `v1.0.0`:
+Built natively in pure Windows Presentation Foundation (WPF) with 0 third-party binaries or external DLLs, featuring borderless `WindowChrome`, Material Stepper Pill navigation, and custom rounded controls.
 
-```
-v0.1  -->  v0.2  -->  v0.3  -->  v0.4  -->  v0.5  -->  v1.0.0 (Production Release)
-(Init)     (Core)     (UI/WPF)   (AI/Select) (Profiles/Rollback)   (Stable Release)
-```
+### 1. Stage 1: Optimization Profile & Target Scope
+Select from curated presets (Minimal, Recommended, Deep) or import portable JSON configurations.
+![Stage 1: Main Window & Presets](assets/screenshots/main-window.png)
 
-- **v0.1:** Project initialization, folder architecture, standalone launcher, and core PowerShell modules.
-- **v0.2:** Gaming & performance engine, shell customizations, DPI-safe branding, and zero-error preflight gate.
-- **v0.3:** Material Design dark palette, power-user category slices & installed package filter, smooth animations, and advanced system tweaks (Edge background suppression, CEIP task cleaning, hibernation storage reclaim).
-- **v0.4:** Dark Material multi-select CheckBox dropdowns across all tabs, multi-category aggregation, dedicated AI Integration suite (Copilot policy/AppX, Recall/Click to Do, Edge/Paint/Notepad AI), and expanded registry backups.
-- **v0.5:** Exportable & importable custom JSON preset profiles, in-app registry snapshot & 1-click rollback manager, and App Reinstall Helper for Microsoft Store and core Windows utilities.
-- **v1.0.0 (Current):** Consolidated production release featuring Start-Screen Restore shortcut, selective multi-select rollback (`Apps Only`, `Tweaks Only`, and granular categories), branded `nhdigital.shop/debloat` one-line launcher redirect, fluid 220ms WPF motion, and 100% cloud-verified stability.
+### 2. Stage 2: Fine-Grained Tweak Dropdowns & Dedicated AI Suite
+Dark Material multi-select CheckBox dropdowns across all tabs, live selection counters, and safety impact badges.
+![Stage 2: Multi-Select Tweak Dropdowns & AI Suite](assets/screenshots/tweak-dropdowns.png)
 
----
-
-## Project Structure
-
-```
-NH Win Debloater/
-├── run.ps1                     # Lightweight root launcher forwarding to Get-NHWinDebloater.ps1
-├── Get-NHWinDebloater.ps1      # One-line zero-install quick-launch bootstrapper
-├── install.ps1                 # Convenience bootstrap wrapper
-├── Run.bat                     # Standalone launcher (handles elevation & execution policy)
-├── VERSION.txt                 # Current version tracker (1.0.0)
-├── README.md                   # Project documentation and release workflow
-├── src/
-│   ├── Core/                   # Modular PowerShell engines and bootstrap logic
-│   ├── UI/                     # WPF/XAML layouts and interactive controllers
-│   └── Presets/                # Curated debloat profiles (Recommended, Minimal, Deep)
-├── assets/
-│   └── logo/                   # Branding assets and NH Digital logo placeholders
-└── docs/
-    └── THIRD_PARTY_LICENSES.md # Attribution and permissive third-party licensing
-```
+### 3. Stage 5: Summary, Snapshot Rollback & Selective Restore
+Automatic pre-tweak registry snapshot selector and selective restore checkboxes (Apps Only, Tweaks Only, or individual categories).
+![Stage 5: Restore & Rollback Manager](assets/screenshots/restore-manager.png)
 
 ---
 
-## Quick Start
+## Usage
 
-### Method 1: Ultra-Short Branded One-Line Launch (Zero Download Required)
+### Method 1: Ultra-Short Branded One-Line Launcher (Recommended)
 
-Open **PowerShell** (Run as Administrator recommended) and paste:
+Open **Windows PowerShell** (Run as Administrator recommended for system tweaks) and paste:
 
 ```powershell
 irm nhdigital.shop/debloat | iex
 ```
 
-*Direct GitHub fallback (if custom domain is not yet routed):*
+*Short alias:*
+```powershell
+irm nhdigital.shop/w | iex
+```
+
+*Direct GitHub raw fallback:*
 ```powershell
 irm https://raw.githubusercontent.com/nadeemhaaju143/nh-win-debloater/main/Get-NHWinDebloater.ps1 | iex
 ```
 
-*This automatically fetches the latest verified release from GitHub into a temporary sandbox, launches the modern WPF Guided Assistant in STA mode, and cleanly removes all temporary sandbox files upon exit.*
+> [!TIP]
+> **Pre-Tweak Registry Backups:** Before applying any modifications, NH Win Debloater automatically captures a complete registry snapshot saved safely to `%LOCALAPPDATA%\NHWinDebloater\Backups`.
 
-**Power-User CLI & Dry-Run Flags:**
+> [!IMPORTANT]
+> **Selective Restore & 1-Click Rollback:** Returning users can click the **Restore / Rollback** button directly in the top header or on Stage 1 to restore pre-tweak registry states, selectively reinstall apps, or reverse specific tweak categories without re-running optimizations.
+
+#### Power-User CLI & Simulation Flags
 ```powershell
 # Interactive CLI console mode
 & ([ScriptBlock]::Create((irm nhdigital.shop/debloat))) -CLI
-# Fallback:
-& ([ScriptBlock]::Create((irm https://raw.githubusercontent.com/nadeemhaaju143/nh-win-debloater/main/Get-NHWinDebloater.ps1))) -CLI
 
-# Safe WhatIf simulation mode (zero system changes)
+# Safe WhatIf simulation mode (zero system modifications)
 & ([ScriptBlock]::Create((irm nhdigital.shop/debloat))) -DryRun
-# Fallback:
-& ([ScriptBlock]::Create((irm https://raw.githubusercontent.com/nadeemhaaju143/nh-win-debloater/main/Get-NHWinDebloater.ps1))) -DryRun
+
+# Automated Silent deployment mode
+& ([ScriptBlock]::Create((irm nhdigital.shop/debloat))) -Silent
 ```
 
 ### Method 2: Manual Download & Offline Run
 
-1. Download or clone this repository to your local machine.
-2. Run via PowerShell wrapper:
+For air-gapped systems or manual offline execution:
+1. Download or clone this repository to your target machine.
+2. Launch via PowerShell:
    ```powershell
    .\run.ps1
    # Or with parameters:
    .\run.ps1 -CLI
    .\run.ps1 -DryRun
    ```
-3. Or right-click `Run.bat` and select **Run as Administrator** (or double-click; `Run.bat` will request elevation automatically).
-4. The bootstrapper initializes the execution environment, verifies Windows build compatibility, and loads the active configuration.
-5. Follow the guided prompts to configure and review actions before applying changes.
+3. Or double-click `Run.bat`, which automatically requests elevation and initializes the environment.
 
 ---
 
-### Live Branded One-Line Redirect: `nhdigital.shop/debloat`
+## Features Overview
 
-The branded one-liner `irm nhdigital.shop/debloat | iex` is now officially active and hosted at **[nhdigital.shop/debloat](https://nhdigital.shop/debloat)** via Edge 302 routing pointing directly to `Get-NHWinDebloater.ps1`.
+For complete breakdowns, key paths, and policy documentation, refer to the **[GitHub Wiki](https://github.com/nadeemhaaju143/nh-win-debloater/wiki)**:
 
-For self-hosting or mirrors on your own domain or edge worker, use either snippet below:
+- **[Privacy & Telemetry Protection](https://github.com/nadeemhaaju143/nh-win-debloater/wiki/Features#1-privacy--telemetry-protection):** Suppresses Windows diagnostic telemetry (`AllowTelemetry = 0`), advertising ID profiling, CEIP scheduled tasks, and handwriting/typing behavioral trackers.
+- **[Dedicated AI Integration Suite](https://github.com/nadeemhaaju143/nh-win-debloater/wiki/Features#2-dedicated-ai-integration-suite):** Disables Windows Copilot (`Win + C`), Windows Recall local snapshot indexing, Click To Do AI context flyouts, Paint AI generation, Notepad AI rewrite, and cloud AI telemetry.
+- **[Shell & Explorer Customization](https://github.com/nadeemhaaju143/nh-win-debloater/wiki/Features#3-shell--taskbar-customization):** Classic Windows 10 right-click context menu, Taskbar left/center alignment, Bing search highlight suppression, Gallery namespace removal, Launch Explorer to "This PC", and compact folder spacing.
+- **[Gaming & Hardware Performance](https://github.com/nadeemhaaju143/nh-win-debloater/wiki/Features#4-gaming--hardware-performance):** Disables Game DVR background recording, disables Windows Power Throttling, enforces 1:1 linear mouse acceleration curve, eliminates Sticky Keys popups, and reclaims SSD storage from `hiberfil.sys`.
+- **[System Extras & Promos](https://github.com/nadeemhaaju143/nh-win-debloater/wiki/Features#5-system-extras--commercial-promos):** Blocks automatic consumer application installs, lock screen tips/nudges, and Edge background pre-launching.
+- **[App Removal & Protected Core Packages](https://github.com/nadeemhaaju143/nh-win-debloater/wiki/App-Removal):** Multi-select removal across 80+ bloatware packages while strictly safeguarding Microsoft Store, Windows Security (`Microsoft.SecHealthUI`), and WinGet. Includes 1-click built-in app reinstaller.
+- **[Reverting Changes & Safety Recovery](https://github.com/nadeemhaaju143/nh-win-debloater/wiki/Reverting-Changes):** Start-Screen Restore shortcut, selective multi-select rollback, 1-click full `.reg` restore, and native Windows System Restore integration.
 
-#### Option A: Cloudflare Worker (4 Lines)
-```javascript
-export default {
-  fetch(req) {
-    if (new URL(req.url).pathname.replace(/\/$/, '') === "/debloat") return Response.redirect("https://raw.githubusercontent.com/nadeemhaaju143/nh-win-debloater/main/Get-NHWinDebloater.ps1", 302);
-    return fetch(req);
-  }
-};
-```
-
-#### Option B: Next.js (`next.config.ts`)
-```typescript
-async redirects() {
-  return [
-    {
-      source: '/debloat',
-      destination: 'https://raw.githubusercontent.com/nadeemhaaju143/nh-win-debloater/main/Get-NHWinDebloater.ps1',
-      permanent: false,
-    },
-  ];
-}
-```
+---
 
 ## Safety & Invariants
 
-- **Zero Persistent Overhead:** Does not install permanent services, scheduled tasks, or startup entries.
-- **Explicit Authorization:** No modifications occur without explicit user confirmation.
-- **System Safeguards:** Core system components (Windows Store, Windows Security, Essential Frameworks) are protected against removal.
-- **Pre-Tweak Registry Snapshots:** Automatic `.reg` backup snapshots generated before applying modifications with one-click folder inspection.
-- **Automatic Sandbox & Session Cleanup:** Downloaded release archives and extracted temporary files in `%TEMP%\NHWinDebloater*` are automatically purged upon GUI or CLI exit, while user backups in `%LOCALAPPDATA%\NHWinDebloater\Backups` and session logs in `%LOCALAPPDATA%\NHWinDebloater\Logs` are strictly preserved.
+- **Zero Persistent Overhead:** Does not install background daemons, drivers, polling services, or startup items.
+- **Automatic Sandbox Cleanup:** Temporary bootstrap files in `%TEMP%\NHWinDebloater_*` are purged immediately on exit. User backups and logs in `%LOCALAPPDATA%\NHWinDebloater\` are strictly preserved.
+- **Zero Third-Party Binaries:** Contains 0 compiled `.exe` or `.dll` files. 100% human-readable PowerShell and XAML.
+- **DPI-Safe & Fluent Visuals:** Native vector SVG path icons, Segoe UI Variable typography, and smooth 150ms–200ms cubic transitions.
 
 ---
 
-## Windows SmartScreen, Defender & Execution Policy Transparency
+## Author & Media / Press Contact
 
-When downloading scripts or tools directly from GitHub, Windows may display a **Windows SmartScreen** prompt (*"Windows protected your PC"*) or PowerShell may restrict script execution (`ExecutionPolicy`). Here is why this happens and how to handle it safely:
-
-### 1. Why Does SmartScreen or Defender Prompt?
-- **Mark-of-the-Web (MOTW):** Files downloaded via browsers or web streams receive an alternate data stream identifier (`Zone.Identifier`) marking them as coming from the internet. Windows displays SmartScreen prompts for any unsigned script or executable that has not yet accumulated millions of global download reputation signals.
-- **100% Open Source & Zero Binaries:** NH Win Debloater contains **zero compiled binaries (.exe/.dll)**, **zero obfuscated code**, and **zero hidden telemetry**. Every line of PowerShell (`.ps1`, `.psm1`) and XAML is open, readable, and auditable directly in this repository.
-
-### 2. How to Run Unrestricted:
-- **SmartScreen Prompt:** Click **More info** -> **Run anyway**.
-- **PowerShell Execution Policy:** To permit local script execution in your PowerShell session:
-  ```powershell
-  Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
-  ```
-- **Unblocking Downloaded Files (GUI / CLI):**
-  - *GUI:* Right-click the downloaded `.zip` or folder -> **Properties** -> Check **Unblock** -> Click **Apply**.
-  - *PowerShell:*
-    ```powershell
-    Get-ChildItem -Path "C:\Path\To\NH Win Debloater" -Recurse | Unblock-File
-    ```
-- **Windows Defender Local Folder Exclusion (Optional for Developers):**
-  If you regularly run debloat or administrative scripts, you can optionally exclude your development directory:
-  ```powershell
-  # Run in elevated Administrator PowerShell if desired:
-  Add-MpPreference -ExclusionPath "C:\Users\<YourUser>\Projects\NH Win Debloater"
-  ```
-
----
-
-## Author & Maintainer
-
-**NH Win Debloater** is conceived, created, and actively maintained by **Mohammed Nadeem BM** under **NH Digital**.
+**NH Win Debloater** is developed, maintained, and published by **Mohammed Nadeem BM** (**NH Digital**).
 
 - **Creator & Lead Developer:** **Mohammed Nadeem BM**
-- **Brand / Studio:** **NH Digital** ([https://nhdigital.shop](https://nhdigital.shop))
+- **Studio / Brand:** **NH Digital** ([https://nhdigital.shop](https://nhdigital.shop))
 - **GitHub:** [@nadeemhaaju143](https://github.com/nadeemhaaju143)
-- **Official Live Release & Launcher:** [https://nhdigital.shop/debloat](https://nhdigital.shop/debloat)
 - **Repository:** [https://github.com/nadeemhaaju143/nh-win-debloater](https://github.com/nadeemhaaju143/nh-win-debloater)
+- **Official Launcher Route:** [https://nhdigital.shop/debloat](https://nhdigital.shop/debloat)
 - **Copyright:** Copyright (c) 2026 Mohammed Nadeem BM (NH Digital)
 
 ### Editorial & Press Verification
-Tech journalists, reviewers, and publications (such as Windows Latest, Neowin, gHacks, BleepingComputer, XDA Developers) evaluating or covering **NH Win Debloater** can cite and attribute **Mohammed Nadeem BM** (`NH Digital`) as the creator and lead developer. Official releases, changelogs, and source code are cryptographically verified and publicly hosted on GitHub at `nadeemhaaju143/nh-win-debloater`.
+Technology journalists, reviewers, and publications (including Windows Latest, Neowin, gHacks, BleepingComputer, XDA Developers) evaluating **NH Win Debloater** can cite and attribute **Mohammed Nadeem BM** (`NH Digital`) as the creator and lead developer. All releases and source trees are cryptographically tagged and publicly hosted at `nadeemhaaju143/nh-win-debloater`.
 
 ---
 
-## About NH Digital
+## License
 
-> **Crafted with care by NH Digital**  
-> We build high-performance utilities, digital templates, and automation tools designed to make your workflow faster and cleaner.  
-> 
-> Explore our full catalog of software tools, presets, and digital resources at:  
-> **[nhdigital.shop](https://nhdigital.shop)**
-
----
-
-## License & Attribution
-
-- Built and maintained by **Mohammed Nadeem BM** (**NH Digital**).
-- Released under the MIT License (`Copyright (c) 2026 Mohammed Nadeem BM (NH Digital)`).
-- Third-party registry discoveries and package definitions are credited under the MIT License in [THIRD_PARTY_LICENSES.md](docs/THIRD_PARTY_LICENSES.md).
+Released under the permissive [MIT License](LICENSE).  
+Copyright (c) 2026 Mohammed Nadeem BM (NH Digital).

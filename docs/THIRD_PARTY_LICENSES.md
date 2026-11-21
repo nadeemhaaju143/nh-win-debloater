@@ -1,17 +1,7 @@
-# Third-Party Notices and Licenses
+# Third-Party Notices and Open-Source Acknowledgements
 
-NH Win Debloater utilizes research, registry definitions, and package signatures adapted from open-source projects under permissive licensing.
+NH Win Debloater utilizes standard Windows registry keys, community package definitions, and PowerShell system management APIs documented across public technical resources under permissive open-source terms.
 
----
-
-## Win11Debloat
-
-- **Project:** Win11Debloat
-- **Author:** Raphire
-- **Repository:** https://github.com/Raphire/Win11Debloat
-- **License:** MIT License
-
-### Attribution & Acknowledgement
-Certain registry tweaks, system customization keys, and bloatware package identifications used in NH Win Debloater were studied and adapted from the open-source Win11Debloat utility under the terms of the MIT License.
+All custom XAML layouts, Material Design controllers, rollback engines, zero-install bootstrapper, and selective restore architectures are original works created and maintained by **Mohammed Nadeem BM** (**NH Digital**).
 
 The software is provided "as is", without warranty of any kind, express or implied. In no event shall the authors or copyright holders be liable for any claim, damages, or other liability.
