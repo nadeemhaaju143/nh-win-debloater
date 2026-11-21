@@ -406,6 +406,17 @@ Describe "Entrypoint Bootstrapper & Path Resolution" {
         $sb = [ScriptBlock]::Create($content)
         $sb | Should -Not -BeNullOrEmpty
     }
+
+    It "Verifies Get-NHWinDebloater.ps1, run.ps1, and install.ps1 have NO UTF-8 BOM" {
+        $entrypointFiles = @("Get-NHWinDebloater.ps1", "run.ps1", "install.ps1")
+        foreach ($file in $entrypointFiles) {
+            $filePath = Join-Path $projectRoot $file
+            (Test-Path $filePath) | Should -BeTrue
+            $bytes = [System.IO.File]::ReadAllBytes($filePath)
+            $hasBom = ($bytes.Length -ge 3 -and $bytes[0] -eq 0xEF -and $bytes[1] -eq 0xBB -and $bytes[2] -eq 0xBF)
+            $hasBom | Should -BeFalse -Because "$file must be UTF-8 without BOM so Invoke-Expression and Invoke-RestMethod do not parse the leading comment block as commands"
+        }
+    }
 }
 
 Describe "UI Motion & Vector Icon Architecture" {
