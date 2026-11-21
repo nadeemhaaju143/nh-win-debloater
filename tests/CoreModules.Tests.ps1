@@ -6,6 +6,8 @@ BeforeAll {
     $corePath = Join-Path $projectRoot "src\Core"
     $presetsPath = Join-Path $projectRoot "src\Presets"
 
+    Add-Type -AssemblyName PresentationFramework, PresentationCore, WindowsBase
+
     Import-Module (Join-Path $corePath "AppManager.psm1") -Force
     Import-Module (Join-Path $corePath "PrivacySearch.psm1") -Force
     Import-Module (Join-Path $corePath "ShellCustomization.psm1") -Force
@@ -198,6 +200,25 @@ Describe "SystemTweaks Module" {
         $res.Count | Should -BeGreaterThan 0
         $res[0].Status | Should -Be "Preview"
     }
+
+    It "Evaluates LOW / SAFE impact when only safe tweaks are selected" {
+        $impact = Get-DebloatSafetyImpact -AppCount 84 -TweakFlags @{ Telemetry = $true; ClassicContextMenu = $true; GameDVR = $true }
+        $impact.Rating | Should -Be "LOW / SAFE"
+        $impact.Level | Should -Be "Safe"
+        $impact.TotalCount | Should -Be 87
+    }
+
+    It "Evaluates MODERATE / CAUTION impact when caution tweaks are selected" {
+        $impact = Get-DebloatSafetyImpact -AppCount 84 -TweakFlags @{ Telemetry = $true; Hibernation = $true }
+        $impact.Rating | Should -Be "MODERATE / CAUTION"
+        $impact.Level | Should -Be "Moderate"
+    }
+
+    It "Evaluates HIGH IMPACT when system virtualization tweaks are selected" {
+        $impact = Get-DebloatSafetyImpact -AppCount 84 -TweakFlags @{ Telemetry = $true; WindowsSandbox = $true }
+        $impact.Rating | Should -Be "HIGH IMPACT"
+        $impact.Level | Should -Be "High"
+    }
 }
 
 Describe "ExecutionLog Module" {
@@ -269,5 +290,54 @@ Describe "Entrypoint Bootstrapper & Path Resolution" {
         (Test-Path $installPath) | Should -BeTrue
         $content = Get-Content $installPath -Raw
         $content | Should -Match "Get-NHWinDebloater\.ps1"
+    }
+}
+
+Describe "UI Motion & Vector Icon Architecture" {
+    It "Loads MainWindow.xaml with all crisp vector icon geometries" {
+        $xamlPath = Join-Path $projectRoot "src\UI\MainWindow.xaml"
+        (Test-Path $xamlPath) | Should -BeTrue
+        $xamlContent = Get-Content $xamlPath -Raw
+        $reader = [System.Xml.XmlReader]::Create([System.IO.StringReader]::new($xamlContent))
+        $win = $null
+        try {
+            $win = [System.Windows.Markup.XamlReader]::Load($reader)
+        } finally {
+            $reader.Close()
+        }
+        $win | Should -Not -BeNullOrEmpty
+        $win.Resources.Contains("IconAppGrid") | Should -BeTrue
+        $win.Resources.Contains("IconShieldLock") | Should -BeTrue
+        $win.Resources.Contains("IconDesktopExplorer") | Should -BeTrue
+        $win.Resources.Contains("IconGamepadGaming") | Should -BeTrue
+        $win.Resources.Contains("IconSettingsExtras") | Should -BeTrue
+        $win.Resources.Contains("IconSparklesAI") | Should -BeTrue
+        $win.Resources.Contains("IconLayersFeatures") | Should -BeTrue
+        $win.Resources.Contains("IconCheckCircle") | Should -BeTrue
+        $win.Resources.Contains("IconAlertTriangle") | Should -BeTrue
+        $win.Resources.Contains("IconAlertOctagon") | Should -BeTrue
+    }
+
+    It "Verifies presence of dynamic counter and live impact badge elements in XAML" {
+        $xamlPath = Join-Path $projectRoot "src\UI\MainWindow.xaml"
+        $xamlContent = Get-Content $xamlPath -Raw
+        $reader = [System.Xml.XmlReader]::Create([System.IO.StringReader]::new($xamlContent))
+        $win = $null
+        try {
+            $win = [System.Windows.Markup.XamlReader]::Load($reader)
+        } finally {
+            $reader.Close()
+        }
+        $win.FindName("TxtGlobalSelectionSummary") | Should -Not -BeNullOrEmpty
+        $win.FindName("BadgeLiveImpact") | Should -Not -BeNullOrEmpty
+        $win.FindName("TxtStage3Summary") | Should -Not -BeNullOrEmpty
+        $win.FindName("BadgeStage3Impact") | Should -Not -BeNullOrEmpty
+        $win.FindName("TxtTabAppsCount") | Should -Not -BeNullOrEmpty
+        $win.FindName("TxtTabPrivacyCount") | Should -Not -BeNullOrEmpty
+        $win.FindName("TxtTabShellCount") | Should -Not -BeNullOrEmpty
+        $win.FindName("TxtTabGamingCount") | Should -Not -BeNullOrEmpty
+        $win.FindName("TxtTabExtrasCount") | Should -Not -BeNullOrEmpty
+        $win.FindName("TxtTabAICount") | Should -Not -BeNullOrEmpty
+        $win.FindName("TxtTabFeaturesCount") | Should -Not -BeNullOrEmpty
     }
 }

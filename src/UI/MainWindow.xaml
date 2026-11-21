@@ -24,6 +24,57 @@
         <SolidColorBrush x:Key="TextSecondary" Color="#94A3B8"/>
         <SolidColorBrush x:Key="TextTertiary" Color="#64748B"/>
 
+        <!-- Crisp SVG Vector Icon Geometries -->
+        <Geometry x:Key="IconAppGrid">M4,4H10V10H4V4M14,4H20V10H14V4M4,14H10V20H4V14M14,14H20V20H14V14Z</Geometry>
+        <Geometry x:Key="IconShieldLock">M12,1L3,5V11C3,16.55 6.84,21.74 12,23C17.16,21.74 21,16.55 21,11V5L12,1Z</Geometry>
+        <Geometry x:Key="IconDesktopExplorer">M19,3H5C3.89,3 3,3.89 3,5V19C3,20.1 3.9,21 5,21H19C20.1,21 21,20.1 21,19V5C21,3.89 20.1,3 19,3M19,19H5V7H19V19Z</Geometry>
+        <Geometry x:Key="IconGamepadGaming">M7,6H17L12,1L7,6M15,7.5V2H9V7.5H3.5V13.5H9V19H15V13.5H20.5V7.5H15Z</Geometry>
+        <Geometry x:Key="IconSettingsExtras">M12,15.5A3.5,3.5 0 0,1 8.5,12A3.5,3.5 0 0,1 12,8.5A3.5,3.5 0 0,1 15.5,12A3.5,3.5 0 0,1 12,15.5M19.43,12.97C19.47,12.65 19.5,12.33 19.5,12C19.5,11.67 19.47,11.34 19.43,11L21.54,9.37C21.73,9.22 21.78,8.95 21.66,8.73L19.66,5.27C19.54,5.05 19.27,4.97 19.05,5.05L16.56,6.05C16.04,5.65 15.48,5.32 14.87,5.07L14.49,2.42C14.46,2.18 14.25,2 14,2H10C9.75,2 9.54,2.18 9.51,2.42L9.13,5.07C8.52,5.32 7.96,5.66 7.44,6.05L4.95,5.05C4.73,4.96 4.46,5.05 4.34,5.27L2.34,8.73C2.21,8.95 2.27,9.22 2.46,9.37L4.57,11C4.53,11.34 4.5,11.67 4.5,12C4.5,12.33 4.53,12.65 4.57,12.97L2.46,14.63C2.27,14.78 2.21,15.05 2.34,15.27L4.34,18.73C4.46,18.95 4.73,19.03 4.95,18.95L7.44,17.94C7.96,18.34 8.52,18.68 9.13,18.93L9.51,21.58C9.54,21.82 9.75,22 10,22H14C14.25,22 14.46,21.82 14.49,21.58L14.87,18.93C15.48,18.68 16.04,18.34 16.56,17.94L19.05,18.95C19.27,19.03 19.54,18.95 19.66,18.73L21.66,15.27C21.78,15.05 21.73,14.78 21.54,14.63L19.43,12.97Z</Geometry>
+        <Geometry x:Key="IconSparklesAI">M7.5,5.6L5,7L6.4,4.5L5,2L7.5,3.4L10,2L8.6,4.5L10,7L7.5,5.6M19.5,15.4L22,14L20.6,16.5L22,19L19.5,17.6L17,19L18.4,16.5L17,14L19.5,15.4M22,2L20.6,4.5L22,7L19.5,5.6L17,7L18.4,4.5L17,2L19.5,3.4L22,2M13.34,12.78L15.78,10.34L13.66,8.22L11.22,10.66L13.34,12.78M14.37,7.29L16.71,9.63C17.1,10 17.1,10.65 16.71,11.04L11.04,16.71C10.65,17.1 10,17.1 9.63,16.71L7.29,14.37C6.9,14 6.9,13.35 7.29,12.96L12.96,7.29C13.35,6.9 14,6.9 14.37,7.29Z</Geometry>
+        <Geometry x:Key="IconLayersFeatures">M12,2L1,7L12,12L23,7L12,2M1,12L12,17L23,12L23,14L12,19L1,14L1,12M1,17L12,22L23,17L23,19L12,24L1,19L1,17Z</Geometry>
+        <Geometry x:Key="IconCheckCircle">M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22A10,10 0 0,1 2,12A10,10 0 0,1 12,2M10,17L18,9L16.59,7.58L10,14.17L7.41,11.59L6,13L10,17Z</Geometry>
+        <Geometry x:Key="IconAlertTriangle">M12,2L1,21H23L12,2M12,6L19.53,19H4.47L12,6M11,10V14H13V10H11M11,16V18H13V16H11Z</Geometry>
+        <Geometry x:Key="IconAlertOctagon">M8.27,3L3,8.27V15.73L8.27,21H15.73L21,15.73V8.27L15.73,3M8.41,5H15.59L19,8.41V15.59L15.59,19H8.41L5,15.59V8.41M11,7H13V13H11M11,15H13V17H11Z</Geometry>
+        <Geometry x:Key="IconChevronDown">M7,10L12,15L17,10H7Z</Geometry>
+        <Geometry x:Key="IconCheckDouble">M0.5,8L3,10.5L9.5,4L8,2.5L3,7.5L2,6.5L0.5,8M5.5,8L8,10.5L14.5,4L13,2.5L8,7.5L7,6.5L5.5,8Z</Geometry>
+        <Geometry x:Key="IconClose">M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z</Geometry>
+        <Geometry x:Key="IconPlay">M8,5.14V19.14L19,12.14L8,5.14Z</Geometry>
+        <Geometry x:Key="IconArrowBack">M15.41,7.41L14,6L8,12L14,18L15.41,16.59L10.83,12L15.41,7.41Z</Geometry>
+        <Geometry x:Key="IconArrowForward">M10,6L8.59,7.41L13.17,12L8.59,16.59L10,18L16,12L10,6Z</Geometry>
+        <Geometry x:Key="IconLightning">M11,15H6L13,1V9H18L11,23V15Z</Geometry>
+        <Geometry x:Key="IconRefresh">M17.65,6.35C16.2,4.9 14.21,4 12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20C15.73,20 18.84,17.45 19.73,14H17.65C16.83,16.33 14.61,18 12,18A6,6 0 0,1 6,12A6,6 0 0,1 12,6C13.66,6 15.14,6.69 16.22,7.78L13,11H20V4L17.65,6.35Z</Geometry>
+        <Geometry x:Key="IconFolder">M10,4H4C2.89,4 2,4.89 2,6V18A2,2 0 0,0 4,20H20A2,2 0 0,0 22,18V8C22,6.89 21.1,6 20,6H12L10,4Z</Geometry>
+        <Geometry x:Key="IconFileText">M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z</Geometry>
+
+        <!-- Interactive Preset Card Styles with Hover Transitions -->
+        <Style x:Key="PresetCardBorder" TargetType="Border">
+            <Setter Property="Background" Value="#131D31"/>
+            <Setter Property="CornerRadius" Value="8"/>
+            <Setter Property="BorderBrush" Value="#2A384F"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="BorderBrush" Value="#0EA5E9"/>
+                    <Setter Property="Background" Value="#17233B"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="PresetCardRecommendedBorder" TargetType="Border">
+            <Setter Property="Background" Value="#131D31"/>
+            <Setter Property="CornerRadius" Value="8"/>
+            <Setter Property="BorderBrush" Value="#0EA5E9"/>
+            <Setter Property="BorderThickness" Value="2"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="BorderBrush" Value="#38BDF8"/>
+                    <Setter Property="Background" Value="#17233B"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
         <!-- Button Style -->
         <Style x:Key="ModernBtn" TargetType="Button">
             <Setter Property="Background" Value="#1E293B"/>
@@ -145,6 +196,35 @@
                 </Setter.Value>
             </Setter>
         </Style>
+
+        <!-- Crisp TabItem Styling with Dark Material Active Underline -->
+        <Style TargetType="TabItem">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="#94A3B8"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Padding" Value="14,8"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TabItem">
+                        <Border x:Name="tabBorder" Background="{TemplateBinding Background}" BorderBrush="Transparent" BorderThickness="0,0,0,2" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter ContentSource="Header" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Foreground" Value="#F8FAFC"/>
+                                <Setter TargetName="tabBorder" Property="Background" Value="#1E293B"/>
+                            </Trigger>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter Property="Foreground" Value="#38BDF8"/>
+                                <Setter TargetName="tabBorder" Property="Background" Value="#131D31"/>
+                                <Setter TargetName="tabBorder" Property="BorderBrush" Value="#0EA5E9"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
     </Window.Resources>
 
     <Grid>
@@ -239,7 +319,7 @@
                     <TextBlock Text="Choose a baseline debloat preset to get started. You can inspect and fine-tune every package in the next step." FontSize="13" Foreground="#94A3B8"/>
                 </StackPanel>
 
-                <!-- Preset Cards Grid -->
+                <!-- Preset Cards Grid with Interactive Motion Hover -->
                 <Grid Grid.Row="1">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
@@ -248,7 +328,7 @@
                     </Grid.ColumnDefinitions>
 
                     <!-- Minimal Card -->
-                    <Border Grid.Column="0" Background="#131D31" CornerRadius="8" BorderBrush="#2A384F" BorderThickness="1" Margin="0,0,10,0" Padding="18">
+                    <Border x:Name="CardPresetMinimal" Grid.Column="0" Style="{StaticResource PresetCardBorder}" Margin="0,0,10,0" Padding="18">
                         <Grid>
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto"/>
@@ -260,13 +340,16 @@
                             <TextBlock Grid.Row="1" Text="Lightweight &amp; Gentle" FontSize="12" Foreground="#38BDF8" Margin="0,6,0,12"/>
                             <TextBlock Grid.Row="2" Text="Removes sponsored apps (TikTok, Spotify, Disney+) while keeping all Windows utilities, Xbox, and productivity apps untouched." TextWrapping="Wrap" FontSize="13" Foreground="#CBD5E1"/>
                             <Border Grid.Row="3" Background="#0A0E17" CornerRadius="4" Padding="10,6" Margin="0,10,0,0">
-                                <TextBlock Text="✓ Best for enterprise &amp; cautious users" FontSize="11" Foreground="#10B981"/>
+                                <StackPanel Orientation="Horizontal">
+                                    <Path Data="{StaticResource IconCheckCircle}" Fill="#10B981" Width="11" Height="11" Stretch="Uniform" Margin="0,0,6,0" VerticalAlignment="Center"/>
+                                    <TextBlock Text="Best for enterprise &amp; cautious users" FontSize="11" Foreground="#10B981" VerticalAlignment="Center"/>
+                                </StackPanel>
                             </Border>
                         </Grid>
                     </Border>
 
                     <!-- Default / Recommended Card -->
-                    <Border Grid.Column="1" Background="#131D31" CornerRadius="8" BorderBrush="#0EA5E9" BorderThickness="2" Margin="5,0,5,0" Padding="18">
+                    <Border x:Name="CardPresetDefault" Grid.Column="1" Style="{StaticResource PresetCardRecommendedBorder}" Margin="5,0,5,0" Padding="18">
                         <Grid>
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto"/>
@@ -278,13 +361,16 @@
                             <TextBlock Grid.Row="1" Text="Balanced Performance &amp; Privacy" FontSize="12" Foreground="#10B981" Margin="0,6,0,12"/>
                             <TextBlock Grid.Row="2" Text="Removes 80+ preinstalled bloatware packages, telemetry diagnostics, targeted ads, and web search suggestions. Protects all system-critical apps." TextWrapping="Wrap" FontSize="13" Foreground="#CBD5E1"/>
                             <Border Grid.Row="3" Background="#0A0E17" CornerRadius="4" Padding="10,6" Margin="0,10,0,0">
-                                <TextBlock Text="★ Recommended for most PCs &amp; gamers" FontSize="11" Foreground="#38BDF8"/>
+                                <StackPanel Orientation="Horizontal">
+                                    <Path Data="{StaticResource IconLightning}" Fill="#38BDF8" Width="11" Height="11" Stretch="Uniform" Margin="0,0,6,0" VerticalAlignment="Center"/>
+                                    <TextBlock Text="Recommended for most PCs &amp; gamers" FontSize="11" Foreground="#38BDF8" VerticalAlignment="Center"/>
+                                </StackPanel>
                             </Border>
                         </Grid>
                     </Border>
 
                     <!-- Deep Debloat Card -->
-                    <Border Grid.Column="2" Background="#131D31" CornerRadius="8" BorderBrush="#2A384F" BorderThickness="1" Margin="10,0,0,0" Padding="18">
+                    <Border x:Name="CardPresetDeep" Grid.Column="2" Style="{StaticResource PresetCardBorder}" Margin="10,0,0,0" Padding="18">
                         <Grid>
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto"/>
@@ -296,7 +382,10 @@
                             <TextBlock Grid.Row="1" Text="Maximum Performance" FontSize="12" Foreground="#EAB308" Margin="0,6,0,12"/>
                             <TextBlock Grid.Row="2" Text="Thorough debloating including optional Microsoft productivity utilities (OneNote, Sticky Notes, Voice Recorder). Fully customizable in the next step." TextWrapping="Wrap" FontSize="13" Foreground="#CBD5E1"/>
                             <Border Grid.Row="3" Background="#0A0E17" CornerRadius="4" Padding="10,6" Margin="0,10,0,0">
-                                <TextBlock Text="⚠ Recommended for power users" FontSize="11" Foreground="#F59E0B"/>
+                                <StackPanel Orientation="Horizontal">
+                                    <Path Data="{StaticResource IconAlertTriangle}" Fill="#F59E0B" Width="11" Height="11" Stretch="Uniform" Margin="0,0,6,0" VerticalAlignment="Center"/>
+                                    <TextBlock Text="Recommended for power users" FontSize="11" Foreground="#F59E0B" VerticalAlignment="Center"/>
+                                </StackPanel>
                             </Border>
                         </Grid>
                     </Border>
@@ -326,6 +415,7 @@
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
 
+                <!-- Stage 2 Header with Live Selection Summary & Live Safety Impact Badge -->
                 <Grid Grid.Row="0" Margin="0,0,0,12">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
@@ -335,12 +425,42 @@
                         <TextBlock Text="Refine Packages &amp; System Tweaks" FontSize="18" FontWeight="Bold" Foreground="#F8FAFC"/>
                         <TextBlock Text="Batch-select multi-category packages and configure system optimization tweaks." FontSize="13" Foreground="#94A3B8"/>
                     </StackPanel>
-                    <TextBox x:Name="TxtAppFilter" Grid.Column="1" Width="220" Height="30" VerticalContentAlignment="Center" Padding="8,0" Background="#1E293B" Foreground="#F8FAFC" BorderBrush="#334155"/>
+
+                    <!-- Live Badges & Filter Box -->
+                    <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                        <!-- Live Selection Counter Pill -->
+                        <Border x:Name="BadgeGlobalSelection" Background="#1E293B" BorderBrush="#334155" BorderThickness="1" CornerRadius="6" Padding="10,5" Margin="0,0,8,0">
+                            <StackPanel Orientation="Horizontal">
+                                <Path x:Name="IconGlobalSelection" Data="{StaticResource IconAppGrid}" Fill="#38BDF8" Width="12" Height="12" Stretch="Uniform" Margin="0,0,6,0" VerticalAlignment="Center"/>
+                                <TextBlock x:Name="TxtGlobalSelectionSummary" Text="84 Apps • 18 Tweaks selected" FontSize="11" FontWeight="SemiBold" Foreground="#F8FAFC" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- Live Safety / Impact Badge -->
+                        <Border x:Name="BadgeLiveImpact" Background="#064E3B" BorderBrush="#059669" BorderThickness="1" CornerRadius="6" Padding="10,5" Margin="0,0,12,0">
+                            <StackPanel Orientation="Horizontal">
+                                <Path x:Name="IconLiveImpact" Data="{StaticResource IconCheckCircle}" Fill="#34D399" Width="12" Height="12" Stretch="Uniform" Margin="0,0,6,0" VerticalAlignment="Center"/>
+                                <TextBlock x:Name="TxtLiveImpact" Text="LOW / SAFE" FontSize="11" FontWeight="Bold" Foreground="#34D399" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- App Search Filter -->
+                        <TextBox x:Name="TxtAppFilter" Width="180" Height="30" VerticalContentAlignment="Center" Padding="8,0" Background="#1E293B" Foreground="#F8FAFC" BorderBrush="#334155"/>
+                    </StackPanel>
                 </Grid>
 
                 <TabControl Grid.Row="1" Background="#131D31" BorderBrush="#2A384F" Foreground="#F8FAFC">
                     <!-- Tab 1: Bloatware Apps -->
-                    <TabItem Header="Bloatware Applications" FontWeight="SemiBold">
+                    <TabItem FontWeight="SemiBold">
+                        <TabItem.Header>
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                <Path Data="{StaticResource IconAppGrid}" Fill="#38BDF8" Width="14" Height="14" Stretch="Uniform" Margin="0,0,6,0" VerticalAlignment="Center"/>
+                                <TextBlock Text="Bloatware Applications" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                                <Border Background="#1E293B" CornerRadius="8" Padding="6,1" VerticalAlignment="Center">
+                                    <TextBlock x:Name="TxtTabAppsCount" Text="84" FontSize="10" FontWeight="Bold" Foreground="#38BDF8"/>
+                                </Border>
+                            </StackPanel>
+                        </TabItem.Header>
                         <Grid Margin="12">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto"/>
@@ -361,9 +481,23 @@
                                 <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,16,0">
                                     <TextBlock Text="Categories:" FontSize="12" Foreground="#94A3B8" VerticalAlignment="Center" Margin="0,0,6,0"/>
                                     <Grid>
-                                        <ToggleButton x:Name="ToggleAppCategories" Style="{StaticResource ModernDropdownToggle}" Content="Categories: Recommended (84 Apps) ▼" MinWidth="250"/>
-                                        <Popup x:Name="PopupAppCategories" PlacementTarget="{Binding ElementName=ToggleAppCategories}" Placement="Bottom" IsOpen="{Binding IsChecked, ElementName=ToggleAppCategories}" StaysOpen="False">
+                                        <ToggleButton x:Name="ToggleAppCategories" Style="{StaticResource ModernDropdownToggle}" MinWidth="260">
+                                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                                <TextBlock x:Name="TxtToggleAppCategoriesText" Text="Categories: Recommended (84 Apps)" Margin="0,0,6,0" VerticalAlignment="Center"/>
+                                                <Path Data="{StaticResource IconChevronDown}" Fill="#38BDF8" Width="10" Height="10" Stretch="Uniform" VerticalAlignment="Center"/>
+                                            </StackPanel>
+                                        </ToggleButton>
+                                        <Popup x:Name="PopupAppCategories" PlacementTarget="{Binding ElementName=ToggleAppCategories}" Placement="Bottom" IsOpen="{Binding IsChecked, ElementName=ToggleAppCategories}" StaysOpen="False" PopupAnimation="Fade" AllowsTransparency="True">
                                             <Border Background="#131D31" BorderBrush="#2A384F" BorderThickness="1" CornerRadius="6" Padding="12" MinWidth="280">
+                                                <Border.Triggers>
+                                                    <EventTrigger RoutedEvent="Loaded">
+                                                        <BeginStoryboard>
+                                                            <Storyboard>
+                                                                <DoubleAnimation Storyboard.TargetProperty="Opacity" From="0.0" To="1.0" Duration="0:0:0.18"/>
+                                                            </Storyboard>
+                                                        </BeginStoryboard>
+                                                    </EventTrigger>
+                                                </Border.Triggers>
                                                 <StackPanel>
                                                     <TextBlock Text="Select Bloatware Categories:" FontSize="11" FontWeight="Bold" Foreground="#38BDF8" Margin="0,0,0,8"/>
                                                     <CheckBox x:Name="ChkCatRecommended" Style="{StaticResource ModernCheckBox}" Content="Recommended Safe Bloat (84 Apps)" IsChecked="True"/>
@@ -386,11 +520,26 @@
                                 <!-- Only Installed Apps Filter -->
                                 <CheckBox x:Name="ChkOnlyInstalled" Grid.Column="1" Style="{StaticResource ModernCheckBox}" Content="Only show installed apps" IsChecked="False" Margin="0,0,16,0"/>
 
-                                <!-- Selection Action Buttons -->
+                                <!-- Selection Action Buttons with Vector Icons -->
                                 <StackPanel Grid.Column="3" Orientation="Horizontal" VerticalAlignment="Center">
-                                    <Button x:Name="BtnSelectAllApps" Style="{StaticResource ModernBtn}" Content="Select All" Margin="0,0,6,0" Padding="10,4"/>
-                                    <Button x:Name="BtnDeselectAllApps" Style="{StaticResource ModernBtn}" Content="Deselect All" Margin="0,0,6,0" Padding="10,4"/>
-                                    <Button x:Name="BtnInvertSelection" Style="{StaticResource ModernBtn}" Content="Invert" Margin="0,0,0,0" Padding="10,4"/>
+                                    <Button x:Name="BtnSelectAllApps" Style="{StaticResource ModernBtn}" Margin="0,0,6,0" Padding="10,4">
+                                        <StackPanel Orientation="Horizontal">
+                                            <Path Data="{StaticResource IconCheckDouble}" Fill="#34D399" Width="12" Height="12" Stretch="Uniform" Margin="0,0,6,0" VerticalAlignment="Center"/>
+                                            <TextBlock Text="Select All" VerticalAlignment="Center"/>
+                                        </StackPanel>
+                                    </Button>
+                                    <Button x:Name="BtnDeselectAllApps" Style="{StaticResource ModernBtn}" Margin="0,0,6,0" Padding="10,4">
+                                        <StackPanel Orientation="Horizontal">
+                                            <Path Data="{StaticResource IconClose}" Fill="#F87171" Width="10" Height="10" Stretch="Uniform" Margin="0,0,6,0" VerticalAlignment="Center"/>
+                                            <TextBlock Text="Deselect All" VerticalAlignment="Center"/>
+                                        </StackPanel>
+                                    </Button>
+                                    <Button x:Name="BtnInvertSelection" Style="{StaticResource ModernBtn}" Margin="0,0,0,0" Padding="10,4">
+                                        <StackPanel Orientation="Horizontal">
+                                            <Path Data="{StaticResource IconLayersFeatures}" Fill="#38BDF8" Width="11" Height="11" Stretch="Uniform" Margin="0,0,6,0" VerticalAlignment="Center"/>
+                                            <TextBlock Text="Invert" VerticalAlignment="Center"/>
+                                        </StackPanel>
+                                    </Button>
                                 </StackPanel>
                             </Grid>
 
@@ -405,7 +554,16 @@
                     </TabItem>
 
                     <!-- Tab 2: Privacy & Search -->
-                    <TabItem Header="Privacy &amp; Search" FontWeight="SemiBold">
+                    <TabItem FontWeight="SemiBold">
+                        <TabItem.Header>
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                <Path Data="{StaticResource IconShieldLock}" Fill="#38BDF8" Width="14" Height="14" Stretch="Uniform" Margin="0,0,6,0" VerticalAlignment="Center"/>
+                                <TextBlock Text="Privacy &amp; Search" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                                <Border Background="#1E293B" CornerRadius="8" Padding="6,1" VerticalAlignment="Center">
+                                    <TextBlock x:Name="TxtTabPrivacyCount" Text="5/5" FontSize="10" FontWeight="Bold" Foreground="#34D399"/>
+                                </Border>
+                            </StackPanel>
+                        </TabItem.Header>
                         <Grid Margin="16">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto"/>
@@ -421,9 +579,23 @@
                                 </Grid.ColumnDefinitions>
 
                                 <Grid Grid.Column="0">
-                                    <ToggleButton x:Name="TogglePrivacyPresets" Style="{StaticResource ModernDropdownToggle}" Content="Quick Presets ▼" MinWidth="140"/>
-                                    <Popup x:Name="PopupPrivacyPresets" PlacementTarget="{Binding ElementName=TogglePrivacyPresets}" Placement="Bottom" IsOpen="{Binding IsChecked, ElementName=TogglePrivacyPresets}" StaysOpen="False">
+                                    <ToggleButton x:Name="TogglePrivacyPresets" Style="{StaticResource ModernDropdownToggle}" MinWidth="140">
+                                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                            <TextBlock Text="Quick Presets" Margin="0,0,6,0" VerticalAlignment="Center"/>
+                                            <Path Data="{StaticResource IconChevronDown}" Fill="#38BDF8" Width="10" Height="10" Stretch="Uniform" VerticalAlignment="Center"/>
+                                        </StackPanel>
+                                    </ToggleButton>
+                                    <Popup x:Name="PopupPrivacyPresets" PlacementTarget="{Binding ElementName=TogglePrivacyPresets}" Placement="Bottom" IsOpen="{Binding IsChecked, ElementName=TogglePrivacyPresets}" StaysOpen="False" PopupAnimation="Fade" AllowsTransparency="True">
                                         <Border Background="#131D31" BorderBrush="#2A384F" BorderThickness="1" CornerRadius="6" Padding="10" MinWidth="240">
+                                            <Border.Triggers>
+                                                <EventTrigger RoutedEvent="Loaded">
+                                                    <BeginStoryboard>
+                                                        <Storyboard>
+                                                            <DoubleAnimation Storyboard.TargetProperty="Opacity" From="0.0" To="1.0" Duration="0:0:0.18"/>
+                                                        </Storyboard>
+                                                    </BeginStoryboard>
+                                                </EventTrigger>
+                                            </Border.Triggers>
                                             <StackPanel>
                                                 <TextBlock Text="Privacy Batch Presets:" FontSize="11" FontWeight="Bold" Foreground="#38BDF8" Margin="0,0,0,6"/>
                                                 <Button x:Name="BtnPrivacyRecommended" Style="{StaticResource DropdownActionBtn}" Content="• Recommended (Telemetry + Ads + Search)"/>
@@ -434,8 +606,18 @@
                                 </Grid>
 
                                 <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
-                                    <Button x:Name="BtnSelectAllPrivacy" Style="{StaticResource ModernBtn}" Content="Select All" Margin="0,0,6,0" Padding="10,4"/>
-                                    <Button x:Name="BtnDeselectAllPrivacy" Style="{StaticResource ModernBtn}" Content="Deselect All" Padding="10,4"/>
+                                    <Button x:Name="BtnSelectAllPrivacy" Style="{StaticResource ModernBtn}" Margin="0,0,6,0" Padding="10,4">
+                                        <StackPanel Orientation="Horizontal">
+                                            <Path Data="{StaticResource IconCheckDouble}" Fill="#34D399" Width="12" Height="12" Stretch="Uniform" Margin="0,0,6,0" VerticalAlignment="Center"/>
+                                            <TextBlock Text="Select All" VerticalAlignment="Center"/>
+                                        </StackPanel>
+                                    </Button>
+                                    <Button x:Name="BtnDeselectAllPrivacy" Style="{StaticResource ModernBtn}" Padding="10,4">
+                                        <StackPanel Orientation="Horizontal">
+                                            <Path Data="{StaticResource IconClose}" Fill="#F87171" Width="10" Height="10" Stretch="Uniform" Margin="0,0,6,0" VerticalAlignment="Center"/>
+                                            <TextBlock Text="Deselect All" VerticalAlignment="Center"/>
+                                        </StackPanel>
+                                    </Button>
                                 </StackPanel>
                             </Grid>
 
@@ -444,27 +626,52 @@
                                     <Grid Margin="0,4">
                                         <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
                                         <CheckBox x:Name="ChkTelemetry" Grid.Column="0" Style="{StaticResource ModernCheckBox}" Content="Disable Telemetry &amp; Diagnostic Data Collection (Security/Basic level)" IsChecked="True"/>
-                                        <Border Grid.Column="1" Background="#064E3B" CornerRadius="10" Padding="8,2" VerticalAlignment="Center"><TextBlock Text="RECOMMENDED" FontSize="10" FontWeight="Bold" Foreground="#34D399"/></Border>
+                                        <Border Grid.Column="1" Background="#064E3B" CornerRadius="10" Padding="8,3" VerticalAlignment="Center">
+                                            <StackPanel Orientation="Horizontal">
+                                                <Path Data="{StaticResource IconCheckCircle}" Fill="#34D399" Width="10" Height="10" Stretch="Uniform" Margin="0,0,4,0" VerticalAlignment="Center"/>
+                                                <TextBlock Text="RECOMMENDED" FontSize="9" FontWeight="Bold" Foreground="#34D399" VerticalAlignment="Center"/>
+                                            </StackPanel>
+                                        </Border>
                                     </Grid>
                                     <Grid Margin="0,4">
                                         <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
                                         <CheckBox x:Name="ChkBingSearch" Grid.Column="0" Style="{StaticResource ModernCheckBox}" Content="Disable Bing Web Search suggestions in Start Menu" IsChecked="True"/>
-                                        <Border Grid.Column="1" Background="#064E3B" CornerRadius="10" Padding="8,2" VerticalAlignment="Center"><TextBlock Text="RECOMMENDED" FontSize="10" FontWeight="Bold" Foreground="#34D399"/></Border>
+                                        <Border Grid.Column="1" Background="#064E3B" CornerRadius="10" Padding="8,3" VerticalAlignment="Center">
+                                            <StackPanel Orientation="Horizontal">
+                                                <Path Data="{StaticResource IconCheckCircle}" Fill="#34D399" Width="10" Height="10" Stretch="Uniform" Margin="0,0,4,0" VerticalAlignment="Center"/>
+                                                <TextBlock Text="RECOMMENDED" FontSize="9" FontWeight="Bold" Foreground="#34D399" VerticalAlignment="Center"/>
+                                            </StackPanel>
+                                        </Border>
                                     </Grid>
                                     <Grid Margin="0,4">
                                         <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
                                         <CheckBox x:Name="ChkAdvertisingId" Grid.Column="0" Style="{StaticResource ModernCheckBox}" Content="Disable Advertising ID tracking across installed apps" IsChecked="True"/>
-                                        <Border Grid.Column="1" Background="#064E3B" CornerRadius="10" Padding="8,2" VerticalAlignment="Center"><TextBlock Text="RECOMMENDED" FontSize="10" FontWeight="Bold" Foreground="#34D399"/></Border>
+                                        <Border Grid.Column="1" Background="#064E3B" CornerRadius="10" Padding="8,3" VerticalAlignment="Center">
+                                            <StackPanel Orientation="Horizontal">
+                                                <Path Data="{StaticResource IconCheckCircle}" Fill="#34D399" Width="10" Height="10" Stretch="Uniform" Margin="0,0,4,0" VerticalAlignment="Center"/>
+                                                <TextBlock Text="RECOMMENDED" FontSize="9" FontWeight="Bold" Foreground="#34D399" VerticalAlignment="Center"/>
+                                            </StackPanel>
+                                        </Border>
                                     </Grid>
                                     <Grid Margin="0,4">
                                         <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
                                         <CheckBox x:Name="ChkActivityHistory" Grid.Column="0" Style="{StaticResource ModernCheckBox}" Content="Disable Windows Activity History timeline feed" IsChecked="True"/>
-                                        <Border Grid.Column="1" Background="#064E3B" CornerRadius="10" Padding="8,2" VerticalAlignment="Center"><TextBlock Text="RECOMMENDED" FontSize="10" FontWeight="Bold" Foreground="#34D399"/></Border>
+                                        <Border Grid.Column="1" Background="#064E3B" CornerRadius="10" Padding="8,3" VerticalAlignment="Center">
+                                            <StackPanel Orientation="Horizontal">
+                                                <Path Data="{StaticResource IconCheckCircle}" Fill="#34D399" Width="10" Height="10" Stretch="Uniform" Margin="0,0,4,0" VerticalAlignment="Center"/>
+                                                <TextBlock Text="RECOMMENDED" FontSize="9" FontWeight="Bold" Foreground="#34D399" VerticalAlignment="Center"/>
+                                            </StackPanel>
+                                        </Border>
                                     </Grid>
                                     <Grid Margin="0,4">
                                         <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
                                         <CheckBox x:Name="ChkTailoredExp" Grid.Column="0" Style="{StaticResource ModernCheckBox}" Content="Disable Tailored Experiences &amp; personalized diagnostic ads" IsChecked="True"/>
-                                        <Border Grid.Column="1" Background="#064E3B" CornerRadius="10" Padding="8,2" VerticalAlignment="Center"><TextBlock Text="RECOMMENDED" FontSize="10" FontWeight="Bold" Foreground="#34D399"/></Border>
+                                        <Border Grid.Column="1" Background="#064E3B" CornerRadius="10" Padding="8,3" VerticalAlignment="Center">
+                                            <StackPanel Orientation="Horizontal">
+                                                <Path Data="{StaticResource IconCheckCircle}" Fill="#34D399" Width="10" Height="10" Stretch="Uniform" Margin="0,0,4,0" VerticalAlignment="Center"/>
+                                                <TextBlock Text="RECOMMENDED" FontSize="9" FontWeight="Bold" Foreground="#34D399" VerticalAlignment="Center"/>
+                                            </StackPanel>
+                                        </Border>
                                     </Grid>
                                 </StackPanel>
                             </ScrollViewer>
@@ -472,7 +679,16 @@
                     </TabItem>
 
                     <!-- Tab 3: UI & Shell -->
-                    <TabItem Header="Taskbar &amp; Explorer" FontWeight="SemiBold">
+                    <TabItem FontWeight="SemiBold">
+                        <TabItem.Header>
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                <Path Data="{StaticResource IconDesktopExplorer}" Fill="#38BDF8" Width="14" Height="14" Stretch="Uniform" Margin="0,0,6,0" VerticalAlignment="Center"/>
+                                <TextBlock Text="Taskbar &amp; Explorer" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                                <Border Background="#1E293B" CornerRadius="8" Padding="6,1" VerticalAlignment="Center">
+                                    <TextBlock x:Name="TxtTabShellCount" Text="10/13" FontSize="10" FontWeight="Bold" Foreground="#34D399"/>
+                                </Border>
+                            </StackPanel>
+                        </TabItem.Header>
                         <Grid Margin="16">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto"/>
@@ -488,9 +704,23 @@
                                 </Grid.ColumnDefinitions>
 
                                 <Grid Grid.Column="0">
-                                    <ToggleButton x:Name="ToggleShellPresets" Style="{StaticResource ModernDropdownToggle}" Content="Quick Presets ▼" MinWidth="140"/>
-                                    <Popup x:Name="PopupShellPresets" PlacementTarget="{Binding ElementName=ToggleShellPresets}" Placement="Bottom" IsOpen="{Binding IsChecked, ElementName=ToggleShellPresets}" StaysOpen="False">
+                                    <ToggleButton x:Name="ToggleShellPresets" Style="{StaticResource ModernDropdownToggle}" MinWidth="140">
+                                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                            <TextBlock Text="Quick Presets" Margin="0,0,6,0" VerticalAlignment="Center"/>
+                                            <Path Data="{StaticResource IconChevronDown}" Fill="#38BDF8" Width="10" Height="10" Stretch="Uniform" VerticalAlignment="Center"/>
+                                        </StackPanel>
+                                    </ToggleButton>
+                                    <Popup x:Name="PopupShellPresets" PlacementTarget="{Binding ElementName=ToggleShellPresets}" Placement="Bottom" IsOpen="{Binding IsChecked, ElementName=ToggleShellPresets}" StaysOpen="False" PopupAnimation="Fade" AllowsTransparency="True">
                                         <Border Background="#131D31" BorderBrush="#2A384F" BorderThickness="1" CornerRadius="6" Padding="10" MinWidth="250">
+                                            <Border.Triggers>
+                                                <EventTrigger RoutedEvent="Loaded">
+                                                    <BeginStoryboard>
+                                                        <Storyboard>
+                                                            <DoubleAnimation Storyboard.TargetProperty="Opacity" From="0.0" To="1.0" Duration="0:0:0.18"/>
+                                                        </Storyboard>
+                                                    </BeginStoryboard>
+                                                </EventTrigger>
+                                            </Border.Triggers>
                                             <StackPanel>
                                                 <TextBlock Text="Shell Batch Presets:" FontSize="11" FontWeight="Bold" Foreground="#38BDF8" Margin="0,0,0,6"/>
                                                 <Button x:Name="BtnShellClean" Style="{StaticResource DropdownActionBtn}" Content="• Clean Windows 11 Desktop (Widgets/Chat off)"/>
@@ -501,8 +731,18 @@
                                 </Grid>
 
                                 <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
-                                    <Button x:Name="BtnSelectAllShell" Style="{StaticResource ModernBtn}" Content="Select All" Margin="0,0,6,0" Padding="10,4"/>
-                                    <Button x:Name="BtnDeselectAllShell" Style="{StaticResource ModernBtn}" Content="Deselect All" Padding="10,4"/>
+                                    <Button x:Name="BtnSelectAllShell" Style="{StaticResource ModernBtn}" Margin="0,0,6,0" Padding="10,4">
+                                        <StackPanel Orientation="Horizontal">
+                                            <Path Data="{StaticResource IconCheckDouble}" Fill="#34D399" Width="12" Height="12" Stretch="Uniform" Margin="0,0,6,0" VerticalAlignment="Center"/>
+                                            <TextBlock Text="Select All" VerticalAlignment="Center"/>
+                                        </StackPanel>
+                                    </Button>
+                                    <Button x:Name="BtnDeselectAllShell" Style="{StaticResource ModernBtn}" Padding="10,4">
+                                        <StackPanel Orientation="Horizontal">
+                                            <Path Data="{StaticResource IconClose}" Fill="#F87171" Width="10" Height="10" Stretch="Uniform" Margin="0,0,6,0" VerticalAlignment="Center"/>
+                                            <TextBlock Text="Deselect All" VerticalAlignment="Center"/>
+                                        </StackPanel>
+                                    </Button>
                                 </StackPanel>
                             </Grid>
 
@@ -511,67 +751,132 @@
                                     <Grid Margin="0,4">
                                         <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
                                         <CheckBox x:Name="ChkShowExt" Grid.Column="0" Style="{StaticResource ModernCheckBox}" Content="Show Known File Extensions (.exe, .txt, .ps1, etc.)" IsChecked="True"/>
-                                        <Border Grid.Column="1" Background="#064E3B" CornerRadius="10" Padding="8,2" VerticalAlignment="Center"><TextBlock Text="RECOMMENDED" FontSize="10" FontWeight="Bold" Foreground="#34D399"/></Border>
+                                        <Border Grid.Column="1" Background="#064E3B" CornerRadius="10" Padding="8,3" VerticalAlignment="Center">
+                                            <StackPanel Orientation="Horizontal">
+                                                <Path Data="{StaticResource IconCheckCircle}" Fill="#34D399" Width="10" Height="10" Stretch="Uniform" Margin="0,0,4,0" VerticalAlignment="Center"/>
+                                                <TextBlock Text="RECOMMENDED" FontSize="9" FontWeight="Bold" Foreground="#34D399" VerticalAlignment="Center"/>
+                                            </StackPanel>
+                                        </Border>
                                     </Grid>
                                     <Grid Margin="0,4">
                                         <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
                                         <CheckBox x:Name="ChkShowHidden" Grid.Column="0" Style="{StaticResource ModernCheckBox}" Content="Show Hidden Files and Folders in Explorer" IsChecked="True"/>
-                                        <Border Grid.Column="1" Background="#064E3B" CornerRadius="10" Padding="8,2" VerticalAlignment="Center"><TextBlock Text="RECOMMENDED" FontSize="10" FontWeight="Bold" Foreground="#34D399"/></Border>
+                                        <Border Grid.Column="1" Background="#064E3B" CornerRadius="10" Padding="8,3" VerticalAlignment="Center">
+                                            <StackPanel Orientation="Horizontal">
+                                                <Path Data="{StaticResource IconCheckCircle}" Fill="#34D399" Width="10" Height="10" Stretch="Uniform" Margin="0,0,4,0" VerticalAlignment="Center"/>
+                                                <TextBlock Text="RECOMMENDED" FontSize="9" FontWeight="Bold" Foreground="#34D399" VerticalAlignment="Center"/>
+                                            </StackPanel>
+                                        </Border>
                                     </Grid>
                                     <Grid Margin="0,4">
                                         <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
                                         <CheckBox x:Name="ChkExplorerThisPC" Grid.Column="0" Style="{StaticResource ModernCheckBox}" Content="Set File Explorer to open 'This PC' instead of Home/Quick Access" IsChecked="True"/>
-                                        <Border Grid.Column="1" Background="#064E3B" CornerRadius="10" Padding="8,2" VerticalAlignment="Center"><TextBlock Text="RECOMMENDED" FontSize="10" FontWeight="Bold" Foreground="#34D399"/></Border>
+                                        <Border Grid.Column="1" Background="#064E3B" CornerRadius="10" Padding="8,3" VerticalAlignment="Center">
+                                            <StackPanel Orientation="Horizontal">
+                                                <Path Data="{StaticResource IconCheckCircle}" Fill="#34D399" Width="10" Height="10" Stretch="Uniform" Margin="0,0,4,0" VerticalAlignment="Center"/>
+                                                <TextBlock Text="RECOMMENDED" FontSize="9" FontWeight="Bold" Foreground="#34D399" VerticalAlignment="Center"/>
+                                            </StackPanel>
+                                        </Border>
                                     </Grid>
                                     <Grid Margin="0,4">
                                         <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
                                         <CheckBox x:Name="ChkClassicContextMenu" Grid.Column="0" Style="{StaticResource ModernCheckBox}" Content="Restore Windows 10 Classic Full Context Menu (Bypass 'Show More Options')" IsChecked="True"/>
-                                        <Border Grid.Column="1" Background="#064E3B" CornerRadius="10" Padding="8,2" VerticalAlignment="Center"><TextBlock Text="RECOMMENDED" FontSize="10" FontWeight="Bold" Foreground="#34D399"/></Border>
+                                        <Border Grid.Column="1" Background="#064E3B" CornerRadius="10" Padding="8,3" VerticalAlignment="Center">
+                                            <StackPanel Orientation="Horizontal">
+                                                <Path Data="{StaticResource IconCheckCircle}" Fill="#34D399" Width="10" Height="10" Stretch="Uniform" Margin="0,0,4,0" VerticalAlignment="Center"/>
+                                                <TextBlock Text="RECOMMENDED" FontSize="9" FontWeight="Bold" Foreground="#34D399" VerticalAlignment="Center"/>
+                                            </StackPanel>
+                                        </Border>
                                     </Grid>
                                     <Grid Margin="0,4">
                                         <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
                                         <CheckBox x:Name="ChkHideWidgets" Grid.Column="0" Style="{StaticResource ModernCheckBox}" Content="Hide Widgets board button from Taskbar" IsChecked="True"/>
-                                        <Border Grid.Column="1" Background="#064E3B" CornerRadius="10" Padding="8,2" VerticalAlignment="Center"><TextBlock Text="RECOMMENDED" FontSize="10" FontWeight="Bold" Foreground="#34D399"/></Border>
+                                        <Border Grid.Column="1" Background="#064E3B" CornerRadius="10" Padding="8,3" VerticalAlignment="Center">
+                                            <StackPanel Orientation="Horizontal">
+                                                <Path Data="{StaticResource IconCheckCircle}" Fill="#34D399" Width="10" Height="10" Stretch="Uniform" Margin="0,0,4,0" VerticalAlignment="Center"/>
+                                                <TextBlock Text="RECOMMENDED" FontSize="9" FontWeight="Bold" Foreground="#34D399" VerticalAlignment="Center"/>
+                                            </StackPanel>
+                                        </Border>
                                     </Grid>
                                     <Grid Margin="0,4">
                                         <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
                                         <CheckBox x:Name="ChkHideChat" Grid.Column="0" Style="{StaticResource ModernCheckBox}" Content="Hide Microsoft Teams Chat icon from Taskbar" IsChecked="True"/>
-                                        <Border Grid.Column="1" Background="#064E3B" CornerRadius="10" Padding="8,2" VerticalAlignment="Center"><TextBlock Text="RECOMMENDED" FontSize="10" FontWeight="Bold" Foreground="#34D399"/></Border>
+                                        <Border Grid.Column="1" Background="#064E3B" CornerRadius="10" Padding="8,3" VerticalAlignment="Center">
+                                            <StackPanel Orientation="Horizontal">
+                                                <Path Data="{StaticResource IconCheckCircle}" Fill="#34D399" Width="10" Height="10" Stretch="Uniform" Margin="0,0,4,0" VerticalAlignment="Center"/>
+                                                <TextBlock Text="RECOMMENDED" FontSize="9" FontWeight="Bold" Foreground="#34D399" VerticalAlignment="Center"/>
+                                            </StackPanel>
+                                        </Border>
                                     </Grid>
                                     <Grid Margin="0,4">
                                         <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
                                         <CheckBox x:Name="ChkEndTask" Grid.Column="0" Style="{StaticResource ModernCheckBox}" Content="Enable right-click 'End Task' on Taskbar items" IsChecked="True"/>
-                                        <Border Grid.Column="1" Background="#064E3B" CornerRadius="10" Padding="8,2" VerticalAlignment="Center"><TextBlock Text="RECOMMENDED" FontSize="10" FontWeight="Bold" Foreground="#34D399"/></Border>
+                                        <Border Grid.Column="1" Background="#064E3B" CornerRadius="10" Padding="8,3" VerticalAlignment="Center">
+                                            <StackPanel Orientation="Horizontal">
+                                                <Path Data="{StaticResource IconCheckCircle}" Fill="#34D399" Width="10" Height="10" Stretch="Uniform" Margin="0,0,4,0" VerticalAlignment="Center"/>
+                                                <TextBlock Text="RECOMMENDED" FontSize="9" FontWeight="Bold" Foreground="#34D399" VerticalAlignment="Center"/>
+                                            </StackPanel>
+                                        </Border>
                                     </Grid>
                                     <Grid Margin="0,4">
                                         <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
                                         <CheckBox x:Name="ChkAlignLeft" Grid.Column="0" Style="{StaticResource ModernCheckBox}" Content="Align Taskbar icons to Left (Classic Windows Layout)" IsChecked="False"/>
-                                        <Border Grid.Column="1" Background="#1E293B" CornerRadius="10" Padding="8,2" VerticalAlignment="Center"><TextBlock Text="OPTIONAL" FontSize="10" FontWeight="Bold" Foreground="#94A3B8"/></Border>
+                                        <Border Grid.Column="1" Background="#1E293B" CornerRadius="10" Padding="8,3" VerticalAlignment="Center">
+                                            <StackPanel Orientation="Horizontal">
+                                                <Path Data="{StaticResource IconSettingsExtras}" Fill="#94A3B8" Width="9" Height="9" Stretch="Uniform" Margin="0,0,4,0" VerticalAlignment="Center"/>
+                                                <TextBlock Text="OPTIONAL" FontSize="9" FontWeight="Bold" Foreground="#94A3B8" VerticalAlignment="Center"/>
+                                            </StackPanel>
+                                        </Border>
                                     </Grid>
                                     <Grid Margin="0,4">
                                         <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
                                         <CheckBox x:Name="ChkHideOneDriveNav" Grid.Column="0" Style="{StaticResource ModernCheckBox}" Content="Hide OneDrive folder from File Explorer Navigation Pane" IsChecked="False"/>
-                                        <Border Grid.Column="1" Background="#1E293B" CornerRadius="10" Padding="8,2" VerticalAlignment="Center"><TextBlock Text="OPTIONAL" FontSize="10" FontWeight="Bold" Foreground="#94A3B8"/></Border>
+                                        <Border Grid.Column="1" Background="#1E293B" CornerRadius="10" Padding="8,3" VerticalAlignment="Center">
+                                            <StackPanel Orientation="Horizontal">
+                                                <Path Data="{StaticResource IconSettingsExtras}" Fill="#94A3B8" Width="9" Height="9" Stretch="Uniform" Margin="0,0,4,0" VerticalAlignment="Center"/>
+                                                <TextBlock Text="OPTIONAL" FontSize="9" FontWeight="Bold" Foreground="#94A3B8" VerticalAlignment="Center"/>
+                                            </StackPanel>
+                                        </Border>
                                     </Grid>
                                     <Grid Margin="0,4">
                                         <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
                                         <CheckBox x:Name="ChkSearchHighlights" Grid.Column="0" Style="{StaticResource ModernCheckBox}" Content="Disable Taskbar Search Highlights &amp; Doodles" IsChecked="True"/>
-                                        <Border Grid.Column="1" Background="#064E3B" CornerRadius="10" Padding="8,2" VerticalAlignment="Center"><TextBlock Text="SAFE" FontSize="10" FontWeight="Bold" Foreground="#34D399"/></Border>
+                                        <Border Grid.Column="1" Background="#064E3B" CornerRadius="10" Padding="8,3" VerticalAlignment="Center">
+                                            <StackPanel Orientation="Horizontal">
+                                                <Path Data="{StaticResource IconCheckCircle}" Fill="#34D399" Width="10" Height="10" Stretch="Uniform" Margin="0,0,4,0" VerticalAlignment="Center"/>
+                                                <TextBlock Text="SAFE" FontSize="9" FontWeight="Bold" Foreground="#34D399" VerticalAlignment="Center"/>
+                                            </StackPanel>
+                                        </Border>
                                     </Grid>
                                     <Grid Margin="0,4">
                                         <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
                                         <CheckBox x:Name="ChkStartRecommended" Grid.Column="0" Style="{StaticResource ModernCheckBox}" Content="Hide Start Menu Recommended Section &amp; Recent Items" IsChecked="True"/>
-                                        <Border Grid.Column="1" Background="#064E3B" CornerRadius="10" Padding="8,2" VerticalAlignment="Center"><TextBlock Text="SAFE" FontSize="10" FontWeight="Bold" Foreground="#34D399"/></Border>
+                                        <Border Grid.Column="1" Background="#064E3B" CornerRadius="10" Padding="8,3" VerticalAlignment="Center">
+                                            <StackPanel Orientation="Horizontal">
+                                                <Path Data="{StaticResource IconCheckCircle}" Fill="#34D399" Width="10" Height="10" Stretch="Uniform" Margin="0,0,4,0" VerticalAlignment="Center"/>
+                                                <TextBlock Text="SAFE" FontSize="9" FontWeight="Bold" Foreground="#34D399" VerticalAlignment="Center"/>
+                                            </StackPanel>
+                                        </Border>
                                     </Grid>
                                     <Grid Margin="0,4">
                                         <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
                                         <CheckBox x:Name="ChkCompactExplorer" Grid.Column="0" Style="{StaticResource ModernCheckBox}" Content="Enable Compact View in File Explorer (Tighter classic item padding)" IsChecked="False"/>
-                                        <Border Grid.Column="1" Background="#1E293B" CornerRadius="10" Padding="8,2" VerticalAlignment="Center"><TextBlock Text="SAFE" FontSize="10" FontWeight="Bold" Foreground="#94A3B8"/></Border>
+                                        <Border Grid.Column="1" Background="#1E293B" CornerRadius="10" Padding="8,3" VerticalAlignment="Center">
+                                            <StackPanel Orientation="Horizontal">
+                                                <Path Data="{StaticResource IconSettingsExtras}" Fill="#94A3B8" Width="9" Height="9" Stretch="Uniform" Margin="0,0,4,0" VerticalAlignment="Center"/>
+                                                <TextBlock Text="SAFE" FontSize="9" FontWeight="Bold" Foreground="#94A3B8" VerticalAlignment="Center"/>
+                                            </StackPanel>
+                                        </Border>
                                     </Grid>
                                     <Grid Margin="0,4">
                                         <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
                                         <CheckBox x:Name="ChkMultitasking" Grid.Column="0" Style="{StaticResource ModernCheckBox}" Content="Disable Snap Assist suggestions &amp; app tabs in Alt+Tab" IsChecked="True"/>
-                                        <Border Grid.Column="1" Background="#064E3B" CornerRadius="10" Padding="8,2" VerticalAlignment="Center"><TextBlock Text="SAFE" FontSize="10" FontWeight="Bold" Foreground="#34D399"/></Border>
+                                        <Border Grid.Column="1" Background="#064E3B" CornerRadius="10" Padding="8,3" VerticalAlignment="Center">
+                                            <StackPanel Orientation="Horizontal">
+                                                <Path Data="{StaticResource IconCheckCircle}" Fill="#34D399" Width="10" Height="10" Stretch="Uniform" Margin="0,0,4,0" VerticalAlignment="Center"/>
+                                                <TextBlock Text="SAFE" FontSize="9" FontWeight="Bold" Foreground="#34D399" VerticalAlignment="Center"/>
+                                            </StackPanel>
+                                        </Border>
                                     </Grid>
                                 </StackPanel>
                             </ScrollViewer>
@@ -579,7 +884,16 @@
                     </TabItem>
 
                     <!-- Tab 4: Gaming & Performance -->
-                    <TabItem Header="Gaming &amp; Performance" FontWeight="SemiBold">
+                    <TabItem FontWeight="SemiBold">
+                        <TabItem.Header>
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                <Path Data="{StaticResource IconGamepadGaming}" Fill="#38BDF8" Width="14" Height="14" Stretch="Uniform" Margin="0,0,6,0" VerticalAlignment="Center"/>
+                                <TextBlock Text="Gaming &amp; Performance" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                                <Border Background="#1E293B" CornerRadius="8" Padding="6,1" VerticalAlignment="Center">
+                                    <TextBlock x:Name="TxtTabGamingCount" Text="5/6" FontSize="10" FontWeight="Bold" Foreground="#34D399"/>
+                                </Border>
+                            </StackPanel>
+                        </TabItem.Header>
                         <Grid Margin="16">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto"/>
@@ -595,9 +909,23 @@
                                 </Grid.ColumnDefinitions>
 
                                 <Grid Grid.Column="0">
-                                    <ToggleButton x:Name="ToggleGamingPresets" Style="{StaticResource ModernDropdownToggle}" Content="Quick Presets ▼" MinWidth="140"/>
-                                    <Popup x:Name="PopupGamingPresets" PlacementTarget="{Binding ElementName=ToggleGamingPresets}" Placement="Bottom" IsOpen="{Binding IsChecked, ElementName=ToggleGamingPresets}" StaysOpen="False">
+                                    <ToggleButton x:Name="ToggleGamingPresets" Style="{StaticResource ModernDropdownToggle}" MinWidth="140">
+                                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                            <TextBlock Text="Quick Presets" Margin="0,0,6,0" VerticalAlignment="Center"/>
+                                            <Path Data="{StaticResource IconChevronDown}" Fill="#38BDF8" Width="10" Height="10" Stretch="Uniform" VerticalAlignment="Center"/>
+                                        </StackPanel>
+                                    </ToggleButton>
+                                    <Popup x:Name="PopupGamingPresets" PlacementTarget="{Binding ElementName=ToggleGamingPresets}" Placement="Bottom" IsOpen="{Binding IsChecked, ElementName=ToggleGamingPresets}" StaysOpen="False" PopupAnimation="Fade" AllowsTransparency="True">
                                         <Border Background="#131D31" BorderBrush="#2A384F" BorderThickness="1" CornerRadius="6" Padding="10" MinWidth="250">
+                                            <Border.Triggers>
+                                                <EventTrigger RoutedEvent="Loaded">
+                                                    <BeginStoryboard>
+                                                        <Storyboard>
+                                                            <DoubleAnimation Storyboard.TargetProperty="Opacity" From="0.0" To="1.0" Duration="0:0:0.18"/>
+                                                        </Storyboard>
+                                                    </BeginStoryboard>
+                                                </EventTrigger>
+                                            </Border.Triggers>
                                             <StackPanel>
                                                 <TextBlock Text="Gaming Batch Presets:" FontSize="11" FontWeight="Bold" Foreground="#38BDF8" Margin="0,0,0,6"/>
                                                 <Button x:Name="BtnGamingMaxPerformance" Style="{StaticResource DropdownActionBtn}" Content="• Maximum Gaming Performance (DVR/Edge/CEIP off)"/>
@@ -608,8 +936,18 @@
                                 </Grid>
 
                                 <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
-                                    <Button x:Name="BtnSelectAllGaming" Style="{StaticResource ModernBtn}" Content="Select All" Margin="0,0,6,0" Padding="10,4"/>
-                                    <Button x:Name="BtnDeselectAllGaming" Style="{StaticResource ModernBtn}" Content="Deselect All" Padding="10,4"/>
+                                    <Button x:Name="BtnSelectAllGaming" Style="{StaticResource ModernBtn}" Margin="0,0,6,0" Padding="10,4">
+                                        <StackPanel Orientation="Horizontal">
+                                            <Path Data="{StaticResource IconCheckDouble}" Fill="#34D399" Width="12" Height="12" Stretch="Uniform" Margin="0,0,6,0" VerticalAlignment="Center"/>
+                                            <TextBlock Text="Select All" VerticalAlignment="Center"/>
+                                        </StackPanel>
+                                    </Button>
+                                    <Button x:Name="BtnDeselectAllGaming" Style="{StaticResource ModernBtn}" Padding="10,4">
+                                        <StackPanel Orientation="Horizontal">
+                                            <Path Data="{StaticResource IconClose}" Fill="#F87171" Width="10" Height="10" Stretch="Uniform" Margin="0,0,6,0" VerticalAlignment="Center"/>
+                                            <TextBlock Text="Deselect All" VerticalAlignment="Center"/>
+                                        </StackPanel>
+                                    </Button>
                                 </StackPanel>
                             </Grid>
 
@@ -618,32 +956,62 @@
                                     <Grid Margin="0,4">
                                         <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
                                         <CheckBox x:Name="ChkGameDVR" Grid.Column="0" Style="{StaticResource ModernCheckBox}" Content="Disable Xbox Game DVR &amp; Background Video Capture (Reduces micro-stutter &amp; latency)" IsChecked="True"/>
-                                        <Border Grid.Column="1" Background="#064E3B" CornerRadius="10" Padding="8,2" VerticalAlignment="Center"><TextBlock Text="RECOMMENDED" FontSize="10" FontWeight="Bold" Foreground="#34D399"/></Border>
+                                        <Border Grid.Column="1" Background="#064E3B" CornerRadius="10" Padding="8,3" VerticalAlignment="Center">
+                                            <StackPanel Orientation="Horizontal">
+                                                <Path Data="{StaticResource IconCheckCircle}" Fill="#34D399" Width="10" Height="10" Stretch="Uniform" Margin="0,0,4,0" VerticalAlignment="Center"/>
+                                                <TextBlock Text="RECOMMENDED" FontSize="9" FontWeight="Bold" Foreground="#34D399" VerticalAlignment="Center"/>
+                                            </StackPanel>
+                                        </Border>
                                     </Grid>
                                     <Grid Margin="0,4">
                                         <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
                                         <CheckBox x:Name="ChkDeliveryOpt" Grid.Column="0" Style="{StaticResource ModernCheckBox}" Content="Disable Delivery Optimization P2P (Stops Windows uploading updates to Internet hosts)" IsChecked="True"/>
-                                        <Border Grid.Column="1" Background="#064E3B" CornerRadius="10" Padding="8,2" VerticalAlignment="Center"><TextBlock Text="RECOMMENDED" FontSize="10" FontWeight="Bold" Foreground="#34D399"/></Border>
+                                        <Border Grid.Column="1" Background="#064E3B" CornerRadius="10" Padding="8,3" VerticalAlignment="Center">
+                                            <StackPanel Orientation="Horizontal">
+                                                <Path Data="{StaticResource IconCheckCircle}" Fill="#34D399" Width="10" Height="10" Stretch="Uniform" Margin="0,0,4,0" VerticalAlignment="Center"/>
+                                                <TextBlock Text="RECOMMENDED" FontSize="9" FontWeight="Bold" Foreground="#34D399" VerticalAlignment="Center"/>
+                                            </StackPanel>
+                                        </Border>
                                     </Grid>
                                     <Grid Margin="0,4">
                                         <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
                                         <CheckBox x:Name="ChkEdgeBackground" Grid.Column="0" Style="{StaticResource ModernCheckBox}" Content="Disable Microsoft Edge background mode &amp; Startup Boost (Prevents idle RAM consumption)" IsChecked="True"/>
-                                        <Border Grid.Column="1" Background="#064E3B" CornerRadius="10" Padding="8,2" VerticalAlignment="Center"><TextBlock Text="RECOMMENDED" FontSize="10" FontWeight="Bold" Foreground="#34D399"/></Border>
+                                        <Border Grid.Column="1" Background="#064E3B" CornerRadius="10" Padding="8,3" VerticalAlignment="Center">
+                                            <StackPanel Orientation="Horizontal">
+                                                <Path Data="{StaticResource IconCheckCircle}" Fill="#34D399" Width="10" Height="10" Stretch="Uniform" Margin="0,0,4,0" VerticalAlignment="Center"/>
+                                                <TextBlock Text="RECOMMENDED" FontSize="9" FontWeight="Bold" Foreground="#34D399" VerticalAlignment="Center"/>
+                                            </StackPanel>
+                                        </Border>
                                     </Grid>
                                     <Grid Margin="0,4">
                                         <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
                                         <CheckBox x:Name="ChkScheduledTasks" Grid.Column="0" Style="{StaticResource ModernCheckBox}" Content="Disable Telemetry Scheduled Tasks (Consolidator, Compatibility Appraiser, ProgramDataUpdater)" IsChecked="True"/>
-                                        <Border Grid.Column="1" Background="#064E3B" CornerRadius="10" Padding="8,2" VerticalAlignment="Center"><TextBlock Text="RECOMMENDED" FontSize="10" FontWeight="Bold" Foreground="#34D399"/></Border>
+                                        <Border Grid.Column="1" Background="#064E3B" CornerRadius="10" Padding="8,3" VerticalAlignment="Center">
+                                            <StackPanel Orientation="Horizontal">
+                                                <Path Data="{StaticResource IconCheckCircle}" Fill="#34D399" Width="10" Height="10" Stretch="Uniform" Margin="0,0,4,0" VerticalAlignment="Center"/>
+                                                <TextBlock Text="RECOMMENDED" FontSize="9" FontWeight="Bold" Foreground="#34D399" VerticalAlignment="Center"/>
+                                            </StackPanel>
+                                        </Border>
                                     </Grid>
                                     <Grid Margin="0,4">
                                         <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
                                         <CheckBox x:Name="ChkTelemetryService" Grid.Column="0" Style="{StaticResource ModernCheckBox}" Content="Disable Connected User Experiences &amp; Telemetry Service (DiagTrack background service)" IsChecked="True"/>
-                                        <Border Grid.Column="1" Background="#78350F" CornerRadius="10" Padding="8,2" VerticalAlignment="Center"><TextBlock Text="CAUTION" FontSize="10" FontWeight="Bold" Foreground="#FBBF24"/></Border>
+                                        <Border Grid.Column="1" Background="#78350F" CornerRadius="10" Padding="8,3" VerticalAlignment="Center">
+                                            <StackPanel Orientation="Horizontal">
+                                                <Path Data="{StaticResource IconAlertTriangle}" Fill="#FBBF24" Width="10" Height="10" Stretch="Uniform" Margin="0,0,4,0" VerticalAlignment="Center"/>
+                                                <TextBlock Text="CAUTION" FontSize="9" FontWeight="Bold" Foreground="#FBBF24" VerticalAlignment="Center"/>
+                                            </StackPanel>
+                                        </Border>
                                     </Grid>
                                     <Grid Margin="0,4">
                                         <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
                                         <CheckBox x:Name="ChkHibernation" Grid.Column="0" Style="{StaticResource ModernCheckBox}" Content="Reclaim Disk Space by Disabling Hibernation (Removes multi-GB hiberfil.sys)" IsChecked="False"/>
-                                        <Border Grid.Column="1" Background="#78350F" CornerRadius="10" Padding="8,2" VerticalAlignment="Center"><TextBlock Text="CAUTION" FontSize="10" FontWeight="Bold" Foreground="#FBBF24"/></Border>
+                                        <Border Grid.Column="1" Background="#78350F" CornerRadius="10" Padding="8,3" VerticalAlignment="Center">
+                                            <StackPanel Orientation="Horizontal">
+                                                <Path Data="{StaticResource IconAlertTriangle}" Fill="#FBBF24" Width="10" Height="10" Stretch="Uniform" Margin="0,0,4,0" VerticalAlignment="Center"/>
+                                                <TextBlock Text="CAUTION" FontSize="9" FontWeight="Bold" Foreground="#FBBF24" VerticalAlignment="Center"/>
+                                            </StackPanel>
+                                        </Border>
                                     </Grid>
                                 </StackPanel>
                             </ScrollViewer>
@@ -651,7 +1019,16 @@
                     </TabItem>
 
                     <!-- Tab 5: System Extras -->
-                    <TabItem Header="System Extras" FontWeight="SemiBold">
+                    <TabItem FontWeight="SemiBold">
+                        <TabItem.Header>
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                <Path Data="{StaticResource IconSettingsExtras}" Fill="#38BDF8" Width="14" Height="14" Stretch="Uniform" Margin="0,0,6,0" VerticalAlignment="Center"/>
+                                <TextBlock Text="System Extras" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                                <Border Background="#1E293B" CornerRadius="8" Padding="6,1" VerticalAlignment="Center">
+                                    <TextBlock x:Name="TxtTabExtrasCount" Text="6/8" FontSize="10" FontWeight="Bold" Foreground="#34D399"/>
+                                </Border>
+                            </StackPanel>
+                        </TabItem.Header>
                         <Grid Margin="16">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto"/>
@@ -667,9 +1044,23 @@
                                 </Grid.ColumnDefinitions>
 
                                 <Grid Grid.Column="0">
-                                    <ToggleButton x:Name="ToggleExtrasPresets" Style="{StaticResource ModernDropdownToggle}" Content="Quick Presets ▼" MinWidth="140"/>
-                                    <Popup x:Name="PopupExtrasPresets" PlacementTarget="{Binding ElementName=ToggleExtrasPresets}" Placement="Bottom" IsOpen="{Binding IsChecked, ElementName=ToggleExtrasPresets}" StaysOpen="False">
+                                    <ToggleButton x:Name="ToggleExtrasPresets" Style="{StaticResource ModernDropdownToggle}" MinWidth="140">
+                                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                            <TextBlock Text="Quick Presets" Margin="0,0,6,0" VerticalAlignment="Center"/>
+                                            <Path Data="{StaticResource IconChevronDown}" Fill="#38BDF8" Width="10" Height="10" Stretch="Uniform" VerticalAlignment="Center"/>
+                                        </StackPanel>
+                                    </ToggleButton>
+                                    <Popup x:Name="PopupExtrasPresets" PlacementTarget="{Binding ElementName=ToggleExtrasPresets}" Placement="Bottom" IsOpen="{Binding IsChecked, ElementName=ToggleExtrasPresets}" StaysOpen="False" PopupAnimation="Fade" AllowsTransparency="True">
                                         <Border Background="#131D31" BorderBrush="#2A384F" BorderThickness="1" CornerRadius="6" Padding="10" MinWidth="250">
+                                            <Border.Triggers>
+                                                <EventTrigger RoutedEvent="Loaded">
+                                                    <BeginStoryboard>
+                                                        <Storyboard>
+                                                            <DoubleAnimation Storyboard.TargetProperty="Opacity" From="0.0" To="1.0" Duration="0:0:0.18"/>
+                                                        </Storyboard>
+                                                    </BeginStoryboard>
+                                                </EventTrigger>
+                                            </Border.Triggers>
                                             <StackPanel>
                                                 <TextBlock Text="System Extras Presets:" FontSize="11" FontWeight="Bold" Foreground="#38BDF8" Margin="0,0,0,6"/>
                                                 <Button x:Name="BtnExtrasRecommended" Style="{StaticResource DropdownActionBtn}" Content="• Recommended (Consumer Promos + Precision)"/>
@@ -679,8 +1070,18 @@
                                 </Grid>
 
                                 <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
-                                    <Button x:Name="BtnSelectAllExtras" Style="{StaticResource ModernBtn}" Content="Select All" Margin="0,0,6,0" Padding="10,4"/>
-                                    <Button x:Name="BtnDeselectAllExtras" Style="{StaticResource ModernBtn}" Content="Deselect All" Padding="10,4"/>
+                                    <Button x:Name="BtnSelectAllExtras" Style="{StaticResource ModernBtn}" Margin="0,0,6,0" Padding="10,4">
+                                        <StackPanel Orientation="Horizontal">
+                                            <Path Data="{StaticResource IconCheckDouble}" Fill="#34D399" Width="12" Height="12" Stretch="Uniform" Margin="0,0,6,0" VerticalAlignment="Center"/>
+                                            <TextBlock Text="Select All" VerticalAlignment="Center"/>
+                                        </StackPanel>
+                                    </Button>
+                                    <Button x:Name="BtnDeselectAllExtras" Style="{StaticResource ModernBtn}" Padding="10,4">
+                                        <StackPanel Orientation="Horizontal">
+                                            <Path Data="{StaticResource IconClose}" Fill="#F87171" Width="10" Height="10" Stretch="Uniform" Margin="0,0,6,0" VerticalAlignment="Center"/>
+                                            <TextBlock Text="Deselect All" VerticalAlignment="Center"/>
+                                        </StackPanel>
+                                    </Button>
                                 </StackPanel>
                             </Grid>
 
@@ -689,50 +1090,99 @@
                                     <Grid Margin="0,4">
                                         <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
                                         <CheckBox x:Name="ChkConsumerFeatures" Grid.Column="0" Style="{StaticResource ModernCheckBox}" Content="Disable Windows Consumer Features (Blocks silent preinstall of OEM promo apps)" IsChecked="True"/>
-                                        <Border Grid.Column="1" Background="#064E3B" CornerRadius="10" Padding="8,2" VerticalAlignment="Center"><TextBlock Text="RECOMMENDED" FontSize="10" FontWeight="Bold" Foreground="#34D399"/></Border>
+                                        <Border Grid.Column="1" Background="#064E3B" CornerRadius="10" Padding="8,3" VerticalAlignment="Center">
+                                            <StackPanel Orientation="Horizontal">
+                                                <Path Data="{StaticResource IconCheckCircle}" Fill="#34D399" Width="10" Height="10" Stretch="Uniform" Margin="0,0,4,0" VerticalAlignment="Center"/>
+                                                <TextBlock Text="RECOMMENDED" FontSize="9" FontWeight="Bold" Foreground="#34D399" VerticalAlignment="Center"/>
+                                            </StackPanel>
+                                        </Border>
                                     </Grid>
                                     <Grid Margin="0,4">
                                         <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
                                         <CheckBox x:Name="ChkLockScreenAds" Grid.Column="0" Style="{StaticResource ModernCheckBox}" Content="Disable Lock Screen tips, fun facts, and promotional suggestions" IsChecked="True"/>
-                                        <Border Grid.Column="1" Background="#064E3B" CornerRadius="10" Padding="8,2" VerticalAlignment="Center"><TextBlock Text="RECOMMENDED" FontSize="10" FontWeight="Bold" Foreground="#34D399"/></Border>
+                                        <Border Grid.Column="1" Background="#064E3B" CornerRadius="10" Padding="8,3" VerticalAlignment="Center">
+                                            <StackPanel Orientation="Horizontal">
+                                                <Path Data="{StaticResource IconCheckCircle}" Fill="#34D399" Width="10" Height="10" Stretch="Uniform" Margin="0,0,4,0" VerticalAlignment="Center"/>
+                                                <TextBlock Text="RECOMMENDED" FontSize="9" FontWeight="Bold" Foreground="#34D399" VerticalAlignment="Center"/>
+                                            </StackPanel>
+                                        </Border>
                                     </Grid>
                                     <Grid Margin="0,4">
                                         <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
                                         <CheckBox x:Name="ChkMousePrecision" Grid.Column="0" Style="{StaticResource ModernCheckBox}" Content="Disable Mouse Acceleration / Enhance Pointer Precision (1:1 Mouse Input)" IsChecked="True"/>
-                                        <Border Grid.Column="1" Background="#064E3B" CornerRadius="10" Padding="8,2" VerticalAlignment="Center"><TextBlock Text="RECOMMENDED" FontSize="10" FontWeight="Bold" Foreground="#34D399"/></Border>
+                                        <Border Grid.Column="1" Background="#064E3B" CornerRadius="10" Padding="8,3" VerticalAlignment="Center">
+                                            <StackPanel Orientation="Horizontal">
+                                                <Path Data="{StaticResource IconCheckCircle}" Fill="#34D399" Width="10" Height="10" Stretch="Uniform" Margin="0,0,4,0" VerticalAlignment="Center"/>
+                                                <TextBlock Text="RECOMMENDED" FontSize="9" FontWeight="Bold" Foreground="#34D399" VerticalAlignment="Center"/>
+                                            </StackPanel>
+                                        </Border>
                                     </Grid>
                                     <Grid Margin="0,4">
                                         <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
                                         <CheckBox x:Name="ChkStickyKeys" Grid.Column="0" Style="{StaticResource ModernCheckBox}" Content="Disable Sticky Keys prompt (Pressing Shift 5x)" IsChecked="True"/>
-                                        <Border Grid.Column="1" Background="#064E3B" CornerRadius="10" Padding="8,2" VerticalAlignment="Center"><TextBlock Text="SAFE" FontSize="10" FontWeight="Bold" Foreground="#34D399"/></Border>
+                                        <Border Grid.Column="1" Background="#064E3B" CornerRadius="10" Padding="8,3" VerticalAlignment="Center">
+                                            <StackPanel Orientation="Horizontal">
+                                                <Path Data="{StaticResource IconCheckCircle}" Fill="#34D399" Width="10" Height="10" Stretch="Uniform" Margin="0,0,4,0" VerticalAlignment="Center"/>
+                                                <TextBlock Text="SAFE" FontSize="9" FontWeight="Bold" Foreground="#34D399" VerticalAlignment="Center"/>
+                                            </StackPanel>
+                                        </Border>
                                     </Grid>
                                     <Grid Margin="0,4">
                                         <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
                                         <CheckBox x:Name="ChkFastStartup" Grid.Column="0" Style="{StaticResource ModernCheckBox}" Content="Disable Fast Startup (Avoid hibernation boot anomalies)" IsChecked="False"/>
-                                        <Border Grid.Column="1" Background="#78350F" CornerRadius="10" Padding="8,2" VerticalAlignment="Center"><TextBlock Text="CAUTION" FontSize="10" FontWeight="Bold" Foreground="#FBBF24"/></Border>
+                                        <Border Grid.Column="1" Background="#78350F" CornerRadius="10" Padding="8,3" VerticalAlignment="Center">
+                                            <StackPanel Orientation="Horizontal">
+                                                <Path Data="{StaticResource IconAlertTriangle}" Fill="#FBBF24" Width="10" Height="10" Stretch="Uniform" Margin="0,0,4,0" VerticalAlignment="Center"/>
+                                                <TextBlock Text="CAUTION" FontSize="9" FontWeight="Bold" Foreground="#FBBF24" VerticalAlignment="Center"/>
+                                            </StackPanel>
+                                        </Border>
                                     </Grid>
                                     <Grid Margin="0,4">
                                         <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
                                         <CheckBox x:Name="ChkStorageSense" Grid.Column="0" Style="{StaticResource ModernCheckBox}" Content="Disable Storage Sense automatic background deletion" IsChecked="False"/>
-                                        <Border Grid.Column="1" Background="#78350F" CornerRadius="10" Padding="8,2" VerticalAlignment="Center"><TextBlock Text="CAUTION" FontSize="10" FontWeight="Bold" Foreground="#FBBF24"/></Border>
+                                        <Border Grid.Column="1" Background="#78350F" CornerRadius="10" Padding="8,3" VerticalAlignment="Center">
+                                            <StackPanel Orientation="Horizontal">
+                                                <Path Data="{StaticResource IconAlertTriangle}" Fill="#FBBF24" Width="10" Height="10" Stretch="Uniform" Margin="0,0,4,0" VerticalAlignment="Center"/>
+                                                <TextBlock Text="CAUTION" FontSize="9" FontWeight="Bold" Foreground="#FBBF24" VerticalAlignment="Center"/>
+                                            </StackPanel>
+                                        </Border>
                                     </Grid>
                                     <Grid Margin="0,4">
                                         <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
                                         <CheckBox x:Name="ChkPreventAutoReboot" Grid.Column="0" Style="{StaticResource ModernCheckBox}" Content="Prevent automatic reboot while users are logged on for updates" IsChecked="True"/>
-                                        <Border Grid.Column="1" Background="#064E3B" CornerRadius="10" Padding="8,2" VerticalAlignment="Center"><TextBlock Text="RECOMMENDED" FontSize="10" FontWeight="Bold" Foreground="#34D399"/></Border>
+                                        <Border Grid.Column="1" Background="#064E3B" CornerRadius="10" Padding="8,3" VerticalAlignment="Center">
+                                            <StackPanel Orientation="Horizontal">
+                                                <Path Data="{StaticResource IconCheckCircle}" Fill="#34D399" Width="10" Height="10" Stretch="Uniform" Margin="0,0,4,0" VerticalAlignment="Center"/>
+                                                <TextBlock Text="RECOMMENDED" FontSize="9" FontWeight="Bold" Foreground="#34D399" VerticalAlignment="Center"/>
+                                            </StackPanel>
+                                        </Border>
                                     </Grid>
                                     <Grid Margin="0,4">
                                         <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
                                         <CheckBox x:Name="ChkExcludeDrivers" Grid.Column="0" Style="{StaticResource ModernCheckBox}" Content="Exclude third-party drivers from Windows Update quality updates" IsChecked="True"/>
-                                        <Border Grid.Column="1" Background="#064E3B" CornerRadius="10" Padding="8,2" VerticalAlignment="Center"><TextBlock Text="RECOMMENDED" FontSize="10" FontWeight="Bold" Foreground="#34D399"/></Border>
+                                        <Border Grid.Column="1" Background="#064E3B" CornerRadius="10" Padding="8,3" VerticalAlignment="Center">
+                                            <StackPanel Orientation="Horizontal">
+                                                <Path Data="{StaticResource IconCheckCircle}" Fill="#34D399" Width="10" Height="10" Stretch="Uniform" Margin="0,0,4,0" VerticalAlignment="Center"/>
+                                                <TextBlock Text="RECOMMENDED" FontSize="9" FontWeight="Bold" Foreground="#34D399" VerticalAlignment="Center"/>
+                                            </StackPanel>
+                                        </Border>
                                     </Grid>
                                 </StackPanel>
                             </ScrollViewer>
                         </Grid>
                     </TabItem>
 
-                    <!-- Tab 6: AI Integration (NEW DEDICATED SUITE) -->
-                    <TabItem Header="AI Integration" FontWeight="SemiBold">
+                    <!-- Tab 6: AI Integration (Dedicated Suite) -->
+                    <TabItem FontWeight="SemiBold">
+                        <TabItem.Header>
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                <Path Data="{StaticResource IconSparklesAI}" Fill="#38BDF8" Width="14" Height="14" Stretch="Uniform" Margin="0,0,6,0" VerticalAlignment="Center"/>
+                                <TextBlock Text="AI Integration" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                                <Border Background="#1E293B" CornerRadius="8" Padding="6,1" VerticalAlignment="Center">
+                                    <TextBlock x:Name="TxtTabAICount" Text="6/6" FontSize="10" FontWeight="Bold" Foreground="#34D399"/>
+                                </Border>
+                            </StackPanel>
+                        </TabItem.Header>
                         <Grid Margin="16">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto"/>
@@ -748,9 +1198,23 @@
                                 </Grid.ColumnDefinitions>
 
                                 <Grid Grid.Column="0">
-                                    <ToggleButton x:Name="ToggleAIPresets" Style="{StaticResource ModernDropdownToggle}" Content="Quick Presets ▼" MinWidth="140"/>
-                                    <Popup x:Name="PopupAIPresets" PlacementTarget="{Binding ElementName=ToggleAIPresets}" Placement="Bottom" IsOpen="{Binding IsChecked, ElementName=ToggleAIPresets}" StaysOpen="False">
+                                    <ToggleButton x:Name="ToggleAIPresets" Style="{StaticResource ModernDropdownToggle}" MinWidth="140">
+                                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                            <TextBlock Text="Quick Presets" Margin="0,0,6,0" VerticalAlignment="Center"/>
+                                            <Path Data="{StaticResource IconChevronDown}" Fill="#38BDF8" Width="10" Height="10" Stretch="Uniform" VerticalAlignment="Center"/>
+                                        </StackPanel>
+                                    </ToggleButton>
+                                    <Popup x:Name="PopupAIPresets" PlacementTarget="{Binding ElementName=ToggleAIPresets}" Placement="Bottom" IsOpen="{Binding IsChecked, ElementName=ToggleAIPresets}" StaysOpen="False" PopupAnimation="Fade" AllowsTransparency="True">
                                         <Border Background="#131D31" BorderBrush="#2A384F" BorderThickness="1" CornerRadius="6" Padding="10" MinWidth="260">
+                                            <Border.Triggers>
+                                                <EventTrigger RoutedEvent="Loaded">
+                                                    <BeginStoryboard>
+                                                        <Storyboard>
+                                                            <DoubleAnimation Storyboard.TargetProperty="Opacity" From="0.0" To="1.0" Duration="0:0:0.18"/>
+                                                        </Storyboard>
+                                                    </BeginStoryboard>
+                                                </EventTrigger>
+                                            </Border.Triggers>
                                             <StackPanel>
                                                 <TextBlock Text="AI Batch Presets:" FontSize="11" FontWeight="Bold" Foreground="#38BDF8" Margin="0,0,0,6"/>
                                                 <Button x:Name="BtnAIAll" Style="{StaticResource DropdownActionBtn}" Content="• Disable All AI Features (Copilot + Recall + Apps)"/>
@@ -762,8 +1226,18 @@
                                 </Grid>
 
                                 <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
-                                    <Button x:Name="BtnSelectAllAI" Style="{StaticResource ModernBtn}" Content="Select All" Margin="0,0,6,0" Padding="10,4"/>
-                                    <Button x:Name="BtnDeselectAllAI" Style="{StaticResource ModernBtn}" Content="Deselect All" Padding="10,4"/>
+                                    <Button x:Name="BtnSelectAllAI" Style="{StaticResource ModernBtn}" Margin="0,0,6,0" Padding="10,4">
+                                        <StackPanel Orientation="Horizontal">
+                                            <Path Data="{StaticResource IconCheckDouble}" Fill="#34D399" Width="12" Height="12" Stretch="Uniform" Margin="0,0,6,0" VerticalAlignment="Center"/>
+                                            <TextBlock Text="Select All" VerticalAlignment="Center"/>
+                                        </StackPanel>
+                                    </Button>
+                                    <Button x:Name="BtnDeselectAllAI" Style="{StaticResource ModernBtn}" Padding="10,4">
+                                        <StackPanel Orientation="Horizontal">
+                                            <Path Data="{StaticResource IconClose}" Fill="#F87171" Width="10" Height="10" Stretch="Uniform" Margin="0,0,6,0" VerticalAlignment="Center"/>
+                                            <TextBlock Text="Deselect All" VerticalAlignment="Center"/>
+                                        </StackPanel>
+                                    </Button>
                                 </StackPanel>
                             </Grid>
 
@@ -773,17 +1247,32 @@
                                     <Grid Margin="0,4">
                                         <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
                                         <CheckBox x:Name="ChkCopilotPolicy" Grid.Column="0" Style="{StaticResource ModernCheckBox}" Content="Disable Windows Copilot (Taskbar button, shortcut keys, and group policies)" IsChecked="True"/>
-                                        <Border Grid.Column="1" Background="#064E3B" CornerRadius="10" Padding="8,2" VerticalAlignment="Center"><TextBlock Text="RECOMMENDED" FontSize="10" FontWeight="Bold" Foreground="#34D399"/></Border>
+                                        <Border Grid.Column="1" Background="#064E3B" CornerRadius="10" Padding="8,3" VerticalAlignment="Center">
+                                            <StackPanel Orientation="Horizontal">
+                                                <Path Data="{StaticResource IconCheckCircle}" Fill="#34D399" Width="10" Height="10" Stretch="Uniform" Margin="0,0,4,0" VerticalAlignment="Center"/>
+                                                <TextBlock Text="RECOMMENDED" FontSize="9" FontWeight="Bold" Foreground="#34D399" VerticalAlignment="Center"/>
+                                            </StackPanel>
+                                        </Border>
                                     </Grid>
                                     <Grid Margin="0,4">
                                         <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
                                         <CheckBox x:Name="ChkCopilotAppx" Grid.Column="0" Style="{StaticResource ModernCheckBox}" Content="Remove Windows Copilot AppX package (Microsoft.Copilot / Microsoft.Windows.Copilot)" IsChecked="True"/>
-                                        <Border Grid.Column="1" Background="#064E3B" CornerRadius="10" Padding="8,2" VerticalAlignment="Center"><TextBlock Text="RECOMMENDED" FontSize="10" FontWeight="Bold" Foreground="#34D399"/></Border>
+                                        <Border Grid.Column="1" Background="#064E3B" CornerRadius="10" Padding="8,3" VerticalAlignment="Center">
+                                            <StackPanel Orientation="Horizontal">
+                                                <Path Data="{StaticResource IconCheckCircle}" Fill="#34D399" Width="10" Height="10" Stretch="Uniform" Margin="0,0,4,0" VerticalAlignment="Center"/>
+                                                <TextBlock Text="RECOMMENDED" FontSize="9" FontWeight="Bold" Foreground="#34D399" VerticalAlignment="Center"/>
+                                            </StackPanel>
+                                        </Border>
                                     </Grid>
                                     <Grid Margin="0,4">
                                         <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
                                         <CheckBox x:Name="ChkRecallAI" Grid.Column="0" Style="{StaticResource ModernCheckBox}" Content="Disable Windows Recall &amp; AI snapshots / Click to Do screen analysis" IsChecked="True"/>
-                                        <Border Grid.Column="1" Background="#064E3B" CornerRadius="10" Padding="8,2" VerticalAlignment="Center"><TextBlock Text="RECOMMENDED" FontSize="10" FontWeight="Bold" Foreground="#34D399"/></Border>
+                                        <Border Grid.Column="1" Background="#064E3B" CornerRadius="10" Padding="8,3" VerticalAlignment="Center">
+                                            <StackPanel Orientation="Horizontal">
+                                                <Path Data="{StaticResource IconCheckCircle}" Fill="#34D399" Width="10" Height="10" Stretch="Uniform" Margin="0,0,4,0" VerticalAlignment="Center"/>
+                                                <TextBlock Text="RECOMMENDED" FontSize="9" FontWeight="Bold" Foreground="#34D399" VerticalAlignment="Center"/>
+                                            </StackPanel>
+                                        </Border>
                                     </Grid>
 
                                     <Border BorderBrush="#2A384F" BorderThickness="0,1,0,0" Margin="0,12,0,12"/>
@@ -791,17 +1280,32 @@
                                     <Grid Margin="0,4">
                                         <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
                                         <CheckBox x:Name="ChkEdgeAI" Grid.Column="0" Style="{StaticResource ModernCheckBox}" Content="Disable Microsoft Edge Copilot &amp; AI sidebar integration" IsChecked="True"/>
-                                        <Border Grid.Column="1" Background="#064E3B" CornerRadius="10" Padding="8,2" VerticalAlignment="Center"><TextBlock Text="RECOMMENDED" FontSize="10" FontWeight="Bold" Foreground="#34D399"/></Border>
+                                        <Border Grid.Column="1" Background="#064E3B" CornerRadius="10" Padding="8,3" VerticalAlignment="Center">
+                                            <StackPanel Orientation="Horizontal">
+                                                <Path Data="{StaticResource IconCheckCircle}" Fill="#34D399" Width="10" Height="10" Stretch="Uniform" Margin="0,0,4,0" VerticalAlignment="Center"/>
+                                                <TextBlock Text="RECOMMENDED" FontSize="9" FontWeight="Bold" Foreground="#34D399" VerticalAlignment="Center"/>
+                                            </StackPanel>
+                                        </Border>
                                     </Grid>
                                     <Grid Margin="0,4">
                                         <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
                                         <CheckBox x:Name="ChkPaintAI" Grid.Column="0" Style="{StaticResource ModernCheckBox}" Content="Disable Microsoft Paint Cocreator &amp; Image Creator AI features" IsChecked="True"/>
-                                        <Border Grid.Column="1" Background="#78350F" CornerRadius="10" Padding="8,2" VerticalAlignment="Center"><TextBlock Text="CAUTION" FontSize="10" FontWeight="Bold" Foreground="#FBBF24"/></Border>
+                                        <Border Grid.Column="1" Background="#78350F" CornerRadius="10" Padding="8,3" VerticalAlignment="Center">
+                                            <StackPanel Orientation="Horizontal">
+                                                <Path Data="{StaticResource IconAlertTriangle}" Fill="#FBBF24" Width="10" Height="10" Stretch="Uniform" Margin="0,0,4,0" VerticalAlignment="Center"/>
+                                                <TextBlock Text="CAUTION" FontSize="9" FontWeight="Bold" Foreground="#FBBF24" VerticalAlignment="Center"/>
+                                            </StackPanel>
+                                        </Border>
                                     </Grid>
                                     <Grid Margin="0,4">
                                         <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
                                         <CheckBox x:Name="ChkNotepadAI" Grid.Column="0" Style="{StaticResource ModernCheckBox}" Content="Disable Microsoft Notepad Cowriter &amp; AI text generation features" IsChecked="True"/>
-                                        <Border Grid.Column="1" Background="#78350F" CornerRadius="10" Padding="8,2" VerticalAlignment="Center"><TextBlock Text="CAUTION" FontSize="10" FontWeight="Bold" Foreground="#FBBF24"/></Border>
+                                        <Border Grid.Column="1" Background="#78350F" CornerRadius="10" Padding="8,3" VerticalAlignment="Center">
+                                            <StackPanel Orientation="Horizontal">
+                                                <Path Data="{StaticResource IconAlertTriangle}" Fill="#FBBF24" Width="10" Height="10" Stretch="Uniform" Margin="0,0,4,0" VerticalAlignment="Center"/>
+                                                <TextBlock Text="CAUTION" FontSize="9" FontWeight="Bold" Foreground="#FBBF24" VerticalAlignment="Center"/>
+                                            </StackPanel>
+                                        </Border>
                                     </Grid>
                                 </StackPanel>
                             </ScrollViewer>
@@ -809,18 +1313,37 @@
                     </TabItem>
 
                     <!-- Tab 7: Optional Features -->
-                    <TabItem Header="Optional Features" FontWeight="SemiBold">
+                    <TabItem FontWeight="SemiBold">
+                        <TabItem.Header>
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                <Path Data="{StaticResource IconLayersFeatures}" Fill="#38BDF8" Width="14" Height="14" Stretch="Uniform" Margin="0,0,6,0" VerticalAlignment="Center"/>
+                                <TextBlock Text="Optional Features" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                                <Border Background="#1E293B" CornerRadius="8" Padding="6,1" VerticalAlignment="Center">
+                                    <TextBlock x:Name="TxtTabFeaturesCount" Text="0/2" FontSize="10" FontWeight="Bold" Foreground="#94A3B8"/>
+                                </Border>
+                            </StackPanel>
+                        </TabItem.Header>
                         <Grid Margin="16">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="*"/>
                             </Grid.RowDefinitions>
 
-                            <!-- Toolbar: Action Buttons -->
+                            <!-- Toolbar: Action Buttons with Vector Icons -->
                             <Grid Grid.Row="0" Margin="0,0,0,12">
                                 <StackPanel HorizontalAlignment="Right" Orientation="Horizontal" VerticalAlignment="Center">
-                                    <Button x:Name="BtnSelectAllFeatures" Style="{StaticResource ModernBtn}" Content="Select All" Margin="0,0,6,0" Padding="10,4"/>
-                                    <Button x:Name="BtnDeselectAllFeatures" Style="{StaticResource ModernBtn}" Content="Deselect All" Padding="10,4"/>
+                                    <Button x:Name="BtnSelectAllFeatures" Style="{StaticResource ModernBtn}" Margin="0,0,6,0" Padding="10,4">
+                                        <StackPanel Orientation="Horizontal">
+                                            <Path Data="{StaticResource IconCheckDouble}" Fill="#34D399" Width="12" Height="12" Stretch="Uniform" Margin="0,0,6,0" VerticalAlignment="Center"/>
+                                            <TextBlock Text="Select All" VerticalAlignment="Center"/>
+                                        </StackPanel>
+                                    </Button>
+                                    <Button x:Name="BtnDeselectAllFeatures" Style="{StaticResource ModernBtn}" Padding="10,4">
+                                        <StackPanel Orientation="Horizontal">
+                                            <Path Data="{StaticResource IconClose}" Fill="#F87171" Width="10" Height="10" Stretch="Uniform" Margin="0,0,6,0" VerticalAlignment="Center"/>
+                                            <TextBlock Text="Deselect All" VerticalAlignment="Center"/>
+                                        </StackPanel>
+                                    </Button>
                                 </StackPanel>
                             </Grid>
 
@@ -830,12 +1353,22 @@
                                     <Grid Margin="0,4">
                                         <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
                                         <CheckBox x:Name="ChkWindowsSandbox" Grid.Column="0" Style="{StaticResource ModernCheckBox}" Content="Enable Windows Sandbox (Lightweight disposable virtual desktop)" IsChecked="False"/>
-                                        <Border Grid.Column="1" Background="#881337" CornerRadius="10" Padding="8,2" VerticalAlignment="Center"><TextBlock Text="HIGH IMPACT" FontSize="10" FontWeight="Bold" Foreground="#F87171"/></Border>
+                                        <Border Grid.Column="1" Background="#881337" CornerRadius="10" Padding="8,3" VerticalAlignment="Center">
+                                            <StackPanel Orientation="Horizontal">
+                                                <Path Data="{StaticResource IconAlertOctagon}" Fill="#F87171" Width="10" Height="10" Stretch="Uniform" Margin="0,0,4,0" VerticalAlignment="Center"/>
+                                                <TextBlock Text="HIGH IMPACT" FontSize="9" FontWeight="Bold" Foreground="#F87171" VerticalAlignment="Center"/>
+                                            </StackPanel>
+                                        </Border>
                                     </Grid>
                                     <Grid Margin="0,4">
                                         <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
                                         <CheckBox x:Name="ChkWSL" Grid.Column="0" Style="{StaticResource ModernCheckBox}" Content="Enable Windows Subsystem for Linux (WSL)" IsChecked="False"/>
-                                        <Border Grid.Column="1" Background="#881337" CornerRadius="10" Padding="8,2" VerticalAlignment="Center"><TextBlock Text="HIGH IMPACT" FontSize="10" FontWeight="Bold" Foreground="#F87171"/></Border>
+                                        <Border Grid.Column="1" Background="#881337" CornerRadius="10" Padding="8,3" VerticalAlignment="Center">
+                                            <StackPanel Orientation="Horizontal">
+                                                <Path Data="{StaticResource IconAlertOctagon}" Fill="#F87171" Width="10" Height="10" Stretch="Uniform" Margin="0,0,4,0" VerticalAlignment="Center"/>
+                                                <TextBlock Text="HIGH IMPACT" FontSize="9" FontWeight="Bold" Foreground="#F87171" VerticalAlignment="Center"/>
+                                            </StackPanel>
+                                        </Border>
                                     </Grid>
                                     <TextBlock Text="Note: Enabling optional Windows features requires system virtualization support (VT-x/AMD-V)." FontSize="11" Foreground="#94A3B8" Margin="0,10,0,0"/>
                                 </StackPanel>
@@ -850,34 +1383,60 @@
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
 
-                <StackPanel Grid.Row="0" Margin="0,0,0,14">
+                <StackPanel Grid.Row="0" Margin="0,0,0,12">
                     <TextBlock Text="Safety Guard &amp; Pre-Execution Check" FontSize="18" FontWeight="Bold" Foreground="#F8FAFC"/>
                     <TextBlock Text="Ensure system recovery safeguards are engaged before modifying any Windows state." FontSize="13" Foreground="#94A3B8"/>
                 </StackPanel>
 
+                <!-- Live Target Execution Plan & Overall Safety Rating Card -->
+                <Border Grid.Row="1" Background="#131D31" CornerRadius="8" BorderBrush="#2A384F" BorderThickness="1" Padding="14,10" Margin="0,0,0,12">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0" VerticalAlignment="Center">
+                            <TextBlock Text="Target Execution Plan:" FontSize="11" FontWeight="SemiBold" Foreground="#94A3B8"/>
+                            <TextBlock x:Name="TxtStage3Summary" Text="84 Bloatware Apps • 18 System Tweaks Queued (102 Operations)" FontSize="15" FontWeight="Bold" Foreground="#F8FAFC" Margin="0,2,0,0"/>
+                        </StackPanel>
+                        <Border Grid.Column="1" x:Name="BadgeStage3Impact" Background="#064E3B" BorderBrush="#059669" BorderThickness="1" CornerRadius="6" Padding="12,6" VerticalAlignment="Center">
+                            <StackPanel Orientation="Horizontal">
+                                <Path x:Name="IconStage3Impact" Data="{StaticResource IconCheckCircle}" Fill="#34D399" Width="14" Height="14" Stretch="Uniform" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                                <TextBlock x:Name="TxtStage3Impact" Text="SAFETY RATING: LOW / SAFE" FontSize="12" FontWeight="Bold" Foreground="#34D399" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+                </Border>
+
                 <!-- Safety Options -->
-                <Border Grid.Row="1" Background="#131D31" CornerRadius="8" BorderBrush="#2A384F" BorderThickness="1" Padding="18" Margin="0,0,0,14">
+                <Border Grid.Row="2" Background="#131D31" CornerRadius="8" BorderBrush="#2A384F" BorderThickness="1" Padding="16" Margin="0,0,0,12">
                     <StackPanel>
                         <CheckBox x:Name="ChkCreateRestorePoint" Style="{StaticResource ModernCheckBox}" Content="Create Windows System Restore Point (Recommended)" IsChecked="True" FontWeight="Bold"/>
                         <TextBlock Text="Creates an immediate restore point checkpoint allowing rollback through Windows Recovery if needed." FontSize="12" Foreground="#94A3B8" Margin="24,0,0,10"/>
 
                         <CheckBox x:Name="ChkRegistrySnapshot" Style="{StaticResource ModernCheckBox}" Content="Capture Pre-Tweak Registry Snapshot to Local Storage" IsChecked="True" FontWeight="Bold"/>
-                        <TextBlock Text="Captures exact original values of all targeted registry keys into %LOCALAPPDATA%\NHWinDebloater\Backups\." FontSize="12" Foreground="#94A3B8" Margin="24,0,0,10"/>
+                        <TextBlock Text="Captures exact original values of all targeted registry keys into %LOCALAPPDATA%\NHWinDebloater\Backups\." FontSize="12" Foreground="#94A3B8" Margin="24,0,0,0"/>
                     </StackPanel>
                 </Border>
 
                 <!-- Dry-Run Preview Box -->
-                <Border Grid.Row="2" Background="#0A0E17" CornerRadius="8" BorderBrush="#2A384F" BorderThickness="1" Padding="14">
+                <Border Grid.Row="3" Background="#0A0E17" CornerRadius="8" BorderBrush="#2A384F" BorderThickness="1" Padding="14">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
                         <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,8">
-                            <Button x:Name="BtnRunDryRun" Style="{StaticResource ModernBtn}" Content="▶ Run Dry-Run Preview (WhatIf)" Margin="0,0,10,0"/>
+                            <Button x:Name="BtnRunDryRun" Style="{StaticResource ModernBtn}" Margin="0,0,10,0" Padding="12,5">
+                                <StackPanel Orientation="Horizontal">
+                                    <Path Data="{StaticResource IconPlay}" Fill="#38BDF8" Width="12" Height="12" Stretch="Uniform" Margin="0,0,6,0" VerticalAlignment="Center"/>
+                                    <TextBlock Text="Run Dry-Run Preview (WhatIf)" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Button>
                             <TextBlock x:Name="TxtDryRunStatus" Text="Click to simulate changes without applying anything." VerticalAlignment="Center" FontSize="12" Foreground="#38BDF8"/>
                         </StackPanel>
                         <TextBox x:Name="TxtDryRunLog" Grid.Row="1" IsReadOnly="True" VerticalScrollBarVisibility="Auto" Background="#0A0E17" Foreground="#E2E8F0" FontFamily="Consolas, Lucida Console" FontSize="12" BorderThickness="0" Padding="8"/>
@@ -959,9 +1518,24 @@
                             <TextBlock Text="• Review session execution log file or backup snapshots at any time." FontSize="13" Foreground="#CBD5E1" Margin="0,2"/>
 
                             <StackPanel Orientation="Horizontal" Margin="0,18,0,0">
-                                <Button x:Name="BtnRestartExplorer" Style="{StaticResource ModernBtn}" Content="⟳ Restart Windows Explorer" Margin="0,0,10,0"/>
-                                <Button x:Name="BtnOpenLog" Style="{StaticResource ModernBtn}" Content="📄 View Execution Log" Margin="0,0,10,0"/>
-                                <Button x:Name="BtnOpenBackups" Style="{StaticResource ModernBtn}" Content="📁 Open Backups Folder"/>
+                                <Button x:Name="BtnRestartExplorer" Style="{StaticResource ModernBtn}" Margin="0,0,10,0">
+                                    <StackPanel Orientation="Horizontal">
+                                        <Path Data="{StaticResource IconRefresh}" Fill="#38BDF8" Width="12" Height="12" Stretch="Uniform" Margin="0,0,6,0" VerticalAlignment="Center"/>
+                                        <TextBlock Text="Restart Windows Explorer" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </Button>
+                                <Button x:Name="BtnOpenLog" Style="{StaticResource ModernBtn}" Margin="0,0,10,0">
+                                    <StackPanel Orientation="Horizontal">
+                                        <Path Data="{StaticResource IconFileText}" Fill="#38BDF8" Width="12" Height="12" Stretch="Uniform" Margin="0,0,6,0" VerticalAlignment="Center"/>
+                                        <TextBlock Text="View Execution Log" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </Button>
+                                <Button x:Name="BtnOpenBackups" Style="{StaticResource ModernBtn}">
+                                    <StackPanel Orientation="Horizontal">
+                                        <Path Data="{StaticResource IconFolder}" Fill="#38BDF8" Width="12" Height="12" Stretch="Uniform" Margin="0,0,6,0" VerticalAlignment="Center"/>
+                                        <TextBlock Text="Open Backups Folder" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </Button>
                             </StackPanel>
                         </StackPanel>
                     </Border>
@@ -969,7 +1543,7 @@
             </Grid>
         </Grid>
 
-        <!-- 4. Footer Bar & Navigation -->
+        <!-- 4. Footer Bar & Navigation with Vector Icons -->
         <Border Grid.Row="3" Background="#131D31" BorderBrush="#2A384F" BorderThickness="0,1,0,0" Padding="24,0">
             <Grid VerticalAlignment="Center">
                 <Grid.ColumnDefinitions>
@@ -993,12 +1567,32 @@
                     </TextBlock>
                 </StackPanel>
 
-                <!-- Wizard Navigation Controls -->
+                <!-- Wizard Navigation Controls with Smooth Vector Icons -->
                 <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
-                    <Button x:Name="BtnBack" Style="{StaticResource ModernBtn}" Content="Back" Visibility="Collapsed" Margin="0,0,10,0"/>
-                    <Button x:Name="BtnNext" Style="{StaticResource PrimaryBtn}" Content="Next ›" Margin="0,0,10,0"/>
-                    <Button x:Name="BtnApply" Style="{StaticResource PrimaryBtn}" Content="Apply Optimizations" Visibility="Collapsed" Margin="0,0,10,0"/>
-                    <Button x:Name="BtnFinish" Style="{StaticResource PrimaryBtn}" Content="Finish &amp; Exit" Visibility="Collapsed"/>
+                    <Button x:Name="BtnBack" Style="{StaticResource ModernBtn}" Visibility="Collapsed" Margin="0,0,10,0">
+                        <StackPanel Orientation="Horizontal">
+                            <Path Data="{StaticResource IconArrowBack}" Fill="#CBD5E1" Width="12" Height="12" Stretch="Uniform" Margin="0,0,6,0" VerticalAlignment="Center"/>
+                            <TextBlock Text="Back" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Button>
+                    <Button x:Name="BtnNext" Style="{StaticResource PrimaryBtn}" Margin="0,0,10,0">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="Next" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                            <Path Data="{StaticResource IconArrowForward}" Fill="#FFFFFF" Width="12" Height="12" Stretch="Uniform" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Button>
+                    <Button x:Name="BtnApply" Style="{StaticResource PrimaryBtn}" Visibility="Collapsed" Margin="0,0,10,0">
+                        <StackPanel Orientation="Horizontal">
+                            <Path Data="{StaticResource IconLightning}" Fill="#FFFFFF" Width="12" Height="12" Stretch="Uniform" Margin="0,0,6,0" VerticalAlignment="Center"/>
+                            <TextBlock Text="Apply Optimizations" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Button>
+                    <Button x:Name="BtnFinish" Style="{StaticResource PrimaryBtn}" Visibility="Collapsed">
+                        <StackPanel Orientation="Horizontal">
+                            <Path Data="{StaticResource IconCheckCircle}" Fill="#FFFFFF" Width="12" Height="12" Stretch="Uniform" Margin="0,0,6,0" VerticalAlignment="Center"/>
+                            <TextBlock Text="Finish &amp; Exit" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Button>
                 </StackPanel>
             </Grid>
         </Border>

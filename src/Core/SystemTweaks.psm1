@@ -1,4 +1,4 @@
-<#
+﻿<#
     .SYNOPSIS
         NH Win Debloater - System Tweaks & Recovery Engine
     .DESCRIPTION
@@ -785,4 +785,93 @@ function Set-ApplicationAITweak {
     return $ops.ToArray()
 }
 
-Export-ModuleMember -Function Set-ConsumerFeatureTweak, Set-LockScreenTweak, Set-ClassicContextMenuTweak, Set-MousePrecisionTweak, Set-StickyKeysTweak, Set-FastStartupTweak, Set-StorageSenseTweak, Set-WindowsUpdatePolicyTweak, Set-OptionalFeatureState, Set-GameDVRPlaybackTweak, Set-DeliveryOptimizationTweak, Set-TelemetryServiceTweak, Set-StartMenuRecommendedTweak, Set-EdgeBackgroundTweak, Set-TelemetryScheduledTasksTweak, Set-HibernationStorageTweak, Set-MultitaskingTweak, Set-CopilotAITweak, Set-RecallAITweak, Set-ApplicationAITweak, New-DebloatRestorePoint, Export-RegistrySnapshot, Restore-RegistrySnapshot
+function Get-DebloatSafetyImpact {
+    <#
+        .SYNOPSIS
+            Evaluates the combined safety and impact level of selected debloat actions.
+        .DESCRIPTION
+            Analyzes the quantity of packages and specific system tweak configurations,
+            categorizing them into LOW / SAFE, MODERATE / CAUTION, or HIGH IMPACT.
+    #>
+    [CmdletBinding()]
+    [OutputType([PSCustomObject])]
+    param(
+        [Parameter(Mandatory = $false)]
+        [int]$AppCount = 0,
+
+        [Parameter(Mandatory = $false)]
+        [hashtable]$TweakFlags = @{}
+    )
+
+    $highImpactKeys = @("WindowsSandbox", "WSL")
+    $cautionKeys = @("TelemetryService", "Hibernation", "FastStartup", "StorageSense", "PaintAI", "NotepadAI")
+
+    $hasHigh = $false
+    $hasCaution = $false
+    $selectedTweakCount = 0
+
+    foreach ($key in $TweakFlags.Keys) {
+        if ($TweakFlags[$key] -eq $true) {
+            $selectedTweakCount++
+            if ($highImpactKeys -contains $key) {
+                $hasHigh = $true
+            }
+            elseif ($cautionKeys -contains $key) {
+                $hasCaution = $true
+            }
+        }
+    }
+
+    $totalOps = $AppCount + $selectedTweakCount
+
+    if ($hasHigh) {
+        return [PSCustomObject]@{
+            Level         = "High"
+            Rating        = "HIGH IMPACT"
+            BadgeText     = "HIGH IMPACT"
+            BgColor       = "#881337"
+            BorderColor   = "#E11D48"
+            FgColor       = "#F87171"
+            IconKey       = "IconAlertOctagon"
+            AppCount      = $AppCount
+            TweakCount    = $selectedTweakCount
+            TotalCount    = $totalOps
+            SummaryText   = "$AppCount Apps • $selectedTweakCount Tweaks Selected"
+            Description   = "System virtualization features selected (Hyper-V / WSL)."
+        }
+    }
+    elseif ($hasCaution) {
+        return [PSCustomObject]@{
+            Level         = "Moderate"
+            Rating        = "MODERATE / CAUTION"
+            BadgeText     = "MODERATE / CAUTION"
+            BgColor       = "#78350F"
+            BorderColor   = "#D97706"
+            FgColor       = "#FBBF24"
+            IconKey       = "IconAlertTriangle"
+            AppCount      = $AppCount
+            TweakCount    = $selectedTweakCount
+            TotalCount    = $totalOps
+            SummaryText   = "$AppCount Apps • $selectedTweakCount Tweaks Selected"
+            Description   = "Advanced tweaks selected (Services / Hibernation / App AI)."
+        }
+    }
+    else {
+        return [PSCustomObject]@{
+            Level         = "Safe"
+            Rating        = "LOW / SAFE"
+            BadgeText     = "LOW / SAFE"
+            BgColor       = "#064E3B"
+            BorderColor   = "#059669"
+            FgColor       = "#34D399"
+            IconKey       = "IconCheckCircle"
+            AppCount      = $AppCount
+            TweakCount    = $selectedTweakCount
+            TotalCount    = $totalOps
+            SummaryText   = "$AppCount Apps • $selectedTweakCount Tweaks Selected"
+            Description   = "All selected items are safe recommended optimizations."
+        }
+    }
+}
+
+Export-ModuleMember -Function Set-ConsumerFeatureTweak, Set-LockScreenTweak, Set-ClassicContextMenuTweak, Set-MousePrecisionTweak, Set-StickyKeysTweak, Set-FastStartupTweak, Set-StorageSenseTweak, Set-WindowsUpdatePolicyTweak, Set-OptionalFeatureState, Set-GameDVRPlaybackTweak, Set-DeliveryOptimizationTweak, Set-TelemetryServiceTweak, Set-StartMenuRecommendedTweak, Set-EdgeBackgroundTweak, Set-TelemetryScheduledTasksTweak, Set-HibernationStorageTweak, Set-MultitaskingTweak, Set-CopilotAITweak, Set-RecallAITweak, Set-ApplicationAITweak, Get-DebloatSafetyImpact, New-DebloatRestorePoint, Export-RegistrySnapshot, Restore-RegistrySnapshot
