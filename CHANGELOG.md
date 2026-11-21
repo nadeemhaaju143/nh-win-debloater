@@ -9,6 +9,23 @@ The project follows a **progressive semantic minor versioning format**:
 
 ---
 
+## [0.5.4] - 2026-11-21
+
+### Start-Screen Restore Shortcut & Selective Multi-Select Restore
+- **Start-Screen Restore / Rollback Shortcut (`MainWindow.xaml` & `AppController.ps1`):**
+  - Added direct **Restore / Rollback** button in top header bar (`BtnHeaderRestore`) and on Stage 1 opening screen (`BtnStage1Restore`) for returning users to jump straight to Stage 5 Restore & Rollback Manager without re-running tweaks.
+  - Added smart back navigation: clicking "Back" from Stage 5 returns directly to Stage 1 when navigated via the shortcut (`$script:CameFromRestoreShortcut`).
+- **Selective Multi-Select Restore Scope (`MainWindow.xaml`, `AppController.ps1`, `SystemTweaks.psm1`):**
+  - Added Material multi-select scope dropdown (`ToggleSelectiveRestore` + `PopupSelectiveRestore`) with checkboxes for **Built-in Apps Reinstallation**, **Privacy & Diagnostic Policies**, **Taskbar, Explorer & Context Menu**, **Gaming & Performance Settings**, **AI Integration**, and **System Extras & Hardware Policies**.
+  - Added quick filter buttons: **Tweaks Only**, **Apps Only**, **All**, and **Clear**.
+  - Enhanced `Restore-RegistrySnapshot` with `[string[]]$Categories` parameter to dynamically categorize and filter registry paths (`AI`, `Privacy`, `Shell`, `Gaming`, `Extras`) during preview and restore.
+  - Added **Restore Selected** (`BtnRestoreSelective`) action alongside **Preview (Dry-Run)** (`BtnPreviewSnapshot`) and **1-Click Full Restore** (`BtnRestoreSnapshot`), with confirmation dialogs and structured file logging to `NHWinDebloater.log`.
+- **Quality Gate & Automated Testing (`tests/CoreModules.Tests.ps1`):**
+  - Added Pester tests verifying XAML presence of all shortcut and selective restore controls.
+  - Added unit tests for `Restore-RegistrySnapshot -Categories` verifying exact category filtering and metadata tagging (61 total passing tests, 0 PSScriptAnalyzer warnings/errors).
+
+---
+
 ## [0.5.3] - 2026-11-21
 
 ### Stage 5 Registry Snapshot Dropdown, Structured Logging & Elevation Guard

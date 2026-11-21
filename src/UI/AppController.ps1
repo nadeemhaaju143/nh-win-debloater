@@ -274,10 +274,26 @@ function Show-DebloaterWindow {
     $cboRegistrySnapshots = $window.FindName("CboRegistrySnapshots")
     $btnRefreshSnapshots = $window.FindName("BtnRefreshSnapshots")
     $btnPreviewSnapshot = $window.FindName("BtnPreviewSnapshot")
+    $btnRestoreSelective = $window.FindName("BtnRestoreSelective")
     $btnRestoreSnapshot = $window.FindName("BtnRestoreSnapshot")
     $txtRestoreStatus = $window.FindName("TxtRestoreStatus")
+    $toggleSelectiveRestore = $window.FindName("ToggleSelectiveRestore")
+    $txtToggleSelectiveRestoreText = $window.FindName("TxtToggleSelectiveRestoreText")
+    $popupSelectiveRestore = $window.FindName("PopupSelectiveRestore")
+    $chkRestoreScopeApps = $window.FindName("ChkRestoreScopeApps")
+    $chkRestoreScopePrivacy = $window.FindName("ChkRestoreScopePrivacy")
+    $chkRestoreScopeShell = $window.FindName("ChkRestoreScopeShell")
+    $chkRestoreScopeGaming = $window.FindName("ChkRestoreScopeGaming")
+    $chkRestoreScopeAI = $window.FindName("ChkRestoreScopeAI")
+    $chkRestoreScopeExtras = $window.FindName("ChkRestoreScopeExtras")
+    $btnRestoreScopeTweaksOnly = $window.FindName("BtnRestoreScopeTweaksOnly")
+    $btnRestoreScopeAppsOnly = $window.FindName("BtnRestoreScopeAppsOnly")
+    $btnRestoreScopeAll = $window.FindName("BtnRestoreScopeAll")
+    $btnRestoreScopeClear = $window.FindName("BtnRestoreScopeClear")
 
     # Header & Stage 1/2 Actions
+    $btnHeaderRestore = $window.FindName("BtnHeaderRestore")
+    $btnStage1Restore = $window.FindName("BtnStage1Restore")
     $btnHeaderReinstallApps = $window.FindName("BtnHeaderReinstallApps")
     $btnImportProfile = $window.FindName("BtnImportProfile")
     $btnExportProfile = $window.FindName("BtnExportProfile")
@@ -522,6 +538,7 @@ function Show-DebloaterWindow {
                 $cboRegistrySnapshots.SelectedIndex = 0
                 if ($btnRestoreSnapshot) { $btnRestoreSnapshot.IsEnabled = $false }
                 if ($btnPreviewSnapshot) { $btnPreviewSnapshot.IsEnabled = $false }
+                if ($btnRestoreSelective) { $btnRestoreSelective.IsEnabled = $false }
             } else {
                 foreach ($b in $backups) {
                     $cboItem = [System.Windows.Controls.ComboBoxItem]::new()
@@ -532,13 +549,19 @@ function Show-DebloaterWindow {
                 $cboRegistrySnapshots.SelectedIndex = 0
                 if ($btnRestoreSnapshot) { $btnRestoreSnapshot.IsEnabled = $true }
                 if ($btnPreviewSnapshot) { $btnPreviewSnapshot.IsEnabled = $true }
+                if ($btnRestoreSelective) { $btnRestoreSelective.IsEnabled = $true }
             }
         }
     }
 
+    $script:CameFromRestoreShortcut = $false
+
     $updateStageView = {
         param([int]$stage)
         $script:CurrentStage = $stage
+        if ($stage -ne 5) {
+            $script:CameFromRestoreShortcut = $false
+        }
 
         # Hide all stages
         $viewStage1.Visibility = [System.Windows.Visibility]::Collapsed
@@ -596,7 +619,11 @@ function Show-DebloaterWindow {
             5 {
                 & $revealStage $viewStage5
                 $stepTag5.Foreground = $stepColorActive; $stepTag5.FontWeight = [System.Windows.FontWeights]::Bold
-                $btnBack.Visibility = [System.Windows.Visibility]::Collapsed
+                if ($script:CameFromRestoreShortcut) {
+                    $btnBack.Visibility = [System.Windows.Visibility]::Visible
+                } else {
+                    $btnBack.Visibility = [System.Windows.Visibility]::Collapsed
+                }
                 $btnNext.Visibility = [System.Windows.Visibility]::Collapsed
                 $btnApply.Visibility = [System.Windows.Visibility]::Collapsed
                 $btnFinish.Visibility = [System.Windows.Visibility]::Visible
@@ -1643,7 +1670,10 @@ function Show-DebloaterWindow {
 
     $btnBack.Add_Click({
         param([object]$eventSource, [System.Windows.RoutedEventArgs]$eventArgs)
-        if ($script:CurrentStage -gt 1) {
+        if ($script:CurrentStage -eq 5 -and $script:CameFromRestoreShortcut) {
+            $script:CameFromRestoreShortcut = $false
+            & $updateStageView 1
+        } elseif ($script:CurrentStage -gt 1) {
             & $updateStageView ($script:CurrentStage - 1)
         }
     })
@@ -2039,6 +2069,111 @@ function Show-DebloaterWindow {
         })
     }
 
+    # Shortcut Navigation to Stage 5 Restore Panel
+    $jumpToRestore = {
+        $script:CameFromRestoreShortcut = $true
+        & $updateStageView 5
+    }
+
+    if ($btnHeaderRestore) {
+        $btnHeaderRestore.Add_Click({
+            param([object]$eventSource, [System.Windows.RoutedEventArgs]$eventArgs)
+            & $jumpToRestore
+        })
+    }
+
+    if ($btnStage1Restore) {
+        $btnStage1Restore.Add_Click({
+            param([object]$eventSource, [System.Windows.RoutedEventArgs]$eventArgs)
+            & $jumpToRestore
+        })
+    }
+
+    # Selective Scope Helpers & Handlers
+    $getSelectedRestoreCategories = {
+        $cats = [System.Collections.Generic.List[string]]::new()
+        if ($chkRestoreScopePrivacy -and $chkRestoreScopePrivacy.IsChecked) { $cats.Add("Privacy") }
+        if ($chkRestoreScopeShell -and $chkRestoreScopeShell.IsChecked) { $cats.Add("Shell") }
+        if ($chkRestoreScopeGaming -and $chkRestoreScopeGaming.IsChecked) { $cats.Add("Gaming") }
+        if ($chkRestoreScopeAI -and $chkRestoreScopeAI.IsChecked) { $cats.Add("AI") }
+        if ($chkRestoreScopeExtras -and $chkRestoreScopeExtras.IsChecked) { $cats.Add("Extras") }
+        return $cats.ToArray()
+    }
+
+    $updateSelectiveScopeSummary = {
+        if (-not $txtToggleSelectiveRestoreText) { return }
+        $tweakCount = 0
+        @($chkRestoreScopePrivacy, $chkRestoreScopeShell, $chkRestoreScopeGaming, $chkRestoreScopeAI, $chkRestoreScopeExtras) |
+            ForEach-Object { if ($_ -and $_.IsChecked) { $tweakCount++ } }
+        $appsChecked = [bool]($chkRestoreScopeApps -and $chkRestoreScopeApps.IsChecked)
+
+        if ($appsChecked -and $tweakCount -eq 5) {
+            $txtToggleSelectiveRestoreText.Text = "Scope: All Tweaks & Apps"
+        } elseif (-not $appsChecked -and $tweakCount -eq 5) {
+            $txtToggleSelectiveRestoreText.Text = "Scope: Tweaks Only (5/5)"
+        } elseif ($appsChecked -and $tweakCount -eq 0) {
+            $txtToggleSelectiveRestoreText.Text = "Scope: Apps Only"
+        } elseif (-not $appsChecked -and $tweakCount -eq 0) {
+            $txtToggleSelectiveRestoreText.Text = "Scope: None Selected"
+        } elseif ($appsChecked) {
+            $txtToggleSelectiveRestoreText.Text = "Scope: Apps + $tweakCount Categories"
+        } else {
+            $txtToggleSelectiveRestoreText.Text = "Scope: $tweakCount Categories"
+        }
+    }
+
+    @($chkRestoreScopeApps, $chkRestoreScopePrivacy, $chkRestoreScopeShell, $chkRestoreScopeGaming, $chkRestoreScopeAI, $chkRestoreScopeExtras) |
+        ForEach-Object {
+            if ($_) {
+                $_.Add_Checked({ & $updateSelectiveScopeSummary })
+                $_.Add_Unchecked({ & $updateSelectiveScopeSummary })
+            }
+        }
+
+    if ($btnRestoreScopeTweaksOnly) {
+        $btnRestoreScopeTweaksOnly.Add_Click({
+            param([object]$eventSource, [System.Windows.RoutedEventArgs]$eventArgs)
+            if ($chkRestoreScopeApps) { $chkRestoreScopeApps.IsChecked = $false }
+            if ($chkRestoreScopePrivacy) { $chkRestoreScopePrivacy.IsChecked = $true }
+            if ($chkRestoreScopeShell) { $chkRestoreScopeShell.IsChecked = $true }
+            if ($chkRestoreScopeGaming) { $chkRestoreScopeGaming.IsChecked = $true }
+            if ($chkRestoreScopeAI) { $chkRestoreScopeAI.IsChecked = $true }
+            if ($chkRestoreScopeExtras) { $chkRestoreScopeExtras.IsChecked = $true }
+            & $updateSelectiveScopeSummary
+        })
+    }
+
+    if ($btnRestoreScopeAppsOnly) {
+        $btnRestoreScopeAppsOnly.Add_Click({
+            param([object]$eventSource, [System.Windows.RoutedEventArgs]$eventArgs)
+            if ($chkRestoreScopeApps) { $chkRestoreScopeApps.IsChecked = $true }
+            if ($chkRestoreScopePrivacy) { $chkRestoreScopePrivacy.IsChecked = $false }
+            if ($chkRestoreScopeShell) { $chkRestoreScopeShell.IsChecked = $false }
+            if ($chkRestoreScopeGaming) { $chkRestoreScopeGaming.IsChecked = $false }
+            if ($chkRestoreScopeAI) { $chkRestoreScopeAI.IsChecked = $false }
+            if ($chkRestoreScopeExtras) { $chkRestoreScopeExtras.IsChecked = $false }
+            & $updateSelectiveScopeSummary
+        })
+    }
+
+    if ($btnRestoreScopeAll) {
+        $btnRestoreScopeAll.Add_Click({
+            param([object]$eventSource, [System.Windows.RoutedEventArgs]$eventArgs)
+            @($chkRestoreScopeApps, $chkRestoreScopePrivacy, $chkRestoreScopeShell, $chkRestoreScopeGaming, $chkRestoreScopeAI, $chkRestoreScopeExtras) |
+                ForEach-Object { if ($_) { $_.IsChecked = $true } }
+            & $updateSelectiveScopeSummary
+        })
+    }
+
+    if ($btnRestoreScopeClear) {
+        $btnRestoreScopeClear.Add_Click({
+            param([object]$eventSource, [System.Windows.RoutedEventArgs]$eventArgs)
+            @($chkRestoreScopeApps, $chkRestoreScopePrivacy, $chkRestoreScopeShell, $chkRestoreScopeGaming, $chkRestoreScopeAI, $chkRestoreScopeExtras) |
+                ForEach-Object { if ($_) { $_.IsChecked = $false } }
+            & $updateSelectiveScopeSummary
+        })
+    }
+
     # Registry Snapshot Rollback Handlers
     if ($btnRefreshSnapshots) {
         $btnRefreshSnapshots.Add_Click({
@@ -2051,23 +2186,133 @@ function Show-DebloaterWindow {
         $btnPreviewSnapshot.Add_Click({
             param([object]$eventSource, [System.Windows.RoutedEventArgs]$eventArgs)
             $selected = & $getSnapshotFromItem $cboRegistrySnapshots.SelectedItem
-            if (-not $selected -or -not $selected.FilePath) {
-                if ($txtRestoreStatus) { $txtRestoreStatus.Text = "Please select a valid snapshot to preview." }
+            $categories = & $getSelectedRestoreCategories
+            $includeApps = [bool]($chkRestoreScopeApps -and $chkRestoreScopeApps.IsChecked)
+
+            if ($categories.Count -eq 0 -and -not $includeApps) {
+                if ($txtRestoreStatus) {
+                    $txtRestoreStatus.Text = "Please select at least one component in the restore scope."
+                    $txtRestoreStatus.Foreground = [System.Windows.Media.Brushes]::Coral
+                }
                 return
             }
-            try {
-                $results = Restore-RegistrySnapshot -SnapshotPath $selected.FilePath -WhatIf
+
+            if ($categories.Count -gt 0 -and (-not $selected -or -not $selected.FilePath)) {
                 if ($txtRestoreStatus) {
-                    $txtRestoreStatus.Text = "Dry-Run Preview: $($results.Count) registry keys would be restored from $($selected.FileName)."
+                    $txtRestoreStatus.Text = "Please select a valid snapshot to preview registry tweaks."
+                    $txtRestoreStatus.Foreground = [System.Windows.Media.Brushes]::Coral
+                }
+                return
+            }
+
+            try {
+                $regCount = 0
+                if ($categories.Count -gt 0) {
+                    $results = Restore-RegistrySnapshot -SnapshotPath $selected.FilePath -Categories $categories -WhatIf
+                    $regCount = $results.Count
+                }
+                $appCount = if ($includeApps) { 6 } else { 0 }
+
+                $msg = ""
+                if ($regCount -gt 0 -and $appCount -gt 0) {
+                    $msg = "Dry-Run Preview: $regCount registry keys ($($categories.Count) categories) and $appCount built-in apps eligible for restore."
+                } elseif ($regCount -gt 0) {
+                    $msg = "Dry-Run Preview: $regCount registry keys ($($categories.Count) categories) would be restored from $($selected.FileName)."
+                } elseif ($appCount -gt 0) {
+                    $msg = "Dry-Run Preview: $appCount built-in applications eligible for reinstallation (Store, Calculator, Notepad, Paint, Photos, Terminal)."
+                } else {
+                    $msg = "Dry-Run Preview: 0 matching keys found in $($selected.FileName) for selected categories."
+                }
+
+                if ($txtRestoreStatus) {
+                    $txtRestoreStatus.Text = $msg
                     $txtRestoreStatus.Foreground = [System.Windows.Media.Brushes]::MediumAquamarine
                 }
-                Write-DebloatLog -Message "Dry-Run Preview: $($results.Count) registry keys would be restored from $($selected.FileName)" -Level "PREVIEW" -NoConsole
+                Write-DebloatLog -Message $msg -Level "PREVIEW" -NoConsole
             } catch {
                 if ($txtRestoreStatus) {
                     $txtRestoreStatus.Text = "Preview Error: $($_.Exception.Message)"
                     $txtRestoreStatus.Foreground = [System.Windows.Media.Brushes]::Coral
                 }
-                Write-DebloatLog -Message "Preview Error for $($selected.FileName): $($_.Exception.Message)" -Level "ERROR" -NoConsole
+                Write-DebloatLog -Message "Preview Error: $($_.Exception.Message)" -Level "ERROR" -NoConsole
+            }
+        })
+    }
+
+    if ($btnRestoreSelective) {
+        $btnRestoreSelective.Add_Click({
+            param([object]$eventSource, [System.Windows.RoutedEventArgs]$eventArgs)
+            $selected = & $getSnapshotFromItem $cboRegistrySnapshots.SelectedItem
+            $categories = & $getSelectedRestoreCategories
+            $includeApps = [bool]($chkRestoreScopeApps -and $chkRestoreScopeApps.IsChecked)
+
+            if ($categories.Count -eq 0 -and -not $includeApps) {
+                if ($txtRestoreStatus) {
+                    $txtRestoreStatus.Text = "Please select at least one component in the restore scope (Apps or Tweak Categories)."
+                    $txtRestoreStatus.Foreground = [System.Windows.Media.Brushes]::Coral
+                }
+                return
+            }
+
+            if ($categories.Count -gt 0 -and (-not $selected -or -not $selected.FilePath)) {
+                if ($txtRestoreStatus) {
+                    $txtRestoreStatus.Text = "Please select a valid snapshot to restore tweaks from."
+                    $txtRestoreStatus.Foreground = [System.Windows.Media.Brushes]::Coral
+                }
+                return
+            }
+
+            $scopeSummary = [System.Collections.Generic.List[string]]::new()
+            if ($categories.Count -gt 0) {
+                $scopeSummary.Add("Registry Categories: $($categories -join ', ') (from $($selected.FileName))")
+            }
+            if ($includeApps) {
+                $scopeSummary.Add("Built-in Applications (Store, Calculator, Notepad, Paint, Photos, Terminal)")
+            }
+
+            $confirmMsg = "Are you sure you want to run Selective Restore with the following scope?`n`n" +
+                          ($scopeSummary | ForEach-Object { "- $_" } | Out-String).Trim() +
+                          "`n`nThis will revert only the selected components."
+
+            $confirm = [System.Windows.MessageBox]::Show($confirmMsg, "Confirm Selective Restore", [System.Windows.MessageBoxButton]::YesNo, [System.Windows.MessageBoxImage]::Question)
+            if ($confirm -ne [System.Windows.MessageBoxResult]::Yes) {
+                return
+            }
+
+            try {
+                $regResultsCount = 0
+                if ($categories.Count -gt 0) {
+                    $results = Restore-RegistrySnapshot -SnapshotPath $selected.FilePath -Categories $categories
+                    $regResultsCount = $results.Count
+                }
+
+                $appsInstalledCount = 0
+                if ($includeApps) {
+                    @("Store", "Calculator", "Notepad", "Paint", "Photos", "Terminal") | ForEach-Object {
+                        $appRes = Install-CommonWindowsApp -AppName $_
+                        if ($appRes.Status -eq "Success") { $appsInstalledCount++ }
+                    }
+                }
+
+                $statusMsg = "Selective Restore Complete: Restored $regResultsCount registry keys"
+                if ($includeApps) {
+                    $statusMsg += " and processed built-in apps ($appsInstalledCount reinstalled)"
+                }
+                $statusMsg += "."
+
+                if ($txtRestoreStatus) {
+                    $txtRestoreStatus.Text = $statusMsg
+                    $txtRestoreStatus.Foreground = [System.Windows.Media.Brushes]::MediumAquamarine
+                }
+                Write-DebloatLog -Message $statusMsg -Level "SUCCESS" -NoConsole
+
+                [System.Windows.MessageBox]::Show("$statusMsg`n`nRestarting Explorer or rebooting your PC is recommended to apply changes.", "Selective Restore Complete", [System.Windows.MessageBoxButton]::OK, [System.Windows.MessageBoxImage]::Information) | Out-Null
+            } catch {
+                if ($txtRestoreStatus) {
+                    $txtRestoreStatus.Text = "Restore Error: $($_.Exception.Message)"
+                    $txtRestoreStatus.Foreground = [System.Windows.Media.Brushes]::Coral
+                }
+                Write-DebloatLog -Message "Selective Restore Error: $($_.Exception.Message)" -Level "ERROR" -NoConsole
             }
         })
     }

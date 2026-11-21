@@ -468,6 +468,39 @@ Describe "UI Motion & Vector Icon Architecture" {
         $win.FindName("ViewStage5").RenderTransform | Should -Not -BeNullOrEmpty
         $win.FindName("TabStage2Controls").RenderTransform | Should -Not -BeNullOrEmpty
     }
+
+    It "Verifies presence of Start-Screen Restore shortcut and Selective Restore controls in XAML" {
+        $xamlPath = Join-Path $projectRoot "src\UI\MainWindow.xaml"
+        $xamlContent = Get-Content $xamlPath -Raw
+        $reader = [System.Xml.XmlReader]::Create([System.IO.StringReader]::new($xamlContent))
+        $win = $null
+        try {
+            $win = [System.Windows.Markup.XamlReader]::Load($reader)
+        } finally {
+            $reader.Close()
+        }
+
+        # Header and Stage 1 shortcuts
+        $win.FindName("BtnHeaderRestore") | Should -Not -BeNullOrEmpty
+        $win.FindName("BtnStage1Restore") | Should -Not -BeNullOrEmpty
+
+        # Selective restore dropdown and controls
+        $win.FindName("ToggleSelectiveRestore") | Should -Not -BeNullOrEmpty
+        $win.FindName("TxtToggleSelectiveRestoreText") | Should -Not -BeNullOrEmpty
+        $win.FindName("PopupSelectiveRestore") | Should -Not -BeNullOrEmpty
+        $win.FindName("ChkRestoreScopeApps") | Should -Not -BeNullOrEmpty
+        $win.FindName("ChkRestoreScopePrivacy") | Should -Not -BeNullOrEmpty
+        $win.FindName("ChkRestoreScopeShell") | Should -Not -BeNullOrEmpty
+        $win.FindName("ChkRestoreScopeGaming") | Should -Not -BeNullOrEmpty
+        $win.FindName("ChkRestoreScopeAI") | Should -Not -BeNullOrEmpty
+        $win.FindName("ChkRestoreScopeExtras") | Should -Not -BeNullOrEmpty
+        $win.FindName("BtnRestoreScopeTweaksOnly") | Should -Not -BeNullOrEmpty
+        $win.FindName("BtnRestoreScopeAppsOnly") | Should -Not -BeNullOrEmpty
+        $win.FindName("BtnRestoreScopeAll") | Should -Not -BeNullOrEmpty
+        $win.FindName("BtnRestoreScopeClear") | Should -Not -BeNullOrEmpty
+        $win.FindName("BtnRestoreSelective") | Should -Not -BeNullOrEmpty
+        $win.FindName("BtnRestoreSnapshot") | Should -Not -BeNullOrEmpty
+    }
 }
 
 Describe "Custom Preset Profiles Export/Import" {
@@ -555,6 +588,38 @@ Describe "Registry Snapshot & Rollback Engine" {
         $cboItem.Tag = $b
         $cboItem.Content | Should -Be $formatted
         $cboItem.Tag.FileName | Should -Be $b.FileName
+    }
+
+    It "Filters snapshot restoration accurately by category" {
+        $multiCatSnapshotPath = Join-Path $tempBackupDir "MultiCatSnapshot.json"
+        $multiData = @(
+            @{ Path = "HKLM:\SOFTWARE\Policies\Microsoft\Windows\DataCollection"; Name = "AllowTelemetry"; Value = 1 }
+            @{ Path = "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced"; Name = "HideFileExt"; Value = 1 }
+            @{ Path = "HKCU:\Software\Microsoft\Windows\CurrentVersion\GameDVR"; Name = "AppCaptureEnabled"; Value = 1 }
+            @{ Path = "HKCU:\Software\Policies\Microsoft\Windows\WindowsAI"; Name = "DisableAIDataAnalysis"; Value = 0 }
+            @{ Path = "HKCU:\Control Panel\Accessibility\StickyKeys"; Name = "Flags"; Value = "510" }
+        )
+        $multiData | ConvertTo-Json | Set-Content -Path $multiCatSnapshotPath -Encoding UTF8
+
+        # Test Privacy only
+        $privResults = @(Restore-RegistrySnapshot -SnapshotPath $multiCatSnapshotPath -Categories @("Privacy") -WhatIf)
+        $privResults.Count | Should -Be 1
+        $privResults[0].Category | Should -Be "Privacy"
+
+        # Test Shell and Gaming
+        $shellGamingResults = @(Restore-RegistrySnapshot -SnapshotPath $multiCatSnapshotPath -Categories @("Shell", "Gaming") -WhatIf)
+        $shellGamingResults.Count | Should -Be 2
+        ($shellGamingResults.Category) | Should -Contain "Shell"
+        ($shellGamingResults.Category) | Should -Contain "Gaming"
+
+        # Test AI only
+        $aiResults = @(Restore-RegistrySnapshot -SnapshotPath $multiCatSnapshotPath -Categories @("AI") -WhatIf)
+        $aiResults.Count | Should -Be 1
+        $aiResults[0].Category | Should -Be "AI"
+
+        # Test All or Omitted categories
+        $allResults = @(Restore-RegistrySnapshot -SnapshotPath $multiCatSnapshotPath -WhatIf)
+        $allResults.Count | Should -Be 5
     }
 }
 
