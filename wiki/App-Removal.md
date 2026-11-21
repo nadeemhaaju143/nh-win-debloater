@@ -48,7 +48,19 @@ Manufacturer-specific pre-installed bloat:
 
 ---
 
-## 3. Windows Built-in App Reinstall Helper
+## 3. App Selection Safety Indicators & Legend
+
+In v1.1.0, every application in the catalog features a high-contrast safety indicator and badge:
+
+- 🟢 **Recommended (Green `#10B981`):** Safe bloatware packages universally recommended for removal without affecting workflow.
+- 🟡 **Optional (Amber `#F59E0B`):** User preference applications such as Xbox services, built-in media tools, or office viewers.
+- 🔴 **Not Recommended (Red `#EF4444`):** Protected system components and frameworks that must remain intact.
+
+A persistent **Safety Legend Bar** is displayed along the bottom of the App Removal view for quick reference.
+
+---
+
+## 4. Windows Built-in App Reinstall Helper
 
 If you ever need to restore a default Windows utility (such as Calculator or Notepad) or re-register the Microsoft Store:
 

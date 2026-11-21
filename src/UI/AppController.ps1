@@ -7,7 +7,7 @@
         category filters, executes dry-run previews, and triggers atomic debloat pipelines
         with dedicated AI integration, privacy, gaming, and system tweak controls.
     .MODULEVERSION
-        0.4.0
+        1.1.0
 #>
 
 [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '')]
@@ -935,19 +935,89 @@ function Show-DebloaterWindow {
         foreach ($app in $appMap.Values) {
             $isInst = $script:InstalledAppMap.ContainsKey($app.AppId.ToLower())
 
+            $isProtected = Test-IsProtectedApp -AppId $app.AppId -PresetsPath $presetsPath
+            $safetyTier = "Recommended"
+            $dotColor = "#10B981"
+            $badgeBg = "#064E3B"
+            $badgeFg = "#10B981"
+
+            if ($isProtected) {
+                $safetyTier = "Not Recommended"
+                $dotColor = "#EF4444"
+                $badgeBg = "#450A0A"
+                $badgeFg = "#EF4444"
+            } elseif ($app.AppId -match "Xbox|Gaming|Zune|Media|Solitaire|Weather|News|Bing|Maps|People|Mail|Office|OneNote|Skype|Clipchamp") {
+                $safetyTier = "Optional"
+                $dotColor = "#F59E0B"
+                $badgeBg = "#451A03"
+                $badgeFg = "#F59E0B"
+            }
+
             $cb = [System.Windows.Controls.CheckBox]::new()
-            $instIndicator = if ($isInst) { "  [INSTALLED]" } else { "" }
-            $cb.Content = "$($app.DisplayName) ($($app.AppId))$instIndicator"
             $cb.Tag = $app.AppId
             $cb.IsChecked = $true
-            $cb.Foreground = [System.Windows.Media.BrushConverter]::new().ConvertFromString("#F8FAFC")
-            $cb.FontSize = 12
-            $cb.Margin = [System.Windows.Thickness]::new(4, 4, 4, 4)
+            $cb.Margin = [System.Windows.Thickness]::new(4, 3, 4, 3)
+
+            $sp = [System.Windows.Controls.StackPanel]::new()
+            $sp.Orientation = [System.Windows.Controls.Orientation]::Horizontal
+            $sp.VerticalAlignment = [System.Windows.VerticalAlignment]::Center
+
+            $dot = [System.Windows.Shapes.Ellipse]::new()
+            $dot.Width = 7
+            $dot.Height = 7
+            $dot.Fill = [System.Windows.Media.BrushConverter]::new().ConvertFromString($dotColor)
+            $dot.Margin = [System.Windows.Thickness]::new(0, 0, 6, 0)
+            $dot.VerticalAlignment = [System.Windows.VerticalAlignment]::Center
+            $sp.Children.Add($dot) | Out-Null
+
+            $badge = [System.Windows.Controls.Border]::new()
+            $badge.CornerRadius = [System.Windows.CornerRadius]::new(3)
+            $badge.Background = [System.Windows.Media.BrushConverter]::new().ConvertFromString($badgeBg)
+            $badge.Padding = [System.Windows.Thickness]::new(5, 1, 5, 1)
+            $badge.Margin = [System.Windows.Thickness]::new(0, 0, 8, 0)
+            $badge.VerticalAlignment = [System.Windows.VerticalAlignment]::Center
+            $badgeTxt = [System.Windows.Controls.TextBlock]::new()
+            $badgeTxt.Text = $safetyTier
+            $badgeTxt.FontSize = 10
+            $badgeTxt.FontWeight = [System.Windows.FontWeights]::Bold
+            $badgeTxt.Foreground = [System.Windows.Media.BrushConverter]::new().ConvertFromString($badgeFg)
+            $badge.Child = $badgeTxt
+            $sp.Children.Add($badge) | Out-Null
+
+            $txtTitle = [System.Windows.Controls.TextBlock]::new()
+            $txtTitle.Text = $app.DisplayName
+            $txtTitle.FontWeight = [System.Windows.FontWeights]::SemiBold
+            $txtTitle.Foreground = [System.Windows.Media.BrushConverter]::new().ConvertFromString("#F8FAFC")
+            $txtTitle.FontSize = 12
+            $txtTitle.VerticalAlignment = [System.Windows.VerticalAlignment]::Center
+            $sp.Children.Add($txtTitle) | Out-Null
+
+            $txtId = [System.Windows.Controls.TextBlock]::new()
+            $txtId.Text = "($($app.AppId))"
+            $txtId.Foreground = [System.Windows.Media.BrushConverter]::new().ConvertFromString("#94A3B8")
+            $txtId.FontSize = 11
+            $txtId.Margin = [System.Windows.Thickness]::new(6, 0, 0, 0)
+            $txtId.VerticalAlignment = [System.Windows.VerticalAlignment]::Center
+            $sp.Children.Add($txtId) | Out-Null
+
+            if ($isInst) {
+                $instBadge = [System.Windows.Controls.TextBlock]::new()
+                $instBadge.Text = "[INSTALLED]"
+                $instBadge.Foreground = [System.Windows.Media.BrushConverter]::new().ConvertFromString("#38BDF8")
+                $instBadge.FontSize = 10
+                $instBadge.FontWeight = [System.Windows.FontWeights]::Bold
+                $instBadge.Margin = [System.Windows.Thickness]::new(6, 0, 0, 0)
+                $instBadge.VerticalAlignment = [System.Windows.VerticalAlignment]::Center
+                $sp.Children.Add($instBadge) | Out-Null
+            }
+
+            $cb.Content = $sp
 
             $script:AppMetadata[$cb] = @{
                 AppId       = $app.AppId
                 DisplayName = $app.DisplayName
                 IsInstalled = $isInst
+                SafetyTier  = $safetyTier
             }
 
             $cb.Add_Checked({
@@ -1688,6 +1758,24 @@ function Show-DebloaterWindow {
     })
 
     # Step Navigation Buttons
+        # Stage 1 Hero Buttons: Recommended Setup & Custom Tuning
+    $btnRecommendedSetup = $window.FindName("BtnRecommendedSetup")
+    if ($btnRecommendedSetup) {
+        $btnRecommendedSetup.Add_Click({
+            param([object]$eventSource, [System.Windows.RoutedEventArgs]$eventArgs)
+            if ($radioPresetDefault) { $radioPresetDefault.IsChecked = $true }
+            & $populateApps
+            & $updateStageView 2
+        })
+    }
+    $btnCustomTuning = $window.FindName("BtnCustomTuning")
+    if ($btnCustomTuning) {
+        $btnCustomTuning.Add_Click({
+            param([object]$eventSource, [System.Windows.RoutedEventArgs]$eventArgs)
+            & $updateStageView 2
+        })
+    }
+
     $btnNext.Add_Click({
         param([object]$eventSource, [System.Windows.RoutedEventArgs]$eventArgs)
         if ($script:CurrentStage -eq 1) {
@@ -2504,6 +2592,284 @@ function Show-DebloaterWindow {
     $btnClose = $window.FindName("BtnClose")
     if ($btnClose) {
         $btnClose.Add_Click({ $window.Close() })
+    }
+
+    # Top Integrated Canvas Controls: Heart Support, Settings (Preferences), Quick Actions Menu (☰)
+    $btnSupport = $window.FindName("BtnSupport")
+    $popupSupport = $window.FindName("PopupSupport")
+    $btnSupportOneTime = $window.FindName("BtnSupportOneTime")
+    $btnSupportMonthly = $window.FindName("BtnSupportMonthly")
+
+    if ($btnSupport -and $popupSupport) {
+        $btnSupport.Add_Click({
+            param([object]$eventSource, [System.Windows.RoutedEventArgs]$eventArgs)
+            $popupSupport.IsOpen = -not $popupSupport.IsOpen
+        })
+    }
+    if ($btnSupportOneTime) {
+        $btnSupportOneTime.Add_Click({
+            param([object]$eventSource, [System.Windows.RoutedEventArgs]$eventArgs)
+            [System.Diagnostics.Process]::Start("https://rzp.io/rzp/nh-win-debloater") | Out-Null
+            if ($popupSupport) { $popupSupport.IsOpen = $false }
+        })
+    }
+    if ($btnSupportMonthly) {
+        $btnSupportMonthly.Add_Click({
+            param([object]$eventSource, [System.Windows.RoutedEventArgs]$eventArgs)
+            [System.Diagnostics.Process]::Start("https://rzp.io/rzp/j9CGaaRR") | Out-Null
+            if ($popupSupport) { $popupSupport.IsOpen = $false }
+        })
+    }
+
+    # Preferences Modal & Theme Switcher
+    $btnPreferences = $window.FindName("BtnPreferences")
+    $modalPreferences = $window.FindName("ModalPreferences")
+    $btnClosePreferencesX = $window.FindName("BtnClosePreferencesX")
+    $btnClosePreferences = $window.FindName("BtnClosePreferences")
+    $radioThemeAuto = $window.FindName("RadioThemeAuto")
+    $radioThemeDark = $window.FindName("RadioThemeDark")
+    $radioThemeLight = $window.FindName("RadioThemeLight")
+
+    $applyTheme = {
+        param([string]$ThemeMode)
+        $isLight = $false
+        if ($ThemeMode -eq "Auto") {
+            try {
+                $reg = Get-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize" -Name "AppsUseLightTheme" -ErrorAction SilentlyContinue
+                if ($reg -and $reg.AppsUseLightTheme -eq 1) { $isLight = $true }
+            } catch {}
+        } elseif ($ThemeMode -eq "Light") {
+            $isLight = $true
+        }
+
+        $bc = [System.Windows.Media.BrushConverter]::new()
+        if ($isLight) {
+            $window.Resources["BgDark"] = $bc.ConvertFromString("#F8FAFC")
+            $window.Resources["SurfaceCard"] = $bc.ConvertFromString("#FFFFFF")
+            $window.Resources["SurfaceElevated"] = $bc.ConvertFromString("#F1F5F9")
+            $window.Resources["CardBorder"] = $bc.ConvertFromString("#CBD5E1")
+            $window.Resources["TextPrimary"] = $bc.ConvertFromString("#0F172A")
+            $window.Resources["TextSecondary"] = $bc.ConvertFromString("#475569")
+        } else {
+            $window.Resources["BgDark"] = $bc.ConvertFromString("#0B0F17")
+            $window.Resources["SurfaceCard"] = $bc.ConvertFromString("#131926")
+            $window.Resources["SurfaceElevated"] = $bc.ConvertFromString("#1A2234")
+            $window.Resources["CardBorder"] = $bc.ConvertFromString("#232D42")
+            $window.Resources["TextPrimary"] = $bc.ConvertFromString("#F8FAFC")
+            $window.Resources["TextSecondary"] = $bc.ConvertFromString("#94A3B8")
+        }
+    }
+
+    if ($btnPreferences -and $modalPreferences) {
+        $btnPreferences.Add_Click({
+            param([object]$eventSource, [System.Windows.RoutedEventArgs]$eventArgs)
+            $modalPreferences.Visibility = [System.Windows.Visibility]::Visible
+        })
+    }
+    if ($btnClosePreferencesX) {
+        $btnClosePreferencesX.Add_Click({
+            param([object]$eventSource, [System.Windows.RoutedEventArgs]$eventArgs)
+            $modalPreferences.Visibility = [System.Windows.Visibility]::Collapsed
+        })
+    }
+    if ($btnClosePreferences) {
+        $btnClosePreferences.Add_Click({
+            param([object]$eventSource, [System.Windows.RoutedEventArgs]$eventArgs)
+            $modalPreferences.Visibility = [System.Windows.Visibility]::Collapsed
+        })
+    }
+    if ($radioThemeAuto) { $radioThemeAuto.Add_Click({ & $applyTheme "Auto" }) }
+    if ($radioThemeDark) { $radioThemeDark.Add_Click({ & $applyTheme "Dark" }) }
+    if ($radioThemeLight) { $radioThemeLight.Add_Click({ & $applyTheme "Light" }) }
+
+    # Quick Actions Menu (☰)
+    $btnQuickActions = $window.FindName("BtnQuickActions")
+    $popupQuickActions = $window.FindName("PopupQuickActions")
+    $btnActionLoadProfile = $window.FindName("BtnActionLoadProfile")
+    $btnActionSaveProfile = $window.FindName("BtnActionSaveProfile")
+    $btnActionRecoveryRollback = $window.FindName("BtnActionRecoveryRollback")
+    $btnActionWikiDocs = $window.FindName("BtnActionWikiDocs")
+    $btnActionReportIssue = $window.FindName("BtnActionReportIssue")
+    $btnActionOpenLogs = $window.FindName("BtnActionOpenLogs")
+    $btnActionAbout = $window.FindName("BtnActionAbout")
+
+    if ($btnQuickActions -and $popupQuickActions) {
+        $btnQuickActions.Add_Click({
+            param([object]$eventSource, [System.Windows.RoutedEventArgs]$eventArgs)
+            $popupQuickActions.IsOpen = -not $popupQuickActions.IsOpen
+        })
+    }
+    if ($btnActionLoadProfile) {
+        $btnActionLoadProfile.Add_Click({
+            param([object]$eventSource, [System.Windows.RoutedEventArgs]$eventArgs)
+            if ($popupQuickActions) { $popupQuickActions.IsOpen = $false }
+            if ($btnImportProfile) {
+                $btnImportProfile.RaiseEvent([System.Windows.RoutedEventArgs]::new([System.Windows.Controls.Primitives.ButtonBase]::ClickEvent))
+            }
+        })
+    }
+    if ($btnActionSaveProfile) {
+        $btnActionSaveProfile.Add_Click({
+            param([object]$eventSource, [System.Windows.RoutedEventArgs]$eventArgs)
+            if ($popupQuickActions) { $popupQuickActions.IsOpen = $false }
+            $mSave = $window.FindName("ModalSaveProfile")
+            if ($mSave) { $mSave.Visibility = [System.Windows.Visibility]::Visible }
+        })
+    }
+    if ($btnActionRecoveryRollback) {
+        $btnActionRecoveryRollback.Add_Click({
+            param([object]$eventSource, [System.Windows.RoutedEventArgs]$eventArgs)
+            if ($popupQuickActions) { $popupQuickActions.IsOpen = $false }
+            $mRec = $window.FindName("ModalRecoveryRollback")
+            if ($mRec) { $mRec.Visibility = [System.Windows.Visibility]::Visible }
+        })
+    }
+    if ($btnActionWikiDocs) {
+        $btnActionWikiDocs.Add_Click({
+            param([object]$eventSource, [System.Windows.RoutedEventArgs]$eventArgs)
+            if ($popupQuickActions) { $popupQuickActions.IsOpen = $false }
+            [System.Diagnostics.Process]::Start("https://github.com/nadeemhaaju143/nh-win-debloater/wiki") | Out-Null
+        })
+    }
+    if ($btnActionReportIssue) {
+        $btnActionReportIssue.Add_Click({
+            param([object]$eventSource, [System.Windows.RoutedEventArgs]$eventArgs)
+            if ($popupQuickActions) { $popupQuickActions.IsOpen = $false }
+            [System.Diagnostics.Process]::Start("https://github.com/nadeemhaaju143/nh-win-debloater/issues") | Out-Null
+        })
+    }
+    if ($btnActionOpenLogs) {
+        $btnActionOpenLogs.Add_Click({
+            param([object]$eventSource, [System.Windows.RoutedEventArgs]$eventArgs)
+            if ($popupQuickActions) { $popupQuickActions.IsOpen = $false }
+            $logDir = Join-Path $env:LOCALAPPDATA "NHWinDebloater\Logs"
+            if (-not (Test-Path $logDir)) { New-Item -Path $logDir -ItemType Directory -Force | Out-Null }
+            [System.Diagnostics.Process]::Start("explorer.exe", $logDir) | Out-Null
+        })
+    }
+    if ($btnActionAbout) {
+        $btnActionAbout.Add_Click({
+            param([object]$eventSource, [System.Windows.RoutedEventArgs]$eventArgs)
+            if ($popupQuickActions) { $popupQuickActions.IsOpen = $false }
+            $mAb = $window.FindName("ModalAbout")
+            if ($mAb) { $mAb.Visibility = [System.Windows.Visibility]::Visible }
+        })
+    }
+
+    # Save Profile Modal Wiring
+    $modalSaveProfile = $window.FindName("ModalSaveProfile")
+    $btnCloseSaveProfileX = $window.FindName("BtnCloseSaveProfileX")
+    $btnCancelSaveProfile = $window.FindName("BtnCancelSaveProfile")
+    $btnConfirmSaveProfile = $window.FindName("BtnConfirmSaveProfile")
+
+    if ($btnCloseSaveProfileX) {
+        $btnCloseSaveProfileX.Add_Click({
+            param([object]$eventSource, [System.Windows.RoutedEventArgs]$eventArgs)
+            $modalSaveProfile.Visibility = [System.Windows.Visibility]::Collapsed
+        })
+    }
+    if ($btnCancelSaveProfile) {
+        $btnCancelSaveProfile.Add_Click({
+            param([object]$eventSource, [System.Windows.RoutedEventArgs]$eventArgs)
+            $modalSaveProfile.Visibility = [System.Windows.Visibility]::Collapsed
+        })
+    }
+    if ($btnConfirmSaveProfile) {
+        $btnConfirmSaveProfile.Add_Click({
+            param([object]$eventSource, [System.Windows.RoutedEventArgs]$eventArgs)
+            $modalSaveProfile.Visibility = [System.Windows.Visibility]::Collapsed
+            if ($btnExportProfile) {
+                $btnExportProfile.RaiseEvent([System.Windows.RoutedEventArgs]::new([System.Windows.Controls.Primitives.ButtonBase]::ClickEvent))
+            }
+        })
+    }
+
+    # Recovery & Rollback Modal Wiring
+    $modalRecoveryRollback = $window.FindName("ModalRecoveryRollback")
+    $btnCloseRecoveryModalX = $window.FindName("BtnCloseRecoveryModalX")
+    $btnCloseRecoveryModal = $window.FindName("BtnCloseRecoveryModal")
+    $btnActionFullRollback = $window.FindName("BtnActionFullRollback")
+    $btnActionRegistryRollback = $window.FindName("BtnActionRegistryRollback")
+    $btnActionStartMenuRollback = $window.FindName("BtnActionStartMenuRollback")
+
+    if ($btnCloseRecoveryModalX) {
+        $btnCloseRecoveryModalX.Add_Click({
+            param([object]$eventSource, [System.Windows.RoutedEventArgs]$eventArgs)
+            $modalRecoveryRollback.Visibility = [System.Windows.Visibility]::Collapsed
+        })
+    }
+    if ($btnCloseRecoveryModal) {
+        $btnCloseRecoveryModal.Add_Click({
+            param([object]$eventSource, [System.Windows.RoutedEventArgs]$eventArgs)
+            $modalRecoveryRollback.Visibility = [System.Windows.Visibility]::Collapsed
+        })
+    }
+    if ($btnActionFullRollback) {
+        $btnActionFullRollback.Add_Click({
+            param([object]$eventSource, [System.Windows.RoutedEventArgs]$eventArgs)
+            $modalRecoveryRollback.Visibility = [System.Windows.Visibility]::Collapsed
+            $backupDir = Join-Path $env:LOCALAPPDATA "NHWinDebloater\Backups"
+            if (Test-Path $backupDir) {
+                $latestSnap = Get-ChildItem -Path $backupDir -Filter "RegistrySnapshot_*.json" -ErrorAction SilentlyContinue |
+                    Sort-Object LastWriteTime -Descending | Select-Object -First 1
+                if ($latestSnap -and (Get-Command Restore-RegistrySnapshot -ErrorAction SilentlyContinue)) {
+                    Restore-RegistrySnapshot -SnapshotPath $latestSnap.FullName -ErrorAction SilentlyContinue | Out-Null
+                }
+            }
+            if (Get-Command Restore-ServiceOptimization -ErrorAction SilentlyContinue) {
+                Restore-ServiceOptimization -ErrorAction SilentlyContinue | Out-Null
+            }
+            if (Get-Command Restore-StartMenuLayout -ErrorAction SilentlyContinue) {
+                Restore-StartMenuLayout -ErrorAction SilentlyContinue | Out-Null
+            }
+            [System.Windows.MessageBox]::Show("1-Click Full System Rollback completed successfully.`nRegistry tweaks, services, and Start Menu layout have been restored.", "Rollback Complete", [System.Windows.MessageBoxButton]::OK, [System.Windows.MessageBoxImage]::Information) | Out-Null
+        })
+    }
+    if ($btnActionRegistryRollback) {
+        $btnActionRegistryRollback.Add_Click({
+            param([object]$eventSource, [System.Windows.RoutedEventArgs]$eventArgs)
+            $modalRecoveryRollback.Visibility = [System.Windows.Visibility]::Collapsed
+            & $updateStageView 5
+        })
+    }
+    if ($btnActionStartMenuRollback) {
+        $btnActionStartMenuRollback.Add_Click({
+            param([object]$eventSource, [System.Windows.RoutedEventArgs]$eventArgs)
+            $modalRecoveryRollback.Visibility = [System.Windows.Visibility]::Collapsed
+            if (Get-Command Restore-StartMenuLayout -ErrorAction SilentlyContinue) {
+                $res = Restore-StartMenuLayout -ErrorAction SilentlyContinue
+                if ($res) {
+                    [System.Windows.MessageBox]::Show("Start Menu layout restored from backup.", "Start Menu Restored", [System.Windows.MessageBoxButton]::OK, [System.Windows.MessageBoxImage]::Information) | Out-Null
+                } else {
+                    [System.Windows.MessageBox]::Show("No Start Menu layout backup found to restore.", "Restore Skipped", [System.Windows.MessageBoxButton]::OK, [System.Windows.MessageBoxImage]::Warning) | Out-Null
+                }
+            }
+        })
+    }
+
+    # About Modal Wiring
+    $modalAbout = $window.FindName("ModalAbout")
+    $btnCloseAboutModalX = $window.FindName("BtnCloseAboutModalX")
+    $btnCloseAboutModal = $window.FindName("BtnCloseAboutModal")
+    $btnAboutSupport = $window.FindName("BtnAboutSupport")
+
+    if ($btnCloseAboutModalX) {
+        $btnCloseAboutModalX.Add_Click({
+            param([object]$eventSource, [System.Windows.RoutedEventArgs]$eventArgs)
+            $modalAbout.Visibility = [System.Windows.Visibility]::Collapsed
+        })
+    }
+    if ($btnCloseAboutModal) {
+        $btnCloseAboutModal.Add_Click({
+            param([object]$eventSource, [System.Windows.RoutedEventArgs]$eventArgs)
+            $modalAbout.Visibility = [System.Windows.Visibility]::Collapsed
+        })
+    }
+    if ($btnAboutSupport) {
+        $btnAboutSupport.Add_Click({
+            param([object]$eventSource, [System.Windows.RoutedEventArgs]$eventArgs)
+            [System.Diagnostics.Process]::Start("https://rzp.io/rzp/nh-win-debloater") | Out-Null
+        })
     }
 
     # Window Closed Handler: Ensure post-exit temp & session cleanup (preserving backups/logs)

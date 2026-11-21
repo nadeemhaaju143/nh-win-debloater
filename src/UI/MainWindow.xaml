@@ -57,6 +57,10 @@
         <Geometry x:Key="IconRefresh">M17.65,6.35C16.2,4.9 14.21,4 12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20C15.73,20 18.84,17.45 19.73,14H17.65C16.83,16.33 14.61,18 12,18A6,6 0 0,1 6,12A6,6 0 0,1 12,6C13.66,6 15.14,6.69 16.22,7.78L13,11H20V4L17.65,6.35Z</Geometry>
         <Geometry x:Key="IconFolder">M10,4H4C2.89,4 2,4.89 2,6V18A2,2 0 0,0 4,20H20A2,2 0 0,0 22,18V8C22,6.89 21.1,6 20,6H12L10,4Z</Geometry>
         <Geometry x:Key="IconFileText">M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z</Geometry>
+                <!-- Extended Vector Geometries -->
+        <Geometry x:Key="IconHeart">M12,21.35L10.55,20.03C5.4,15.36 2,12.28 2,8.5C2,5.42 4.42,3 7.5,3C9.24,3 10.91,3.81 12,5.09C13.09,3.81 14.76,3 16.5,3C19.58,3 22,5.42 22,8.5C22,12.28 18.6,15.36 13.45,20.04L12,21.35Z</Geometry>
+        <Geometry x:Key="IconGear">M12,15.5A3.5,3.5 0 0,1 8.5,12A3.5,3.5 0 0,1 12,8.5A3.5,3.5 0 0,1 15.5,12A3.5,3.5 0 0,1 12,15.5M19.43,12.97C19.47,12.65 19.5,12.33 19.5,12C19.5,11.67 19.47,11.34 19.43,11L21.54,9.37C21.73,9.22 21.78,8.95 21.66,8.73L19.66,5.27C19.54,5.05 19.27,4.97 19.05,5.05L16.56,6.05C16.04,5.65 15.48,5.32 14.87,5.07L14.49,2.42C14.46,2.18 14.25,2 14,2H10C9.75,2 9.54,2.18 9.51,2.42L9.13,5.07C8.52,5.32 7.96,5.66 7.44,6.05L4.95,5.05C4.73,4.96 4.46,5.05 4.34,5.27L2.34,8.73C2.21,8.95 2.27,9.22 2.46,9.37L4.57,11C4.53,11.34 4.5,11.67 4.5,12C4.5,12.33 4.53,12.65 4.57,12.97L2.46,14.63C2.27,14.78 2.21,15.05 2.34,15.27L4.34,18.73C4.46,18.95 4.73,19.03 4.95,18.95L7.44,17.94C7.96,18.34 8.52,18.68 9.13,18.93L9.51,21.58C9.54,21.82 9.75,22 10,22H14C14.25,22 14.46,21.82 14.49,21.58L14.87,18.93C15.48,18.68 16.04,18.34 16.56,17.94L19.05,18.95C19.27,19.03 19.54,18.95 19.66,18.73L21.66,15.27C21.78,15.05 21.73,14.78 21.54,14.63L19.43,12.97Z</Geometry>
+        <Geometry x:Key="IconMenu">M3,6H21V8H3V6M3,11H21V13H3V11M3,16H21V18H3V16Z</Geometry>
         <Geometry x:Key="IconMinimize">M0,5 H10 V7 H0 Z</Geometry>
         <Geometry x:Key="IconMaximize">M1,1 H9 V9 H1 V1 M2,3 V8 H8 V3 Z</Geometry>
 
@@ -449,7 +453,7 @@
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Text="NH Win Debloater" FontWeight="Bold" FontSize="18" Foreground="#F8FAFC"/>
                                 <Border x:Name="BadgeVersion" CornerRadius="4" Background="#0284C7" Margin="10,2,0,2" Padding="6,1">
-                                    <TextBlock x:Name="TxtVersion" Text="v1.0.0" FontSize="11" FontWeight="Bold" Foreground="#FFFFFF"/>
+                                    <TextBlock x:Name="TxtVersion" Text="v1.1.0" FontSize="11" FontWeight="Bold" Foreground="#FFFFFF"/>
                                 </Border>
                             </StackPanel>
                             <TextBlock Text="Less Bloat. Better Windows. Built for performance." FontSize="12" Foreground="#94A3B8"/>
@@ -478,14 +482,104 @@
                             </StackPanel>
                         </StackPanel>
 
-                        <!-- Fluent Window Caption Controls (Minimize / Maximize / Close) -->
+                        <!-- Unified Top-Right Integrated Controls: Heart Support, Settings, 3-Line Menu, Close -->
                         <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                            <Button x:Name="BtnMinimize" Style="{StaticResource CaptionBtn}" ToolTip="Minimize" WindowChrome.IsHitTestVisibleInChrome="True">
-                                <Path Data="{StaticResource IconMinimize}" Fill="#94A3B8" Width="10" Height="10" Stretch="Uniform"/>
+                            <!-- 1. Heart Support (♥) -->
+                            <Grid Margin="0,0,4,0">
+                                <Button x:Name="BtnSupport" Style="{StaticResource CaptionBtn}" ToolTip="Support NH Win Debloater (One-Time &amp; Monthly)" WindowChrome.IsHitTestVisibleInChrome="True">
+                                    <Path Data="{StaticResource IconHeart}" Fill="#EF4444" Width="13" Height="13" Stretch="Uniform"/>
+                                </Button>
+                                <Popup x:Name="PopupSupport" PlacementTarget="{Binding ElementName=BtnSupport}" Placement="Bottom" StaysOpen="False" PopupAnimation="Fade" AllowsTransparency="True">
+                                    <Border Background="#131926" BorderBrush="#EF4444" BorderThickness="1" CornerRadius="10" Width="310" Padding="14" Margin="0,6,0,0">
+                                        <Border.Effect>
+                                            <DropShadowEffect Color="#000000" BlurRadius="18" Opacity="0.5" ShadowDepth="4"/>
+                                        </Border.Effect>
+                                        <StackPanel>
+                                            <StackPanel Orientation="Horizontal" Margin="0,0,0,6">
+                                                <Path Data="{StaticResource IconHeart}" Fill="#EF4444" Width="14" Height="14" Stretch="Uniform" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                                                <TextBlock Text="Support NH Win Debloater" FontWeight="Bold" FontSize="13" Foreground="#F8FAFC" VerticalAlignment="Center"/>
+                                            </StackPanel>
+                                            <TextBlock Text="Support independent open-source development by Mohammed Nadeem BM (NH Digital)." FontSize="11" Foreground="#94A3B8" TextWrapping="Wrap" Margin="0,0,0,10"/>
+                                            <Button x:Name="BtnSupportOneTime" Style="{StaticResource ModernBtn}" Margin="0,0,0,6" Background="#1E293B">
+                                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                                    <TextBlock Text="♥  One-Time Tip (Razorpay)" FontSize="11" FontWeight="SemiBold" Foreground="#F8FAFC"/>
+                                                </StackPanel>
+                                            </Button>
+                                            <Button x:Name="BtnSupportMonthly" Style="{StaticResource ModernBtn}" Background="#1E293B">
+                                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                                    <TextBlock Text="★  Monthly Supporter (₹199/mo)" FontSize="11" FontWeight="SemiBold" Foreground="#38BDF8"/>
+                                                </StackPanel>
+                                            </Button>
+                                        </StackPanel>
+                                    </Border>
+                                </Popup>
+                            </Grid>
+
+                            <!-- 2. Settings (⚙ Preferences) -->
+                            <Button x:Name="BtnPreferences" Style="{StaticResource CaptionBtn}" ToolTip="Preferences &amp; Color Theme" WindowChrome.IsHitTestVisibleInChrome="True" Margin="0,0,4,0">
+                                <Path Data="{StaticResource IconGear}" Fill="#94A3B8" Width="13" Height="13" Stretch="Uniform"/>
                             </Button>
-                            <Button x:Name="BtnMaximize" Style="{StaticResource CaptionBtn}" ToolTip="Maximize / Restore" WindowChrome.IsHitTestVisibleInChrome="True">
-                                <Path Data="{StaticResource IconMaximize}" Fill="#94A3B8" Width="10" Height="10" Stretch="Uniform"/>
-                            </Button>
+
+                            <!-- 3. 3-Line Menu (☰ Quick Actions) -->
+                            <Grid Margin="0,0,4,0">
+                                <Button x:Name="BtnQuickActions" Style="{StaticResource CaptionBtn}" ToolTip="Quick Actions Menu" WindowChrome.IsHitTestVisibleInChrome="True">
+                                    <Path Data="{StaticResource IconMenu}" Fill="#94A3B8" Width="13" Height="13" Stretch="Uniform"/>
+                                </Button>
+                                <Popup x:Name="PopupQuickActions" PlacementTarget="{Binding ElementName=BtnQuickActions}" Placement="Bottom" StaysOpen="False" PopupAnimation="Fade" AllowsTransparency="True">
+                                    <Border Background="#131926" BorderBrush="#232D42" BorderThickness="1" CornerRadius="10" Width="260" Padding="8" Margin="0,6,0,0">
+                                        <Border.Effect>
+                                            <DropShadowEffect Color="#000000" BlurRadius="18" Opacity="0.5" ShadowDepth="4"/>
+                                        </Border.Effect>
+                                        <StackPanel>
+                                            <Button x:Name="BtnActionLoadProfile" Style="{StaticResource DropdownActionBtn}">
+                                                <StackPanel Orientation="Horizontal">
+                                                    <Path Data="{StaticResource IconFolder}" Fill="#38BDF8" Width="12" Height="12" Stretch="Uniform" Margin="0,0,10,0" VerticalAlignment="Center"/>
+                                                    <TextBlock Text="Load JSON Profile" FontSize="12" Foreground="#F8FAFC" VerticalAlignment="Center"/>
+                                                </StackPanel>
+                                            </Button>
+                                            <Button x:Name="BtnActionSaveProfile" Style="{StaticResource DropdownActionBtn}">
+                                                <StackPanel Orientation="Horizontal">
+                                                    <Path Data="{StaticResource IconFileText}" Fill="#38BDF8" Width="12" Height="12" Stretch="Uniform" Margin="0,0,10,0" VerticalAlignment="Center"/>
+                                                    <TextBlock Text="Save JSON Profile" FontSize="12" Foreground="#F8FAFC" VerticalAlignment="Center"/>
+                                                </StackPanel>
+                                            </Button>
+                                            <Button x:Name="BtnActionRecoveryRollback" Style="{StaticResource DropdownActionBtn}">
+                                                <StackPanel Orientation="Horizontal">
+                                                    <Path Data="{StaticResource IconShieldLock}" Fill="#10B981" Width="12" Height="12" Stretch="Uniform" Margin="0,0,10,0" VerticalAlignment="Center"/>
+                                                    <TextBlock Text="Recovery &amp; Rollback" FontSize="12" Foreground="#F8FAFC" VerticalAlignment="Center"/>
+                                                </StackPanel>
+                                            </Button>
+                                            <Border Height="1" Background="#232D42" Margin="4,4"/>
+                                            <Button x:Name="BtnActionWikiDocs" Style="{StaticResource DropdownActionBtn}">
+                                                <StackPanel Orientation="Horizontal">
+                                                    <Path Data="{StaticResource IconLayersFeatures}" Fill="#94A3B8" Width="12" Height="12" Stretch="Uniform" Margin="0,0,10,0" VerticalAlignment="Center"/>
+                                                    <TextBlock Text="Documentation" FontSize="12" Foreground="#CBD5E1" VerticalAlignment="Center"/>
+                                                </StackPanel>
+                                            </Button>
+                                            <Button x:Name="BtnActionReportIssue" Style="{StaticResource DropdownActionBtn}">
+                                                <StackPanel Orientation="Horizontal">
+                                                    <Path Data="{StaticResource IconAlertTriangle}" Fill="#F59E0B" Width="12" Height="12" Stretch="Uniform" Margin="0,0,10,0" VerticalAlignment="Center"/>
+                                                    <TextBlock Text="Report an Issue" FontSize="12" Foreground="#CBD5E1" VerticalAlignment="Center"/>
+                                                </StackPanel>
+                                            </Button>
+                                            <Button x:Name="BtnActionOpenLogs" Style="{StaticResource DropdownActionBtn}">
+                                                <StackPanel Orientation="Horizontal">
+                                                    <Path Data="{StaticResource IconRefresh}" Fill="#94A3B8" Width="12" Height="12" Stretch="Uniform" Margin="0,0,10,0" VerticalAlignment="Center"/>
+                                                    <TextBlock Text="Open Session Logs" FontSize="12" Foreground="#CBD5E1" VerticalAlignment="Center"/>
+                                                </StackPanel>
+                                            </Button>
+                                            <Button x:Name="BtnActionAbout" Style="{StaticResource DropdownActionBtn}">
+                                                <StackPanel Orientation="Horizontal">
+                                                    <Path Data="{StaticResource IconCheckCircle}" Fill="#38BDF8" Width="12" Height="12" Stretch="Uniform" Margin="0,0,10,0" VerticalAlignment="Center"/>
+                                                    <TextBlock Text="About NH Win Debloater" FontSize="12" Foreground="#CBD5E1" VerticalAlignment="Center"/>
+                                                </StackPanel>
+                                            </Button>
+                                        </StackPanel>
+                                    </Border>
+                                </Popup>
+                            </Grid>
+
+                            <!-- 4. Close (✕) -->
                             <Button x:Name="BtnClose" Style="{StaticResource CaptionCloseBtn}" ToolTip="Close" WindowChrome.IsHitTestVisibleInChrome="True">
                                 <Path Data="{StaticResource IconClose}" Fill="#94A3B8" Width="10" Height="10" Stretch="Uniform"/>
                             </Button>
@@ -594,123 +688,126 @@
                     </TransformGroup>
                 </Grid.RenderTransform>
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
 
-                <Grid Grid.Row="0" Margin="0,0,0,14">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="Auto"/>
-                    </Grid.ColumnDefinitions>
-                    <StackPanel Grid.Column="0">
-                        <TextBlock Text="Select Optimization Profile &amp; Scope" FontSize="18" FontWeight="Bold" Foreground="#F8FAFC"/>
-                        <TextBlock Text="Choose a baseline preset or import a custom JSON configuration." FontSize="13" Foreground="#94A3B8"/>
-                    </StackPanel>
-                    <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
-                        <Button x:Name="BtnStage1Restore" Style="{StaticResource ModernBtn}" Margin="0,0,10,0" VerticalAlignment="Center" ToolTip="Returning user? Open Restore &amp; Rollback panel immediately">
-                            <StackPanel Orientation="Horizontal">
-                                <Path Data="{StaticResource IconShieldLock}" Fill="#38BDF8" Width="12" Height="12" Stretch="Uniform" Margin="0,0,6,0" VerticalAlignment="Center"/>
-                                <TextBlock Text="Restore / Rollback" FontSize="12" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                <!-- Centered Welcome Screen with 4-Color Windows Emblem -->
+                <Grid Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Center" MaxWidth="800">
+                    <StackPanel HorizontalAlignment="Center">
+                        <!-- Custom Vector 4-Pane Multi-Color Windows Emblem -->
+                        <Grid Width="72" Height="72" HorizontalAlignment="Center" Margin="0,0,0,16">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <!-- Top-Left: Coral Red -->
+                            <Border Grid.Row="0" Grid.Column="0" Background="#EF4444" CornerRadius="8,2,2,2" Margin="2">
+                                <Border.Effect>
+                                    <DropShadowEffect Color="#EF4444" BlurRadius="10" Opacity="0.35" ShadowDepth="0"/>
+                                </Border.Effect>
+                            </Border>
+                            <!-- Top-Right: Emerald Green -->
+                            <Border Grid.Row="0" Grid.Column="1" Background="#10B981" CornerRadius="2,8,2,2" Margin="2">
+                                <Border.Effect>
+                                    <DropShadowEffect Color="#10B981" BlurRadius="10" Opacity="0.35" ShadowDepth="0"/>
+                                </Border.Effect>
+                            </Border>
+                            <!-- Bottom-Left: Azure Blue -->
+                            <Border Grid.Row="1" Grid.Column="0" Background="#0EA5E9" CornerRadius="2,2,2,8" Margin="2">
+                                <Border.Effect>
+                                    <DropShadowEffect Color="#0EA5E9" BlurRadius="10" Opacity="0.35" ShadowDepth="0"/>
+                                </Border.Effect>
+                            </Border>
+                            <!-- Bottom-Right: Amber Gold -->
+                            <Border Grid.Row="1" Grid.Column="1" Background="#F59E0B" CornerRadius="2,2,8,2" Margin="2">
+                                <Border.Effect>
+                                    <DropShadowEffect Color="#F59E0B" BlurRadius="10" Opacity="0.35" ShadowDepth="0"/>
+                                </Border.Effect>
+                            </Border>
+                            <!-- Center Accent Sparkle -->
+                            <Border Grid.RowSpan="2" Grid.ColumnSpan="2" Width="14" Height="14" CornerRadius="7" Background="#0B0F17" BorderBrush="#38BDF8" BorderThickness="1.5" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Grid>
+
+                        <!-- Welcome Heading & Subtitle -->
+                        <TextBlock Text="Welcome to NH Win Debloater" FontSize="26" FontWeight="Bold" Foreground="#F8FAFC" HorizontalAlignment="Center" Margin="0,0,0,6"/>
+                        <TextBlock Text="Streamline Windows, reclaim memory, and keep full control in a few clicks." FontSize="14" Foreground="#94A3B8" HorizontalAlignment="Center" TextAlignment="Center" Margin="0,0,0,24"/>
+
+                        <!-- Target User Scope Bar -->
+                        <Border Background="#131926" CornerRadius="20" BorderBrush="#232D42" BorderThickness="1" Padding="16,8" HorizontalAlignment="Center" Margin="0,0,0,26">
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                <TextBlock Text="Target Scope:" FontWeight="Bold" FontSize="12" Foreground="#94A3B8" VerticalAlignment="Center" Margin="0,0,14,0"/>
+                                <RadioButton x:Name="RadioScopeAllUsers" Content="All Users (Recommended)" IsChecked="True" GroupName="ScopeGroup" Foreground="#F8FAFC" FontSize="12" Margin="0,0,16,0" VerticalAlignment="Center"/>
+                                <RadioButton x:Name="RadioScopeCurrentUser" Content="Current User Only" GroupName="ScopeGroup" Foreground="#CBD5E1" FontSize="12" Margin="0,0,16,0" VerticalAlignment="Center"/>
+                                <RadioButton x:Name="RadioScopeDefaultUser" Content="Default User / Sysprep" GroupName="ScopeGroup" Foreground="#CBD5E1" FontSize="12" VerticalAlignment="Center"/>
                             </StackPanel>
-                        </Button>
-                        <Button x:Name="BtnImportProfile" Style="{StaticResource ModernBtn}" VerticalAlignment="Center" ToolTip="Import custom preset profile from a .json file">
-                            <StackPanel Orientation="Horizontal">
-                                <Path Data="{StaticResource IconFolder}" Fill="#38BDF8" Width="12" Height="12" Stretch="Uniform" Margin="0,0,6,0" VerticalAlignment="Center"/>
-                                <TextBlock Text="Import Preset (.json)" FontSize="12" FontWeight="SemiBold" VerticalAlignment="Center"/>
-                            </StackPanel>
-                        </Button>
-                    </StackPanel>
-                </Grid>
+                        </Border>
 
-                <!-- Preset Cards Grid with Interactive Motion Hover -->
-                <Grid Grid.Row="1">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
+                        <!-- Two Primary Action Buttons Side-by-Side -->
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,20">
+                            <!-- 1. Recommended Setup -->
+                            <Button x:Name="BtnRecommendedSetup" Style="{StaticResource PrimaryBtn}" Height="64" MinWidth="270" Margin="0,0,16,0" Background="#0EA5E9" Padding="20,10">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Path Data="{StaticResource IconLightning}" Fill="#FFFFFF" Width="20" Height="20" Stretch="Uniform" VerticalAlignment="Center" Margin="0,0,14,0"/>
+                                    <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                        <TextBlock Text="Recommended Setup" FontSize="15" FontWeight="Bold" Foreground="#FFFFFF"/>
+                                        <TextBlock Text="Curated safe optimizations &amp; RAM boost" FontSize="11" Foreground="#E0F2FE" Margin="0,2,0,0"/>
+                                    </StackPanel>
+                                </Grid>
+                            </Button>
 
-                    <!-- Minimal Card -->
-                    <Border x:Name="CardPresetMinimal" Grid.Column="0" Style="{StaticResource PresetCardBorder}" Margin="0,0,10,0" Padding="16">
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="*"/>
-                                <RowDefinition Height="Auto"/>
-                            </Grid.RowDefinitions>
-                            <RadioButton x:Name="RadioPresetMinimal" Content="Minimal Debloat" FontWeight="Bold" FontSize="15" GroupName="PresetGroup" Foreground="#F8FAFC"/>
-                            <TextBlock Grid.Row="1" Text="Lightweight &amp; Gentle" FontSize="12" Foreground="#38BDF8" Margin="0,4,0,8"/>
-                            <TextBlock Grid.Row="2" Text="Removes sponsored apps (Spotify, Disney+) while keeping Windows tools, Xbox, and productivity apps untouched." TextWrapping="Wrap" FontSize="12" Foreground="#CBD5E1"/>
-                            <Border Grid.Row="3" Background="#0B0F17" CornerRadius="4" Padding="10,5" Margin="0,8,0,0">
-                                <StackPanel Orientation="Horizontal">
-                                    <Path Data="{StaticResource IconCheckCircle}" Fill="#10B981" Width="11" Height="11" Stretch="Uniform" Margin="0,0,6,0" VerticalAlignment="Center"/>
-                                    <TextBlock Text="Best for cautious users" FontSize="11" Foreground="#10B981" VerticalAlignment="Center"/>
-                                </StackPanel>
-                            </Border>
-                        </Grid>
-                    </Border>
-
-                    <!-- Default / Recommended Card -->
-                    <Border x:Name="CardPresetDefault" Grid.Column="1" Style="{StaticResource PresetCardRecommendedBorder}" Margin="5,0,5,0" Padding="16">
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="*"/>
-                                <RowDefinition Height="Auto"/>
-                            </Grid.RowDefinitions>
-                            <RadioButton x:Name="RadioPresetDefault" Content="Recommended Debloat" FontWeight="Bold" FontSize="15" IsChecked="True" GroupName="PresetGroup" Foreground="#F8FAFC"/>
-                            <TextBlock Grid.Row="1" Text="Balanced Performance &amp; Privacy" FontSize="12" Foreground="#10B981" Margin="0,4,0,8"/>
-                            <TextBlock Grid.Row="2" Text="Removes 80+ bloatware packages, telemetry, targeted ads, and web search suggestions. Protects core system apps." TextWrapping="Wrap" FontSize="12" Foreground="#CBD5E1"/>
-                            <Border Grid.Row="3" Background="#0B0F17" CornerRadius="4" Padding="10,5" Margin="0,8,0,0">
-                                <StackPanel Orientation="Horizontal">
-                                    <Path Data="{StaticResource IconLightning}" Fill="#38BDF8" Width="11" Height="11" Stretch="Uniform" Margin="0,0,6,0" VerticalAlignment="Center"/>
-                                    <TextBlock Text="Recommended for most PCs" FontSize="11" Foreground="#38BDF8" VerticalAlignment="Center"/>
-                                </StackPanel>
-                            </Border>
-                        </Grid>
-                    </Border>
-
-                    <!-- Deep Debloat Card -->
-                    <Border x:Name="CardPresetDeep" Grid.Column="2" Style="{StaticResource PresetCardBorder}" Margin="10,0,0,0" Padding="16">
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="*"/>
-                                <RowDefinition Height="Auto"/>
-                            </Grid.RowDefinitions>
-                            <RadioButton x:Name="RadioPresetDeep" Content="Deep Debloat" FontWeight="Bold" FontSize="15" GroupName="PresetGroup" Foreground="#F8FAFC"/>
-                            <TextBlock Grid.Row="1" Text="Maximum Optimization" FontSize="12" Foreground="#EAB308" Margin="0,4,0,8"/>
-                            <TextBlock Grid.Row="2" Text="Removes all removable non-essential packages including built-in media and notes tools for max performance." TextWrapping="Wrap" FontSize="12" Foreground="#CBD5E1"/>
-                            <Border Grid.Row="3" Background="#0B0F17" CornerRadius="4" Padding="10,5" Margin="0,8,0,0">
-                                <StackPanel Orientation="Horizontal">
-                                    <Path Data="{StaticResource IconAlertTriangle}" Fill="#F59E0B" Width="11" Height="11" Stretch="Uniform" Margin="0,0,6,0" VerticalAlignment="Center"/>
-                                    <TextBlock Text="For power users" FontSize="11" Foreground="#F59E0B" VerticalAlignment="Center"/>
-                                </StackPanel>
-                            </Border>
-                        </Grid>
-                    </Border>
-                </Grid>
-
-                <!-- Target Scope Bar -->
-                <Border Grid.Row="2" Background="#131926" CornerRadius="6" BorderBrush="#232D42" BorderThickness="1" Padding="14,10" Margin="0,14,0,0">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
-                        <TextBlock Text="Target Scope:" FontWeight="Bold" VerticalAlignment="Center" Margin="0,0,14,0" Foreground="#F8FAFC"/>
-                        <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
-                            <RadioButton x:Name="RadioScopeAllUsers" Content="All Users (Recommended)" IsChecked="True" GroupName="ScopeGroup" Foreground="#F8FAFC" Margin="0,0,18,0"/>
-                            <RadioButton x:Name="RadioScopeCurrentUser" Content="Current User Only" GroupName="ScopeGroup" Foreground="#CBD5E1" Margin="0,0,18,0"/>
-                            <RadioButton x:Name="RadioScopeDefaultUser" Content="Default User / Sysprep (Provisioned Only)" GroupName="ScopeGroup" Foreground="#CBD5E1"/>
+                            <!-- 2. Custom Tuning -->
+                            <Button x:Name="BtnCustomTuning" Style="{StaticResource ModernBtn}" Height="64" MinWidth="270" Background="#1A2234" BorderBrush="#0EA5E9" BorderThickness="1.5" Padding="20,10">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Path Data="{StaticResource IconLayersFeatures}" Fill="#38BDF8" Width="20" Height="20" Stretch="Uniform" VerticalAlignment="Center" Margin="0,0,14,0"/>
+                                    <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                        <TextBlock Text="Custom Tuning" FontSize="15" FontWeight="Bold" Foreground="#F8FAFC"/>
+                                        <TextBlock Text="Tailor apps, privacy, explorer, gaming &amp; AI" FontSize="11" Foreground="#94A3B8" Margin="0,2,0,0"/>
+                                    </StackPanel>
+                                </Grid>
+                            </Button>
                         </StackPanel>
-                    </Grid>
-                </Border>
+
+                        <!-- Quick Navigation / Return Links -->
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,8,0,0">
+                            <Button x:Name="BtnStage1Restore" Style="{StaticResource ModernBtn}" Margin="0,0,12,0" Padding="12,6" ToolTip="Returning user? Open Restore &amp; Rollback panel immediately">
+                                <StackPanel Orientation="Horizontal">
+                                    <Path Data="{StaticResource IconShieldLock}" Fill="#38BDF8" Width="12" Height="12" Stretch="Uniform" Margin="0,0,6,0" VerticalAlignment="Center"/>
+                                    <TextBlock Text="Restore &amp; Rollback Manager" FontSize="11" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Button>
+                            <Button x:Name="BtnImportProfile" Style="{StaticResource ModernBtn}" Padding="12,6" ToolTip="Import custom preset profile from a .json file">
+                                <StackPanel Orientation="Horizontal">
+                                    <Path Data="{StaticResource IconFolder}" Fill="#38BDF8" Width="12" Height="12" Stretch="Uniform" Margin="0,0,6,0" VerticalAlignment="Center"/>
+                                    <TextBlock Text="Load JSON Profile" FontSize="11" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Button>
+                        </StackPanel>
+
+                        <!-- Preserved RadioButtons for backward compatibility (Collapsed) -->
+                        <StackPanel Visibility="Collapsed">
+                            <RadioButton x:Name="RadioPresetMinimal" Content="Minimal" GroupName="PresetGroup"/>
+                            <RadioButton x:Name="RadioPresetDefault" Content="Recommended" IsChecked="True" GroupName="PresetGroup"/>
+                            <RadioButton x:Name="RadioPresetDeep" Content="Deep" GroupName="PresetGroup"/>
+                            <Border x:Name="CardPresetMinimal"/>
+                            <Border x:Name="CardPresetDefault"/>
+                            <Border x:Name="CardPresetDeep"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Grid>
             </Grid>
 
             <!-- STAGE 2: App & Tweak Selection -->
@@ -891,6 +988,43 @@
                                 <ScrollViewer VerticalScrollBarVisibility="Auto">
                                     <ItemsControl x:Name="ListAppsContainer" Margin="10"/>
                                 </ScrollViewer>
+                            </Border>
+
+                            <!-- Bottom Safety Legend Bar -->
+                            <Border Grid.Row="3" Background="#131926" BorderBrush="#232D42" BorderThickness="1" CornerRadius="6" Padding="12,8" Margin="0,8,0,0">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="Safety Legend:" FontWeight="Bold" FontSize="11" Foreground="#94A3B8" VerticalAlignment="Center" Margin="0,0,14,0"/>
+                                    <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                                        <!-- Recommended -->
+                                        <StackPanel Orientation="Horizontal" Margin="0,0,16,0" VerticalAlignment="Center">
+                                            <Ellipse Width="8" Height="8" Fill="#10B981" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                                            <Border Background="#064E3B" CornerRadius="3" Padding="5,1" Margin="0,0,6,0">
+                                                <TextBlock Text="Recommended" FontSize="10" FontWeight="Bold" Foreground="#10B981"/>
+                                            </Border>
+                                            <TextBlock Text="Safe bloatware recommended for removal" FontSize="11" Foreground="#CBD5E1" VerticalAlignment="Center"/>
+                                        </StackPanel>
+                                        <!-- Optional -->
+                                        <StackPanel Orientation="Horizontal" Margin="0,0,16,0" VerticalAlignment="Center">
+                                            <Ellipse Width="8" Height="8" Fill="#F59E0B" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                                            <Border Background="#451A03" CornerRadius="3" Padding="5,1" Margin="0,0,6,0">
+                                                <TextBlock Text="Optional" FontSize="10" FontWeight="Bold" Foreground="#F59E0B"/>
+                                            </Border>
+                                            <TextBlock Text="User preference (Xbox, Media, Utilities)" FontSize="11" Foreground="#CBD5E1" VerticalAlignment="Center"/>
+                                        </StackPanel>
+                                        <!-- Not Recommended -->
+                                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                            <Ellipse Width="8" Height="8" Fill="#EF4444" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                                            <Border Background="#450A0A" CornerRadius="3" Padding="5,1" Margin="0,0,6,0">
+                                                <TextBlock Text="Not Recommended" FontSize="10" FontWeight="Bold" Foreground="#EF4444"/>
+                                            </Border>
+                                            <TextBlock Text="System components / protected" FontSize="11" Foreground="#CBD5E1" VerticalAlignment="Center"/>
+                                        </StackPanel>
+                                    </StackPanel>
+                                </Grid>
                             </Border>
                         </Grid>
                     </TabItem>
@@ -2359,6 +2493,295 @@
                         </StackPanel>
                     </Grid>
                 </Grid>
+            </Border>
+        </Grid>
+        <!-- 6. Preferences Modal Overlay -->
+        <Grid x:Name="ModalPreferences" Grid.RowSpan="4" Background="#CC0A0E17" Visibility="Collapsed">
+            <Border Background="#131926" BorderBrush="#0EA5E9" BorderThickness="1" CornerRadius="12" Width="520" VerticalAlignment="Center" HorizontalAlignment="Center" Padding="22">
+                <Border.Effect>
+                    <DropShadowEffect Color="#000000" BlurRadius="24" Opacity="0.6" ShadowDepth="6"/>
+                </Border.Effect>
+                <StackPanel>
+                    <!-- Header -->
+                    <Grid Margin="0,0,0,16">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0">
+                            <StackPanel Orientation="Horizontal">
+                                <Path Data="{StaticResource IconGear}" Fill="#38BDF8" Width="16" Height="16" Stretch="Uniform" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                                <TextBlock Text="Preferences &amp; System Settings" FontSize="16" FontWeight="Bold" Foreground="#F8FAFC"/>
+                            </StackPanel>
+                            <TextBlock Text="Customize interface theme, language, and execution safety policies." FontSize="12" Foreground="#94A3B8" Margin="0,2,0,0"/>
+                        </StackPanel>
+                        <Button x:Name="BtnClosePreferencesX" Style="{StaticResource ModernBtn}" Grid.Column="1" Width="28" Height="28" Padding="0">
+                            <Path Data="{StaticResource IconClose}" Fill="#94A3B8" Width="10" Height="10" Stretch="Uniform"/>
+                        </Button>
+                    </Grid>
+
+                    <!-- Theme Section -->
+                    <TextBlock Text="Color Theme" FontWeight="Bold" FontSize="12" Foreground="#F8FAFC" Margin="0,0,0,8"/>
+                    <Border Background="#0B0F17" BorderBrush="#232D42" BorderThickness="1" CornerRadius="8" Padding="12" Margin="0,0,0,14">
+                        <StackPanel Orientation="Horizontal">
+                            <RadioButton x:Name="RadioThemeAuto" Content="System Auto" IsChecked="True" GroupName="ThemeGroup" Foreground="#F8FAFC" FontSize="12" Margin="0,0,20,0"/>
+                            <RadioButton x:Name="RadioThemeDark" Content="Dark Mode" GroupName="ThemeGroup" Foreground="#CBD5E1" FontSize="12" Margin="0,0,20,0"/>
+                            <RadioButton x:Name="RadioThemeLight" Content="Light Mode" GroupName="ThemeGroup" Foreground="#CBD5E1" FontSize="12"/>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Language Section -->
+                    <TextBlock Text="Interface Language" FontWeight="Bold" FontSize="12" Foreground="#F8FAFC" Margin="0,0,0,8"/>
+                    <Border Background="#0B0F17" BorderBrush="#232D42" BorderThickness="1" CornerRadius="8" Padding="12" Margin="0,0,0,14">
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <TextBlock Text="Language:" FontSize="12" Foreground="#94A3B8" Margin="0,0,14,0" VerticalAlignment="Center"/>
+                            <ComboBox x:Name="CmbLanguage" Height="28" Width="240" Background="#131926" Foreground="#F8FAFC" BorderBrush="#232D42" BorderThickness="1" VerticalContentAlignment="Center" FontSize="12" SelectedIndex="0">
+                                <ComboBoxItem Content="System Default (English)"/>
+                                <ComboBoxItem Content="English (United States)"/>
+                            </ComboBox>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Safety & Behavior Toggles -->
+                    <TextBlock Text="Safety &amp; Behavior Policies" FontWeight="Bold" FontSize="12" Foreground="#F8FAFC" Margin="0,0,0,8"/>
+                    <Border Background="#0B0F17" BorderBrush="#232D42" BorderThickness="1" CornerRadius="8" Padding="12" Margin="0,0,0,18">
+                        <StackPanel>
+                            <CheckBox x:Name="ChkPrefRestorePoint" Content="Create System Restore Point before applying modifications" IsChecked="True" Foreground="#F8FAFC" FontSize="12" Margin="0,0,0,8"/>
+                            <CheckBox x:Name="ChkPrefCleanTempExit" Content="Clean temporary files on exit (preserves Backups and Logs)" IsChecked="True" Foreground="#F8FAFC" FontSize="12" Margin="0,0,0,8"/>
+                            <CheckBox x:Name="ChkPrefRippleEffects" Content="Enable interactive ripple &amp; motion animations" IsChecked="True" Foreground="#F8FAFC" FontSize="12"/>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Close Button -->
+                    <Button x:Name="BtnClosePreferences" Style="{StaticResource PrimaryBtn}" Background="#0EA5E9" HorizontalAlignment="Right" Padding="18,7">
+                        <TextBlock Text="Done" FontWeight="Bold" VerticalAlignment="Center"/>
+                    </Button>
+                </StackPanel>
+            </Border>
+        </Grid>
+
+        <!-- 7. Save JSON Profile Confirmation Modal -->
+        <Grid x:Name="ModalSaveProfile" Grid.RowSpan="4" Background="#CC0A0E17" Visibility="Collapsed">
+            <Border Background="#131926" BorderBrush="#0EA5E9" BorderThickness="1" CornerRadius="12" Width="480" VerticalAlignment="Center" HorizontalAlignment="Center" Padding="22">
+                <Border.Effect>
+                    <DropShadowEffect Color="#000000" BlurRadius="24" Opacity="0.6" ShadowDepth="6"/>
+                </Border.Effect>
+                <StackPanel>
+                    <!-- Header -->
+                    <Grid Margin="0,0,0,14">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0">
+                            <StackPanel Orientation="Horizontal">
+                                <Path Data="{StaticResource IconFileText}" Fill="#38BDF8" Width="16" Height="16" Stretch="Uniform" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                                <TextBlock Text="Save JSON Profile" FontSize="16" FontWeight="Bold" Foreground="#F8FAFC"/>
+                            </StackPanel>
+                            <TextBlock Text="Select configuration categories to export into the JSON profile." FontSize="12" Foreground="#94A3B8" Margin="0,2,0,0"/>
+                        </StackPanel>
+                        <Button x:Name="BtnCloseSaveProfileX" Style="{StaticResource ModernBtn}" Grid.Column="1" Width="28" Height="28" Padding="0">
+                            <Path Data="{StaticResource IconClose}" Fill="#94A3B8" Width="10" Height="10" Stretch="Uniform"/>
+                        </Button>
+                    </Grid>
+
+                    <!-- Categories Checklist -->
+                    <Border Background="#0B0F17" BorderBrush="#232D42" BorderThickness="1" CornerRadius="8" Padding="14" Margin="0,0,0,18">
+                        <StackPanel>
+                            <CheckBox x:Name="ChkExportApps" Content="Selected Apps (Bloatware packages marked for removal)" IsChecked="True" Foreground="#F8FAFC" FontSize="12" Margin="0,0,0,10"/>
+                            <CheckBox x:Name="ChkExportTweaks" Content="System &amp; Privacy Tweaks (Privacy, Explorer, Gaming, AI, Extras)" IsChecked="True" Foreground="#F8FAFC" FontSize="12" Margin="0,0,0,10"/>
+                            <CheckBox x:Name="ChkExportOptions" Content="Target &amp; Safety Options (Target scope, restore point preference)" IsChecked="True" Foreground="#F8FAFC" FontSize="12"/>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Action Buttons -->
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                        <Button x:Name="BtnCancelSaveProfile" Style="{StaticResource ModernBtn}" Margin="0,0,10,0" Padding="14,6">
+                            <TextBlock Text="Cancel" VerticalAlignment="Center"/>
+                        </Button>
+                        <Button x:Name="BtnConfirmSaveProfile" Style="{StaticResource PrimaryBtn}" Background="#0EA5E9" Padding="18,6">
+                            <StackPanel Orientation="Horizontal">
+                                <Path Data="{StaticResource IconFileText}" Fill="#FFFFFF" Width="11" Height="11" Stretch="Uniform" Margin="0,0,6,0" VerticalAlignment="Center"/>
+                                <TextBlock Text="Export Profile (.json)" FontWeight="Bold" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Button>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+        </Grid>
+
+        <!-- 8. Recovery & Rollback Modal Overlay -->
+        <Grid x:Name="ModalRecoveryRollback" Grid.RowSpan="4" Background="#CC0A0E17" Visibility="Collapsed">
+            <Border Background="#131926" BorderBrush="#10B981" BorderThickness="1" CornerRadius="12" Width="620" VerticalAlignment="Center" HorizontalAlignment="Center" Padding="22">
+                <Border.Effect>
+                    <DropShadowEffect Color="#000000" BlurRadius="24" Opacity="0.6" ShadowDepth="6"/>
+                </Border.Effect>
+                <StackPanel>
+                    <!-- Header -->
+                    <Grid Margin="0,0,0,16">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0">
+                            <StackPanel Orientation="Horizontal">
+                                <Path Data="{StaticResource IconShieldLock}" Fill="#10B981" Width="16" Height="16" Stretch="Uniform" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                                <TextBlock Text="Recovery &amp; Rollback Actions" FontSize="16" FontWeight="Bold" Foreground="#F8FAFC"/>
+                            </StackPanel>
+                            <TextBlock Text="Safe rollback utilities to restore previous settings, services, or layouts." FontSize="12" Foreground="#94A3B8" Margin="0,2,0,0"/>
+                        </StackPanel>
+                        <Button x:Name="BtnCloseRecoveryModalX" Style="{StaticResource ModernBtn}" Grid.Column="1" Width="28" Height="28" Padding="0">
+                            <Path Data="{StaticResource IconClose}" Fill="#94A3B8" Width="10" Height="10" Stretch="Uniform"/>
+                        </Button>
+                    </Grid>
+
+                    <!-- 3 Distinct Recovery Action Cards -->
+                    <!-- Action 1: 1-Click Full System Rollback -->
+                    <Border Background="#0B0F17" BorderBrush="#10B981" BorderThickness="1" CornerRadius="8" Padding="14" Margin="0,0,0,10">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="0" Margin="0,0,14,0">
+                                <StackPanel Orientation="Horizontal">
+                                    <Path Data="{StaticResource IconLightning}" Fill="#10B981" Width="12" Height="12" Stretch="Uniform" Margin="0,0,6,0" VerticalAlignment="Center"/>
+                                    <TextBlock Text="1-Click Full System Rollback" FontWeight="Bold" FontSize="13" Foreground="#F8FAFC"/>
+                                </StackPanel>
+                                <TextBlock Text="Restores registry snapshot, reverts service startup types, and restores Start Menu layout together in one click." FontSize="11" Foreground="#94A3B8" TextWrapping="Wrap" Margin="0,3,0,0"/>
+                            </StackPanel>
+                            <Button x:Name="BtnActionFullRollback" Style="{StaticResource PrimaryBtn}" Grid.Column="1" Background="#10B981" Foreground="#FFFFFF" Padding="14,6" VerticalAlignment="Center">
+                                <TextBlock Text="Execute Full Rollback" FontWeight="Bold" FontSize="11"/>
+                            </Button>
+                        </Grid>
+                    </Border>
+
+                    <!-- Action 2: Restore Registry Snapshot -->
+                    <Border Background="#0B0F17" BorderBrush="#232D42" BorderThickness="1" CornerRadius="8" Padding="14" Margin="0,0,0,10">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="0" Margin="0,0,14,0">
+                                <StackPanel Orientation="Horizontal">
+                                    <Path Data="{StaticResource IconShieldLock}" Fill="#38BDF8" Width="12" Height="12" Stretch="Uniform" Margin="0,0,6,0" VerticalAlignment="Center"/>
+                                    <TextBlock Text="Restore Registry Snapshot" FontWeight="Bold" FontSize="13" Foreground="#F8FAFC"/>
+                                </StackPanel>
+                                <TextBlock Text="Reverts system tweaks and registry values from the most recent or selected snapshot backup." FontSize="11" Foreground="#94A3B8" TextWrapping="Wrap" Margin="0,3,0,0"/>
+                            </StackPanel>
+                            <Button x:Name="BtnActionRegistryRollback" Style="{StaticResource ModernBtn}" Grid.Column="1" Padding="14,6" VerticalAlignment="Center">
+                                <TextBlock Text="Open Restore Panel" FontSize="11"/>
+                            </Button>
+                        </Grid>
+                    </Border>
+
+                    <!-- Action 3: Restore Start Menu Layout -->
+                    <Border Background="#0B0F17" BorderBrush="#232D42" BorderThickness="1" CornerRadius="8" Padding="14" Margin="0,0,0,16">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="0" Margin="0,0,14,0">
+                                <StackPanel Orientation="Horizontal">
+                                    <Path Data="{StaticResource IconDesktopExplorer}" Fill="#F59E0B" Width="12" Height="12" Stretch="Uniform" Margin="0,0,6,0" VerticalAlignment="Center"/>
+                                    <TextBlock Text="Restore Start Menu Layout" FontWeight="Bold" FontSize="13" Foreground="#F8FAFC"/>
+                                </StackPanel>
+                                <TextBlock Text="Restores backed-up Start Menu pinned app layout (start.bin / start2.bin) and restarts StartMenuExperienceHost." FontSize="11" Foreground="#94A3B8" TextWrapping="Wrap" Margin="0,3,0,0"/>
+                            </StackPanel>
+                            <Button x:Name="BtnActionStartMenuRollback" Style="{StaticResource ModernBtn}" Grid.Column="1" Padding="14,6" VerticalAlignment="Center">
+                                <TextBlock Text="Restore Layout" FontSize="11"/>
+                            </Button>
+                        </Grid>
+                    </Border>
+
+                    <!-- Close Button -->
+                    <Button x:Name="BtnCloseRecoveryModal" Style="{StaticResource ModernBtn}" HorizontalAlignment="Right" Padding="18,6">
+                        <TextBlock Text="Close" VerticalAlignment="Center"/>
+                    </Button>
+                </StackPanel>
+            </Border>
+        </Grid>
+
+        <!-- 9. About NH Win Debloater Modal Overlay -->
+        <Grid x:Name="ModalAbout" Grid.RowSpan="4" Background="#CC0A0E17" Visibility="Collapsed">
+            <Border Background="#131926" BorderBrush="#38BDF8" BorderThickness="1" CornerRadius="12" Width="520" VerticalAlignment="Center" HorizontalAlignment="Center" Padding="24">
+                <Border.Effect>
+                    <DropShadowEffect Color="#000000" BlurRadius="24" Opacity="0.6" ShadowDepth="6"/>
+                </Border.Effect>
+                <StackPanel>
+                    <!-- Header -->
+                    <Grid Margin="0,0,0,16">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
+                            <Border Width="32" Height="32" CornerRadius="6" Background="#0EA5E9" Margin="0,0,10,0">
+                                <TextBlock Text="NH" FontWeight="Bold" FontSize="15" Foreground="#FFFFFF" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+                            <StackPanel VerticalAlignment="Center">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="NH Win Debloater" FontWeight="Bold" FontSize="16" Foreground="#F8FAFC"/>
+                                    <Border CornerRadius="4" Background="#0284C7" Margin="8,0,0,0" Padding="5,1">
+                                        <TextBlock Text="v1.1.0" FontSize="10" FontWeight="Bold" Foreground="#FFFFFF"/>
+                                    </Border>
+                                </StackPanel>
+                                <TextBlock Text="Less Bloat. Better Windows. Built for performance." FontSize="11" Foreground="#94A3B8"/>
+                            </StackPanel>
+                        </StackPanel>
+                        <Button x:Name="BtnCloseAboutModalX" Style="{StaticResource ModernBtn}" Grid.Column="1" Width="28" Height="28" Padding="0">
+                            <Path Data="{StaticResource IconClose}" Fill="#94A3B8" Width="10" Height="10" Stretch="Uniform"/>
+                        </Button>
+                    </Grid>
+
+                    <!-- Info Details Card -->
+                    <Border Background="#0B0F17" BorderBrush="#232D42" BorderThickness="1" CornerRadius="8" Padding="14" Margin="0,0,0,16">
+                        <StackPanel>
+                            <Grid Margin="0,0,0,6">
+                                <TextBlock Text="Creator &amp; Maintainer:" FontSize="12" Foreground="#94A3B8"/>
+                                <TextBlock Text="Mohammed Nadeem BM" FontSize="12" FontWeight="SemiBold" Foreground="#F8FAFC" HorizontalAlignment="Right"/>
+                            </Grid>
+                            <Grid Margin="0,0,0,6">
+                                <TextBlock Text="Brand &amp; Website:" FontSize="12" Foreground="#94A3B8"/>
+                                <TextBlock Text="NH Digital • nhdigital.shop" FontSize="12" FontWeight="SemiBold" Foreground="#38BDF8" HorizontalAlignment="Right"/>
+                            </Grid>
+                            <Grid Margin="0,0,0,6">
+                                <TextBlock Text="GitHub:" FontSize="12" Foreground="#94A3B8"/>
+                                <TextBlock Text="@nadeemhaaju143 / nh-win-debloater" FontSize="12" Foreground="#CBD5E1" HorizontalAlignment="Right"/>
+                            </Grid>
+                            <Grid Margin="0,0,0,6">
+                                <TextBlock Text="License:" FontSize="12" Foreground="#94A3B8"/>
+                                <TextBlock Text="MIT License (Open Source)" FontSize="12" Foreground="#10B981" HorizontalAlignment="Right"/>
+                            </Grid>
+                            <Grid>
+                                <TextBlock Text="Architecture:" FontSize="12" Foreground="#94A3B8"/>
+                                <TextBlock Text="Pure Native WPF XAML &amp; PowerShell" FontSize="12" Foreground="#CBD5E1" HorizontalAlignment="Right"/>
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Description -->
+                    <TextBlock Text="An independent, transparent, and completely reversible Windows optimization and debloating suite. Cleans pre-installed bloatware, enforces strict telemetry and privacy policies, optimizes background resource consumption, and safeguards critical system components." FontSize="11" Foreground="#94A3B8" TextWrapping="Wrap" Margin="0,0,0,18"/>
+
+                    <!-- Action Buttons -->
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <Button x:Name="BtnAboutSupport" Style="{StaticResource PrimaryBtn}" Grid.Column="0" Background="#EF4444" Margin="0,0,10,0" Padding="14,7">
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                <Path Data="{StaticResource IconHeart}" Fill="#FFFFFF" Width="12" Height="12" Stretch="Uniform" Margin="0,0,6,0" VerticalAlignment="Center"/>
+                                <TextBlock Text="♥  Support Development" FontWeight="Bold" FontSize="11" Foreground="#FFFFFF"/>
+                            </StackPanel>
+                        </Button>
+                        <Button x:Name="BtnCloseAboutModal" Style="{StaticResource ModernBtn}" Grid.Column="1" Padding="18,7">
+                            <TextBlock Text="Close" VerticalAlignment="Center"/>
+                        </Button>
+                    </Grid>
+                </StackPanel>
             </Border>
         </Grid>
     </Grid>
