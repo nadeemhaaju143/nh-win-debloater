@@ -12,12 +12,21 @@ The project follows a **progressive semantic minor versioning format**:
 ## [1.0.0] - 2026-11-21
 
 ### Milestone: Consolidated Production-Ready Release
+- **Material Design 3 & Windows 11 Fluent UI Overhaul (`MainWindow.xaml` & `AppController.ps1`):**
+  - Upgraded window architecture with native borderless `WindowChrome` (`CornerRadius="14"`, `GlassFrameThickness="0"`, `CaptionHeight="52"`), draggable title bar, and responsive title caption buttons (`BtnMinimize`, `BtnMaximize`, `BtnClose`).
+  - Added Material Stepper Pill Bar across Stages 1–5 with dynamic state synchronization (glowing `#0EA5E9` active pill, emerald `#10B981` checkmark badge on completed stages, and subtle `#232D42` upcoming pills).
+  - Modern 4-tier dark elevation palette (`#0B0F17` base, `#131926` card with soft drop shadows, `#1A2234` interactive surface, `#0EA5E9` / `#38BDF8` cyan accents) and `Segoe UI Variable Display` typography.
+  - Implemented custom modern control templates: rounded Material CheckBox (`CornerRadius="5"`, vector checkmark path, `#0EA5E9` active fill), slim 6px dark ScrollBar (`CornerRadius="3"` thumb), rounded ComboBox & Multi-Select dropdowns (`CornerRadius="10"`), and pill buttons (`CornerRadius="9"`).
+  - Retained all 227 original `x:Name` controls and creator attribution with 100% backwards compatibility.
+- **Official High-Resolution UI Screenshots (`assets/screenshots/`):**
+  - Generated crisp 1080×760 screenshots in safe `-DryRun` mode: `main-window.png`, `tweak-dropdowns.png`, and `restore-manager.png`.
+- **Full GitHub Wiki Documentation Suite (`wiki/` & `tools/Publish-Wiki.ps1`):**
+  - Published comprehensive multi-page documentation covering `Home.md`, `How-To-Use.md`, `Features.md`, `App-Removal.md`, `Reverting-Changes.md`, and `_Sidebar.md`.
+- **GitHub Sponsorships & Funding Integration (`.github/FUNDING.yml`):**
+  - Added One-Time Support (`https://rzp.io/rzp/nh-win-debloater`) and Monthly Supporter ₹199/mo (`https://rzp.io/rzp/j9CGaaRR`) Razorpay integrations to support open-source development.
 - **Official Branded Launcher (`irm nhdigital.shop/debloat | iex`):**
   - Fully integrated with `nhdigital.shop/debloat` (and `/w` alias) 302 edge redirects and direct GitHub raw fallback.
   - Zero manual download required, STA mode automatic elevation, and post-exit transient sandbox cleanup.
-- **Dark Material UI & Fluid WPF Motion:**
-  - Modern dark slate theme (`#0F172A`), pre-declared `RenderTransform` hardware acceleration, smooth 220ms slide-fade transitions, and Segoe Fluent vector icon set.
-  - Dynamic live impact evaluators, selection counters, and zero console error noise.
 - **Granular Multi-Select CheckBox Dropdowns:**
   - Consistent Material multi-select checkboxes across all tabs (**Bloatware Apps**, **Privacy & Search**, **Taskbar & Explorer**, **Gaming & Performance**, **System Extras**, **AI Integration**, and **Optional Features**).
 - **Dedicated AI Integration Suite:**
@@ -29,7 +38,7 @@ The project follows a **progressive semantic minor versioning format**:
 - **Custom Preset Profile Engine:**
   - Export and import custom configurations via portable `.json` profiles.
 - **Automated Quality Gates & Cloud VM Verification:**
-  - 100% test pass rate across 61 Pester unit/integration tests and 0 PSScriptAnalyzer issues across 12 files.
+  - 100% test pass rate across 66 Pester unit/integration tests and 0 PSScriptAnalyzer issues across 13 files.
   - End-to-end verified on real cloud Windows VM environments via LambdaTest HyperExecute.
 
 ---
@@ -81,7 +90,7 @@ The project follows a **progressive semantic minor versioning format**:
   - Added smooth scale-fade entrance animations on all popup dropdowns.
   - Added continuous gradient shimmer animation (`Storyboard` on `LinearGradientBrush.StartPoint` / `EndPoint`) across the top header accent bar.
   - Added physical tactile button feedback (`IsPressed` scale and brightness compression) across all buttons.
-- **Raphire Win11Debloat Feature Parity (`SystemTweaks.psm1`, `ShellCustomization.psm1`, `MainWindow.xaml` & `AppController.ps1`):**
+- **Comprehensive Windows 11 Optimization Parity (`SystemTweaks.psm1`, `ShellCustomization.psm1`, `MainWindow.xaml` & `AppController.ps1`):**
   - Added **Launch to This PC** (`ChkLaunchToThisPC`) to configure File Explorer to open directly to "This PC" instead of Home/Quick Access.
   - Added **Hide Gallery from Navigation Pane** (`ChkHideGalleryNav`) via namespace removal with full `-WhatIf` preview.
   - Added **Disable Snap Assist Suggestions Flyout** (`ChkSnapFlyout`) with registry policy safeguards (`EnableSnapAssistFlyout = 0`).

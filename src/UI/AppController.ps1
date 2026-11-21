@@ -81,6 +81,24 @@ function Show-DebloaterWindow {
     $stepTag4 = $window.FindName("StepTag4")
     $stepTag5 = $window.FindName("StepTag5")
 
+    $pillStage1 = $window.FindName("PillStage1")
+    $pillStage2 = $window.FindName("PillStage2")
+    $pillStage3 = $window.FindName("PillStage3")
+    $pillStage4 = $window.FindName("PillStage4")
+    $pillStage5 = $window.FindName("PillStage5")
+
+    $badgeStep1 = $window.FindName("BadgeStep1")
+    $badgeStep2 = $window.FindName("BadgeStep2")
+    $badgeStep3 = $window.FindName("BadgeStep3")
+    $badgeStep4 = $window.FindName("BadgeStep4")
+    $badgeStep5 = $window.FindName("BadgeStep5")
+
+    $checkStep1 = $window.FindName("CheckStep1")
+    $checkStep2 = $window.FindName("CheckStep2")
+    $checkStep3 = $window.FindName("CheckStep3")
+    $checkStep4 = $window.FindName("CheckStep4")
+    $checkStep5 = $window.FindName("CheckStep5")
+
     $viewStage1 = $window.FindName("ViewStage1")
     $viewStage2 = $window.FindName("ViewStage2")
     $viewStage3 = $window.FindName("ViewStage3")
@@ -570,21 +588,58 @@ function Show-DebloaterWindow {
         $viewStage4.Visibility = [System.Windows.Visibility]::Collapsed
         $viewStage5.Visibility = [System.Windows.Visibility]::Collapsed
 
-        # Stepper highlights
+        # Stepper highlights & Material Pill state synchronization
         $stepColorActive = [System.Windows.Media.BrushConverter]::new().ConvertFromString("#0EA5E9")
         $stepColorInactive = [System.Windows.Media.BrushConverter]::new().ConvertFromString("#64748B")
+        $stepColorDone = [System.Windows.Media.BrushConverter]::new().ConvertFromString("#94A3B8")
 
-        $stepTag1.Foreground = $stepColorInactive; $stepTag1.FontWeight = [System.Windows.FontWeights]::Normal
-        $stepTag2.Foreground = $stepColorInactive; $stepTag2.FontWeight = [System.Windows.FontWeights]::Normal
-        $stepTag3.Foreground = $stepColorInactive; $stepTag3.FontWeight = [System.Windows.FontWeights]::Normal
-        $stepTag4.Foreground = $stepColorInactive; $stepTag4.FontWeight = [System.Windows.FontWeights]::Normal
-        $stepTag5.Foreground = $stepColorInactive; $stepTag5.FontWeight = [System.Windows.FontWeights]::Normal
+        $brushActivePillBg = [System.Windows.Media.BrushConverter]::new().ConvertFromString("#1A2234")
+        $brushActiveBorder = [System.Windows.Media.BrushConverter]::new().ConvertFromString("#0EA5E9")
+        $brushDonePillBg   = [System.Windows.Media.BrushConverter]::new().ConvertFromString("#131926")
+        $brushDoneBorder   = [System.Windows.Media.BrushConverter]::new().ConvertFromString("#10B981")
+        $brushIdlePillBg   = [System.Windows.Media.BrushConverter]::new().ConvertFromString("#0B0F17")
+        $brushIdleBorder   = [System.Windows.Media.BrushConverter]::new().ConvertFromString("#232D42")
+
+        $brushActiveBadge  = [System.Windows.Media.BrushConverter]::new().ConvertFromString("#0EA5E9")
+        $brushIdleBadge    = [System.Windows.Media.BrushConverter]::new().ConvertFromString("#222C42")
+
+        $pills = @($pillStage1, $pillStage2, $pillStage3, $pillStage4, $pillStage5)
+        $badges = @($badgeStep1, $badgeStep2, $badgeStep3, $badgeStep4, $badgeStep5)
+        $checks = @($checkStep1, $checkStep2, $checkStep3, $checkStep4, $checkStep5)
+        $stepTags = @($stepTag1, $stepTag2, $stepTag3, $stepTag4, $stepTag5)
+
+        for ($i = 0; $i -lt 5; $i++) {
+            $stepNum = $i + 1
+            $pill = $pills[$i]
+            $badge = $badges[$i]
+            $chk = $checks[$i]
+            $tag = $stepTags[$i]
+
+            if ($stepNum -lt $stage) {
+                # Completed
+                if ($pill) { $pill.Background = $brushDonePillBg; $pill.BorderBrush = $brushDoneBorder }
+                if ($badge) { $badge.Visibility = [System.Windows.Visibility]::Collapsed }
+                if ($chk) { $chk.Visibility = [System.Windows.Visibility]::Visible }
+                if ($tag) { $tag.Foreground = $stepColorDone; $tag.FontWeight = [System.Windows.FontWeights]::Normal }
+            } elseif ($stepNum -eq $stage) {
+                # Active
+                if ($pill) { $pill.Background = $brushActivePillBg; $pill.BorderBrush = $brushActiveBorder }
+                if ($badge) { $badge.Background = $brushActiveBadge; $badge.Visibility = [System.Windows.Visibility]::Visible }
+                if ($chk) { $chk.Visibility = [System.Windows.Visibility]::Collapsed }
+                if ($tag) { $tag.Foreground = $stepColorActive; $tag.FontWeight = [System.Windows.FontWeights]::Bold }
+            } else {
+                # Upcoming
+                if ($pill) { $pill.Background = $brushIdlePillBg; $pill.BorderBrush = $brushIdleBorder }
+                if ($badge) { $badge.Background = $brushIdleBadge; $badge.Visibility = [System.Windows.Visibility]::Visible }
+                if ($chk) { $chk.Visibility = [System.Windows.Visibility]::Collapsed }
+                if ($tag) { $tag.Foreground = $stepColorInactive; $tag.FontWeight = [System.Windows.FontWeights]::Normal }
+            }
+        }
 
         # Configure visible stage and buttons
         switch ($stage) {
             1 {
                 & $revealStage $viewStage1
-                $stepTag1.Foreground = $stepColorActive; $stepTag1.FontWeight = [System.Windows.FontWeights]::Bold
                 $btnBack.Visibility = [System.Windows.Visibility]::Collapsed
                 $btnNext.Visibility = [System.Windows.Visibility]::Visible
                 $btnApply.Visibility = [System.Windows.Visibility]::Collapsed
@@ -592,7 +647,6 @@ function Show-DebloaterWindow {
             }
             2 {
                 & $revealStage $viewStage2
-                $stepTag2.Foreground = $stepColorActive; $stepTag2.FontWeight = [System.Windows.FontWeights]::Bold
                 $btnBack.Visibility = [System.Windows.Visibility]::Visible
                 $btnNext.Visibility = [System.Windows.Visibility]::Visible
                 $btnApply.Visibility = [System.Windows.Visibility]::Collapsed
@@ -601,7 +655,6 @@ function Show-DebloaterWindow {
             }
             3 {
                 & $revealStage $viewStage3
-                $stepTag3.Foreground = $stepColorActive; $stepTag3.FontWeight = [System.Windows.FontWeights]::Bold
                 $btnBack.Visibility = [System.Windows.Visibility]::Visible
                 $btnNext.Visibility = [System.Windows.Visibility]::Collapsed
                 $btnApply.Visibility = [System.Windows.Visibility]::Visible
@@ -610,7 +663,6 @@ function Show-DebloaterWindow {
             }
             4 {
                 & $revealStage $viewStage4
-                $stepTag4.Foreground = $stepColorActive; $stepTag4.FontWeight = [System.Windows.FontWeights]::Bold
                 $btnBack.Visibility = [System.Windows.Visibility]::Collapsed
                 $btnNext.Visibility = [System.Windows.Visibility]::Collapsed
                 $btnApply.Visibility = [System.Windows.Visibility]::Collapsed
@@ -2433,6 +2485,26 @@ function Show-DebloaterWindow {
         param([object]$eventSource, [System.Windows.RoutedEventArgs]$eventArgs)
         $window.Close()
     })
+
+    # Window Caption Controls (Minimize, Maximize / Restore, Close)
+    $btnMin = $window.FindName("BtnMinimize")
+    if ($btnMin) {
+        $btnMin.Add_Click({ $window.WindowState = [System.Windows.WindowState]::Minimized })
+    }
+    $btnMax = $window.FindName("BtnMaximize")
+    if ($btnMax) {
+        $btnMax.Add_Click({
+            if ($window.WindowState -eq [System.Windows.WindowState]::Maximized) {
+                $window.WindowState = [System.Windows.WindowState]::Normal
+            } else {
+                $window.WindowState = [System.Windows.WindowState]::Maximized
+            }
+        })
+    }
+    $btnClose = $window.FindName("BtnClose")
+    if ($btnClose) {
+        $btnClose.Add_Click({ $window.Close() })
+    }
 
     # Window Closed Handler: Ensure post-exit temp & session cleanup (preserving backups/logs)
     $window.Add_Closed({

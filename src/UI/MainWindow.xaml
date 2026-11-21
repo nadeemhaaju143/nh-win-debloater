@@ -5,16 +5,28 @@
     Height="760" Width="1080"
     MinHeight="680" MinWidth="980"
     WindowStartupLocation="CenterScreen"
-    Background="#0A0E17" Foreground="#F8FAFC"
-    FontFamily="Segoe UI, Segoe UI Variable, Arial">
+    WindowStyle="None"
+    AllowsTransparency="True"
+    Background="Transparent"
+    Foreground="#F8FAFC"
+    FontFamily="Segoe UI Variable Display, Segoe UI, Arial">
+
+    <WindowChrome.WindowChrome>
+        <WindowChrome
+            CaptionHeight="52"
+            CornerRadius="14"
+            GlassFrameThickness="0"
+            ResizeBorderThickness="6"
+            UseAeroCaptionButtons="False"/>
+    </WindowChrome.WindowChrome>
 
     <Window.Resources>
-        <!-- Material Dark Palette & Surface Elevations -->
-        <SolidColorBrush x:Key="BgDark" Color="#0A0E17"/>
-        <SolidColorBrush x:Key="SurfaceCard" Color="#131D31"/>
-        <SolidColorBrush x:Key="SurfaceElevated" Color="#1E293B"/>
-        <SolidColorBrush x:Key="CardBorder" Color="#2A384F"/>
-        <SolidColorBrush x:Key="CardBorderSubtle" Color="#1E293B"/>
+        <!-- 4-Tier Material Dark Palette & Surface Elevations -->
+        <SolidColorBrush x:Key="BgDark" Color="#0B0F17"/>
+        <SolidColorBrush x:Key="SurfaceCard" Color="#131926"/>
+        <SolidColorBrush x:Key="SurfaceElevated" Color="#1A2234"/>
+        <SolidColorBrush x:Key="CardBorder" Color="#232D42"/>
+        <SolidColorBrush x:Key="CardBorderSubtle" Color="#1A2234"/>
         <SolidColorBrush x:Key="AccentCyan" Color="#0EA5E9"/>
         <SolidColorBrush x:Key="AccentCyanGlow" Color="#38BDF8"/>
         <SolidColorBrush x:Key="AccentEmerald" Color="#10B981"/>
@@ -45,55 +57,67 @@
         <Geometry x:Key="IconRefresh">M17.65,6.35C16.2,4.9 14.21,4 12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20C15.73,20 18.84,17.45 19.73,14H17.65C16.83,16.33 14.61,18 12,18A6,6 0 0,1 6,12A6,6 0 0,1 12,6C13.66,6 15.14,6.69 16.22,7.78L13,11H20V4L17.65,6.35Z</Geometry>
         <Geometry x:Key="IconFolder">M10,4H4C2.89,4 2,4.89 2,6V18A2,2 0 0,0 4,20H20A2,2 0 0,0 22,18V8C22,6.89 21.1,6 20,6H12L10,4Z</Geometry>
         <Geometry x:Key="IconFileText">M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z</Geometry>
+        <Geometry x:Key="IconMinimize">M0,5 H10 V7 H0 Z</Geometry>
+        <Geometry x:Key="IconMaximize">M1,1 H9 V9 H1 V1 M2,3 V8 H8 V3 Z</Geometry>
 
-        <!-- Interactive Preset Card Styles with Hover Transitions -->
+        <!-- Interactive Preset Card Styles with Material 3 Elevations -->
         <Style x:Key="PresetCardBorder" TargetType="Border">
-            <Setter Property="Background" Value="#131D31"/>
-            <Setter Property="CornerRadius" Value="8"/>
-            <Setter Property="BorderBrush" Value="#2A384F"/>
+            <Setter Property="Background" Value="#131926"/>
+            <Setter Property="CornerRadius" Value="12"/>
+            <Setter Property="BorderBrush" Value="#232D42"/>
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect Color="#000000" BlurRadius="12" Opacity="0.32" ShadowDepth="2" Direction="270"/>
+                </Setter.Value>
+            </Setter>
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
                     <Setter Property="BorderBrush" Value="#0EA5E9"/>
-                    <Setter Property="Background" Value="#17233B"/>
+                    <Setter Property="Background" Value="#1A2234"/>
                 </Trigger>
             </Style.Triggers>
         </Style>
 
         <Style x:Key="PresetCardRecommendedBorder" TargetType="Border">
-            <Setter Property="Background" Value="#131D31"/>
-            <Setter Property="CornerRadius" Value="8"/>
+            <Setter Property="Background" Value="#131926"/>
+            <Setter Property="CornerRadius" Value="12"/>
             <Setter Property="BorderBrush" Value="#0EA5E9"/>
             <Setter Property="BorderThickness" Value="2"/>
             <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect Color="#0EA5E9" BlurRadius="16" Opacity="0.25" ShadowDepth="0"/>
+                </Setter.Value>
+            </Setter>
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
                     <Setter Property="BorderBrush" Value="#38BDF8"/>
-                    <Setter Property="Background" Value="#17233B"/>
+                    <Setter Property="Background" Value="#1A2234"/>
                 </Trigger>
             </Style.Triggers>
         </Style>
 
-        <!-- Button Style -->
+        <!-- Material Pill Button Style (CornerRadius 9) -->
         <Style x:Key="ModernBtn" TargetType="Button">
-            <Setter Property="Background" Value="#1E293B"/>
+            <Setter Property="Background" Value="#1A2234"/>
             <Setter Property="Foreground" Value="#F8FAFC"/>
             <Setter Property="FontSize" Value="12"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
             <Setter Property="Padding" Value="14,7"/>
             <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="BorderBrush" Value="#334155"/>
+            <Setter Property="BorderBrush" Value="#232D42"/>
             <Setter Property="Cursor" Value="Hand"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
-                        <Border x:Name="border" CornerRadius="6" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
+                        <Border x:Name="border" CornerRadius="9" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
                             <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" Margin="{TemplateBinding Padding}"/>
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="border" Property="Background" Value="#2A384F"/>
+                                <Setter TargetName="border" Property="Background" Value="#222C42"/>
                                 <Setter TargetName="border" Property="BorderBrush" Value="#0EA5E9"/>
                             </Trigger>
                             <Trigger Property="IsPressed" Value="True">
@@ -109,6 +133,56 @@
             </Setter>
         </Style>
 
+        <!-- Windows 11 Native Fluent Caption Buttons -->
+        <Style x:Key="CaptionBtn" TargetType="Button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="#94A3B8"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Width" Value="36"/>
+            <Setter Property="Height" Value="30"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="WindowChrome.IsHitTestVisibleInChrome" Value="True"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="btnBorder" Background="{TemplateBinding Background}" CornerRadius="6">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="btnBorder" Property="Background" Value="#222C42"/>
+                                <Setter Property="Foreground" Value="#F8FAFC"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="btnBorder" Property="Background" Value="#1A2234"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="CaptionCloseBtn" TargetType="Button" BasedOn="{StaticResource CaptionBtn}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="btnBorder" Background="{TemplateBinding Background}" CornerRadius="6">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="btnBorder" Property="Background" Value="#EF4444"/>
+                                <Setter Property="Foreground" Value="#FFFFFF"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="btnBorder" Property="Background" Value="#DC2626"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
         <!-- Primary Accent Button -->
         <Style x:Key="PrimaryBtn" TargetType="Button" BasedOn="{StaticResource ModernBtn}">
             <Setter Property="Background" Value="#0EA5E9"/>
@@ -117,7 +191,7 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
-                        <Border x:Name="border" CornerRadius="6" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
+                        <Border x:Name="border" CornerRadius="9" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
                             <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" Margin="{TemplateBinding Padding}"/>
                         </Border>
                         <ControlTemplate.Triggers>
@@ -138,20 +212,130 @@
             </Setter>
         </Style>
 
-        <!-- Modern CheckBox -->
+        <!-- Modern Rounded Material CheckBox (CornerRadius 5, vector checkmark, #0EA5E9 fill) -->
         <Style x:Key="ModernCheckBox" TargetType="CheckBox">
             <Setter Property="Foreground" Value="#F8FAFC"/>
             <Setter Property="FontSize" Value="13"/>
             <Setter Property="Cursor" Value="Hand"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
             <Setter Property="Margin" Value="0,4"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="CheckBox">
+                        <Grid Background="Transparent">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Border x:Name="CheckBorder" Grid.Column="0" Width="18" Height="18" CornerRadius="5" Background="#131926" BorderBrush="#334155" BorderThickness="1.5" VerticalAlignment="Center">
+                                <Path x:Name="CheckMark" Data="M3.5,9.5 L7.5,13.5 L14.5,5.5" Stroke="#FFFFFF" StrokeThickness="2" StrokeStartLineCap="Round" StrokeEndLineCap="Round" StrokeLineJoin="Round" Stretch="Uniform" Margin="2" Visibility="Collapsed"/>
+                            </Border>
+                            <ContentPresenter Grid.Column="1" Margin="8,0,0,0" VerticalAlignment="Center" RecognizesAccessKey="True"/>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="CheckBorder" Property="BorderBrush" Value="#0EA5E9"/>
+                                <Setter TargetName="CheckBorder" Property="Background" Value="#1A2234"/>
+                            </Trigger>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="CheckBorder" Property="Background" Value="#0EA5E9"/>
+                                <Setter TargetName="CheckBorder" Property="BorderBrush" Value="#0EA5E9"/>
+                                <Setter TargetName="CheckMark" Property="Visibility" Value="Visible"/>
+                            </Trigger>
+                            <MultiTrigger>
+                                <MultiTrigger.Conditions>
+                                    <Condition Property="IsChecked" Value="True"/>
+                                    <Condition Property="IsMouseOver" Value="True"/>
+                                </MultiTrigger.Conditions>
+                                <Setter TargetName="CheckBorder" Property="Background" Value="#38BDF8"/>
+                                <Setter TargetName="CheckBorder" Property="BorderBrush" Value="#38BDF8"/>
+                            </MultiTrigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="CheckBorder" Property="Opacity" Value="0.4"/>
+                                <Setter Property="Foreground" Value="#64748B"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
         </Style>
 
-        <!-- Dark Material Multi-Select Dropdown ToggleButton -->
+        <!-- Global CheckBox Style -->
+        <Style TargetType="CheckBox" BasedOn="{StaticResource ModernCheckBox}"/>
+
+        <!-- Slim 6px Dark ScrollBar Style -->
+        <Style TargetType="ScrollBar">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="#334155"/>
+            <Setter Property="Width" Value="6"/>
+            <Setter Property="MinWidth" Value="6"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ScrollBar">
+                        <Grid x:Name="Bg" Background="Transparent" SnapsToDevicePixels="true">
+                            <Track x:Name="PART_Track" IsDirectionReversed="true" EnableScrollBarDownPageSupport="True">
+                                <Track.DecreaseRepeatButton>
+                                    <RepeatButton Command="{x:Static ScrollBar.PageUpCommand}" Opacity="0" Focusable="false"/>
+                                </Track.DecreaseRepeatButton>
+                                <Track.IncreaseRepeatButton>
+                                    <RepeatButton Command="{x:Static ScrollBar.PageDownCommand}" Opacity="0" Focusable="false"/>
+                                </Track.IncreaseRepeatButton>
+                                <Track.Thumb>
+                                    <Thumb>
+                                        <Thumb.Template>
+                                            <ControlTemplate TargetType="Thumb">
+                                                <Border CornerRadius="3" Background="#334155" x:Name="ThumbBorder"/>
+                                                <ControlTemplate.Triggers>
+                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                        <Setter TargetName="ThumbBorder" Property="Background" Value="#475569"/>
+                                                    </Trigger>
+                                                    <Trigger Property="IsDragging" Value="True">
+                                                        <Setter TargetName="ThumbBorder" Property="Background" Value="#64748B"/>
+                                                    </Trigger>
+                                                </ControlTemplate.Triggers>
+                                            </ControlTemplate>
+                                        </Thumb.Template>
+                                    </Thumb>
+                                </Track.Thumb>
+                            </Track>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Rounded Gradient ProgressBar (CornerRadius 4, Height 8) -->
+        <Style TargetType="ProgressBar">
+            <Setter Property="Height" Value="8"/>
+            <Setter Property="Background" Value="#1A2234"/>
+            <Setter Property="Foreground">
+                <Setter.Value>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                        <GradientStop Color="#0EA5E9" Offset="0"/>
+                        <GradientStop Color="#38BDF8" Offset="1"/>
+                    </LinearGradientBrush>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ProgressBar">
+                        <Border CornerRadius="4" Background="{TemplateBinding Background}" ClipToBounds="True">
+                            <Grid x:Name="TemplateRoot">
+                                <Border x:Name="PART_Track"/>
+                                <Border x:Name="PART_Indicator" CornerRadius="4" Background="{TemplateBinding Foreground}" HorizontalAlignment="Left"/>
+                            </Grid>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Dark Material Multi-Select Dropdown ToggleButton (CornerRadius 10) -->
         <Style x:Key="ModernDropdownToggle" TargetType="ToggleButton">
-            <Setter Property="Background" Value="#1E293B"/>
+            <Setter Property="Background" Value="#1A2234"/>
             <Setter Property="Foreground" Value="#38BDF8"/>
-            <Setter Property="BorderBrush" Value="#334155"/>
+            <Setter Property="BorderBrush" Value="#232D42"/>
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="FontSize" Value="12"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
@@ -161,16 +345,16 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="ToggleButton">
-                        <Border x:Name="border" CornerRadius="5" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Padding="{TemplateBinding Padding}">
+                        <Border x:Name="border" CornerRadius="10" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Padding="{TemplateBinding Padding}">
                             <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="border" Property="Background" Value="#2A384F"/>
+                                <Setter TargetName="border" Property="Background" Value="#232D42"/>
                                 <Setter TargetName="border" Property="BorderBrush" Value="#0EA5E9"/>
                             </Trigger>
                             <Trigger Property="IsChecked" Value="True">
-                                <Setter TargetName="border" Property="Background" Value="#2A384F"/>
+                                <Setter TargetName="border" Property="Background" Value="#232D42"/>
                                 <Setter TargetName="border" Property="BorderBrush" Value="#38BDF8"/>
                                 <Setter Property="Foreground" Value="#F8FAFC"/>
                             </Trigger>
@@ -196,7 +380,7 @@
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="btnBorder" Property="Background" Value="#2A384F"/>
+                                <Setter TargetName="btnBorder" Property="Background" Value="#232D42"/>
                                 <Setter Property="Foreground" Value="#F8FAFC"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
@@ -221,11 +405,11 @@
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
                                 <Setter Property="Foreground" Value="#F8FAFC"/>
-                                <Setter TargetName="tabBorder" Property="Background" Value="#1E293B"/>
+                                <Setter TargetName="tabBorder" Property="Background" Value="#1A2234"/>
                             </Trigger>
                             <Trigger Property="IsSelected" Value="True">
                                 <Setter Property="Foreground" Value="#38BDF8"/>
-                                <Setter TargetName="tabBorder" Property="Background" Value="#131D31"/>
+                                <Setter TargetName="tabBorder" Property="Background" Value="#131926"/>
                                 <Setter TargetName="tabBorder" Property="BorderBrush" Value="#0EA5E9"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
@@ -235,16 +419,17 @@
         </Style>
     </Window.Resources>
 
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="74"/>  <!-- Header -->
-            <RowDefinition Height="46"/>  <!-- Step Indicator -->
-            <RowDefinition Height="*"/>   <!-- Main Dynamic Views -->
-            <RowDefinition Height="64"/>  <!-- Footer & Navigation -->
-        </Grid.RowDefinitions>
+    <Border CornerRadius="14" Background="#0B0F17" BorderBrush="#2A3346" BorderThickness="1" ClipToBounds="True">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="74"/>  <!-- Header -->
+                <RowDefinition Height="50"/>  <!-- Step Indicator -->
+                <RowDefinition Height="*"/>   <!-- Main Dynamic Views -->
+                <RowDefinition Height="64"/>  <!-- Footer & Navigation -->
+            </Grid.RowDefinitions>
 
         <!-- 1. Header Bar with Accent Shimmer & Status Flourish -->
-        <Border Grid.Row="0" Background="#131D31" BorderBrush="#2A384F" BorderThickness="0,0,0,1">
+        <Border Grid.Row="0" Background="#131926" BorderBrush="#232D42" BorderThickness="0,0,0,1">
             <Grid>
                 <Grid Margin="24,0">
                     <Grid.ColumnDefinitions>
@@ -273,24 +458,37 @@
 
                     <!-- System Info, Quick Action & Status Flourish -->
                     <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Right">
-                        <Button x:Name="BtnHeaderRestore" Style="{StaticResource ModernBtn}" Height="30" Padding="10,0" Margin="0,0,10,0" ToolTip="Quick Action: Jump directly to Restore &amp; Rollback Manager">
+                        <Button x:Name="BtnHeaderRestore" Style="{StaticResource ModernBtn}" Height="30" Padding="10,0" Margin="0,0,10,0" ToolTip="Quick Action: Jump directly to Restore &amp; Rollback Manager" WindowChrome.IsHitTestVisibleInChrome="True">
                             <StackPanel Orientation="Horizontal">
                                 <Path Data="{StaticResource IconShieldLock}" Fill="#38BDF8" Width="12" Height="12" Stretch="Uniform" Margin="0,0,6,0" VerticalAlignment="Center"/>
                                 <TextBlock Text="Restore / Rollback" FontSize="11" FontWeight="SemiBold" VerticalAlignment="Center"/>
                             </StackPanel>
                         </Button>
-                        <Button x:Name="BtnHeaderReinstallApps" Style="{StaticResource ModernBtn}" Height="30" Padding="10,0" Margin="0,0,16,0" ToolTip="Quick Action: Reinstall built-in Windows applications and Microsoft Store">
+                        <Button x:Name="BtnHeaderReinstallApps" Style="{StaticResource ModernBtn}" Height="30" Padding="10,0" Margin="0,0,14,0" ToolTip="Quick Action: Reinstall built-in Windows applications and Microsoft Store" WindowChrome.IsHitTestVisibleInChrome="True">
                             <StackPanel Orientation="Horizontal">
                                 <Path Data="{StaticResource IconAppGrid}" Fill="#38BDF8" Width="12" Height="12" Stretch="Uniform" Margin="0,0,6,0" VerticalAlignment="Center"/>
                                 <TextBlock Text="Reinstall Apps" FontSize="11" FontWeight="SemiBold" VerticalAlignment="Center"/>
                             </StackPanel>
                         </Button>
-                        <StackPanel VerticalAlignment="Center" HorizontalAlignment="Right">
+                        <StackPanel VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,14,0">
                             <TextBlock x:Name="TxtOsCaption" Text="Windows 11 Pro" FontSize="12" FontWeight="SemiBold" Foreground="#38BDF8" HorizontalAlignment="Right"/>
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,3,0,0">
                                 <Ellipse x:Name="DotElevationStatus" Width="7" Height="7" Fill="#10B981" VerticalAlignment="Center" Margin="0,0,6,0"/>
                                 <TextBlock x:Name="TxtElevationStatus" Text="Elevated Administrator" FontSize="11" Foreground="#10B981" VerticalAlignment="Center"/>
                             </StackPanel>
+                        </StackPanel>
+
+                        <!-- Fluent Window Caption Controls (Minimize / Maximize / Close) -->
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <Button x:Name="BtnMinimize" Style="{StaticResource CaptionBtn}" ToolTip="Minimize" WindowChrome.IsHitTestVisibleInChrome="True">
+                                <Path Data="{StaticResource IconMinimize}" Fill="#94A3B8" Width="10" Height="10" Stretch="Uniform"/>
+                            </Button>
+                            <Button x:Name="BtnMaximize" Style="{StaticResource CaptionBtn}" ToolTip="Maximize / Restore" WindowChrome.IsHitTestVisibleInChrome="True">
+                                <Path Data="{StaticResource IconMaximize}" Fill="#94A3B8" Width="10" Height="10" Stretch="Uniform"/>
+                            </Button>
+                            <Button x:Name="BtnClose" Style="{StaticResource CaptionCloseBtn}" ToolTip="Close" WindowChrome.IsHitTestVisibleInChrome="True">
+                                <Path Data="{StaticResource IconClose}" Fill="#94A3B8" Width="10" Height="10" Stretch="Uniform"/>
+                            </Button>
                         </StackPanel>
                     </StackPanel>
                 </Grid>
@@ -320,18 +518,67 @@
             </Grid>
         </Border>
 
-        <!-- 2. Step Indicator Bar -->
-        <Border Grid.Row="1" Background="#0A0E17" BorderBrush="#1E293B" BorderThickness="0,0,0,1" Padding="24,0">
+        <!-- 2. Material Stepper Pill Bar across Stages 1-5 -->
+        <Border Grid.Row="1" Background="#0B0F17" BorderBrush="#232D42" BorderThickness="0,0,0,1" Padding="24,0">
             <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                <TextBlock x:Name="StepTag1" Text="1. Presets &amp; Scope" FontWeight="Bold" Foreground="#0EA5E9" Margin="0,0,20,0"/>
-                <TextBlock Text="›" Foreground="#64748B" Margin="0,0,20,0"/>
-                <TextBlock x:Name="StepTag2" Text="2. Select Bloat &amp; Tweaks" FontWeight="Normal" Foreground="#64748B" Margin="0,0,20,0"/>
-                <TextBlock Text="›" Foreground="#64748B" Margin="0,0,20,0"/>
-                <TextBlock x:Name="StepTag3" Text="3. Safety &amp; Dry-Run" FontWeight="Normal" Foreground="#64748B" Margin="0,0,20,0"/>
-                <TextBlock Text="›" Foreground="#64748B" Margin="0,0,20,0"/>
-                <TextBlock x:Name="StepTag4" Text="4. Execution" FontWeight="Normal" Foreground="#64748B" Margin="0,0,20,0"/>
-                <TextBlock Text="›" Foreground="#64748B" Margin="0,0,20,0"/>
-                <TextBlock x:Name="StepTag5" Text="5. Summary" FontWeight="Normal" Foreground="#64748B"/>
+                <!-- Pill 1 -->
+                <Border x:Name="PillStage1" CornerRadius="15" Background="#1A2234" BorderBrush="#0EA5E9" BorderThickness="1" Padding="12,4" Margin="0,0,8,0">
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                        <Border x:Name="BadgeStep1" Width="18" Height="18" CornerRadius="9" Background="#0EA5E9" Margin="0,0,8,0">
+                            <TextBlock x:Name="TxtStepNum1" Text="1" FontSize="11" FontWeight="Bold" Foreground="#FFFFFF" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <Path x:Name="CheckStep1" Data="{StaticResource IconCheckCircle}" Fill="#10B981" Width="14" Height="14" Stretch="Uniform" Margin="0,0,8,0" Visibility="Collapsed" VerticalAlignment="Center"/>
+                        <TextBlock x:Name="StepTag1" Text="1. Presets &amp; Scope" FontWeight="Bold" Foreground="#0EA5E9" FontSize="12" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </Border>
+                <TextBlock Text="›" Foreground="#475569" FontSize="14" FontWeight="Bold" Margin="0,0,8,0" VerticalAlignment="Center"/>
+
+                <!-- Pill 2 -->
+                <Border x:Name="PillStage2" CornerRadius="15" Background="#131926" BorderBrush="#232D42" BorderThickness="1" Padding="12,4" Margin="0,0,8,0">
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                        <Border x:Name="BadgeStep2" Width="18" Height="18" CornerRadius="9" Background="#222C42" Margin="0,0,8,0">
+                            <TextBlock x:Name="TxtStepNum2" Text="2" FontSize="11" FontWeight="Bold" Foreground="#94A3B8" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <Path x:Name="CheckStep2" Data="{StaticResource IconCheckCircle}" Fill="#10B981" Width="14" Height="14" Stretch="Uniform" Margin="0,0,8,0" Visibility="Collapsed" VerticalAlignment="Center"/>
+                        <TextBlock x:Name="StepTag2" Text="2. Select Bloat &amp; Tweaks" FontWeight="Normal" Foreground="#64748B" FontSize="12" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </Border>
+                <TextBlock Text="›" Foreground="#475569" FontSize="14" FontWeight="Bold" Margin="0,0,8,0" VerticalAlignment="Center"/>
+
+                <!-- Pill 3 -->
+                <Border x:Name="PillStage3" CornerRadius="15" Background="#131926" BorderBrush="#232D42" BorderThickness="1" Padding="12,4" Margin="0,0,8,0">
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                        <Border x:Name="BadgeStep3" Width="18" Height="18" CornerRadius="9" Background="#222C42" Margin="0,0,8,0">
+                            <TextBlock x:Name="TxtStepNum3" Text="3" FontSize="11" FontWeight="Bold" Foreground="#94A3B8" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <Path x:Name="CheckStep3" Data="{StaticResource IconCheckCircle}" Fill="#10B981" Width="14" Height="14" Stretch="Uniform" Margin="0,0,8,0" Visibility="Collapsed" VerticalAlignment="Center"/>
+                        <TextBlock x:Name="StepTag3" Text="3. Safety &amp; Dry-Run" FontWeight="Normal" Foreground="#64748B" FontSize="12" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </Border>
+                <TextBlock Text="›" Foreground="#475569" FontSize="14" FontWeight="Bold" Margin="0,0,8,0" VerticalAlignment="Center"/>
+
+                <!-- Pill 4 -->
+                <Border x:Name="PillStage4" CornerRadius="15" Background="#131926" BorderBrush="#232D42" BorderThickness="1" Padding="12,4" Margin="0,0,8,0">
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                        <Border x:Name="BadgeStep4" Width="18" Height="18" CornerRadius="9" Background="#222C42" Margin="0,0,8,0">
+                            <TextBlock x:Name="TxtStepNum4" Text="4" FontSize="11" FontWeight="Bold" Foreground="#94A3B8" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <Path x:Name="CheckStep4" Data="{StaticResource IconCheckCircle}" Fill="#10B981" Width="14" Height="14" Stretch="Uniform" Margin="0,0,8,0" Visibility="Collapsed" VerticalAlignment="Center"/>
+                        <TextBlock x:Name="StepTag4" Text="4. Execution" FontWeight="Normal" Foreground="#64748B" FontSize="12" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </Border>
+                <TextBlock Text="›" Foreground="#475569" FontSize="14" FontWeight="Bold" Margin="0,0,8,0" VerticalAlignment="Center"/>
+
+                <!-- Pill 5 -->
+                <Border x:Name="PillStage5" CornerRadius="15" Background="#131926" BorderBrush="#232D42" BorderThickness="1" Padding="12,4">
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                        <Border x:Name="BadgeStep5" Width="18" Height="18" CornerRadius="9" Background="#222C42" Margin="0,0,8,0">
+                            <TextBlock x:Name="TxtStepNum5" Text="5" FontSize="11" FontWeight="Bold" Foreground="#94A3B8" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <Path x:Name="CheckStep5" Data="{StaticResource IconCheckCircle}" Fill="#10B981" Width="14" Height="14" Stretch="Uniform" Margin="0,0,8,0" Visibility="Collapsed" VerticalAlignment="Center"/>
+                        <TextBlock x:Name="StepTag5" Text="5. Summary" FontWeight="Normal" Foreground="#64748B" FontSize="12" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </Border>
             </StackPanel>
         </Border>
 
@@ -397,7 +644,7 @@
                             <RadioButton x:Name="RadioPresetMinimal" Content="Minimal Debloat" FontWeight="Bold" FontSize="15" GroupName="PresetGroup" Foreground="#F8FAFC"/>
                             <TextBlock Grid.Row="1" Text="Lightweight &amp; Gentle" FontSize="12" Foreground="#38BDF8" Margin="0,4,0,8"/>
                             <TextBlock Grid.Row="2" Text="Removes sponsored apps (Spotify, Disney+) while keeping Windows tools, Xbox, and productivity apps untouched." TextWrapping="Wrap" FontSize="12" Foreground="#CBD5E1"/>
-                            <Border Grid.Row="3" Background="#0A0E17" CornerRadius="4" Padding="10,5" Margin="0,8,0,0">
+                            <Border Grid.Row="3" Background="#0B0F17" CornerRadius="4" Padding="10,5" Margin="0,8,0,0">
                                 <StackPanel Orientation="Horizontal">
                                     <Path Data="{StaticResource IconCheckCircle}" Fill="#10B981" Width="11" Height="11" Stretch="Uniform" Margin="0,0,6,0" VerticalAlignment="Center"/>
                                     <TextBlock Text="Best for cautious users" FontSize="11" Foreground="#10B981" VerticalAlignment="Center"/>
@@ -418,7 +665,7 @@
                             <RadioButton x:Name="RadioPresetDefault" Content="Recommended Debloat" FontWeight="Bold" FontSize="15" IsChecked="True" GroupName="PresetGroup" Foreground="#F8FAFC"/>
                             <TextBlock Grid.Row="1" Text="Balanced Performance &amp; Privacy" FontSize="12" Foreground="#10B981" Margin="0,4,0,8"/>
                             <TextBlock Grid.Row="2" Text="Removes 80+ bloatware packages, telemetry, targeted ads, and web search suggestions. Protects core system apps." TextWrapping="Wrap" FontSize="12" Foreground="#CBD5E1"/>
-                            <Border Grid.Row="3" Background="#0A0E17" CornerRadius="4" Padding="10,5" Margin="0,8,0,0">
+                            <Border Grid.Row="3" Background="#0B0F17" CornerRadius="4" Padding="10,5" Margin="0,8,0,0">
                                 <StackPanel Orientation="Horizontal">
                                     <Path Data="{StaticResource IconLightning}" Fill="#38BDF8" Width="11" Height="11" Stretch="Uniform" Margin="0,0,6,0" VerticalAlignment="Center"/>
                                     <TextBlock Text="Recommended for most PCs" FontSize="11" Foreground="#38BDF8" VerticalAlignment="Center"/>
@@ -439,7 +686,7 @@
                             <RadioButton x:Name="RadioPresetDeep" Content="Deep Debloat" FontWeight="Bold" FontSize="15" GroupName="PresetGroup" Foreground="#F8FAFC"/>
                             <TextBlock Grid.Row="1" Text="Maximum Optimization" FontSize="12" Foreground="#EAB308" Margin="0,4,0,8"/>
                             <TextBlock Grid.Row="2" Text="Removes all removable non-essential packages including built-in media and notes tools for max performance." TextWrapping="Wrap" FontSize="12" Foreground="#CBD5E1"/>
-                            <Border Grid.Row="3" Background="#0A0E17" CornerRadius="4" Padding="10,5" Margin="0,8,0,0">
+                            <Border Grid.Row="3" Background="#0B0F17" CornerRadius="4" Padding="10,5" Margin="0,8,0,0">
                                 <StackPanel Orientation="Horizontal">
                                     <Path Data="{StaticResource IconAlertTriangle}" Fill="#F59E0B" Width="11" Height="11" Stretch="Uniform" Margin="0,0,6,0" VerticalAlignment="Center"/>
                                     <TextBlock Text="For power users" FontSize="11" Foreground="#F59E0B" VerticalAlignment="Center"/>
@@ -450,7 +697,7 @@
                 </Grid>
 
                 <!-- Target Scope Bar -->
-                <Border Grid.Row="2" Background="#131D31" CornerRadius="6" BorderBrush="#2A384F" BorderThickness="1" Padding="14,10" Margin="0,14,0,0">
+                <Border Grid.Row="2" Background="#131926" CornerRadius="6" BorderBrush="#232D42" BorderThickness="1" Padding="14,10" Margin="0,14,0,0">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto"/>
@@ -493,7 +740,7 @@
                     <!-- Live Badges & Filter Box -->
                     <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
                         <!-- Live Selection Counter Pill -->
-                        <Border x:Name="BadgeGlobalSelection" Background="#1E293B" BorderBrush="#334155" BorderThickness="1" CornerRadius="6" Padding="10,5" Margin="0,0,8,0">
+                        <Border x:Name="BadgeGlobalSelection" Background="#1A2234" BorderBrush="#334155" BorderThickness="1" CornerRadius="6" Padding="10,5" Margin="0,0,8,0">
                             <StackPanel Orientation="Horizontal">
                                 <Path x:Name="IconGlobalSelection" Data="{StaticResource IconAppGrid}" Fill="#38BDF8" Width="12" Height="12" Stretch="Uniform" Margin="0,0,6,0" VerticalAlignment="Center"/>
                                 <TextBlock x:Name="TxtGlobalSelectionSummary" Text="84 Apps • 18 Tweaks selected" FontSize="11" FontWeight="SemiBold" Foreground="#F8FAFC" VerticalAlignment="Center"/>
@@ -517,11 +764,11 @@
                         </Button>
 
                         <!-- App Search Filter -->
-                        <TextBox x:Name="TxtAppFilter" Width="180" Height="30" VerticalContentAlignment="Center" Padding="8,0" Background="#1E293B" Foreground="#F8FAFC" BorderBrush="#334155"/>
+                        <TextBox x:Name="TxtAppFilter" Width="180" Height="30" VerticalContentAlignment="Center" Padding="8,0" Background="#1A2234" Foreground="#F8FAFC" BorderBrush="#334155"/>
                     </StackPanel>
                 </Grid>
 
-                <TabControl x:Name="TabStage2Controls" Grid.Row="1" Background="#131D31" BorderBrush="#2A384F" Foreground="#F8FAFC">
+                <TabControl x:Name="TabStage2Controls" Grid.Row="1" Background="#131926" BorderBrush="#232D42" Foreground="#F8FAFC">
                     <TabControl.RenderTransform>
                         <TransformGroup>
                             <TranslateTransform Y="0"/>
@@ -534,7 +781,7 @@
                             <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                                 <Path Data="{StaticResource IconAppGrid}" Fill="#38BDF8" Width="14" Height="14" Stretch="Uniform" Margin="0,0,6,0" VerticalAlignment="Center"/>
                                 <TextBlock Text="Bloatware Applications" VerticalAlignment="Center" Margin="0,0,6,0"/>
-                                <Border Background="#1E293B" CornerRadius="8" Padding="6,1" VerticalAlignment="Center">
+                                <Border Background="#1A2234" CornerRadius="8" Padding="6,1" VerticalAlignment="Center">
                                     <TextBlock x:Name="TxtTabAppsCount" Text="84" FontSize="10" FontWeight="Bold" Foreground="#38BDF8"/>
                                 </Border>
                             </StackPanel>
@@ -566,7 +813,7 @@
                                             </StackPanel>
                                         </ToggleButton>
                                         <Popup x:Name="PopupAppCategories" PlacementTarget="{Binding ElementName=ToggleAppCategories}" Placement="Bottom" IsOpen="{Binding IsChecked, ElementName=ToggleAppCategories}" StaysOpen="False" PopupAnimation="Fade" AllowsTransparency="True">
-                                            <Border Background="#131D31" BorderBrush="#2A384F" BorderThickness="1" CornerRadius="6" Padding="12" MinWidth="280">
+                                            <Border Background="#131926" BorderBrush="#232D42" BorderThickness="1" CornerRadius="10" Padding="12" MinWidth="280">
                                                 <Border.RenderTransform>
                                                     <TransformGroup>
                                                         <ScaleTransform ScaleX="0.95" ScaleY="0.95"/>
@@ -601,7 +848,7 @@
                                                     <CheckBox x:Name="ChkCatOem" Style="{StaticResource ModernCheckBox}" Content="OEM &amp; Third-Party Bloat" IsChecked="False"/>
                                                     <CheckBox x:Name="ChkCatXbox" Style="{StaticResource ModernCheckBox}" Content="Xbox &amp; Gaming Packages" IsChecked="False"/>
                                                     <CheckBox x:Name="ChkCatMedia" Style="{StaticResource ModernCheckBox}" Content="News, Weather &amp; Media" IsChecked="False"/>
-                                                    <Border BorderBrush="#2A384F" BorderThickness="0,1,0,0" Margin="0,8,0,8"/>
+                                                    <Border BorderBrush="#232D42" BorderThickness="0,1,0,0" Margin="0,8,0,8"/>
                                                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
                                                         <Button x:Name="BtnCatSelectAll" Style="{StaticResource ModernBtn}" Content="Check All" Padding="8,2" Margin="0,0,6,0"/>
                                                         <Button x:Name="BtnCatClear" Style="{StaticResource ModernBtn}" Content="Clear" Padding="8,2"/>
@@ -640,7 +887,7 @@
 
                             <TextBlock x:Name="TxtAppsSummary" Grid.Row="1" Text="Showing 84 apps selected for removal" VerticalAlignment="Center" FontSize="12" Foreground="#38BDF8" Margin="0,0,0,8"/>
 
-                            <Border Grid.Row="2" Background="#0A0E17" CornerRadius="6" BorderBrush="#2A384F" BorderThickness="1">
+                            <Border Grid.Row="2" Background="#0B0F17" CornerRadius="6" BorderBrush="#232D42" BorderThickness="1">
                                 <ScrollViewer VerticalScrollBarVisibility="Auto">
                                     <ItemsControl x:Name="ListAppsContainer" Margin="10"/>
                                 </ScrollViewer>
@@ -654,7 +901,7 @@
                             <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                                 <Path Data="{StaticResource IconShieldLock}" Fill="#38BDF8" Width="14" Height="14" Stretch="Uniform" Margin="0,0,6,0" VerticalAlignment="Center"/>
                                 <TextBlock Text="Privacy &amp; Search" VerticalAlignment="Center" Margin="0,0,6,0"/>
-                                <Border Background="#1E293B" CornerRadius="8" Padding="6,1" VerticalAlignment="Center">
+                                <Border Background="#1A2234" CornerRadius="8" Padding="6,1" VerticalAlignment="Center">
                                     <TextBlock x:Name="TxtTabPrivacyCount" Text="5/5" FontSize="10" FontWeight="Bold" Foreground="#34D399"/>
                                 </Border>
                             </StackPanel>
@@ -681,7 +928,7 @@
                                         </StackPanel>
                                     </ToggleButton>
                                     <Popup x:Name="PopupPrivacyPresets" PlacementTarget="{Binding ElementName=TogglePrivacyPresets}" Placement="Bottom" IsOpen="{Binding IsChecked, ElementName=TogglePrivacyPresets}" StaysOpen="False" PopupAnimation="Fade" AllowsTransparency="True">
-                                        <Border Background="#131D31" BorderBrush="#2A384F" BorderThickness="1" CornerRadius="6" Padding="12" MinWidth="260">
+                                        <Border Background="#131926" BorderBrush="#232D42" BorderThickness="1" CornerRadius="10" Padding="12" MinWidth="260">
                                             <Border.RenderTransform>
                                                 <TransformGroup>
                                                     <ScaleTransform ScaleX="0.95" ScaleY="0.95"/>
@@ -714,7 +961,7 @@
                                                 <CheckBox x:Name="ChkPrivSearch" Style="{StaticResource ModernCheckBox}" Content="Web Search &amp; Bing in Start" IsChecked="True"/>
                                                 <CheckBox x:Name="ChkPrivActivity" Style="{StaticResource ModernCheckBox}" Content="Activity History &amp; Feedback" IsChecked="True"/>
                                                 <CheckBox x:Name="ChkPrivAds" Style="{StaticResource ModernCheckBox}" Content="Advertising ID &amp; Tailored Experiences" IsChecked="True"/>
-                                                <Border BorderBrush="#2A384F" BorderThickness="0,1,0,0" Margin="0,8,0,8"/>
+                                                <Border BorderBrush="#232D42" BorderThickness="0,1,0,0" Margin="0,8,0,8"/>
                                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
                                                     <Button x:Name="BtnPrivSelectAll" Style="{StaticResource ModernBtn}" Content="Check All" Padding="8,2" Margin="0,0,6,0"/>
                                                     <Button x:Name="BtnPrivClear" Style="{StaticResource ModernBtn}" Content="Clear" Padding="8,2"/>
@@ -803,7 +1050,7 @@
                             <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                                 <Path Data="{StaticResource IconDesktopExplorer}" Fill="#38BDF8" Width="14" Height="14" Stretch="Uniform" Margin="0,0,6,0" VerticalAlignment="Center"/>
                                 <TextBlock Text="Taskbar &amp; Explorer" VerticalAlignment="Center" Margin="0,0,6,0"/>
-                                <Border Background="#1E293B" CornerRadius="8" Padding="6,1" VerticalAlignment="Center">
+                                <Border Background="#1A2234" CornerRadius="8" Padding="6,1" VerticalAlignment="Center">
                                     <TextBlock x:Name="TxtTabShellCount" Text="10/13" FontSize="10" FontWeight="Bold" Foreground="#34D399"/>
                                 </Border>
                             </StackPanel>
@@ -830,7 +1077,7 @@
                                         </StackPanel>
                                     </ToggleButton>
                                     <Popup x:Name="PopupShellPresets" PlacementTarget="{Binding ElementName=ToggleShellPresets}" Placement="Bottom" IsOpen="{Binding IsChecked, ElementName=ToggleShellPresets}" StaysOpen="False" PopupAnimation="Fade" AllowsTransparency="True">
-                                        <Border Background="#131D31" BorderBrush="#2A384F" BorderThickness="1" CornerRadius="6" Padding="12" MinWidth="260">
+                                        <Border Background="#131926" BorderBrush="#232D42" BorderThickness="1" CornerRadius="10" Padding="12" MinWidth="260">
                                             <Border.RenderTransform>
                                                 <TransformGroup>
                                                     <ScaleTransform ScaleX="0.95" ScaleY="0.95"/>
@@ -862,7 +1109,7 @@
                                                 <CheckBox x:Name="ChkShellClean" Style="{StaticResource ModernCheckBox}" Content="Clean Desktop (Widgets/Chat Off)" IsChecked="True"/>
                                                 <CheckBox x:Name="ChkShellPowerUser" Style="{StaticResource ModernCheckBox}" Content="Power-User View (Ext/Hidden/Compact)" IsChecked="True"/>
                                                 <CheckBox x:Name="ChkShellTaskbar" Style="{StaticResource ModernCheckBox}" Content="Taskbar Tweaks (Left Align/End Task)" IsChecked="True"/>
-                                                <Border BorderBrush="#2A384F" BorderThickness="0,1,0,0" Margin="0,8,0,8"/>
+                                                <Border BorderBrush="#232D42" BorderThickness="0,1,0,0" Margin="0,8,0,8"/>
                                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
                                                     <Button x:Name="BtnShellSelectAll" Style="{StaticResource ModernBtn}" Content="Check All" Padding="8,2" Margin="0,0,6,0"/>
                                                     <Button x:Name="BtnShellClear" Style="{StaticResource ModernBtn}" Content="Clear" Padding="8,2"/>
@@ -963,7 +1210,7 @@
                                     <Grid Margin="0,4">
                                         <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
                                         <CheckBox x:Name="ChkAlignLeft" Grid.Column="0" Style="{StaticResource ModernCheckBox}" Content="Align Taskbar icons to Left (Classic Windows Layout)" IsChecked="False"/>
-                                        <Border Grid.Column="1" Background="#1E293B" CornerRadius="10" Padding="8,3" VerticalAlignment="Center">
+                                        <Border Grid.Column="1" Background="#1A2234" CornerRadius="10" Padding="8,3" VerticalAlignment="Center">
                                             <StackPanel Orientation="Horizontal">
                                                 <Path Data="{StaticResource IconSettingsExtras}" Fill="#94A3B8" Width="9" Height="9" Stretch="Uniform" Margin="0,0,4,0" VerticalAlignment="Center"/>
                                                 <TextBlock Text="OPTIONAL" FontSize="9" FontWeight="Bold" Foreground="#94A3B8" VerticalAlignment="Center"/>
@@ -973,7 +1220,7 @@
                                     <Grid Margin="0,4">
                                         <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
                                         <CheckBox x:Name="ChkHideOneDriveNav" Grid.Column="0" Style="{StaticResource ModernCheckBox}" Content="Hide OneDrive folder from File Explorer Navigation Pane" IsChecked="False"/>
-                                        <Border Grid.Column="1" Background="#1E293B" CornerRadius="10" Padding="8,3" VerticalAlignment="Center">
+                                        <Border Grid.Column="1" Background="#1A2234" CornerRadius="10" Padding="8,3" VerticalAlignment="Center">
                                             <StackPanel Orientation="Horizontal">
                                                 <Path Data="{StaticResource IconSettingsExtras}" Fill="#94A3B8" Width="9" Height="9" Stretch="Uniform" Margin="0,0,4,0" VerticalAlignment="Center"/>
                                                 <TextBlock Text="OPTIONAL" FontSize="9" FontWeight="Bold" Foreground="#94A3B8" VerticalAlignment="Center"/>
@@ -1003,7 +1250,7 @@
                                     <Grid Margin="0,4">
                                         <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
                                         <CheckBox x:Name="ChkCompactExplorer" Grid.Column="0" Style="{StaticResource ModernCheckBox}" Content="Enable Compact View in File Explorer (Tighter classic item padding)" IsChecked="False"/>
-                                        <Border Grid.Column="1" Background="#1E293B" CornerRadius="10" Padding="8,3" VerticalAlignment="Center">
+                                        <Border Grid.Column="1" Background="#1A2234" CornerRadius="10" Padding="8,3" VerticalAlignment="Center">
                                             <StackPanel Orientation="Horizontal">
                                                 <Path Data="{StaticResource IconSettingsExtras}" Fill="#94A3B8" Width="9" Height="9" Stretch="Uniform" Margin="0,0,4,0" VerticalAlignment="Center"/>
                                                 <TextBlock Text="SAFE" FontSize="9" FontWeight="Bold" Foreground="#94A3B8" VerticalAlignment="Center"/>
@@ -1023,7 +1270,7 @@
                                     <Grid Margin="0,4">
                                         <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
                                         <CheckBox x:Name="ChkSnapFlyout" Grid.Column="0" Style="{StaticResource ModernCheckBox}" Content="Disable Snap Layouts flyout on window maximize button" IsChecked="False"/>
-                                        <Border Grid.Column="1" Background="#1E293B" CornerRadius="10" Padding="8,3" VerticalAlignment="Center">
+                                        <Border Grid.Column="1" Background="#1A2234" CornerRadius="10" Padding="8,3" VerticalAlignment="Center">
                                             <StackPanel Orientation="Horizontal">
                                                 <Path Data="{StaticResource IconSettingsExtras}" Fill="#94A3B8" Width="9" Height="9" Stretch="Uniform" Margin="0,0,4,0" VerticalAlignment="Center"/>
                                                 <TextBlock Text="OPTIONAL" FontSize="9" FontWeight="Bold" Foreground="#94A3B8" VerticalAlignment="Center"/>
@@ -1033,7 +1280,7 @@
                                     <Grid Margin="0,4">
                                         <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
                                         <CheckBox x:Name="ChkHideGalleryNav" Grid.Column="0" Style="{StaticResource ModernCheckBox}" Content="Hide Gallery from File Explorer Navigation Pane" IsChecked="False"/>
-                                        <Border Grid.Column="1" Background="#1E293B" CornerRadius="10" Padding="8,3" VerticalAlignment="Center">
+                                        <Border Grid.Column="1" Background="#1A2234" CornerRadius="10" Padding="8,3" VerticalAlignment="Center">
                                             <StackPanel Orientation="Horizontal">
                                                 <Path Data="{StaticResource IconSettingsExtras}" Fill="#94A3B8" Width="9" Height="9" Stretch="Uniform" Margin="0,0,4,0" VerticalAlignment="Center"/>
                                                 <TextBlock Text="OPTIONAL" FontSize="9" FontWeight="Bold" Foreground="#94A3B8" VerticalAlignment="Center"/>
@@ -1052,7 +1299,7 @@
                             <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                                 <Path Data="{StaticResource IconGamepadGaming}" Fill="#38BDF8" Width="14" Height="14" Stretch="Uniform" Margin="0,0,6,0" VerticalAlignment="Center"/>
                                 <TextBlock Text="Gaming &amp; Performance" VerticalAlignment="Center" Margin="0,0,6,0"/>
-                                <Border Background="#1E293B" CornerRadius="8" Padding="6,1" VerticalAlignment="Center">
+                                <Border Background="#1A2234" CornerRadius="8" Padding="6,1" VerticalAlignment="Center">
                                     <TextBlock x:Name="TxtTabGamingCount" Text="5/6" FontSize="10" FontWeight="Bold" Foreground="#34D399"/>
                                 </Border>
                             </StackPanel>
@@ -1079,7 +1326,7 @@
                                         </StackPanel>
                                     </ToggleButton>
                                     <Popup x:Name="PopupGamingPresets" PlacementTarget="{Binding ElementName=ToggleGamingPresets}" Placement="Bottom" IsOpen="{Binding IsChecked, ElementName=ToggleGamingPresets}" StaysOpen="False" PopupAnimation="Fade" AllowsTransparency="True">
-                                        <Border Background="#131D31" BorderBrush="#2A384F" BorderThickness="1" CornerRadius="6" Padding="12" MinWidth="260">
+                                        <Border Background="#131926" BorderBrush="#232D42" BorderThickness="1" CornerRadius="10" Padding="12" MinWidth="260">
                                             <Border.RenderTransform>
                                                 <TransformGroup>
                                                     <ScaleTransform ScaleX="0.95" ScaleY="0.95"/>
@@ -1112,7 +1359,7 @@
                                                 <CheckBox x:Name="ChkGamingBackground" Style="{StaticResource ModernCheckBox}" Content="Background Apps &amp; Edge Startup" IsChecked="True"/>
                                                 <CheckBox x:Name="ChkGamingOptimization" Style="{StaticResource ModernCheckBox}" Content="Delivery Optimization &amp; CEIP Tasks" IsChecked="True"/>
                                                 <CheckBox x:Name="ChkGamingStorage" Style="{StaticResource ModernCheckBox}" Content="Hibernation Storage Reclaim" IsChecked="False"/>
-                                                <Border BorderBrush="#2A384F" BorderThickness="0,1,0,0" Margin="0,8,0,8"/>
+                                                <Border BorderBrush="#232D42" BorderThickness="0,1,0,0" Margin="0,8,0,8"/>
                                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
                                                     <Button x:Name="BtnGamingSelectAll" Style="{StaticResource ModernBtn}" Content="Check All" Padding="8,2" Margin="0,0,6,0"/>
                                                     <Button x:Name="BtnGamingClear" Style="{StaticResource ModernBtn}" Content="Clear" Padding="8,2"/>
@@ -1211,7 +1458,7 @@
                             <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                                 <Path Data="{StaticResource IconSettingsExtras}" Fill="#38BDF8" Width="14" Height="14" Stretch="Uniform" Margin="0,0,6,0" VerticalAlignment="Center"/>
                                 <TextBlock Text="System Extras" VerticalAlignment="Center" Margin="0,0,6,0"/>
-                                <Border Background="#1E293B" CornerRadius="8" Padding="6,1" VerticalAlignment="Center">
+                                <Border Background="#1A2234" CornerRadius="8" Padding="6,1" VerticalAlignment="Center">
                                     <TextBlock x:Name="TxtTabExtrasCount" Text="6/8" FontSize="10" FontWeight="Bold" Foreground="#34D399"/>
                                 </Border>
                             </StackPanel>
@@ -1238,7 +1485,7 @@
                                         </StackPanel>
                                     </ToggleButton>
                                     <Popup x:Name="PopupExtrasPresets" PlacementTarget="{Binding ElementName=ToggleExtrasPresets}" Placement="Bottom" IsOpen="{Binding IsChecked, ElementName=ToggleExtrasPresets}" StaysOpen="False" PopupAnimation="Fade" AllowsTransparency="True">
-                                        <Border Background="#131D31" BorderBrush="#2A384F" BorderThickness="1" CornerRadius="6" Padding="12" MinWidth="260">
+                                        <Border Background="#131926" BorderBrush="#232D42" BorderThickness="1" CornerRadius="10" Padding="12" MinWidth="260">
                                             <Border.RenderTransform>
                                                 <TransformGroup>
                                                     <ScaleTransform ScaleX="0.95" ScaleY="0.95"/>
@@ -1271,7 +1518,7 @@
                                                 <CheckBox x:Name="ChkExtrasDesktop" Style="{StaticResource ModernCheckBox}" Content="Classic Context Menu &amp; Mouse Precision" IsChecked="True"/>
                                                 <CheckBox x:Name="ChkExtrasAccessibility" Style="{StaticResource ModernCheckBox}" Content="Disable Sticky Keys Shortcut" IsChecked="True"/>
                                                 <CheckBox x:Name="ChkExtrasPower" Style="{StaticResource ModernCheckBox}" Content="Fast Startup &amp; Storage Sense" IsChecked="False"/>
-                                                <Border BorderBrush="#2A384F" BorderThickness="0,1,0,0" Margin="0,8,0,8"/>
+                                                <Border BorderBrush="#232D42" BorderThickness="0,1,0,0" Margin="0,8,0,8"/>
                                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
                                                     <Button x:Name="BtnExtrasSelectAll" Style="{StaticResource ModernBtn}" Content="Check All" Padding="8,2" Margin="0,0,6,0"/>
                                                     <Button x:Name="BtnExtrasClear" Style="{StaticResource ModernBtn}" Content="Clear" Padding="8,2"/>
@@ -1400,7 +1647,7 @@
                             <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                                 <Path Data="{StaticResource IconSparklesAI}" Fill="#38BDF8" Width="14" Height="14" Stretch="Uniform" Margin="0,0,6,0" VerticalAlignment="Center"/>
                                 <TextBlock Text="AI Integration" VerticalAlignment="Center" Margin="0,0,6,0"/>
-                                <Border Background="#1E293B" CornerRadius="8" Padding="6,1" VerticalAlignment="Center">
+                                <Border Background="#1A2234" CornerRadius="8" Padding="6,1" VerticalAlignment="Center">
                                     <TextBlock x:Name="TxtTabAICount" Text="6/6" FontSize="10" FontWeight="Bold" Foreground="#34D399"/>
                                 </Border>
                             </StackPanel>
@@ -1427,7 +1674,7 @@
                                         </StackPanel>
                                     </ToggleButton>
                                     <Popup x:Name="PopupAIPresets" PlacementTarget="{Binding ElementName=ToggleAIPresets}" Placement="Bottom" IsOpen="{Binding IsChecked, ElementName=ToggleAIPresets}" StaysOpen="False" PopupAnimation="Fade" AllowsTransparency="True">
-                                        <Border Background="#131D31" BorderBrush="#2A384F" BorderThickness="1" CornerRadius="6" Padding="12" MinWidth="260">
+                                        <Border Background="#131926" BorderBrush="#232D42" BorderThickness="1" CornerRadius="10" Padding="12" MinWidth="260">
                                             <Border.RenderTransform>
                                                 <TransformGroup>
                                                     <ScaleTransform ScaleX="0.95" ScaleY="0.95"/>
@@ -1459,7 +1706,7 @@
                                                 <CheckBox x:Name="ChkAISystem" Style="{StaticResource ModernCheckBox}" Content="System AI (Copilot &amp; Recall)" IsChecked="True"/>
                                                 <CheckBox x:Name="ChkAIEdge" Style="{StaticResource ModernCheckBox}" Content="Edge Browser AI (Sidebar &amp; Compose)" IsChecked="True"/>
                                                 <CheckBox x:Name="ChkAIApps" Style="{StaticResource ModernCheckBox}" Content="App AI (Paint Cocreator &amp; Notepad AI)" IsChecked="True"/>
-                                                <Border BorderBrush="#2A384F" BorderThickness="0,1,0,0" Margin="0,8,0,8"/>
+                                                <Border BorderBrush="#232D42" BorderThickness="0,1,0,0" Margin="0,8,0,8"/>
                                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
                                                     <Button x:Name="BtnAISelectAll" Style="{StaticResource ModernBtn}" Content="Check All" Padding="8,2" Margin="0,0,6,0"/>
                                                     <Button x:Name="BtnAIClear" Style="{StaticResource ModernBtn}" Content="Clear" Padding="8,2"/>
@@ -1519,7 +1766,7 @@
                                         </Border>
                                     </Grid>
 
-                                    <Border BorderBrush="#2A384F" BorderThickness="0,1,0,0" Margin="0,12,0,12"/>
+                                    <Border BorderBrush="#232D42" BorderThickness="0,1,0,0" Margin="0,12,0,12"/>
                                     <TextBlock Text="Integrated Application AI Features:" FontSize="13" FontWeight="Bold" Foreground="#38BDF8" Margin="0,0,0,8"/>
                                     <Grid Margin="0,4">
                                         <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
@@ -1562,7 +1809,7 @@
                             <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                                 <Path Data="{StaticResource IconLayersFeatures}" Fill="#38BDF8" Width="14" Height="14" Stretch="Uniform" Margin="0,0,6,0" VerticalAlignment="Center"/>
                                 <TextBlock Text="Optional Features" VerticalAlignment="Center" Margin="0,0,6,0"/>
-                                <Border Background="#1E293B" CornerRadius="8" Padding="6,1" VerticalAlignment="Center">
+                                <Border Background="#1A2234" CornerRadius="8" Padding="6,1" VerticalAlignment="Center">
                                     <TextBlock x:Name="TxtTabFeaturesCount" Text="0/2" FontSize="10" FontWeight="Bold" Foreground="#94A3B8"/>
                                 </Border>
                             </StackPanel>
@@ -1589,7 +1836,7 @@
                                         </StackPanel>
                                     </ToggleButton>
                                     <Popup x:Name="PopupFeaturesPresets" PlacementTarget="{Binding ElementName=ToggleFeaturesPresets}" Placement="Bottom" IsOpen="{Binding IsChecked, ElementName=ToggleFeaturesPresets}" StaysOpen="False" PopupAnimation="Fade" AllowsTransparency="True">
-                                        <Border Background="#131D31" BorderBrush="#2A384F" BorderThickness="1" CornerRadius="6" Padding="12" MinWidth="260">
+                                        <Border Background="#131926" BorderBrush="#232D42" BorderThickness="1" CornerRadius="10" Padding="12" MinWidth="260">
                                             <Border.RenderTransform>
                                                 <TransformGroup>
                                                     <ScaleTransform ScaleX="0.95" ScaleY="0.95"/>
@@ -1620,7 +1867,7 @@
                                                 <TextBlock Text="Select Optional Features:" FontSize="11" FontWeight="Bold" Foreground="#38BDF8" Margin="0,0,0,8"/>
                                                 <CheckBox x:Name="ChkFeatSandbox" Style="{StaticResource ModernCheckBox}" Content="Windows Sandbox (Disposable VM)" IsChecked="False"/>
                                                 <CheckBox x:Name="ChkFeatWSL" Style="{StaticResource ModernCheckBox}" Content="Windows Subsystem for Linux (WSL)" IsChecked="False"/>
-                                                <Border BorderBrush="#2A384F" BorderThickness="0,1,0,0" Margin="0,8,0,8"/>
+                                                <Border BorderBrush="#232D42" BorderThickness="0,1,0,0" Margin="0,8,0,8"/>
                                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
                                                     <Button x:Name="BtnFeatSelectAll" Style="{StaticResource ModernBtn}" Content="Check All" Padding="8,2" Margin="0,0,6,0"/>
                                                     <Button x:Name="BtnFeatClear" Style="{StaticResource ModernBtn}" Content="Clear" Padding="8,2"/>
@@ -1698,7 +1945,7 @@
                 </StackPanel>
 
                 <!-- Live Target Execution Plan & Overall Safety Rating Card -->
-                <Border Grid.Row="1" Background="#131D31" CornerRadius="8" BorderBrush="#2A384F" BorderThickness="1" Padding="14,10" Margin="0,0,0,10">
+                <Border Grid.Row="1" Background="#131926" CornerRadius="8" BorderBrush="#232D42" BorderThickness="1" Padding="14,10" Margin="0,0,0,10">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
@@ -1718,7 +1965,7 @@
                 </Border>
 
                 <!-- Safety Options -->
-                <Border Grid.Row="2" Background="#131D31" CornerRadius="8" BorderBrush="#2A384F" BorderThickness="1" Padding="14,10" Margin="0,0,0,10">
+                <Border Grid.Row="2" Background="#131926" CornerRadius="8" BorderBrush="#232D42" BorderThickness="1" Padding="14,10" Margin="0,0,0,10">
                     <StackPanel>
                         <CheckBox x:Name="ChkCreateRestorePoint" Style="{StaticResource ModernCheckBox}" Content="Create Windows System Restore Point checkpoint" IsChecked="True" FontWeight="Bold"/>
                         <CheckBox x:Name="ChkRegistrySnapshot" Style="{StaticResource ModernCheckBox}" Content="Capture Pre-Tweak Registry Snapshot to %LOCALAPPDATA%\NHWinDebloater\Backups\" IsChecked="True" FontWeight="Bold" Margin="0,8,0,0"/>
@@ -1726,7 +1973,7 @@
                 </Border>
 
                 <!-- Dry-Run Preview Box -->
-                <Border Grid.Row="3" Background="#0A0E17" CornerRadius="8" BorderBrush="#2A384F" BorderThickness="1" Padding="12">
+                <Border Grid.Row="3" Background="#0B0F17" CornerRadius="8" BorderBrush="#232D42" BorderThickness="1" Padding="12">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
@@ -1741,7 +1988,7 @@
                             </Button>
                             <TextBlock x:Name="TxtDryRunStatus" Text="Click to simulate changes without applying anything." VerticalAlignment="Center" FontSize="12" Foreground="#38BDF8"/>
                         </StackPanel>
-                        <TextBox x:Name="TxtDryRunLog" Grid.Row="1" IsReadOnly="True" VerticalScrollBarVisibility="Auto" Background="#0A0E17" Foreground="#E2E8F0" FontFamily="Consolas, Lucida Console" FontSize="12" BorderThickness="0" Padding="8"/>
+                        <TextBox x:Name="TxtDryRunLog" Grid.Row="1" IsReadOnly="True" VerticalScrollBarVisibility="Auto" Background="#0B0F17" Foreground="#E2E8F0" FontFamily="Consolas, Lucida Console" FontSize="12" BorderThickness="0" Padding="8"/>
                     </Grid>
                 </Border>
             </Grid>
@@ -1765,10 +2012,10 @@
                     <TextBlock x:Name="TxtProgressStatus" Text="Processing queue..." FontSize="13" Foreground="#38BDF8"/>
                 </StackPanel>
 
-                <ProgressBar x:Name="ProgExecution" Grid.Row="1" Height="8" Background="#1E293B" Foreground="#0EA5E9" Margin="0,0,0,16"/>
+                <ProgressBar x:Name="ProgExecution" Grid.Row="1" Height="8" Background="#1A2234" Foreground="#0EA5E9" Margin="0,0,0,16"/>
 
-                <Border Grid.Row="2" Background="#0A0E17" CornerRadius="8" BorderBrush="#2A384F" BorderThickness="1" Padding="14">
-                    <TextBox x:Name="TxtLiveLog" IsReadOnly="True" VerticalScrollBarVisibility="Auto" Background="#0A0E17" Foreground="#E2E8F0" FontFamily="Consolas, Lucida Console" FontSize="12" BorderThickness="0"/>
+                <Border Grid.Row="2" Background="#0B0F17" CornerRadius="8" BorderBrush="#232D42" BorderThickness="1" Padding="14">
+                    <TextBox x:Name="TxtLiveLog" IsReadOnly="True" VerticalScrollBarVisibility="Auto" Background="#0B0F17" Foreground="#E2E8F0" FontFamily="Consolas, Lucida Console" FontSize="12" BorderThickness="0"/>
                 </Border>
             </Grid>
 
@@ -1804,19 +2051,19 @@
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
-                        <Border Grid.Column="0" Background="#131D31" CornerRadius="8" Padding="16" Margin="0,0,8,0">
+                        <Border Grid.Column="0" Background="#131926" CornerRadius="8" Padding="16" Margin="0,0,8,0">
                             <StackPanel>
                                 <TextBlock Text="Total Tasks Processed" FontSize="12" Foreground="#94A3B8"/>
                                 <TextBlock x:Name="TxtStatTotal" Text="0" FontSize="26" FontWeight="Bold" Foreground="#F8FAFC"/>
                             </StackPanel>
                         </Border>
-                        <Border Grid.Column="1" Background="#131D31" CornerRadius="8" Padding="16" Margin="4,0,4,0">
+                        <Border Grid.Column="1" Background="#131926" CornerRadius="8" Padding="16" Margin="4,0,4,0">
                             <StackPanel>
                                 <TextBlock Text="Successfully Applied" FontSize="12" Foreground="#94A3B8"/>
                                 <TextBlock x:Name="TxtStatSuccess" Text="0" FontSize="26" FontWeight="Bold" Foreground="#10B981"/>
                             </StackPanel>
                         </Border>
-                        <Border Grid.Column="2" Background="#131D31" CornerRadius="8" Padding="16" Margin="8,0,0,0">
+                        <Border Grid.Column="2" Background="#131926" CornerRadius="8" Padding="16" Margin="8,0,0,0">
                             <StackPanel>
                                 <TextBlock Text="Skipped / Safeguarded" FontSize="12" Foreground="#94A3B8"/>
                                 <TextBlock x:Name="TxtStatSkipped" Text="0" FontSize="26" FontWeight="Bold" Foreground="#38BDF8"/>
@@ -1824,7 +2071,7 @@
                         </Border>
                     </Grid>
 
-                    <Border Grid.Row="1" Background="#131D31" CornerRadius="8" BorderBrush="#2A384F" BorderThickness="1" Padding="18" ClipToBounds="False">
+                    <Border Grid.Row="1" Background="#131926" CornerRadius="8" BorderBrush="#232D42" BorderThickness="1" Padding="18" ClipToBounds="False">
                         <StackPanel ClipToBounds="False">
                             <TextBlock Text="Recommended Next Steps:" FontSize="14" FontWeight="Bold" Foreground="#F8FAFC" Margin="0,0,0,10"/>
                             <TextBlock Text="• Restart Windows Explorer to immediately refresh Taskbar and desktop icons." FontSize="13" Foreground="#CBD5E1" Margin="0,2"/>
@@ -1859,7 +2106,7 @@
                             </StackPanel>
 
                             <!-- Registry Snapshots & 1-Click Rollback Manager Card -->
-                            <Border Background="#0A0E17" CornerRadius="8" BorderBrush="#2A384F" BorderThickness="1" Padding="14" ClipToBounds="False">
+                            <Border Background="#0B0F17" CornerRadius="8" BorderBrush="#232D42" BorderThickness="1" Padding="14" ClipToBounds="False">
                                 <Grid ClipToBounds="False">
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="Auto"/>
@@ -1884,7 +2131,7 @@
                                                     <Setter Property="Foreground" Value="#F8FAFC"/>
                                                     <Setter Property="Padding" Value="8,6"/>
                                                     <Setter Property="BorderThickness" Value="0,0,0,1"/>
-                                                    <Setter Property="BorderBrush" Value="#2A384F"/>
+                                                    <Setter Property="BorderBrush" Value="#232D42"/>
                                                     <Style.Triggers>
                                                         <Trigger Property="IsHighlighted" Value="True">
                                                             <Setter Property="Background" Value="#0EA5E9"/>
@@ -1912,7 +2159,7 @@
                                                 </StackPanel>
                                             </ToggleButton>
                                             <Popup x:Name="PopupSelectiveRestore" PlacementTarget="{Binding ElementName=ToggleSelectiveRestore}" Placement="Bottom" IsOpen="{Binding IsChecked, ElementName=ToggleSelectiveRestore}" StaysOpen="False" PopupAnimation="Fade" AllowsTransparency="True">
-                                                <Border Background="#131D31" BorderBrush="#2A384F" BorderThickness="1" CornerRadius="6" Padding="12" MinWidth="260">
+                                                <Border Background="#131926" BorderBrush="#232D42" BorderThickness="1" CornerRadius="10" Padding="12" MinWidth="260">
                                                     <StackPanel>
                                                         <TextBlock Text="Select Restore Scope:" FontSize="11" FontWeight="Bold" Foreground="#38BDF8" Margin="0,0,0,8"/>
                                                         <CheckBox x:Name="ChkRestoreScopeApps" Style="{StaticResource ModernCheckBox}" Content="Reinstall Removed Built-in Apps" IsChecked="True"/>
@@ -1921,7 +2168,7 @@
                                                         <CheckBox x:Name="ChkRestoreScopeGaming" Style="{StaticResource ModernCheckBox}" Content="Gaming &amp; Performance Settings" IsChecked="True"/>
                                                         <CheckBox x:Name="ChkRestoreScopeAI" Style="{StaticResource ModernCheckBox}" Content="AI Integration (Copilot/Recall/Apps)" IsChecked="True"/>
                                                         <CheckBox x:Name="ChkRestoreScopeExtras" Style="{StaticResource ModernCheckBox}" Content="System Extras &amp; Hardware Policies" IsChecked="True"/>
-                                                        <Border BorderBrush="#2A384F" BorderThickness="0,1,0,0" Margin="0,8,0,8"/>
+                                                        <Border BorderBrush="#232D42" BorderThickness="0,1,0,0" Margin="0,8,0,8"/>
                                                         <Grid>
                                                             <Grid.ColumnDefinitions>
                                                                 <ColumnDefinition Width="*"/>
@@ -1956,7 +2203,7 @@
                                                 <TextBlock Text="Preview (Dry-Run)" FontSize="11" VerticalAlignment="Center"/>
                                             </StackPanel>
                                         </Button>
-                                        <Button x:Name="BtnRestoreSelective" Grid.Column="2" Style="{StaticResource ModernBtn}" Height="32" Padding="14,0" Margin="0,0,8,0" Background="#1E293B" BorderBrush="#0EA5E9" ToolTip="Restore only the categories and components checked in the selective scope">
+                                        <Button x:Name="BtnRestoreSelective" Grid.Column="2" Style="{StaticResource ModernBtn}" Height="32" Padding="14,0" Margin="0,0,8,0" Background="#1A2234" BorderBrush="#0EA5E9" ToolTip="Restore only the categories and components checked in the selective scope">
                                             <StackPanel Orientation="Horizontal">
                                                 <Path Data="{StaticResource IconCheckDouble}" Fill="#38BDF8" Width="11" Height="11" Stretch="Uniform" Margin="0,0,6,0" VerticalAlignment="Center"/>
                                                 <TextBlock Text="Restore Selected" FontSize="11" FontWeight="Bold" Foreground="#38BDF8" VerticalAlignment="Center"/>
@@ -1979,7 +2226,7 @@
         </Grid>
 
         <!-- 4. Footer Bar & Navigation with Vector Icons -->
-        <Border Grid.Row="3" Background="#131D31" BorderBrush="#2A384F" BorderThickness="0,1,0,0" Padding="24,0">
+        <Border Grid.Row="3" Background="#131926" BorderBrush="#232D42" BorderThickness="0,1,0,0" Padding="24,0">
             <Grid VerticalAlignment="Center">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
@@ -2037,7 +2284,7 @@
 
         <!-- 5. App Reinstall Helper Modal Overlay -->
         <Grid x:Name="ModalReinstallApps" Grid.RowSpan="4" Background="#CC0A0E17" Visibility="Collapsed">
-            <Border Background="#131D31" BorderBrush="#38BDF8" BorderThickness="1" CornerRadius="10" Width="680" MaxHeight="520" VerticalAlignment="Center" HorizontalAlignment="Center" Padding="22">
+            <Border Background="#131926" BorderBrush="#38BDF8" BorderThickness="1" CornerRadius="10" Width="680" MaxHeight="520" VerticalAlignment="Center" HorizontalAlignment="Center" Padding="22">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
@@ -2065,7 +2312,7 @@
                     </Grid>
 
                     <!-- App Checklist Cards -->
-                    <Border Grid.Row="1" Background="#0A0E17" CornerRadius="6" BorderBrush="#2A384F" BorderThickness="1" Padding="14" Margin="0,0,0,12">
+                    <Border Grid.Row="1" Background="#0B0F17" CornerRadius="6" BorderBrush="#232D42" BorderThickness="1" Padding="14" Margin="0,0,0,12">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*"/>
@@ -2085,7 +2332,7 @@
                     </Border>
 
                     <!-- Live Log Box -->
-                    <Border Grid.Row="2" Background="#0A0E17" CornerRadius="6" BorderBrush="#2A384F" BorderThickness="1" Padding="10" MinHeight="110" Margin="0,0,0,14">
+                    <Border Grid.Row="2" Background="#0B0F17" CornerRadius="6" BorderBrush="#232D42" BorderThickness="1" Padding="10" MinHeight="110" Margin="0,0,0,14">
                         <ScrollViewer VerticalScrollBarVisibility="Auto">
                             <TextBlock x:Name="TxtReinstallLog" Text="Ready. Select applications to reinstall and click 'Reinstall Selected'." Foreground="#94A3B8" FontFamily="Consolas, Lucida Console" FontSize="11" TextWrapping="Wrap"/>
                         </ScrollViewer>
@@ -2115,4 +2362,5 @@
             </Border>
         </Grid>
     </Grid>
+    </Border>
 </Window>

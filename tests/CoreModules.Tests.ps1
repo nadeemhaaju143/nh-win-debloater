@@ -490,7 +490,7 @@ Describe "UI Motion & Vector Icon Architecture" {
         $win.FindName("TxtReinstallLog") | Should -Not -BeNullOrEmpty
     }
 
-    It "Verifies presence of multi-select CheckBox dropdowns and Raphire parity tweaks across all tabs in XAML" {
+    It "Verifies presence of multi-select CheckBox dropdowns and advanced parity tweaks across all tabs in XAML" {
         $xamlPath = Join-Path $projectRoot "src\UI\MainWindow.xaml"
         $xamlContent = Get-Content $xamlPath -Raw
         $reader = [System.Xml.XmlReader]::Create([System.IO.StringReader]::new($xamlContent))
@@ -517,7 +517,7 @@ Describe "UI Motion & Vector Icon Architecture" {
         $win.FindName("ChkAISystem") | Should -Not -BeNullOrEmpty
         $win.FindName("ChkFeatSandbox") | Should -Not -BeNullOrEmpty
 
-        # Raphire Parity Tweaks
+        # Advanced System Parity Tweaks
         $win.FindName("ChkLaunchToThisPC") | Should -Not -BeNullOrEmpty
         $win.FindName("ChkHideGalleryNav") | Should -Not -BeNullOrEmpty
         $win.FindName("ChkSnapFlyout") | Should -Not -BeNullOrEmpty
