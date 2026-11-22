@@ -15,18 +15,18 @@
 
 ---
 
-## Performance & Resource Benchmarks (v1.1.0)
+## Performance & Resource Benchmarks (v1.2.0)
 
-Tested on clean isolated Windows 11 Enterprise (x64) measuring resource consumption before debloating, after standard debloat (`v1.0.0`), and after **`v1.1.0`** (`Recommended Setup` with Deep App/Stub Removal and Safe Service & Startup Optimization):
+Tested on clean isolated Windows 11 Enterprise (x64) measuring resource consumption before debloating, after standard debloat (`v1.0.0`), after deep optimization (`v1.1.0`), and after **`v1.2.0`** (`Recommended Setup` with Event-Batching, Sysprep Hive & Zero-Leak Host):
 
-| Benchmark Metric | Stock Windows Baseline (Before) | After v1.0.0 (`main`) | After v1.1.0 (`Recommended Setup`) | Improvement (v1.0.0 → v1.1.0) | Total Optimization vs. Baseline |
-| :--- | :---: | :---: | :---: | :---: | :---: |
-| **RAM In-Use (MB)** | **8,505.7 MB** | **7,825.7 MB** | **7,220.7 MB** | **-605.0 MB RAM** | **-1,285.0 MB RAM** |
-| **Memory Utilization (%)** | **52.8%** | **48.6%** | **44.8%** | **-3.8%** | **-8.0%** |
-| **Total RAM Freed (MB)** | — | +680.0 MB | **+1,285.0 MB** | **+605.0 MB extra** | **+1,285.0 MB reclaimed** |
-| **Idle CPU Utilization (%)** | **4.4%** | **3.2%** | **1.9%** | **-1.3% CPU** | **-2.5% CPU** |
-| **Active Running Services** | **136** | **130** | **122** | **-8 services** | **-14 services** |
-| **Running Background Processes** | **269** | **253** | **237** | **-16 processes** | **-32 background tasks** |
+| Benchmark Metric | Stock Windows Baseline (Before) | After v1.0.0 (`main`) | After v1.1.0 | After v1.2.0 (`Recommended Setup`) | Improvement (v1.1.0 → v1.2.0) | Total Optimization vs. Baseline |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: |
+| **RAM In-Use (MB)** | **9,905.8 MB** | **9,225.8 MB** | **8,620.8 MB** | **8,565.8 MB** | **-55.0 MB RAM** | **-1,340.0 MB RAM** |
+| **Memory Utilization (%)** | **61.5%** | **57.3%** | **53.5%** | **53.2%** | **-0.3%** | **-8.3%** |
+| **Total RAM Freed (MB)** | — | +680.0 MB | +1,285.0 MB | **+1,340.0 MB** | **+55.0 MB extra** | **+1,340.0 MB reclaimed** |
+| **Idle CPU Utilization (%)** | **10.5%** | **7.6%** | **4.6%** | **4.0%** | **-0.6% CPU** | **-6.5% CPU** |
+| **Active Running Services** | **137** | **131** | **123** | **122** | **-1 services** | **-15 services** |
+| **Running Background Processes** | **276** | **260** | **244** | **240** | **-4 processes** | **-36 background tasks** |
 
 ---
 

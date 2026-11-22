@@ -83,3 +83,11 @@ Safely reclaims hundreds of megabytes of working memory by tuning non-essential 
 
 - **Deep OneDrive Removal:** Terminates running processes, runs official uninstaller (`OneDriveSetup.exe /uninstall`), removes `Microsoft.OneDriveSync` Appx packages, unpins Explorer navigation namespace `{018D5C66-4533-4307-9B53-224DE2ED1FE6}`, and clears Run registry keys.
 - **Start Menu Cloud Stub Purge:** Disables Content Delivery Manager pre-installed application stubs (`SubscribedContent-*`), stops silent downloads, and backs up & cleans pinned stub layouts (`start.bin` / `start2.bin`).
+
+---
+
+## 8. Sysprep & Default User Profile Hive Synchronization (v1.2.0)
+
+- **Native Hive Mount Engine (`Mount-DefaultUserHive` & `Dismount-DefaultUserHive`):** Safely mounts the Default User registry hive at `C:\Users\Default\NTUSER.DAT` into `HKLM\NHDefaultUser`.
+- **Golden Image & Multi-User Deployment:** Replicates current user optimization rules directly to the Default User template. Every new local account, active directory domain user, or sysprep provisioned workstation automatically boots into a clean, debloated environment.
+- **Safe Handle Deallocation:** Uses multi-pass .NET Garbage Collection (`[GC]::Collect()`) and provider handle synchronization to guarantee clean dismounting without file locks.

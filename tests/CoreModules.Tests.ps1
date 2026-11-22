@@ -230,6 +230,14 @@ Describe "SystemTweaks Module" {
         $impact.Rating | Should -Be "HIGH IMPACT"
         $impact.Level | Should -Be "High"
     }
+
+    It "Executes Mount-DefaultUserHive and Dismount-DefaultUserHive in WhatIf preview safely" {
+        $mountRes = Mount-DefaultUserHive -WhatIf
+        $mountRes | Should -BeTrue
+
+        $dismountRes = Dismount-DefaultUserHive -WhatIf
+        $dismountRes | Should -BeTrue
+    }
 }
 
 Describe "ExecutionLog Module" {
@@ -467,7 +475,7 @@ Describe "UI Motion & Vector Icon Architecture" {
         $win.FindName("TxtTabFeaturesCount") | Should -Not -BeNullOrEmpty
     }
 
-    It "Verifies presence of v0.5 profile export/import, snapshot rollback, and reinstall modal controls" {
+    It "Verifies presence of profile export/import, snapshot rollback, and reinstall modal controls" {
         $xamlPath = Join-Path $projectRoot "src\UI\MainWindow.xaml"
         $xamlContent = Get-Content $xamlPath -Raw
         $reader = [System.Xml.XmlReader]::Create([System.IO.StringReader]::new($xamlContent))
@@ -477,9 +485,9 @@ Describe "UI Motion & Vector Icon Architecture" {
         } finally {
             $reader.Close()
         }
-        $win.FindName("BtnImportProfile") | Should -Not -BeNullOrEmpty
-        $win.FindName("BtnExportProfile") | Should -Not -BeNullOrEmpty
-        $win.FindName("BtnHeaderReinstallApps") | Should -Not -BeNullOrEmpty
+        $win.FindName("BtnActionLoadProfile") | Should -Not -BeNullOrEmpty
+        $win.FindName("BtnActionSaveProfile") | Should -Not -BeNullOrEmpty
+        $win.FindName("BtnActionReinstallApps") | Should -Not -BeNullOrEmpty
         $win.FindName("BtnStage5ReinstallApps") | Should -Not -BeNullOrEmpty
         $win.FindName("CboRegistrySnapshots") | Should -Not -BeNullOrEmpty
         $win.FindName("BtnPreviewSnapshot") | Should -Not -BeNullOrEmpty
@@ -532,7 +540,7 @@ Describe "UI Motion & Vector Icon Architecture" {
         $win.FindName("TabStage2Controls").RenderTransform | Should -Not -BeNullOrEmpty
     }
 
-    It "Verifies presence of Start-Screen Restore shortcut and Selective Restore controls in XAML" {
+    It "Verifies presence of top bar hardware specs, quick actions, and Selective Restore controls in XAML" {
         $xamlPath = Join-Path $projectRoot "src\UI\MainWindow.xaml"
         $xamlContent = Get-Content $xamlPath -Raw
         $reader = [System.Xml.XmlReader]::Create([System.IO.StringReader]::new($xamlContent))
@@ -543,9 +551,11 @@ Describe "UI Motion & Vector Icon Architecture" {
             $reader.Close()
         }
 
-        # Header and Stage 1 shortcuts
-        $win.FindName("BtnHeaderRestore") | Should -Not -BeNullOrEmpty
-        $win.FindName("BtnStage1Restore") | Should -Not -BeNullOrEmpty
+        # Hardware specs and Quick Actions recovery shortcut
+        $win.FindName("TxtHardwareSpecs") | Should -Not -BeNullOrEmpty
+        $win.FindName("BtnActionRecoveryRollback") | Should -Not -BeNullOrEmpty
+        $win.FindName("CmbLanguage") | Should -Not -BeNullOrEmpty
+        $win.FindName("RadioScopeDefaultUser") | Should -Not -BeNullOrEmpty
 
         # Selective restore dropdown and controls
         $win.FindName("ToggleSelectiveRestore") | Should -Not -BeNullOrEmpty

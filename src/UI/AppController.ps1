@@ -7,7 +7,7 @@
         category filters, executes dry-run previews, and triggers atomic debloat pipelines
         with dedicated AI integration, privacy, gaming, and system tweak controls.
     .MODULEVERSION
-        1.1.0
+        1.2.0
 #>
 
 [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '')]
@@ -71,9 +71,17 @@ function Show-DebloaterWindow {
     $txtVersion = $window.FindName("TxtVersion")
     $imgLogo = $window.FindName("ImgLogo")
     $logoFallbackBox = $window.FindName("LogoFallbackBox")
+    $txtHardwareSpecs = $window.FindName("TxtHardwareSpecs")
     $txtOsCaption = $window.FindName("TxtOsCaption")
     $txtElevationStatus = $window.FindName("TxtElevationStatus")
     $dotElevationStatus = $window.FindName("DotElevationStatus")
+    $btnActionReinstallApps = $window.FindName("BtnActionReinstallApps")
+    $txtWelcomeHeading = $window.FindName("TxtWelcomeHeading")
+    $txtWelcomeSubtitle = $window.FindName("TxtWelcomeSubtitle")
+    $txtRecSetupTitle = $window.FindName("TxtRecSetupTitle")
+    $txtRecSetupDesc = $window.FindName("TxtRecSetupDesc")
+    $txtCustomTuningTitle = $window.FindName("TxtCustomTuningTitle")
+    $txtCustomTuningDesc = $window.FindName("TxtCustomTuningDesc")
 
     $stepTag1 = $window.FindName("StepTag1")
     $stepTag2 = $window.FindName("StepTag2")
@@ -398,13 +406,32 @@ function Show-DebloaterWindow {
         $logoFallbackBox.Visibility = [System.Windows.Visibility]::Visible
     }
 
-    # Platform Information
+    # Live PC Hardware Configuration & Platform Specs
     try {
+        $cpuRaw = (Get-ItemProperty "HKLM:\HARDWARE\DESCRIPTION\System\CentralProcessor\0" -ErrorAction SilentlyContinue).ProcessorNameString
+        $cpuClean = if ($cpuRaw) { ($cpuRaw -replace '\s+', ' ').Trim() } else { "Multi-Core CPU" }
+
         $os = Get-CimInstance Win32_OperatingSystem -ErrorAction SilentlyContinue
+        $totalRamGb = if ($os -and $os.TotalVisibleMemorySize) {
+            [math]::Round(($os.TotalVisibleMemorySize / 1024 / 1024), 0)
+        } else {
+            16
+        }
+
+        if ($txtHardwareSpecs) {
+            $txtHardwareSpecs.Text = "$cpuClean • ${totalRamGb} GB RAM"
+        }
+
         $build = (Get-ItemProperty "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion" -ErrorAction SilentlyContinue).CurrentBuild
-        $txtOsCaption.Text = "$($os.Caption) (Build $build)"
+        $arch = if ([System.Environment]::Is64BitOperatingSystem) { "64-bit" } else { "32-bit" }
+        $osCaptionText = if ($os -and $os.Caption) { "$($os.Caption) ($arch)" } else { "Windows 11 / 10 ($arch)" }
+        if ($build) { $osCaptionText += " [Build $build]" }
+        if ($txtOsCaption) {
+            $txtOsCaption.Text = $osCaptionText
+        }
     } catch {
-        $txtOsCaption.Text = "Windows 11 / 10"
+        if ($txtHardwareSpecs) { $txtHardwareSpecs.Text = "PC Hardware Detected" }
+        if ($txtOsCaption) { $txtOsCaption.Text = "Windows 11 / 10" }
     }
 
     $isAdmin = ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
@@ -685,7 +712,10 @@ function Show-DebloaterWindow {
     }
 
     # 9. Dynamic Selection Counters & Live Safety/Impact Evaluator
+    $script:IsUpdatingAppBatch = $false
     $updateLiveImpactSummary = {
+        if ($script:IsUpdatingAppBatch) { return }
+
         # 1. Count selected and visible apps
         $visibleCount = 0
         $selectedAppCount = 0
@@ -853,187 +883,244 @@ function Show-DebloaterWindow {
 
     # 11. Multi-Category Aggregation Engine for Bloatware Apps
     $populateApps = {
-        # 1. Scan and cache installed packages once per session
-        if ($null -eq $script:InstalledAppMap) {
-            try {
-                $scanned = Get-InstalledDebloatApp -PresetsPath $presetsPath
-                $script:InstalledAppMap = @{}
-                foreach ($item in $scanned) {
-                    if ($item.AppId) {
-                        $script:InstalledAppMap[$item.AppId.ToLower()] = $item
+        $script:IsUpdatingAppBatch = $true
+        try {
+            # 1. Scan and cache installed packages once per session
+            if ($null -eq $script:InstalledAppMap) {
+                try {
+                    $scanned = Get-InstalledDebloatApp -PresetsPath $presetsPath
+                    $script:InstalledAppMap = @{}
+                    foreach ($item in $scanned) {
+                        if ($item.AppId) {
+                            $script:InstalledAppMap[$item.AppId.ToLower()] = $item
+                        }
                     }
+                } catch {
+                    Write-Verbose "Could not scan installed packages: $($_.Exception.Message)"
+                    $script:InstalledAppMap = @{}
                 }
-            } catch {
-                Write-Verbose "Could not scan installed packages: $($_.Exception.Message)"
-                $script:InstalledAppMap = @{}
-            }
-        }
-
-        # 2. Multi-category selection aggregation
-        $appMap = @{}
-        $selectedCatNames = [System.Collections.Generic.List[string]]::new()
-
-        if ($chkCatRecommended -and $chkCatRecommended.IsChecked) {
-            $selectedCatNames.Add("Recommended")
-            $recList = Get-DebloatPreset -PresetName "Default" -PresetsPath $presetsPath
-            foreach ($a in $recList) { $appMap[$a.AppId] = $a }
-        }
-        if ($chkCatMinimal -and $chkCatMinimal.IsChecked) {
-            $selectedCatNames.Add("Minimal")
-            $minList = Get-DebloatPreset -PresetName "Minimal" -PresetsPath $presetsPath
-            foreach ($a in $minList) { $appMap[$a.AppId] = $a }
-        }
-        if ($chkCatDeep -and $chkCatDeep.IsChecked) {
-            $selectedCatNames.Add("Deep")
-            $deepList = Get-DebloatPreset -PresetName "Deep" -PresetsPath $presetsPath
-            foreach ($a in $deepList) { $appMap[$a.AppId] = $a }
-        }
-        if ($chkCatOem -and $chkCatOem.IsChecked) {
-            $selectedCatNames.Add("OEM")
-            $deepList = Get-DebloatPreset -PresetName "Deep" -PresetsPath $presetsPath
-            foreach ($a in ($deepList | Where-Object { -not ($_.AppId -like "Microsoft.*") })) {
-                $appMap[$a.AppId] = $a
-            }
-        }
-        if ($chkCatXbox -and $chkCatXbox.IsChecked) {
-            $selectedCatNames.Add("Xbox")
-            $deepList = Get-DebloatPreset -PresetName "Deep" -PresetsPath $presetsPath
-            foreach ($a in ($deepList | Where-Object { $_.AppId -like "*Xbox*" -or $_.AppId -like "*Gaming*" -or $_.AppId -like "*GameOverlay*" })) {
-                $appMap[$a.AppId] = $a
-            }
-        }
-        if ($chkCatMedia -and $chkCatMedia.IsChecked) {
-            $selectedCatNames.Add("Media")
-            $deepList = Get-DebloatPreset -PresetName "Deep" -PresetsPath $presetsPath
-            foreach ($a in ($deepList | Where-Object {
-                $_.AppId -like "*BingNews*" -or $_.AppId -like "*BingWeather*" -or $_.AppId -like "*BingSports*" -or
-                $_.AppId -like "*BingFinance*" -or $_.AppId -like "*Zune*" -or $_.AppId -like "*Clipchamp*" -or $_.AppId -like "*Photos*"
-            })) {
-                $appMap[$a.AppId] = $a
-            }
-        }
-
-        # Update Toggle Header text
-        $catHeader = if ($selectedCatNames.Count -eq 0) {
-            "Categories: None Selected (0 Apps)"
-        } elseif ($selectedCatNames.Count -eq 6) {
-            "Categories: All Selected ($($appMap.Count) Apps)"
-        } else {
-            "Categories: $($selectedCatNames -join ', ') ($($appMap.Count) Apps)"
-        }
-
-        if ($txtToggleAppCategoriesText) {
-            $txtToggleAppCategoriesText.Text = $catHeader
-        } elseif ($toggleAppCategories) {
-            $toggleAppCategories.Content = "$catHeader ▼"
-        }
-
-        $listAppsContainer.Items.Clear()
-        $script:AppCheckboxes.Clear()
-        $script:AppMetadata.Clear()
-
-        foreach ($app in $appMap.Values) {
-            $isInst = $script:InstalledAppMap.ContainsKey($app.AppId.ToLower())
-
-            $isProtected = Test-IsProtectedApp -AppId $app.AppId -PresetsPath $presetsPath
-            $safetyTier = "Recommended"
-            $dotColor = "#10B981"
-            $badgeBg = "#064E3B"
-            $badgeFg = "#10B981"
-
-            if ($isProtected) {
-                $safetyTier = "Not Recommended"
-                $dotColor = "#EF4444"
-                $badgeBg = "#450A0A"
-                $badgeFg = "#EF4444"
-            } elseif ($app.AppId -match "Xbox|Gaming|Zune|Media|Solitaire|Weather|News|Bing|Maps|People|Mail|Office|OneNote|Skype|Clipchamp") {
-                $safetyTier = "Optional"
-                $dotColor = "#F59E0B"
-                $badgeBg = "#451A03"
-                $badgeFg = "#F59E0B"
             }
 
-            $cb = [System.Windows.Controls.CheckBox]::new()
-            $cb.Tag = $app.AppId
-            $cb.IsChecked = $true
-            $cb.Margin = [System.Windows.Thickness]::new(4, 3, 4, 3)
+            # 2. Multi-category selection aggregation
+            $appMap = @{}
+            $selectedCatNames = [System.Collections.Generic.List[string]]::new()
 
-            $sp = [System.Windows.Controls.StackPanel]::new()
-            $sp.Orientation = [System.Windows.Controls.Orientation]::Horizontal
-            $sp.VerticalAlignment = [System.Windows.VerticalAlignment]::Center
-
-            $dot = [System.Windows.Shapes.Ellipse]::new()
-            $dot.Width = 7
-            $dot.Height = 7
-            $dot.Fill = [System.Windows.Media.BrushConverter]::new().ConvertFromString($dotColor)
-            $dot.Margin = [System.Windows.Thickness]::new(0, 0, 6, 0)
-            $dot.VerticalAlignment = [System.Windows.VerticalAlignment]::Center
-            $sp.Children.Add($dot) | Out-Null
-
-            $badge = [System.Windows.Controls.Border]::new()
-            $badge.CornerRadius = [System.Windows.CornerRadius]::new(3)
-            $badge.Background = [System.Windows.Media.BrushConverter]::new().ConvertFromString($badgeBg)
-            $badge.Padding = [System.Windows.Thickness]::new(5, 1, 5, 1)
-            $badge.Margin = [System.Windows.Thickness]::new(0, 0, 8, 0)
-            $badge.VerticalAlignment = [System.Windows.VerticalAlignment]::Center
-            $badgeTxt = [System.Windows.Controls.TextBlock]::new()
-            $badgeTxt.Text = $safetyTier
-            $badgeTxt.FontSize = 10
-            $badgeTxt.FontWeight = [System.Windows.FontWeights]::Bold
-            $badgeTxt.Foreground = [System.Windows.Media.BrushConverter]::new().ConvertFromString($badgeFg)
-            $badge.Child = $badgeTxt
-            $sp.Children.Add($badge) | Out-Null
-
-            $txtTitle = [System.Windows.Controls.TextBlock]::new()
-            $txtTitle.Text = $app.DisplayName
-            $txtTitle.FontWeight = [System.Windows.FontWeights]::SemiBold
-            $txtTitle.Foreground = [System.Windows.Media.BrushConverter]::new().ConvertFromString("#F8FAFC")
-            $txtTitle.FontSize = 12
-            $txtTitle.VerticalAlignment = [System.Windows.VerticalAlignment]::Center
-            $sp.Children.Add($txtTitle) | Out-Null
-
-            $txtId = [System.Windows.Controls.TextBlock]::new()
-            $txtId.Text = "($($app.AppId))"
-            $txtId.Foreground = [System.Windows.Media.BrushConverter]::new().ConvertFromString("#94A3B8")
-            $txtId.FontSize = 11
-            $txtId.Margin = [System.Windows.Thickness]::new(6, 0, 0, 0)
-            $txtId.VerticalAlignment = [System.Windows.VerticalAlignment]::Center
-            $sp.Children.Add($txtId) | Out-Null
-
-            if ($isInst) {
-                $instBadge = [System.Windows.Controls.TextBlock]::new()
-                $instBadge.Text = "[INSTALLED]"
-                $instBadge.Foreground = [System.Windows.Media.BrushConverter]::new().ConvertFromString("#38BDF8")
-                $instBadge.FontSize = 10
-                $instBadge.FontWeight = [System.Windows.FontWeights]::Bold
-                $instBadge.Margin = [System.Windows.Thickness]::new(6, 0, 0, 0)
-                $instBadge.VerticalAlignment = [System.Windows.VerticalAlignment]::Center
-                $sp.Children.Add($instBadge) | Out-Null
+            if ($chkCatRecommended -and $chkCatRecommended.IsChecked) {
+                $selectedCatNames.Add("Recommended")
+                $recList = Get-DebloatPreset -PresetName "Default" -PresetsPath $presetsPath
+                foreach ($a in $recList) { $appMap[$a.AppId] = $a }
+            }
+            if ($chkCatMinimal -and $chkCatMinimal.IsChecked) {
+                $selectedCatNames.Add("Minimal")
+                $minList = Get-DebloatPreset -PresetName "Minimal" -PresetsPath $presetsPath
+                foreach ($a in $minList) { $appMap[$a.AppId] = $a }
+            }
+            if ($chkCatDeep -and $chkCatDeep.IsChecked) {
+                $selectedCatNames.Add("Deep")
+                $deepList = Get-DebloatPreset -PresetName "Deep" -PresetsPath $presetsPath
+                foreach ($a in $deepList) { $appMap[$a.AppId] = $a }
+            }
+            if ($chkCatOem -and $chkCatOem.IsChecked) {
+                $selectedCatNames.Add("OEM")
+                $deepList = Get-DebloatPreset -PresetName "Deep" -PresetsPath $presetsPath
+                foreach ($a in ($deepList | Where-Object { -not ($_.AppId -like "Microsoft.*") })) {
+                    $appMap[$a.AppId] = $a
+                }
+            }
+            if ($chkCatXbox -and $chkCatXbox.IsChecked) {
+                $selectedCatNames.Add("Xbox")
+                $deepList = Get-DebloatPreset -PresetName "Deep" -PresetsPath $presetsPath
+                foreach ($a in ($deepList | Where-Object { $_.AppId -like "*Xbox*" -or $_.AppId -like "*Gaming*" -or $_.AppId -like "*GameOverlay*" })) {
+                    $appMap[$a.AppId] = $a
+                }
+            }
+            if ($chkCatMedia -and $chkCatMedia.IsChecked) {
+                $selectedCatNames.Add("Media")
+                $deepList = Get-DebloatPreset -PresetName "Deep" -PresetsPath $presetsPath
+                foreach ($a in ($deepList | Where-Object {
+                    $_.AppId -like "*BingNews*" -or $_.AppId -like "*BingWeather*" -or $_.AppId -like "*BingSports*" -or
+                    $_.AppId -like "*BingFinance*" -or $_.AppId -like "*Zune*" -or $_.AppId -like "*Clipchamp*" -or $_.AppId -like "*Photos*"
+                })) {
+                    $appMap[$a.AppId] = $a
+                }
             }
 
-            $cb.Content = $sp
-
-            $script:AppMetadata[$cb] = @{
-                AppId       = $app.AppId
-                DisplayName = $app.DisplayName
-                IsInstalled = $isInst
-                SafetyTier  = $safetyTier
+            # Update Toggle Header text
+            $catHeader = if ($selectedCatNames.Count -eq 0) {
+                "Categories: None Selected (0 Apps)"
+            } elseif ($selectedCatNames.Count -eq 6) {
+                "Categories: All Selected ($($appMap.Count) Apps)"
+            } else {
+                "Categories: $($selectedCatNames -join ', ') ($($appMap.Count) Apps)"
             }
 
-            $cb.Add_Checked({
-                param([object]$eventSource, [System.Windows.RoutedEventArgs]$eventArgs)
-                & $updateLiveImpactSummary
-            })
-            $cb.Add_Unchecked({
-                param([object]$eventSource, [System.Windows.RoutedEventArgs]$eventArgs)
-                & $updateLiveImpactSummary
-            })
+            if ($txtToggleAppCategoriesText) {
+                $txtToggleAppCategoriesText.Text = $catHeader
+            } elseif ($toggleAppCategories) {
+                $toggleAppCategories.Content = "$catHeader ▼"
+            }
 
-            $script:AppCheckboxes.Add($cb)
-            $listAppsContainer.Items.Add($cb) | Out-Null
+            $listAppsContainer.Items.Clear()
+            $script:AppCheckboxes.Clear()
+            $script:AppMetadata.Clear()
+
+            $friendlyCatalog = @{
+                "Clipchamp.Clipchamp"                    = @{ Name = "Clipchamp Video Editor"; Desc = "Web-based video editor and recorder" }
+                "Microsoft.549981C3F5F10"                = @{ Name = "Cortana"; Desc = "Legacy voice assistant" }
+                "Microsoft.BingNews"                     = @{ Name = "Microsoft News"; Desc = "MSN news headlines and live feeds" }
+                "Microsoft.BingWeather"                  = @{ Name = "MSN Weather"; Desc = "Weather forecast and radar" }
+                "Microsoft.BingFinance"                  = @{ Name = "MSN Money"; Desc = "Financial tracking and market news" }
+                "Microsoft.BingSports"                   = @{ Name = "MSN Sports"; Desc = "Live sporting scores and updates" }
+                "Microsoft.GetHelp"                      = @{ Name = "Get Help"; Desc = "Windows troubleshooter and help hub" }
+                "Microsoft.Getstarted"                   = @{ Name = "Tips"; Desc = "Windows feature walkthroughs and tips" }
+                "Microsoft.MicrosoftOfficeHub"           = @{ Name = "Microsoft 365 (Office)"; Desc = "Office cloud dashboard shortcut" }
+                "Microsoft.MicrosoftSolitaireCollection" = @{ Name = "Solitaire Collection"; Desc = "Card games with sponsored ads" }
+                "Microsoft.People"                       = @{ Name = "People"; Desc = "Windows contacts address book" }
+                "Microsoft.Todos"                        = @{ Name = "Microsoft To Do"; Desc = "Task manager and checklist planner" }
+                "Microsoft.WindowsFeedbackHub"           = @{ Name = "Feedback Hub"; Desc = "Feedback telemetry submission portal" }
+                "Microsoft.WindowsMaps"                  = @{ Name = "Windows Maps"; Desc = "Offline maps and navigation" }
+                "Microsoft.YourPhone"                    = @{ Name = "Phone Link"; Desc = "Phone sync and SMS mirroring" }
+                "Microsoft.ZuneMusic"                    = @{ Name = "Media Player Legacy (Groove)"; Desc = "Legacy audio playback client" }
+                "Microsoft.ZuneVideo"                    = @{ Name = "Movies & TV"; Desc = "Video playback and rentals hub" }
+                "Microsoft.SkypeApp"                     = @{ Name = "Skype"; Desc = "Video calls and messaging" }
+                "Microsoft.PowerAutomateDesktop"         = @{ Name = "Power Automate"; Desc = "Robotic desktop workflow automation" }
+                "Microsoft.MicrosoftStickyNotes"         = @{ Name = "Sticky Notes"; Desc = "Desktop quick sticky notes utility" }
+                "Microsoft.OutlookForWindows"            = @{ Name = "Outlook for Windows"; Desc = "Web-wrapper email client" }
+                "Microsoft.GamingApp"                    = @{ Name = "Xbox App"; Desc = "Xbox PC gaming hub" }
+                "Microsoft.XboxGamingOverlay"            = @{ Name = "Xbox Game Bar"; Desc = "In-game overlay widget" }
+                "Microsoft.XboxSpeechToTextOverlay"      = @{ Name = "Xbox Speech Overlay"; Desc = "Voice-to-text gaming transcriptions" }
+                "Microsoft.XboxIdentityProvider"         = @{ Name = "Xbox Identity Provider"; Desc = "Xbox Live authentication provider" }
+                "Microsoft.MixedReality.Portal"          = @{ Name = "Mixed Reality Portal"; Desc = "VR and holographic environment launcher" }
+                "Microsoft.WindowsSoundRecorder"         = @{ Name = "Sound Recorder"; Desc = "Audio capture utility" }
+                "Microsoft.WindowsAlarms"                = @{ Name = "Clock & Alarms"; Desc = "Timers, stopwatches and alarms" }
+                "Microsoft.WindowsCalculator"            = @{ Name = "Calculator"; Desc = "Standard system math calculator" }
+                "Microsoft.WindowsCamera"                = @{ Name = "Camera"; Desc = "Webcam and video recording utility" }
+            }
+
+            foreach ($app in $appMap.Values) {
+                $isInst = $script:InstalledAppMap.ContainsKey($app.AppId.ToLower())
+
+                $isProtected = Test-IsProtectedApp -AppId $app.AppId -PresetsPath $presetsPath
+                $safetyTier = "Recommended"
+                $dotEmoji = "🟢"
+                $dotColor = "#10B981"
+                $badgeBg = "#064E3B"
+                $badgeFg = "#10B981"
+
+                if ($isProtected) {
+                    $safetyTier = "Not Recommended"
+                    $dotEmoji = "🔴"
+                    $dotColor = "#EF4444"
+                    $badgeBg = "#450A0A"
+                    $badgeFg = "#EF4444"
+                } elseif ($app.AppId -match "Xbox|Gaming|Zune|Media|Solitaire|Weather|News|Bing|Maps|People|Mail|Office|OneNote|Skype|Clipchamp") {
+                    $safetyTier = "Optional"
+                    $dotEmoji = "🟡"
+                    $dotColor = "#F59E0B"
+                    $badgeBg = "#451A03"
+                    $badgeFg = "#F59E0B"
+                }
+
+                $cleanName = $app.DisplayName
+                $cleanDesc = $app.AppId
+                if ($friendlyCatalog.ContainsKey($app.AppId)) {
+                    $cleanName = $friendlyCatalog[$app.AppId].Name
+                    $cleanDesc = $friendlyCatalog[$app.AppId].Desc
+                } else {
+                    if ($cleanName -like "Microsoft.*") {
+                        $cleanName = $cleanName -replace "^Microsoft\.", ""
+                    }
+                    $cleanName = $cleanName -replace "([a-z])([A-Z])", '$1 $2'
+                }
+
+                $cb = [System.Windows.Controls.CheckBox]::new()
+                $cb.Tag = $app.AppId
+                $cb.IsChecked = $true
+                $cb.Margin = [System.Windows.Thickness]::new(4, 3, 4, 3)
+
+                $sp = [System.Windows.Controls.StackPanel]::new()
+                $sp.Orientation = [System.Windows.Controls.Orientation]::Horizontal
+                $sp.VerticalAlignment = [System.Windows.VerticalAlignment]::Center
+
+                $txtDot = [System.Windows.Controls.TextBlock]::new()
+                $txtDot.Text = "$dotEmoji "
+                $txtDot.FontSize = 10
+                $txtDot.VerticalAlignment = [System.Windows.VerticalAlignment]::Center
+                $sp.Children.Add($txtDot) | Out-Null
+
+                $badge = [System.Windows.Controls.Border]::new()
+                $badge.CornerRadius = [System.Windows.CornerRadius]::new(3)
+                $badge.Background = [System.Windows.Media.BrushConverter]::new().ConvertFromString($badgeBg)
+                $badge.Padding = [System.Windows.Thickness]::new(5, 1, 5, 1)
+                $badge.Margin = [System.Windows.Thickness]::new(0, 0, 8, 0)
+                $badge.VerticalAlignment = [System.Windows.VerticalAlignment]::Center
+                $badgeTxt = [System.Windows.Controls.TextBlock]::new()
+                $badgeTxt.Text = $safetyTier
+                $badgeTxt.FontSize = 10
+                $badgeTxt.FontWeight = [System.Windows.FontWeights]::Bold
+                $badgeTxt.Foreground = [System.Windows.Media.BrushConverter]::new().ConvertFromString($badgeFg)
+                $badge.Child = $badgeTxt
+                $sp.Children.Add($badge) | Out-Null
+
+                $txtTitle = [System.Windows.Controls.TextBlock]::new()
+                $txtTitle.Text = $cleanName
+                $txtTitle.FontWeight = [System.Windows.FontWeights]::SemiBold
+                $txtTitle.Foreground = [System.Windows.Media.BrushConverter]::new().ConvertFromString("#F8FAFC")
+                $txtTitle.FontSize = 12
+                $txtTitle.VerticalAlignment = [System.Windows.VerticalAlignment]::Center
+                $sp.Children.Add($txtTitle) | Out-Null
+
+                $txtDesc = [System.Windows.Controls.TextBlock]::new()
+                $txtDesc.Text = " — $cleanDesc"
+                $txtDesc.Foreground = [System.Windows.Media.BrushConverter]::new().ConvertFromString("#94A3B8")
+                $txtDesc.FontSize = 11
+                $txtDesc.Margin = [System.Windows.Thickness]::new(4, 0, 0, 0)
+                $txtDesc.VerticalAlignment = [System.Windows.VerticalAlignment]::Center
+                $sp.Children.Add($txtDesc) | Out-Null
+
+                if ($isInst) {
+                    $instBadge = [System.Windows.Controls.Border]::new()
+                    $instBadge.CornerRadius = [System.Windows.CornerRadius]::new(3)
+                    $instBadge.Background = [System.Windows.Media.BrushConverter]::new().ConvertFromString("#075985")
+                    $instBadge.Padding = [System.Windows.Thickness]::new(5, 1, 5, 1)
+                    $instBadge.Margin = [System.Windows.Thickness]::new(8, 0, 0, 0)
+                    $instBadge.VerticalAlignment = [System.Windows.VerticalAlignment]::Center
+                    $instTxt = [System.Windows.Controls.TextBlock]::new()
+                    $instTxt.Text = "INSTALLED"
+                    $instTxt.Foreground = [System.Windows.Media.BrushConverter]::new().ConvertFromString("#38BDF8")
+                    $instTxt.FontSize = 9
+                    $instTxt.FontWeight = [System.Windows.FontWeights]::Bold
+                    $instBadge.Child = $instTxt
+                    $sp.Children.Add($instBadge) | Out-Null
+                }
+
+                $cb.Content = $sp
+
+                $script:AppMetadata[$cb] = @{
+                    AppId       = $app.AppId
+                    DisplayName = $app.DisplayName
+                    IsInstalled = $isInst
+                    SafetyTier  = $safetyTier
+                }
+
+                $cb.Add_Checked({
+                    param([object]$eventSource, [System.Windows.RoutedEventArgs]$eventArgs)
+                    if (-not $script:IsUpdatingAppBatch) { & $updateLiveImpactSummary }
+                })
+                $cb.Add_Unchecked({
+                    param([object]$eventSource, [System.Windows.RoutedEventArgs]$eventArgs)
+                    if (-not $script:IsUpdatingAppBatch) { & $updateLiveImpactSummary }
+                })
+
+                $script:AppCheckboxes.Add($cb)
+                $listAppsContainer.Items.Add($cb) | Out-Null
+            }
         }
-
-        & $filterApps
+        finally {
+            $script:IsUpdatingAppBatch = $false
+            & $filterApps
+            & $updateLiveImpactSummary
+        }
     }
 
     # Tab 1: Category Checkboxes Wiring
@@ -1081,30 +1168,45 @@ function Show-DebloaterWindow {
     if ($btnSelectAllApps) {
         $btnSelectAllApps.Add_Click({
             param([object]$eventSource, [System.Windows.RoutedEventArgs]$eventArgs)
-            foreach ($cb in $script:AppCheckboxes) {
-                if ($cb.Visibility -eq [System.Windows.Visibility]::Visible) { $cb.IsChecked = $true }
+            $script:IsUpdatingAppBatch = $true
+            try {
+                foreach ($cb in $script:AppCheckboxes) {
+                    if ($cb.Visibility -eq [System.Windows.Visibility]::Visible) { $cb.IsChecked = $true }
+                }
+            } finally {
+                $script:IsUpdatingAppBatch = $false
+                & $updateLiveImpactSummary
             }
-            & $updateLiveImpactSummary
         })
     }
 
     if ($btnDeselectAllApps) {
         $btnDeselectAllApps.Add_Click({
             param([object]$eventSource, [System.Windows.RoutedEventArgs]$eventArgs)
-            foreach ($cb in $script:AppCheckboxes) {
-                if ($cb.Visibility -eq [System.Windows.Visibility]::Visible) { $cb.IsChecked = $false }
+            $script:IsUpdatingAppBatch = $true
+            try {
+                foreach ($cb in $script:AppCheckboxes) {
+                    if ($cb.Visibility -eq [System.Windows.Visibility]::Visible) { $cb.IsChecked = $false }
+                }
+            } finally {
+                $script:IsUpdatingAppBatch = $false
+                & $updateLiveImpactSummary
             }
-            & $updateLiveImpactSummary
         })
     }
 
     if ($btnInvertSelection) {
         $btnInvertSelection.Add_Click({
             param([object]$eventSource, [System.Windows.RoutedEventArgs]$eventArgs)
-            foreach ($cb in $script:AppCheckboxes) {
-                if ($cb.Visibility -eq [System.Windows.Visibility]::Visible) { $cb.IsChecked = -not $cb.IsChecked }
+            $script:IsUpdatingAppBatch = $true
+            try {
+                foreach ($cb in $script:AppCheckboxes) {
+                    if ($cb.Visibility -eq [System.Windows.Visibility]::Visible) { $cb.IsChecked = -not $cb.IsChecked }
+                }
+            } finally {
+                $script:IsUpdatingAppBatch = $false
+                & $updateLiveImpactSummary
             }
-            & $updateLiveImpactSummary
         })
     }
 
@@ -1758,51 +1860,71 @@ function Show-DebloaterWindow {
     })
 
     # Step Navigation Buttons
-        # Stage 1 Hero Buttons: Recommended Setup & Custom Tuning
+    # Stage 1 Hero Buttons: Recommended Setup & Custom Tuning
     $btnRecommendedSetup = $window.FindName("BtnRecommendedSetup")
+    $btnCustomTuning = $window.FindName("BtnCustomTuning")
+    $script:WelcomeMode = "Recommended"
+
+    $updateModeVisuals = {
+        param([string]$mode)
+        $script:WelcomeMode = $mode
+        $brushConv = [System.Windows.Media.BrushConverter]::new()
+        if ($mode -eq "Recommended") {
+            if ($radioPresetDefault) { $radioPresetDefault.IsChecked = $true }
+            if ($btnRecommendedSetup) {
+                $btnRecommendedSetup.Background = $brushConv.ConvertFromString("#0EA5E9")
+                $btnRecommendedSetup.BorderBrush = $brushConv.ConvertFromString("#38BDF8")
+                $btnRecommendedSetup.BorderThickness = [System.Windows.Thickness]::new(2)
+            }
+            if ($btnCustomTuning) {
+                $btnCustomTuning.Background = $brushConv.ConvertFromString("#1A2234")
+                $btnCustomTuning.BorderBrush = $brushConv.ConvertFromString("#232D42")
+                $btnCustomTuning.BorderThickness = [System.Windows.Thickness]::new(1)
+            }
+        }
+        else {
+            if ($btnCustomTuning) {
+                $btnCustomTuning.Background = $brushConv.ConvertFromString("#1E293B")
+                $btnCustomTuning.BorderBrush = $brushConv.ConvertFromString("#38BDF8")
+                $btnCustomTuning.BorderThickness = [System.Windows.Thickness]::new(2)
+            }
+            if ($btnRecommendedSetup) {
+                $btnRecommendedSetup.Background = $brushConv.ConvertFromString("#131926")
+                $btnRecommendedSetup.BorderBrush = $brushConv.ConvertFromString("#232D42")
+                $btnRecommendedSetup.BorderThickness = [System.Windows.Thickness]::new(1)
+            }
+        }
+    }
+
     if ($btnRecommendedSetup) {
         $btnRecommendedSetup.Add_Click({
             param([object]$eventSource, [System.Windows.RoutedEventArgs]$eventArgs)
-            if ($radioPresetDefault) { $radioPresetDefault.IsChecked = $true }
-            & $populateApps
-            & $updateStageView 2
+            & $updateModeVisuals "Recommended"
         })
     }
-    $btnCustomTuning = $window.FindName("BtnCustomTuning")
     if ($btnCustomTuning) {
         $btnCustomTuning.Add_Click({
             param([object]$eventSource, [System.Windows.RoutedEventArgs]$eventArgs)
-            & $updateStageView 2
+            & $updateModeVisuals "Custom"
         })
     }
 
     $btnNext.Add_Click({
         param([object]$eventSource, [System.Windows.RoutedEventArgs]$eventArgs)
         if ($script:CurrentStage -eq 1) {
-            if ($radioPresetMinimal.IsChecked) {
-                if ($chkCatMinimal) { $chkCatMinimal.IsChecked = $true }
-                if ($chkCatRecommended) { $chkCatRecommended.IsChecked = $false }
-                if ($chkCatDeep) { $chkCatDeep.IsChecked = $false }
-                if ($chkCatOem) { $chkCatOem.IsChecked = $false }
-                if ($chkCatXbox) { $chkCatXbox.IsChecked = $false }
-                if ($chkCatMedia) { $chkCatMedia.IsChecked = $false }
-            } elseif ($radioPresetDeep.IsChecked) {
-                if ($chkCatDeep) { $chkCatDeep.IsChecked = $true }
-                if ($chkCatRecommended) { $chkCatRecommended.IsChecked = $false }
-                if ($chkCatMinimal) { $chkCatMinimal.IsChecked = $false }
-                if ($chkCatOem) { $chkCatOem.IsChecked = $false }
-                if ($chkCatXbox) { $chkCatXbox.IsChecked = $false }
-                if ($chkCatMedia) { $chkCatMedia.IsChecked = $false }
-            } else {
+            if ($script:WelcomeMode -eq "Recommended") {
                 if ($chkCatRecommended) { $chkCatRecommended.IsChecked = $true }
                 if ($chkCatMinimal) { $chkCatMinimal.IsChecked = $false }
                 if ($chkCatDeep) { $chkCatDeep.IsChecked = $false }
                 if ($chkCatOem) { $chkCatOem.IsChecked = $false }
                 if ($chkCatXbox) { $chkCatXbox.IsChecked = $false }
                 if ($chkCatMedia) { $chkCatMedia.IsChecked = $false }
+                & $populateApps
+                & $updateStageView 3
+            } else {
+                & $populateApps
+                & $updateStageView 2
             }
-            & $populateApps
-            & $updateStageView 2
         } elseif ($script:CurrentStage -eq 2) {
             & $updateStageView 3
         }
@@ -1845,6 +1967,18 @@ function Show-DebloaterWindow {
 
         $targetScope = if ($radioScopeCurrentUser.IsChecked) { "CurrentUser" } elseif ($radioScopeDefaultUser.IsChecked) { "DefaultUser" } else { "AllUsers" }
         & $appendLog "Selected execution scope: $targetScope" "INFO"
+
+        $isDefaultUserScope = ($targetScope -eq "DefaultUser")
+        $defaultUserMounted = $false
+        if ($isDefaultUserScope) {
+            & $appendLog "Mounting Windows Default User profile hive (C:\Users\Default\NTUSER.DAT) under HKLM\NHDefaultUser..." "INFO"
+            $defaultUserMounted = Mount-DefaultUserHive
+            if ($defaultUserMounted) {
+                & $appendLog "Default User profile hive successfully mounted." "SUCCESS"
+            } else {
+                & $appendLog "Warning: Could not mount Default User hive. Applying to current user and machine policies." "WARN"
+            }
+        }
 
         $totalOps = 0
         $successOps = 0
@@ -2003,6 +2137,52 @@ function Show-DebloaterWindow {
                 }
             }
         }
+
+        # 10. Default User Hive Synchronization & Clean Dismount
+        if ($defaultUserMounted) {
+            & $appendLog "Synchronizing configured policies and tweaks to Default User profile hive..." "INFO"
+            $tweakHkcuPaths = @(
+                "HKCU:\Software\Policies\Microsoft\Windows\Explorer",
+                "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced",
+                "HKCU:\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager",
+                "HKCU:\Software\Microsoft\Windows\CurrentVersion\SearchSettings",
+                "HKCU:\Software\Microsoft\Windows\CurrentVersion\Privacy",
+                "HKCU:\Software\Microsoft\Windows\CurrentVersion\AdvertisingInfo",
+                "HKCU:\Software\Policies\Microsoft\Windows\CloudContent",
+                "HKCU:\Software\Policies\Microsoft\Windows\WindowsCopilot",
+                "HKCU:\Software\Policies\Microsoft\Windows\WindowsAI",
+                "HKCU:\Software\Microsoft\Windows\CurrentVersion\ClickToDo",
+                "HKCU:\Software\Classes\CLSID\{86ca1aa0-34aa-4e8b-a509-50c905bae2a2}\InprocServer32",
+                "HKCU:\Control Panel\Mouse",
+                "HKCU:\Control Panel\Accessibility\StickyKeys",
+                "HKCU:\Software\Microsoft\Paint\Settings",
+                "HKCU:\Software\Microsoft\Notepad"
+            )
+            foreach ($p in $tweakHkcuPaths) {
+                try {
+                    if (Test-Path -Path $p) {
+                        $destPath = $p -replace "^HKCU:\\", "HKLM:\NHDefaultUser\"
+                        if (-not (Test-Path -Path $destPath)) {
+                            New-Item -Path $destPath -Force -ErrorAction SilentlyContinue | Out-Null
+                        }
+                        $props = Get-ItemProperty -Path $p -ErrorAction SilentlyContinue
+                        if ($props) {
+                            foreach ($prop in $props.PSObject.Properties) {
+                                if ($prop.Name -notin @("PSPath", "PSParentPath", "PSChildName", "PSDrive", "PSProvider")) {
+                                    New-ItemProperty -Path $destPath -Name $prop.Name -Value $prop.Value -Force -ErrorAction SilentlyContinue | Out-Null
+                                }
+                            }
+                        }
+                    }
+                } catch {}
+            }
+            & $appendLog "Default User profile hive successfully synchronized." "SUCCESS"
+
+            & $appendLog "Dismounting Default User hive (releasing open handles)..." "INFO"
+            $null = Dismount-DefaultUserHive
+            & $appendLog "Default User profile hive dismounted cleanly." "SUCCESS"
+        }
+
         $progExecution.Value = 100
 
         & $appendLog "Pipeline execution finished successfully." "SUCCESS"
@@ -2503,6 +2683,13 @@ function Show-DebloaterWindow {
             & $openReinstallModal
         })
     }
+    if ($btnActionReinstallApps) {
+        $btnActionReinstallApps.Add_Click({
+            param([object]$eventSource, [System.Windows.RoutedEventArgs]$eventArgs)
+            if ($popupQuickActions) { $popupQuickActions.IsOpen = $false }
+            & $openReinstallModal
+        })
+    }
 
     if ($btnStage5ReinstallApps) {
         $btnStage5ReinstallApps.Add_Click({
@@ -2681,6 +2868,136 @@ function Show-DebloaterWindow {
     if ($radioThemeAuto) { $radioThemeAuto.Add_Click({ & $applyTheme "Auto" }) }
     if ($radioThemeDark) { $radioThemeDark.Add_Click({ & $applyTheme "Dark" }) }
     if ($radioThemeLight) { $radioThemeLight.Add_Click({ & $applyTheme "Light" }) }
+
+    # Multi-Language Engine Wiring
+    $cmbLanguage = $window.FindName("CmbLanguage")
+    $applyLanguage = {
+        param([string]$langCode)
+        $translations = @{
+            "en-US" = @{
+                Heading  = "Welcome to NH Win Debloater"
+                Sub      = "Streamline Windows, reclaim memory, and keep full control in a few clicks."
+                RecTitle = "Recommended Setup"
+                RecDesc  = "Curated safe optimizations & RAM boost"
+                CusTitle = "Custom Tuning"
+                CusDesc  = "Tailor apps, privacy, explorer, gaming & AI"
+                Back     = "Back"
+                Next     = "Next"
+                Apply    = "Apply Optimizations"
+                Finish   = "Finish & Exit"
+                ScopeAll = "All Users (Recommended)"
+                ScopeCur = "Current User Only"
+                ScopeDef = "Default User / Sysprep"
+            }
+            "hi-IN" = @{
+                Heading  = "एनएच विन डीब्लोटर में आपका स्वागत है"
+                Sub      = "विंडोज को सुव्यवस्थित करें, मेमोरी पुनः प्राप्त करें और पूर्ण नियंत्रण बनाए रखें।"
+                RecTitle = "अनुशंसित सेटअप"
+                RecDesc  = "सुरक्षित अनुकूलन और रैम बूस्ट"
+                CusTitle = "कस्टम ट्यूनिंग"
+                CusDesc  = "ऐप्स, गोपनीयता, एक्सप्लोरर, गेमिंग और एआई अनुकूलित करें"
+                Back     = "पीछे"
+                Next     = "आगे"
+                Apply    = "लागू करें"
+                Finish   = "समाप्त करें और बाहर निकलें"
+                ScopeAll = "सभी उपयोगकर्ता (अनुशंसित)"
+                ScopeCur = "केवल वर्तमान उपयोगकर्ता"
+                ScopeDef = "डिफ़ॉल्ट उपयोगकर्ता / सिसप्रेप"
+            }
+            "kn-IN" = @{
+                Heading  = "ಎನ್ ಹೆಚ್ ವಿನ್ ಡಿಬ್ಲೋಟರ್ ಗೆ ಸುಸ್ವಾಗತ"
+                Sub      = "ವಿಂಡೋಸ್ ಅನ್ನು ಸರಳಗೊಳಿಸಿ, ಮೆಮೊರಿಯನ್ನು ಉಳಿಸಿ ಮತ್ತು ಸಂಪೂರ್ಣ ನಿಯಂತ್ರಣವನ್ನು ಕಾಪಾಡಿ."
+                RecTitle = "ಶಿಫಾರಸು ಮಾಡಿದ ಸೆಟಪ್"
+                RecDesc  = "ಸುರಕ್ಷಿತ ಆಪ್ಟಿಮೈಸೇಶನ್ ಮತ್ತು RAM ಬೂಸ್ಟ್"
+                CusTitle = "ಕಸ್ಟಮ್ ಟ್ಯೂನಿಂಗ್"
+                CusDesc  = "ಅಪ್ಲಿಕೇಶನ್‌ಗಳು, ಗೌಪ್ಯತೆ ಮತ್ತು ಗೇಮಿಂಗ್ ಹೊಂದಿಸಿ"
+                Back     = "ಹಿಂದೆ"
+                Next     = "ಮುಂದೆ"
+                Apply    = "ಅನ್ವಯಿಸು"
+                Finish   = "ಮುಕ್ತಾಯ ಮತ್ತು ನಿರ್ಗಮಿಸಿ"
+                ScopeAll = "ಎಲ್ಲಾ ಬಳಕೆದಾರರು (ಶಿಫಾರಸು ಮಾಡಲಾಗಿದೆ)"
+                ScopeCur = "ಪ್ರಸ್ತುತ ಬಳಕೆದಾರ ಮಾತ್ರ"
+                ScopeDef = "ಡೀಫಾಲ್ಟ್ ಬಳಕೆದಾರ / ಸಿಸ್ಪ್ರೆಪ್"
+            }
+            "es-ES" = @{
+                Heading  = "Bienvenido a NH Win Debloater"
+                Sub      = "Optimice Windows, recupere memoria y mantenga el control total en pocos clics."
+                RecTitle = "Configuración Recomendada"
+                RecDesc  = "Optimizaciones seguras seleccionadas y mejora de RAM"
+                CusTitle = "Ajuste Personalizado"
+                CusDesc  = "Personalice aplicaciones, privacidad, explorador, juegos e IA"
+                Back     = "Atrás"
+                Next     = "Siguiente"
+                Apply    = "Aplicar Optimizaciones"
+                Finish   = "Finalizar y Salir"
+                ScopeAll = "Todos los usuarios (Recomendado)"
+                ScopeCur = "Solo usuario actual"
+                ScopeDef = "Usuario predeterminado / Sysprep"
+            }
+            "de-DE" = @{
+                Heading  = "Willkommen bei NH Win Debloater"
+                Sub      = "Windows optimieren, Arbeitsspeicher freigeben und volle Kontrolle behalten."
+                RecTitle = "Empfohlene Konfiguration"
+                RecDesc  = "Kuratierte sichere Optimierungen & RAM-Boost"
+                CusTitle = "Benutzerdefinierte Abstimmung"
+                CusDesc  = "Apps, Datenschutz, Explorer, Gaming & KI anpassen"
+                Back     = "Zurück"
+                Next     = "Weiter"
+                Apply    = "Optimierungen anwenden"
+                Finish   = "Fertigstellen & Beenden"
+                ScopeAll = "Alle Benutzer (Empfohlen)"
+                ScopeCur = "Nur aktueller Benutzer"
+                ScopeDef = "Standardbenutzer / Sysprep"
+            }
+        }
+
+        $code = if ($langCode -eq "auto") {
+            $sysLang = (Get-Culture).Name
+            if ($translations.ContainsKey($sysLang)) { $sysLang } else { "en-US" }
+        } else {
+            $langCode
+        }
+
+        $t = if ($translations.ContainsKey($code)) { $translations[$code] } else { $translations["en-US"] }
+
+        if ($txtWelcomeHeading) { $txtWelcomeHeading.Text = $t.Heading }
+        if ($txtWelcomeSubtitle) { $txtWelcomeSubtitle.Text = $t.Sub }
+        if ($txtRecSetupTitle) { $txtRecSetupTitle.Text = $t.RecTitle }
+        if ($txtRecSetupDesc) { $txtRecSetupDesc.Text = $t.RecDesc }
+        if ($txtCustomTuningTitle) { $txtCustomTuningTitle.Text = $t.CusTitle }
+        if ($txtCustomTuningDesc) { $txtCustomTuningDesc.Text = $t.CusDesc }
+
+        if ($radioScopeAllUsers) { $radioScopeAllUsers.Content = $t.ScopeAll }
+        if ($radioScopeCurrentUser) { $radioScopeCurrentUser.Content = $t.ScopeCur }
+        if ($radioScopeDefaultUser) { $radioScopeDefaultUser.Content = $t.ScopeDef }
+
+        if ($btnBack -and $btnBack.Content -and $btnBack.Content.Children) {
+            $tb = $btnBack.Content.Children | Where-Object { $_ -is [System.Windows.Controls.TextBlock] }
+            if ($tb) { $tb.Text = $t.Back }
+        }
+        if ($btnNext -and $btnNext.Content -and $btnNext.Content.Children) {
+            $tb = $btnNext.Content.Children | Where-Object { $_ -is [System.Windows.Controls.TextBlock] }
+            if ($tb) { $tb.Text = $t.Next }
+        }
+        if ($btnApply -and $btnApply.Content -and $btnApply.Content.Children) {
+            $tb = $btnApply.Content.Children | Where-Object { $_ -is [System.Windows.Controls.TextBlock] }
+            if ($tb) { $tb.Text = $t.Apply }
+        }
+        if ($btnFinish -and $btnFinish.Content -and $btnFinish.Content.Children) {
+            $tb = $btnFinish.Content.Children | Where-Object { $_ -is [System.Windows.Controls.TextBlock] }
+            if ($tb) { $tb.Text = $t.Finish }
+        }
+    }
+
+    if ($cmbLanguage) {
+        $cmbLanguage.Add_SelectionChanged({
+            param([object]$eventSource, [System.Windows.Controls.SelectionChangedEventArgs]$eventArgs)
+            $selectedItem = $cmbLanguage.SelectedItem
+            if ($selectedItem -and $selectedItem.Tag) {
+                & $applyLanguage $selectedItem.Tag
+            }
+        })
+    }
 
     # Quick Actions Menu (☰)
     $btnQuickActions = $window.FindName("BtnQuickActions")
@@ -2872,11 +3189,35 @@ function Show-DebloaterWindow {
         })
     }
 
-    # Window Closed Handler: Ensure post-exit temp & session cleanup (preserving backups/logs)
-    $window.Add_Closed({
-        if (Get-Command Clear-DebloatTempSession -ErrorAction SilentlyContinue) {
-            Clear-DebloatTempSession
+    # Minimize console host window on startup while keeping status mirrored
+    try {
+        if (-not ([System.Management.Automation.PSTypeName]'Win32Utils.Win32ShowWindowConsole').Type) {
+            $null = Add-Type -MemberDefinition '[DllImport("user32.dll")] public static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);' -Name "Win32ShowWindowConsole" -Namespace "Win32Utils" -PassThru -ErrorAction SilentlyContinue
         }
+        $consoleHandle = [System.Diagnostics.Process]::GetCurrentProcess().MainWindowHandle
+        if ($consoleHandle -ne [System.IntPtr]::Zero) {
+            # SW_SHOWMINIMIZED = 2
+            [Win32Utils.Win32ShowWindowConsole]::ShowWindow($consoleHandle, 2) | Out-Null
+        }
+    } catch {}
+
+    # Window Closing & Closed Handlers: Guaranteed clean exit & temp purge
+    $window.Add_Closing({
+        param([object]$eventSource, [System.ComponentModel.CancelEventArgs]$eventArgs)
+        try {
+            Write-Host "Cleaning temporary files..." -ForegroundColor Cyan
+        } catch {}
+    })
+
+    $window.Add_Closed({
+        try {
+            Write-Host "Cleaning temporary files..." -ForegroundColor Cyan
+            if (Get-Command Clear-DebloatTempSession -ErrorAction SilentlyContinue) {
+                Clear-DebloatTempSession
+            }
+            Get-ChildItem -Path $env:TEMP -Filter "NHWinDebloater*" -ErrorAction SilentlyContinue |
+                Remove-Item -Recurse -Force -ErrorAction SilentlyContinue
+        } catch {}
     })
 
     # Initial view setup
@@ -2887,9 +3228,14 @@ function Show-DebloaterWindow {
         $null = $window.ShowDialog()
     }
     finally {
-        if (Get-Command Clear-DebloatTempSession -ErrorAction SilentlyContinue) {
-            Clear-DebloatTempSession
-        }
+        try {
+            Write-Host "Cleaning temporary files..." -ForegroundColor Cyan
+            if (Get-Command Clear-DebloatTempSession -ErrorAction SilentlyContinue) {
+                Clear-DebloatTempSession
+            }
+            Get-ChildItem -Path $env:TEMP -Filter "NHWinDebloater*" -ErrorAction SilentlyContinue |
+                Remove-Item -Recurse -Force -ErrorAction SilentlyContinue
+        } catch {}
     }
 }
 

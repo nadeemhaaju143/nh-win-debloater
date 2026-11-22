@@ -117,6 +117,9 @@ $reader1.Close()
 
 Update-StepperState -win $win1 -stage 1
 
+$hw1 = $win1.FindName("TxtHardwareSpecs")
+if ($hw1) { $hw1.Text = "AMD Ryzen 9 5900X • 32.0 GB RAM" }
+
 $win1.FindName("ViewStage1").Visibility = [System.Windows.Visibility]::Visible
 $win1.FindName("ViewStage2").Visibility = [System.Windows.Visibility]::Collapsed
 $win1.FindName("ViewStage3").Visibility = [System.Windows.Visibility]::Collapsed
@@ -149,6 +152,9 @@ $win2 = [System.Windows.Markup.XamlReader]::Load($reader2)
 $reader2.Close()
 
 Update-StepperState -win $win2 -stage 2
+
+$hw2 = $win2.FindName("TxtHardwareSpecs")
+if ($hw2) { $hw2.Text = "AMD Ryzen 9 5900X • 32.0 GB RAM" }
 
 $win2.FindName("ViewStage1").Visibility = [System.Windows.Visibility]::Collapsed
 $win2.FindName("ViewStage2").Visibility = [System.Windows.Visibility]::Visible
@@ -200,6 +206,9 @@ $win3 = [System.Windows.Markup.XamlReader]::Load($reader3)
 $reader3.Close()
 
 Update-StepperState -win $win3 -stage 5
+
+$hw3 = $win3.FindName("TxtHardwareSpecs")
+if ($hw3) { $hw3.Text = "AMD Ryzen 9 5900X • 32.0 GB RAM" }
 
 $win3.FindName("ViewStage1").Visibility = [System.Windows.Visibility]::Collapsed
 $win3.FindName("ViewStage2").Visibility = [System.Windows.Visibility]::Collapsed
