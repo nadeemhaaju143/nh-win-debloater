@@ -78,14 +78,14 @@
         "RemovalMethod":  "Appx"
     },
     {
-        "AppId":  [
-                      "Microsoft.PCManager",
-                      "Microsoft.MicrosoftPCManager"
-                  ],
-        "DisplayName":  [
-                            "Microsoft.PCManager",
-                            "Microsoft.MicrosoftPCManager"
-                        ],
+        "AppId":  "Microsoft.PCManager",
+        "DisplayName":  "Microsoft.PCManager",
+        "Recommendation":  "safe",
+        "RemovalMethod":  "Appx"
+    },
+    {
+        "AppId":  "Microsoft.MicrosoftPCManager",
+        "DisplayName":  "Microsoft.MicrosoftPCManager",
         "Recommendation":  "safe",
         "RemovalMethod":  "Appx"
     },
@@ -504,14 +504,14 @@
         "RemovalMethod":  "Appx"
     },
     {
-        "AppId":  [
-                      "Microsoft.Edge",
-                      "XPFFTQ037JWMHS"
-                  ],
-        "DisplayName":  [
-                            "Microsoft.Edge",
-                            "XPFFTQ037JWMHS"
-                        ],
+        "AppId":  "Microsoft.Edge",
+        "DisplayName":  "Microsoft.Edge",
+        "Recommendation":  "unsafe",
+        "RemovalMethod":  "WinGet"
+    },
+    {
+        "AppId":  "XPFFTQ037JWMHS",
+        "DisplayName":  "XPFFTQ037JWMHS",
         "Recommendation":  "unsafe",
         "RemovalMethod":  "WinGet"
     },

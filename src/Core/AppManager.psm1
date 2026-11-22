@@ -7,7 +7,7 @@
         supports multi-user and default-user Sysprep environments,
         and provides reinstall capability for default/Store apps.
     .MODULEVERSION
-        1.2.1
+        1.2.2
 #>
 
 [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '')]
@@ -72,17 +72,29 @@ function Test-IsProtectedApp {
     [CmdletBinding()]
     [OutputType([bool])]
     param(
-        [Parameter(Mandatory = $true)]
-        [string]$AppId,
+        [Parameter(Mandatory = $false)]
+        [object]$AppId,
 
         [string]$PresetsPath
     )
 
+    if ($null -eq $AppId) { return $false }
+
+    $appIdList = if ($AppId -is [System.Collections.IEnumerable] -and $AppId -isnot [string]) {
+        @($AppId)
+    } else {
+        @([string]$AppId)
+    }
+
     $protectedList = Get-ProtectedApp -PresetsPath $PresetsPath
 
-    foreach ($protected in $protectedList) {
-        if ($AppId -like "*$protected*" -or $protected -like "*$AppId*") {
-            return $true
+    foreach ($singleId in $appIdList) {
+        $idStr = [string]$singleId
+        if ([string]::IsNullOrWhiteSpace($idStr)) { continue }
+        foreach ($protected in $protectedList) {
+            if ($idStr -like "*$protected*" -or $protected -like "*$idStr*") {
+                return $true
+            }
         }
     }
 
@@ -118,7 +130,34 @@ function Get-DebloatPreset {
 
     try {
         $data = Get-Content -Path $filePath -Raw -Encoding UTF8 | ConvertFrom-Json
-        return @($data)
+        $resultList = [System.Collections.Generic.List[PSCustomObject]]::new()
+        foreach ($item in $data) {
+            if (-not $item -or -not $item.AppId) { continue }
+            if ($item.AppId -is [System.Collections.IEnumerable] -and $item.AppId -isnot [string]) {
+                foreach ($id in $item.AppId) {
+                    $idStr = [string]$id
+                    if (-not [string]::IsNullOrWhiteSpace($idStr)) {
+                        $resultList.Add([PSCustomObject]@{
+                            AppId          = $idStr
+                            DisplayName    = if ($item.DisplayName -is [string]) { $item.DisplayName } else { $idStr }
+                            Recommendation = $item.Recommendation
+                            RemovalMethod  = $item.RemovalMethod
+                        })
+                    }
+                }
+            } else {
+                $idStr = [string]$item.AppId
+                if (-not [string]::IsNullOrWhiteSpace($idStr)) {
+                    $resultList.Add([PSCustomObject]@{
+                        AppId          = $idStr
+                        DisplayName    = if ($item.DisplayName -is [string]) { $item.DisplayName } else { $idStr }
+                        Recommendation = $item.Recommendation
+                        RemovalMethod  = $item.RemovalMethod
+                    })
+                }
+            }
+        }
+        return @($resultList)
     }
     catch {
         Write-Error "Failed to parse preset file '$fileName': $($_.Exception.Message)"

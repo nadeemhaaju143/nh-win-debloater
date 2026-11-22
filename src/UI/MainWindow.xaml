@@ -766,7 +766,7 @@
                                         <ColumnDefinition Width="Auto"/>
                                         <ColumnDefinition Width="*"/>
                                     </Grid.ColumnDefinitions>
-                                    <Path Data="{StaticResource IconLightning}" Fill="#FFFFFF" Width="20" Height="20" Stretch="Uniform" VerticalAlignment="Center" Margin="0,0,14,0"/>
+                                    <Path x:Name="IconRecSetup" Data="{StaticResource IconLightning}" Fill="#FFFFFF" Width="20" Height="20" Stretch="Uniform" VerticalAlignment="Center" Margin="0,0,14,0"/>
                                     <StackPanel Grid.Column="1" VerticalAlignment="Center">
                                         <TextBlock x:Name="TxtRecSetupTitle" Text="Recommended Setup" FontSize="15" FontWeight="Bold" Foreground="#FFFFFF"/>
                                         <TextBlock x:Name="TxtRecSetupDesc" Text="Curated safe optimizations &amp; RAM boost" FontSize="11" Foreground="#E0F2FE" Margin="0,2,0,0"/>
@@ -781,7 +781,7 @@
                                         <ColumnDefinition Width="Auto"/>
                                         <ColumnDefinition Width="*"/>
                                     </Grid.ColumnDefinitions>
-                                    <Path Data="{StaticResource IconLayersFeatures}" Fill="#38BDF8" Width="20" Height="20" Stretch="Uniform" VerticalAlignment="Center" Margin="0,0,14,0"/>
+                                    <Path x:Name="IconCustomTuning" Data="{StaticResource IconLayersFeatures}" Fill="#38BDF8" Width="20" Height="20" Stretch="Uniform" VerticalAlignment="Center" Margin="0,0,14,0"/>
                                     <StackPanel Grid.Column="1" VerticalAlignment="Center">
                                         <TextBlock x:Name="TxtCustomTuningTitle" Text="Custom Tuning" FontSize="15" FontWeight="Bold" Foreground="#F8FAFC"/>
                                         <TextBlock x:Name="TxtCustomTuningDesc" Text="Tailor apps, privacy, explorer, gaming &amp; AI" FontSize="11" Foreground="#94A3B8" Margin="0,2,0,0"/>

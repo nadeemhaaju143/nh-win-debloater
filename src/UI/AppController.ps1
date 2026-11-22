@@ -7,7 +7,7 @@
         category filters, executes dry-run previews, and triggers atomic debloat pipelines
         with dedicated AI integration, privacy, gaming, and system tweak controls.
     .MODULEVERSION
-        1.2.1
+        1.2.2
 #>
 
 [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '')]
@@ -82,6 +82,8 @@ function Show-DebloaterWindow {
     $txtRecSetupDesc = $window.FindName("TxtRecSetupDesc")
     $txtCustomTuningTitle = $window.FindName("TxtCustomTuningTitle")
     $txtCustomTuningDesc = $window.FindName("TxtCustomTuningDesc")
+    $iconRecSetup = $window.FindName("IconRecSetup")
+    $iconCustomTuning = $window.FindName("IconCustomTuning")
 
     $stepTag1 = $window.FindName("StepTag1")
     $stepTag2 = $window.FindName("StepTag2")
@@ -1871,76 +1873,114 @@ function Show-DebloaterWindow {
 
     $updateModeVisuals = {
         param([string]$mode)
-        $script:WelcomeMode = $mode
-        $brushConv = [System.Windows.Media.BrushConverter]::new()
-        if ($mode -eq "Recommended") {
-            if ($radioPresetDefault) { $radioPresetDefault.IsChecked = $true }
-            if ($btnRecommendedSetup) {
-                $btnRecommendedSetup.Background = $brushConv.ConvertFromString("#0EA5E9")
-                $btnRecommendedSetup.BorderBrush = $brushConv.ConvertFromString("#38BDF8")
-                $btnRecommendedSetup.BorderThickness = [System.Windows.Thickness]::new(2)
+        try {
+            $script:WelcomeMode = $mode
+            $brushConv = [System.Windows.Media.BrushConverter]::new()
+            if ($mode -eq "Recommended") {
+                if ($radioPresetDefault) { $radioPresetDefault.IsChecked = $true }
+                if ($btnRecommendedSetup) {
+                    $btnRecommendedSetup.Background = $brushConv.ConvertFromString("#0EA5E9")
+                    $btnRecommendedSetup.BorderBrush = $brushConv.ConvertFromString("#38BDF8")
+                    $btnRecommendedSetup.BorderThickness = [System.Windows.Thickness]::new(2)
+                }
+                if ($txtRecSetupTitle) { $txtRecSetupTitle.Foreground = $brushConv.ConvertFromString("#FFFFFF") }
+                if ($txtRecSetupDesc) { $txtRecSetupDesc.Foreground = $brushConv.ConvertFromString("#E0F2FE") }
+                if ($iconRecSetup) { $iconRecSetup.Fill = $brushConv.ConvertFromString("#FFFFFF") }
+
+                if ($btnCustomTuning) {
+                    $btnCustomTuning.Background = $brushConv.ConvertFromString("#131926")
+                    $btnCustomTuning.BorderBrush = $brushConv.ConvertFromString("#232D42")
+                    $btnCustomTuning.BorderThickness = [System.Windows.Thickness]::new(1)
+                }
+                if ($txtCustomTuningTitle) { $txtCustomTuningTitle.Foreground = $brushConv.ConvertFromString("#94A3B8") }
+                if ($txtCustomTuningDesc) { $txtCustomTuningDesc.Foreground = $brushConv.ConvertFromString("#64748B") }
+                if ($iconCustomTuning) { $iconCustomTuning.Fill = $brushConv.ConvertFromString("#64748B") }
             }
-            if ($btnCustomTuning) {
-                $btnCustomTuning.Background = $brushConv.ConvertFromString("#1A2234")
-                $btnCustomTuning.BorderBrush = $brushConv.ConvertFromString("#232D42")
-                $btnCustomTuning.BorderThickness = [System.Windows.Thickness]::new(1)
+            else {
+                if ($btnRecommendedSetup) {
+                    $btnRecommendedSetup.Background = $brushConv.ConvertFromString("#131926")
+                    $btnRecommendedSetup.BorderBrush = $brushConv.ConvertFromString("#232D42")
+                    $btnRecommendedSetup.BorderThickness = [System.Windows.Thickness]::new(1)
+                }
+                if ($txtRecSetupTitle) { $txtRecSetupTitle.Foreground = $brushConv.ConvertFromString("#94A3B8") }
+                if ($txtRecSetupDesc) { $txtRecSetupDesc.Foreground = $brushConv.ConvertFromString("#64748B") }
+                if ($iconRecSetup) { $iconRecSetup.Fill = $brushConv.ConvertFromString("#64748B") }
+
+                if ($btnCustomTuning) {
+                    $btnCustomTuning.Background = $brushConv.ConvertFromString("#0EA5E9")
+                    $btnCustomTuning.BorderBrush = $brushConv.ConvertFromString("#38BDF8")
+                    $btnCustomTuning.BorderThickness = [System.Windows.Thickness]::new(2)
+                }
+                if ($txtCustomTuningTitle) { $txtCustomTuningTitle.Foreground = $brushConv.ConvertFromString("#FFFFFF") }
+                if ($txtCustomTuningDesc) { $txtCustomTuningDesc.Foreground = $brushConv.ConvertFromString("#E0F2FE") }
+                if ($iconCustomTuning) { $iconCustomTuning.Fill = $brushConv.ConvertFromString("#FFFFFF") }
             }
-        }
-        else {
-            if ($btnCustomTuning) {
-                $btnCustomTuning.Background = $brushConv.ConvertFromString("#1E293B")
-                $btnCustomTuning.BorderBrush = $brushConv.ConvertFromString("#38BDF8")
-                $btnCustomTuning.BorderThickness = [System.Windows.Thickness]::new(2)
-            }
-            if ($btnRecommendedSetup) {
-                $btnRecommendedSetup.Background = $brushConv.ConvertFromString("#131926")
-                $btnRecommendedSetup.BorderBrush = $brushConv.ConvertFromString("#232D42")
-                $btnRecommendedSetup.BorderThickness = [System.Windows.Thickness]::new(1)
-            }
+        } catch {
+            Write-DebloatLog -Message "Exception updating mode visuals: $($_.Exception.Message)" -Level "WARN" -NoConsole
         }
     }
 
     if ($btnRecommendedSetup) {
         $btnRecommendedSetup.Add_Click({
             param([object]$eventSource, [System.Windows.RoutedEventArgs]$eventArgs)
-            & $updateModeVisuals "Recommended"
+            try {
+                & $updateModeVisuals "Recommended"
+            } catch {
+                Write-DebloatLog -Message "Exception in BtnRecommendedSetup click: $($_.Exception.Message)" -Level "ERROR"
+            }
         })
     }
     if ($btnCustomTuning) {
         $btnCustomTuning.Add_Click({
             param([object]$eventSource, [System.Windows.RoutedEventArgs]$eventArgs)
-            & $updateModeVisuals "Custom"
+            try {
+                & $updateModeVisuals "Custom"
+            } catch {
+                Write-DebloatLog -Message "Exception in BtnCustomTuning click: $($_.Exception.Message)" -Level "ERROR"
+            }
         })
     }
 
+    # Synchronize initial visual state on Stage 1
+    & $updateModeVisuals "Recommended"
+
     $btnNext.Add_Click({
         param([object]$eventSource, [System.Windows.RoutedEventArgs]$eventArgs)
-        if ($script:CurrentStage -eq 1) {
-            if ($script:WelcomeMode -eq "Recommended") {
-                if ($chkCatRecommended) { $chkCatRecommended.IsChecked = $true }
-                if ($chkCatMinimal) { $chkCatMinimal.IsChecked = $false }
-                if ($chkCatDeep) { $chkCatDeep.IsChecked = $false }
-                if ($chkCatOem) { $chkCatOem.IsChecked = $false }
-                if ($chkCatXbox) { $chkCatXbox.IsChecked = $false }
-                if ($chkCatMedia) { $chkCatMedia.IsChecked = $false }
-                & $populateApps
+        try {
+            Write-DebloatLog -Message "Navigating from Stage $($script:CurrentStage) with mode $($script:WelcomeMode)..." -Level "INFO" -NoConsole
+            if ($script:CurrentStage -eq 1) {
+                if ($script:WelcomeMode -eq "Recommended") {
+                    if ($chkCatRecommended) { $chkCatRecommended.IsChecked = $true }
+                    if ($chkCatMinimal) { $chkCatMinimal.IsChecked = $false }
+                    if ($chkCatDeep) { $chkCatDeep.IsChecked = $false }
+                    if ($chkCatOem) { $chkCatOem.IsChecked = $false }
+                    if ($chkCatXbox) { $chkCatXbox.IsChecked = $false }
+                    if ($chkCatMedia) { $chkCatMedia.IsChecked = $false }
+                    & $populateApps
+                    & $updateStageView 3
+                } else {
+                    & $populateApps
+                    & $updateStageView 2
+                }
+            } elseif ($script:CurrentStage -eq 2) {
                 & $updateStageView 3
-            } else {
-                & $populateApps
-                & $updateStageView 2
             }
-        } elseif ($script:CurrentStage -eq 2) {
-            & $updateStageView 3
+        } catch {
+            Write-DebloatLog -Message "Exception in BtnNext click: $($_.Exception.Message)" -Level "ERROR"
         }
     })
 
     $btnBack.Add_Click({
         param([object]$eventSource, [System.Windows.RoutedEventArgs]$eventArgs)
-        if ($script:CurrentStage -eq 5 -and $script:CameFromRestoreShortcut) {
-            $script:CameFromRestoreShortcut = $false
-            & $updateStageView 1
-        } elseif ($script:CurrentStage -gt 1) {
-            & $updateStageView ($script:CurrentStage - 1)
+        try {
+            if ($script:CurrentStage -eq 5 -and $script:CameFromRestoreShortcut) {
+                $script:CameFromRestoreShortcut = $false
+                & $updateStageView 1
+            } elseif ($script:CurrentStage -gt 1) {
+                & $updateStageView ($script:CurrentStage - 1)
+            }
+        } catch {
+            Write-DebloatLog -Message "Exception in BtnBack click: $($_.Exception.Message)" -Level "ERROR"
         }
     })
 
@@ -3137,32 +3177,50 @@ function Show-DebloaterWindow {
     # Minimize console host window on startup while keeping status mirrored
     try {
         if (-not ([System.Management.Automation.PSTypeName]'Win32Utils.Win32ShowWindowConsole').Type) {
-            $null = Add-Type -MemberDefinition '[DllImport("user32.dll")] public static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);' -Name "Win32ShowWindowConsole" -Namespace "Win32Utils" -PassThru -ErrorAction SilentlyContinue
+            $null = Add-Type -MemberDefinition @"
+[DllImport("user32.dll")] public static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
+[DllImport("kernel32.dll")] public static extern IntPtr GetConsoleWindow();
+"@ -Name "Win32ShowWindowConsole" -Namespace "Win32Utils" -PassThru -ErrorAction SilentlyContinue
         }
-        $consoleHandle = [System.Diagnostics.Process]::GetCurrentProcess().MainWindowHandle
-        if ($consoleHandle -ne [System.IntPtr]::Zero) {
+        $consoleHandle = [Win32Utils.Win32ShowWindowConsole]::GetConsoleWindow()
+        if (-not $consoleHandle -or $consoleHandle -eq [System.IntPtr]::Zero) {
+            $consoleHandle = [System.Diagnostics.Process]::GetCurrentProcess().MainWindowHandle
+        }
+        if ($consoleHandle -and $consoleHandle -ne [System.IntPtr]::Zero) {
             # SW_SHOWMINIMIZED = 2
             [Win32Utils.Win32ShowWindowConsole]::ShowWindow($consoleHandle, 2) | Out-Null
         }
     } catch {}
 
     # Window Closing & Closed Handlers: Guaranteed clean exit & temp purge
+    $cleanTempAction = {
+        try {
+            Write-Host "Cleaning temporary files..." -ForegroundColor Cyan
+            Write-DebloatLog -Message "Cleaning temporary files on exit..." -Level "INFO" -NoConsole
+            if (Get-Command Clear-DebloatTempSession -ErrorAction SilentlyContinue) {
+                Clear-DebloatTempSession
+            }
+            $cleanPatterns = @("NHWinDebloater*", "nh-win-debloater*")
+            foreach ($pat in $cleanPatterns) {
+                Get-ChildItem -Path $env:TEMP -Filter $pat -ErrorAction SilentlyContinue |
+                    Where-Object { $_.FullName -notlike "*Backups*" -and $_.FullName -notlike "*Logs*" } |
+                    Remove-Item -Recurse -Force -ErrorAction SilentlyContinue
+            }
+        } catch {
+            Write-DebloatLog -Message "Exception during temp cleanup: $($_.Exception.Message)" -Level "WARN" -NoConsole
+        }
+    }
+
     $window.Add_Closing({
         param([object]$eventSource, [System.ComponentModel.CancelEventArgs]$eventArgs)
         try {
             Write-Host "Cleaning temporary files..." -ForegroundColor Cyan
+            Write-DebloatLog -Message "Cleaning temporary files..." -Level "INFO" -NoConsole
         } catch {}
     })
 
     $window.Add_Closed({
-        try {
-            Write-Host "Cleaning temporary files..." -ForegroundColor Cyan
-            if (Get-Command Clear-DebloatTempSession -ErrorAction SilentlyContinue) {
-                Clear-DebloatTempSession
-            }
-            Get-ChildItem -Path $env:TEMP -Filter "NHWinDebloater*" -ErrorAction SilentlyContinue |
-                Remove-Item -Recurse -Force -ErrorAction SilentlyContinue
-        } catch {}
+        & $cleanTempAction
     })
 
     # Initial view setup
@@ -3173,14 +3231,7 @@ function Show-DebloaterWindow {
         $null = $window.ShowDialog()
     }
     finally {
-        try {
-            Write-Host "Cleaning temporary files..." -ForegroundColor Cyan
-            if (Get-Command Clear-DebloatTempSession -ErrorAction SilentlyContinue) {
-                Clear-DebloatTempSession
-            }
-            Get-ChildItem -Path $env:TEMP -Filter "NHWinDebloater*" -ErrorAction SilentlyContinue |
-                Remove-Item -Recurse -Force -ErrorAction SilentlyContinue
-        } catch {}
+        & $cleanTempAction
     }
 }
 

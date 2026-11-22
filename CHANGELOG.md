@@ -9,6 +9,31 @@ The project follows a **progressive semantic minor versioning format**:
 
 ---
 
+## [1.2.2] - 2026-11-22
+
+### Critical Stability Fixes & Stage Transition Hardening
+- **Post-"Next" Stage Transition Crash Fix (`AppManager.psm1`, `DefaultApps.json`, `DeepDebloatApps.json`):**
+  - Resolved parameter binding exception (`Cannot process argument transformation on parameter 'AppId'`) triggered during stage navigation (`BtnNext` click).
+  - Normalized preset catalog entries for `Microsoft.PCManager` and `Microsoft.Edge` from string arrays into distinct individual records with scalar `AppId` strings.
+  - Hardened `Test-IsProtectedApp`, `Get-DebloatPreset`, and `Remove-DebloatApp` with defensive scalar/collection type checking, ensuring safe evaluation without parameter transformation exceptions.
+- **Resilient WPF Event Handling & Comprehensive Logging (`AppController.ps1`):**
+  - Guarded all primary WPF event handlers (`Add_Click`, `Add_Checked`, `Add_Unchecked`, `Add_SelectionChanged`, `Add_TextChanged`, `Add_Closing`, `Add_Closed`) with structured `try { ... } catch { Write-DebloatLog ... }` blocks to prevent unhandled Dispatcher exceptions from crashing the PowerShell host.
+  - Fortified `Translations.json` lookups with `$null`-coalescing guards, ensuring localized text updates never assign null values to WPF text or content properties.
+- **Enhanced Mode Selection Visual States (`MainWindow.xaml`, `AppController.ps1`):**
+  - Implemented distinct, prominent active visual styling for both mode cards (`Recommended Setup` and `Custom Tuning`) when selected (filled accent background, 2px `#38BDF8` border, bold foregrounds, and dynamic icon fill colors).
+- **Console Auto-Minimization on Startup (`Entrypoint.ps1`, `AppController.ps1`):**
+  - Added Win32 native P/Invoke `GetConsoleWindow()` and `ShowWindow(hWnd, 2)` (`SW_MINIMIZE`) to seamlessly minimize the host console window behind the modern WPF GUI on startup.
+  - Ensured console header attribution displays `Nadeem • NH Digital ™` while retaining pure ASCII file encoding.
+- **Guaranteed Exit Cleanup:**
+  - Automated purging of `%TEMP%\NHWinDebloater*` and `%TEMP%\nh-win-debloater*` scratch folders on window closing/exit while preserving `%LOCALAPPDATA%\NHWinDebloater\Backups` and `Logs`.
+- **Automated Verification Harness & 100% Quality Gates:**
+  - Expanded `tools/Test-UIVisibilityAndClicks.ps1` to 63 automated UI assertions covering stage transition navigation, mode flow, tabs, dropdowns, and batch operations.
+  - Executed `tools/Invoke-VMFunctionalVerification.ps1` with 9/9 real VM tests passing (100%).
+  - Regenerated all 6 high-resolution proof screenshots in `assets/screenshots/`.
+  - Achieved 71/71 passing Pester tests and 0 PSScriptAnalyzer issues.
+
+---
+
 ## [1.2.1] - 2026-11-22
 
 ### Patch Fixes & End-to-End Audit Verification

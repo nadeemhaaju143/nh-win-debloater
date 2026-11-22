@@ -78,14 +78,14 @@
         "RemovalMethod":  "Appx"
     },
     {
-        "AppId":  [
-                      "Microsoft.PCManager",
-                      "Microsoft.MicrosoftPCManager"
-                  ],
-        "DisplayName":  [
-                            "Microsoft.PCManager",
-                            "Microsoft.MicrosoftPCManager"
-                        ],
+        "AppId":  "Microsoft.PCManager",
+        "DisplayName":  "Microsoft.PCManager",
+        "Recommendation":  "Safe",
+        "RemovalMethod":  "Appx"
+    },
+    {
+        "AppId":  "Microsoft.MicrosoftPCManager",
+        "DisplayName":  "Microsoft.MicrosoftPCManager",
         "Recommendation":  "Safe",
         "RemovalMethod":  "Appx"
     },
