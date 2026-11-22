@@ -7,7 +7,7 @@
         supports multi-user and default-user Sysprep environments,
         and provides reinstall capability for default/Store apps.
     .MODULEVERSION
-        1.1.0
+        1.2.0
 #>
 
 [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '')]
@@ -30,10 +30,12 @@ $script:ProtectedSystemPackages = @(
     "Microsoft.Windows.Search"
 )
 
+$script:CachedProtectedApps = $null
+
 function Get-ProtectedApp {
     <#
         .SYNOPSIS
-            Retrieves the list of protected system applications.
+            Retrieves the list of protected system applications with in-memory caching.
     #>
     [CmdletBinding()]
     [OutputType([string[]])]
@@ -41,11 +43,16 @@ function Get-ProtectedApp {
         [string]$PresetsPath
     )
 
+    if ($null -ne $script:CachedProtectedApps) {
+        return [string[]]$script:CachedProtectedApps
+    }
+
     if ($PresetsPath -and (Test-Path (Join-Path $PresetsPath "ProtectedApps.json"))) {
         try {
             $jsonList = Get-Content (Join-Path $PresetsPath "ProtectedApps.json") -Raw | ConvertFrom-Json
             if ($jsonList -and $jsonList.Count -gt 0) {
-                return [string[]]$jsonList
+                $script:CachedProtectedApps = [string[]]$jsonList
+                return [string[]]$script:CachedProtectedApps
             }
         }
         catch {
@@ -53,7 +60,8 @@ function Get-ProtectedApp {
         }
     }
 
-    return [string[]]$script:ProtectedSystemPackages
+    $script:CachedProtectedApps = [string[]]$script:ProtectedSystemPackages
+    return [string[]]$script:CachedProtectedApps
 }
 
 function Test-IsProtectedApp {
@@ -121,7 +129,7 @@ function Get-DebloatPreset {
 function Get-InstalledDebloatApp {
     <#
         .SYNOPSIS
-            Scans installed and provisioned AppX packages.
+            Scans installed and provisioned AppX packages with high-performance dictionary indexing.
     #>
     [CmdletBinding()]
     [OutputType([PSCustomObject[]])]
@@ -129,42 +137,61 @@ function Get-InstalledDebloatApp {
         [string]$PresetsPath
     )
 
-    $installedPackages = Get-AppxPackage -AllUsers -ErrorAction SilentlyContinue
-    $provisionedPackages = Get-AppxProvisionedPackage -Online -ErrorAction SilentlyContinue
+    $installedPackages = try { Get-AppxPackage -AllUsers -ErrorAction SilentlyContinue 2>$null } catch { $null }
+    if (-not $installedPackages -or $installedPackages.Count -eq 0) {
+        $installedPackages = try { Get-AppxPackage -ErrorAction SilentlyContinue 2>$null } catch { $null }
+    }
+    $provisionedPackages = try { Get-AppxProvisionedPackage -Online -ErrorAction SilentlyContinue 2>$null } catch { $null }
 
-    $results = [System.Collections.Generic.List[PSCustomObject]]::new()
+    $resultsDict = [System.Collections.Generic.Dictionary[string, PSCustomObject]]::new([System.StringComparer]::OrdinalIgnoreCase)
+    $protectedList = Get-ProtectedApp -PresetsPath $PresetsPath
 
     foreach ($pkg in $installedPackages) {
-        $isProtected = Test-IsProtectedApp -AppId $pkg.Name -PresetsPath $PresetsPath
-        $results.Add([PSCustomObject]@{
+        if (-not $pkg.Name) { continue }
+        $isProtected = $false
+        foreach ($protected in $protectedList) {
+            if ($pkg.Name -like "*$protected*" -or $protected -like "*$pkg.Name*") {
+                $isProtected = $true
+                break
+            }
+        }
+        $resultsDict[$pkg.Name] = [PSCustomObject]@{
             AppId           = $pkg.Name
             PackageFullName = $pkg.PackageFullName
             Publisher       = $pkg.PublisherId
             IsProvisioned   = $false
             IsProtected     = $isProtected
             Version         = $pkg.Version
-        })
-    }
-
-    foreach ($prov in $provisionedPackages) {
-        $existing = $results | Where-Object { $_.AppId -eq $prov.DisplayName }
-        if ($null -ne $existing) {
-            $existing.IsProvisioned = $true
-        }
-        else {
-            $isProtected = Test-IsProtectedApp -AppId $prov.DisplayName -PresetsPath $PresetsPath
-            $results.Add([PSCustomObject]@{
-                AppId           = $prov.DisplayName
-                PackageFullName = $prov.PackageName
-                Publisher       = ""
-                IsProvisioned   = $true
-                IsProtected     = $isProtected
-                Version         = $prov.Version
-            })
         }
     }
 
-    return $results.ToArray()
+    if ($provisionedPackages) {
+        foreach ($prov in $provisionedPackages) {
+            if (-not $prov.DisplayName) { continue }
+            if ($resultsDict.ContainsKey($prov.DisplayName)) {
+                $resultsDict[$prov.DisplayName].IsProvisioned = $true
+            }
+            else {
+                $isProtected = $false
+                foreach ($protected in $protectedList) {
+                    if ($prov.DisplayName -like "*$protected*" -or $protected -like "*$prov.DisplayName*") {
+                        $isProtected = $true
+                        break
+                    }
+                }
+                $resultsDict[$prov.DisplayName] = [PSCustomObject]@{
+                    AppId           = $prov.DisplayName
+                    PackageFullName = $prov.PackageName
+                    Publisher       = ""
+                    IsProvisioned   = $true
+                    IsProtected     = $isProtected
+                    Version         = $prov.Version
+                }
+            }
+        }
+    }
+
+    return [PSCustomObject[]]@($resultsDict.Values)
 }
 
 function Remove-DebloatApp {

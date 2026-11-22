@@ -9,6 +9,35 @@ The project follows a **progressive semantic minor versioning format**:
 
 ---
 
+## [1.2.0] - 2026-11-22
+
+### Milestone: UI Stability, Live Hardware Top Bar, Multi-Language Engine & Sysprep Default User Support
+- **UI Stability, Batch Event Flag & $O(1)$ App Selection:**
+  - Added `$script:IsUpdatingAppBatch` flag in `AppController.ps1` to prevent cascading event storms and repeated layout recalculations during bulk app operations (Check All, Clear, Invert Selection, stage population).
+  - Implemented in-memory caching for `ProtectedApps.json` (`$script:CachedProtectedApps`) and refactored `Get-InstalledDebloatApp` with an $O(1)$ `Dictionary[string, PSCustomObject]` lookup, eliminating UI stutters.
+  - Added non-elevated fallback for AppX enumeration with `$null` error suppression.
+- **Top Bar Redesign & Live Hardware Configuration Slot:**
+  - Relocated Restore/Rollback and Reinstall Apps buttons from the top bar into the Quick Actions (`☰`) menu and Stage 5, streamlining the header.
+  - Added a live PC configuration slot (`TxtHardwareSpecs`) in the header showing real-time CPU model and Total RAM (retrieved in <250ms via registry and CIM) alongside Windows edition, architecture, and elevation badge.
+  - Redesigned the NH monogram brand logo with a `#0284C7` → `#0EA5E9` → `#6366F1` linear gradient matching the NH Digital identity.
+  - Updated footer attribution to: `Created by Nadeem • NH Digital ™` with verified link to `https://nhdigital.shop`.
+- **Internationalization & Multi-Language Engine:**
+  - Integrated high-contrast Interface Language selector in Preferences (`⚙`) with instant dynamic switching across 6 languages: `System Auto`, `English (US)`, `Hindi (हिन्दी)`, `Kannada (ಕನ್ನಡ)`, `Spanish (Español)`, and `German (Deutsch)`.
+- **Sysprep & Default User Profile Hive Scope:**
+  - Added `Mount-DefaultUserHive` and `Dismount-DefaultUserHive` in `SystemTweaks.psm1`.
+  - Safely mounts `C:\Users\Default\NTUSER.DAT` into `HKLM\NHDefaultUser` with GC handle flushing, synchronizing optimizations across all newly created workstation accounts and sysprep golden images.
+- **Welcome Flow Streamlining:**
+  - Removed duplicate action buttons from Stage 1 below mode cards and duplicate Export Profile from Stage 2.
+  - Clicking **Recommended Setup** or **Custom Tuning** visually selects the mode card without premature navigation until clicking **Next** (which routes directly to Stage 3 Review/Apply for Recommended, or Stage 2 Customization for Custom Tuning).
+- **Background Host Lifetime & Zero-Leak Exit:**
+  - Minimized hosting PowerShell console on launch (`SW_MINIMIZE = 2`) for a distraction-free GUI experience.
+  - Added guaranteed window close and abort cleanup displaying `"Cleaning temporary files..."` and purging temporary scratch directories (`%TEMP%\NHWinDebloater*`) with zero background process leaks.
+- **Automated Verification & Benchmarking:**
+  - Expanded test suite to 71 passing Pester tests and 0 PSScriptAnalyzer issues.
+  - Recorded benchmark metrics in `docs/BENCHMARKS.md`: **1,340 MB total RAM freed**, 4.0% idle CPU, and 36 background processes trimmed.
+
+---
+
 ## [1.1.0] - 2026-11-22
 
 ### Milestone: Fluent UX, Deep Debloat & Service Optimization

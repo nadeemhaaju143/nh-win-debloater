@@ -8,7 +8,7 @@
         (Sandbox, WSL), creates System Restore Points, and captures pre-modification
         registry snapshots for transactional rollback.
     .MODULEVERSION
-        1.1.0
+        1.2.0
 #>
 
 [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '')]
@@ -1347,4 +1347,94 @@ function Restore-ServiceOptimization {
     return $ops.ToArray()
 }
 
-Export-ModuleMember -Function Set-ConsumerFeatureTweak, Set-LockScreenTweak, Set-ClassicContextMenuTweak, Set-MousePrecisionTweak, Set-StickyKeysTweak, Set-FastStartupTweak, Set-StorageSenseTweak, Set-WindowsUpdatePolicyTweak, Set-OptionalFeatureState, Set-GameDVRPlaybackTweak, Set-DeliveryOptimizationTweak, Set-TelemetryServiceTweak, Set-StartMenuRecommendedTweak, Set-EdgeBackgroundTweak, Set-TelemetryScheduledTasksTweak, Set-HibernationStorageTweak, Set-MultitaskingTweak, Set-SettingsHomeTweak, Set-CopilotAITweak, Set-RecallAITweak, Set-ApplicationAITweak, Get-DebloatSafetyImpact, New-DebloatRestorePoint, Export-RegistrySnapshot, Restore-RegistrySnapshot, Remove-OneDriveDeep, Backup-StartMenuLayout, Restore-StartMenuLayout, Clear-StartMenuCloudStubs, Set-SafeServiceOptimization, Restore-ServiceOptimization
+function Mount-DefaultUserHive {
+    <#
+        .SYNOPSIS
+            Safely mounts the Windows Default User profile hive (C:\Users\Default\NTUSER.DAT)
+            under HKLM\NHDefaultUser for Sysprep image preparation and new account inheritance.
+    #>
+    [CmdletBinding(SupportsShouldProcess = $true)]
+    [OutputType([bool])]
+    param(
+        [string]$HivePath = "C:\Users\Default\NTUSER.DAT",
+        [string]$KeyName = "NHDefaultUser"
+    )
+
+    if (-not (Test-Path -Path $HivePath)) {
+        Write-Warning "Default user profile hive was not found at '$HivePath'."
+        return $false
+    }
+
+    if ($PSCmdlet.ShouldProcess("Hive: $HivePath -> HKLM\$KeyName", "Mount Registry Hive")) {
+        try {
+            $regPath = "HKLM:\$KeyName"
+            if (Test-Path -Path $regPath) {
+                Write-Verbose "Registry hive HKLM\$KeyName is already mounted."
+                return $true
+            }
+
+            $output = reg load "HKLM\$KeyName" $HivePath 2>&1
+            if ($LASTEXITCODE -eq 0) {
+                Write-Verbose "Successfully mounted Default User hive under HKLM\$KeyName."
+                return $true
+            }
+            else {
+                Write-Warning "Failed to mount Default User hive: $output"
+                return $false
+            }
+        }
+        catch {
+            Write-Warning "Exception encountered while mounting Default User hive: $($_.Exception.Message)"
+            return $false
+        }
+    }
+    return $true
+}
+
+function Dismount-DefaultUserHive {
+    <#
+        .SYNOPSIS
+            Safely dismounts the Windows Default User profile hive from HKLM\NHDefaultUser,
+            running explicit garbage collection passes to release open file handles.
+    #>
+    [CmdletBinding(SupportsShouldProcess = $true)]
+    [OutputType([bool])]
+    param(
+        [string]$KeyName = "NHDefaultUser"
+    )
+
+    if ($PSCmdlet.ShouldProcess("HKLM\$KeyName", "Dismount Registry Hive")) {
+        try {
+            # Force GC and flush handles before unload to prevent error 5 (Access Denied / File In Use)
+            [System.GC]::Collect()
+            [System.GC]::WaitForPendingFinalizers()
+            Start-Sleep -Milliseconds 150
+
+            $output = reg unload "HKLM\$KeyName" 2>&1
+            if ($LASTEXITCODE -eq 0) {
+                Write-Verbose "Successfully dismounted Default User hive from HKLM\$($KeyName). Result: $output"
+                return $true
+            }
+            else {
+                # Retry once after another GC collection
+                [System.GC]::Collect()
+                [System.GC]::WaitForPendingFinalizers()
+                Start-Sleep -Milliseconds 300
+                $retryOutput = reg unload "HKLM\$KeyName" 2>&1
+                if ($LASTEXITCODE -eq 0) {
+                    Write-Verbose "Successfully dismounted Default User hive on retry."
+                    return $true
+                }
+                Write-Warning "Failed to dismount Default User hive: $retryOutput"
+                return $false
+            }
+        }
+        catch {
+            Write-Warning "Exception encountered while dismounting Default User hive: $($_.Exception.Message)"
+            return $false
+        }
+    }
+    return $true
+}
+
+Export-ModuleMember -Function Set-ConsumerFeatureTweak, Set-LockScreenTweak, Set-ClassicContextMenuTweak, Set-MousePrecisionTweak, Set-StickyKeysTweak, Set-FastStartupTweak, Set-StorageSenseTweak, Set-WindowsUpdatePolicyTweak, Set-OptionalFeatureState, Set-GameDVRPlaybackTweak, Set-DeliveryOptimizationTweak, Set-TelemetryServiceTweak, Set-StartMenuRecommendedTweak, Set-EdgeBackgroundTweak, Set-TelemetryScheduledTasksTweak, Set-HibernationStorageTweak, Set-MultitaskingTweak, Set-SettingsHomeTweak, Set-CopilotAITweak, Set-RecallAITweak, Set-ApplicationAITweak, Get-DebloatSafetyImpact, New-DebloatRestorePoint, Export-RegistrySnapshot, Restore-RegistrySnapshot, Remove-OneDriveDeep, Backup-StartMenuLayout, Restore-StartMenuLayout, Clear-StartMenuCloudStubs, Set-SafeServiceOptimization, Restore-ServiceOptimization, Mount-DefaultUserHive, Dismount-DefaultUserHive

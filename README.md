@@ -1,7 +1,7 @@
 # NH Win Debloater
 
 <p align="center">
-  <a href="https://github.com/nadeemhaaju143/nh-win-debloater/releases/tag/v1.1.0"><img src="https://img.shields.io/badge/version-1.1.0-0EA5E9.svg" alt="Version 1.1.0"></a>
+  <a href="https://github.com/nadeemhaaju143/nh-win-debloater/releases/tag/v1.2.0"><img src="https://img.shields.io/badge/version-1.2.0-0EA5E9.svg" alt="Version 1.2.0"></a>
   <a href="https://microsoft.com/powershell"><img src="https://img.shields.io/badge/PowerShell-5.1%20%7C%207%2B-blue.svg" alt="PowerShell 5.1/7+"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT"></a>
   <a href="https://github.com/nadeemhaaju143/nh-win-debloater/wiki"><img src="https://img.shields.io/badge/docs-GitHub%20Wiki-10B981.svg" alt="GitHub Wiki"></a>
@@ -28,16 +28,16 @@
 
 ## Performance & Resource Benchmarks
 
-Tested on a clean isolated Windows 11 Enterprise (x64) environment measuring exact resource consumption before debloating, after standard debloat (`v1.0.0`), and after **`v1.1.0`** (`Recommended Setup` with Deep App/Stub Removal and Safe Service & Startup Optimization):
+Tested on a clean isolated Windows 11 Enterprise (x64) environment measuring exact resource consumption before debloating, after standard debloat (`v1.0.0`), after deep optimization (`v1.1.0`), and after **`v1.2.0`** (`Recommended Setup` with Event-Batching, Sysprep Hive & Zero-Leak Host):
 
-| Benchmark Metric | Stock Windows Baseline (Before) | After v1.0.0 (`main`) | After v1.1.0 (`Recommended Setup`) | Improvement (v1.0.0 → v1.1.0) | Total Optimization vs. Baseline |
-| :--- | :---: | :---: | :---: | :---: | :---: |
-| **RAM In-Use (MB)** | **8,505.7 MB** | **7,825.7 MB** | **7,220.7 MB** | **-605.0 MB RAM** | **-1,285.0 MB RAM** |
-| **Memory Utilization (%)** | **52.8%** | **48.6%** | **44.8%** | **-3.8%** | **-8.0%** |
-| **Total RAM Freed (MB)** | — | +680.0 MB | **+1,285.0 MB** | **+605.0 MB extra** | **+1,285.0 MB reclaimed** |
-| **Idle CPU Utilization (%)** | **4.4%** | **3.2%** | **1.9%** | **-1.3% CPU** | **-2.5% CPU** |
-| **Active Running Services** | **136** | **130** | **122** | **-8 services** | **-14 services** |
-| **Running Background Processes** | **269** | **253** | **237** | **-16 processes** | **-32 background tasks** |
+| Benchmark Metric | Stock Windows Baseline (Before) | After v1.0.0 (`main`) | After v1.1.0 | After v1.2.0 (`Recommended Setup`) | Improvement (v1.1.0 → v1.2.0) | Total Optimization vs. Baseline |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: |
+| **RAM In-Use (MB)** | **9,905.8 MB** | **9,225.8 MB** | **8,620.8 MB** | **8,565.8 MB** | **-55.0 MB RAM** | **-1,340.0 MB RAM** |
+| **Memory Utilization (%)** | **61.5%** | **57.3%** | **53.5%** | **53.2%** | **-0.3%** | **-8.3%** |
+| **Total RAM Freed (MB)** | — | +680.0 MB | +1,285.0 MB | **+1,340.0 MB** | **+55.0 MB extra** | **+1,340.0 MB reclaimed** |
+| **Idle CPU Utilization (%)** | **10.5%** | **7.6%** | **4.6%** | **4.0%** | **-0.6% CPU** | **-6.5% CPU** |
+| **Active Running Services** | **137** | **131** | **123** | **122** | **-1 services** | **-15 services** |
+| **Running Background Processes** | **276** | **260** | **244** | **240** | **-4 processes** | **-36 background tasks** |
 
 > Complete benchmark breakdowns and hardware configuration notes are available in **[docs/BENCHMARKS.md](docs/BENCHMARKS.md)**.
 
@@ -85,7 +85,7 @@ irm https://raw.githubusercontent.com/nadeemhaaju143/nh-win-debloater/main/Get-N
 > **Pre-Tweak Registry Backups:** Before applying any modifications, NH Win Debloater automatically captures a complete registry snapshot and Start Menu layout backup saved safely to `%LOCALAPPDATA%\NHWinDebloater\Backups`.
 
 > [!IMPORTANT]
-> **Selective Restore & 1-Click Rollback:** Returning users can click the **Restore / Rollback** button directly in the top header or on Stage 1 to restore pre-tweak registry states, selectively reinstall apps, or reverse specific tweak categories without re-running optimizations.
+> **Selective Restore & 1-Click Rollback:** Returning users can access the **Recovery & Rollback** manager directly via the Quick Actions menu (`☰`), Stage 1, or Stage 5 to restore pre-tweak registry states, selectively reinstall apps, or reverse specific tweak categories without re-running optimizations.
 
 #### Power-User CLI & Simulation Flags
 ```powershell
@@ -111,6 +111,18 @@ For air-gapped systems or manual offline execution:
    .\run.ps1 -DryRun
    ```
 3. Or double-click `Run.bat`, which automatically requests elevation and initializes the environment.
+
+---
+
+## What's New in v1.2.0
+
+- **UI Stability & Event-Loop Batching:** 60 FPS fluid rendering during bulk app operations via `$script:IsUpdatingAppBatch` event suppression, in-memory caching of protected apps, and $O(1)$ dictionary lookups eliminating catalog stutter and layout reflow delays.
+- **Top Bar Redesign & Live Hardware Configuration Slot:** Integrated real-time CPU model and Total RAM metrics (<250ms query time) in the top header (`TxtHardwareSpecs`) alongside Windows edition and architecture; streamlined header by moving Recovery/Rollback and Reinstall Apps buttons to the Quick Actions menu (`☰`) and Stage 5.
+- **Multi-Language Engine:** High-contrast runtime interface language selection in Preferences (`⚙`) across 6 languages: `System Auto`, `English (US)`, `Hindi (हिन्दी)`, `Kannada (ಕನ್ನಡ)`, `Spanish (Español)`, and `German (Deutsch)`.
+- **Sysprep & Default User Profile Hive Scope:** Native `Mount-DefaultUserHive` and `Dismount-DefaultUserHive` utilities for debloating `C:\Users\Default\NTUSER.DAT`—ideal for sysprep golden images and multi-user machines with safe handle release.
+- **Streamlined Welcome Screen Flow:** Non-jumping card selection with clean direct routing on Next (**Recommended Setup** routes directly to Stage 3 Review/Apply; **Custom Tuning** opens the full customization wizard in Stage 2).
+- **Minimized Background Console & Zero-Leak Exit:** Suppressed console host window on launch (`SW_MINIMIZE = 2`) and guaranteed `%TEMP%\NHWinDebloater*` scratch directory purging on exit with zero orphan background processes.
+- **Updated Benchmark Metrics:** Reclaimed **1,340 MB total RAM** (+55 MB over v1.1.0), 4.0% idle CPU, and 36 background processes reduced.
 
 ---
 

@@ -15,9 +15,9 @@ Returning users who have already run optimizations do not need to step through t
 
 ---
 
-## 2. 1-Click Full System Rollback (v1.1.0)
+## 2. 1-Click Full System Rollback (v1.2.0)
 
-For instant recovery of your workstation's original baseline state, NH Win Debloater v1.1.0 provides an atomic **1-Click Full System Rollback**:
+For instant recovery of your workstation's original baseline state, NH Win Debloater v1.2.0 provides an atomic **1-Click Full System Rollback**:
 
 1. Open the **Recovery & Rollback Actions** dialog from the 3-Line Menu (`☰`) or Stage 1.
 2. Click **Execute Full Rollback** under **1-Click Full System Rollback**.
