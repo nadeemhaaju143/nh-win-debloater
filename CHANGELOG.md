@@ -9,6 +9,31 @@ The project follows a **progressive semantic minor versioning format**:
 
 ---
 
+## [1.3.0] - 2026-11-22
+
+### Bloatware App List Fix, Clean Console Bootstrapper & UX Polish
+- **Blank Bloatware App List Root Cause Fix (`MainWindow.xaml`, `AppController.ps1`):**
+  - Resolved layout occlusion where Tab 1's old Safety Legend border had `Grid.Row="3"` in a 3-row grid (rows 0, 1, 2), causing WPF to place it in Row 2 directly over the `ScrollViewer` and `ListAppsContainer`.
+  - Relocated Safety Legend out of Tab 1 into the bottom navigation bar (`LegendBottomBar`), toggling visible only on Stage 2 and collapsed on all other stages.
+  - Upgraded bloatware item template in `AppController.ps1` with `ModernCheckBox` styling, color-coded safety dot (`#10B981` Green, `#F59E0B` Amber, `#EF4444` Red), bold white title (`#F8FAFC`), description (`#94A3B8`), subtle package ID tag (`#1E293B` bg), and `INSTALLED` badge (`#075985` bg).
+  - Verified instant responsiveness for "Only show installed apps", "Select All", "Clear", and "Invert Selection" with zero UI freezes.
+- **Clean 5-Line Console Bootstrapper & Host Window Lifecycle (`Get-NHWinDebloater.ps1`, `run.ps1`, `Entrypoint.ps1`):**
+  - Streamlined bootstrapper output to an exact 5-line terminal status: `NH Debloater`, `Fetching`, `Downloading`, `Extracting`, and `Launching NH Debloater`.
+  - Added instant `Clear-Host` on GUI launch, auto-minimized secondary host console window (`ShowWindow(hWnd, 2)`), and restored console on app close (`ShowWindow(hWnd, 9)`) with `"Cleaning temporary files..."` and `%TEMP%\NHWinDebloater*` scratch directory purging.
+- **Recommended Setup Direct Optimization Push (`AppController.ps1`):**
+  - Updated Stage 1 `Next` button logic: selecting `Recommended Setup` and clicking `Next` automatically applies safe recommended defaults (respecting Dry-Run if set), streams real-time logs, and navigates straight to Stage 4.
+  - Preserved multi-tab granular tuning flow to Stage 2 when `Custom Tuning` is selected.
+- **Tactile Button Click Animations & Brand Monogram (`MainWindow.xaml`):**
+  - Implemented pure native WPF XAML tactile click feedback (`ScaleTransform` 0.97 on mouse-down, 1.0 on mouse-up) and radial ripple effects on all buttons.
+  - Refined top-left brand monogram (`LogoFallbackBox`) with a modern geometric shield geometry and bold `NH` emblem matching `nhdigital.shop`.
+- **Quality Gates, Tests & Screenshots:**
+  - Expanded `tools/Test-UIVisibilityAndClicks.ps1` to 64/64 automated visual-tree checks passing (100%).
+  - Executed `tools/Invoke-VMFunctionalVerification.ps1` with 9/9 real VM tests passing (100%).
+  - Regenerated all 6 high-resolution proof screenshots in `Assets/screenshots/`.
+  - 100% Pester test suite passing (71/71 tests) and 0 PSScriptAnalyzer issues.
+
+---
+
 ## [1.2.2] - 2026-11-22
 
 ### Critical Stability Fixes & Stage Transition Hardening

@@ -7,7 +7,7 @@
         category filters, executes dry-run previews, and triggers atomic debloat pipelines
         with dedicated AI integration, privacy, gaming, and system tweak controls.
     .MODULEVERSION
-        1.2.2
+        1.3.0
 #>
 
 [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '')]
@@ -26,14 +26,16 @@ function Show-DebloaterWindow {
     #>
     [CmdletBinding()]
     param(
-        [string]$ProjectRoot
+        [string]$ProjectRoot,
+        [switch]$DryRun
     )
 
     if ([string]::IsNullOrWhiteSpace($ProjectRoot)) {
         $ProjectRoot = Split-Path -Parent (Split-Path -Parent $PSScriptRoot)
     }
 
-    Add-Type -AssemblyName PresentationFramework, PresentationCore, WindowsBase | Out-Null
+    Add-Type -AssemblyName PresentationFramework, PresentationCore, WindowsBase, System.Windows.Forms | Out-Null
+    $script:GlobalDryRun = [bool]$DryRun
 
     # 1. Resolve Paths
     $corePath = Join-Path $ProjectRoot "src\Core"
@@ -347,6 +349,7 @@ function Show-DebloaterWindow {
     $btnApply = $window.FindName("BtnApply")
     $btnFinish = $window.FindName("BtnFinish")
     $linkNhDigital = $window.FindName("LinkNhDigital")
+    $legendBottomBar = $window.FindName("LegendBottomBar")
 
     # 5. Populate Brand & System Info
     if (Test-Path $versionPath) {
@@ -713,6 +716,10 @@ function Show-DebloaterWindow {
                 & $refreshSnapshotsList
             }
         }
+
+        if ($legendBottomBar) {
+            $legendBottomBar.Visibility = if ($stage -eq 2) { [System.Windows.Visibility]::Visible } else { [System.Windows.Visibility]::Collapsed }
+        }
     }
 
     # 9. Dynamic Selection Counters & Live Safety/Impact Evaluator
@@ -1038,8 +1045,11 @@ function Show-DebloaterWindow {
                 }
 
                 $cb = [System.Windows.Controls.CheckBox]::new()
+                if ($window.Resources.Contains("ModernCheckBox")) {
+                    $cb.Style = $window.Resources["ModernCheckBox"]
+                }
                 $cb.Tag = $app.AppId
-                $cb.IsChecked = $true
+                $cb.IsChecked = if ($safetyTier -eq "Not Recommended") { $false } else { $true }
                 $cb.Margin = [System.Windows.Thickness]::new(4, 3, 4, 3)
 
                 $sp = [System.Windows.Controls.StackPanel]::new()
@@ -1083,6 +1093,19 @@ function Show-DebloaterWindow {
                 $txtDesc.Margin = [System.Windows.Thickness]::new(4, 0, 0, 0)
                 $txtDesc.VerticalAlignment = [System.Windows.VerticalAlignment]::Center
                 $sp.Children.Add($txtDesc) | Out-Null
+
+                $pkgBadge = [System.Windows.Controls.Border]::new()
+                $pkgBadge.CornerRadius = [System.Windows.CornerRadius]::new(3)
+                $pkgBadge.Background = [System.Windows.Media.BrushConverter]::new().ConvertFromString("#1E293B")
+                $pkgBadge.Padding = [System.Windows.Thickness]::new(5, 1, 5, 1)
+                $pkgBadge.Margin = [System.Windows.Thickness]::new(8, 0, 0, 0)
+                $pkgBadge.VerticalAlignment = [System.Windows.VerticalAlignment]::Center
+                $pkgTxt = [System.Windows.Controls.TextBlock]::new()
+                $pkgTxt.Text = $app.AppId
+                $pkgTxt.Foreground = [System.Windows.Media.BrushConverter]::new().ConvertFromString("#64748B")
+                $pkgTxt.FontSize = 9
+                $pkgBadge.Child = $pkgTxt
+                $sp.Children.Add($pkgBadge) | Out-Null
 
                 if ($isInst) {
                     $instBadge = [System.Windows.Controls.Border]::new()
@@ -1944,49 +1967,8 @@ function Show-DebloaterWindow {
     # Synchronize initial visual state on Stage 1
     & $updateModeVisuals "Recommended"
 
-    $btnNext.Add_Click({
-        param([object]$eventSource, [System.Windows.RoutedEventArgs]$eventArgs)
-        try {
-            Write-DebloatLog -Message "Navigating from Stage $($script:CurrentStage) with mode $($script:WelcomeMode)..." -Level "INFO" -NoConsole
-            if ($script:CurrentStage -eq 1) {
-                if ($script:WelcomeMode -eq "Recommended") {
-                    if ($chkCatRecommended) { $chkCatRecommended.IsChecked = $true }
-                    if ($chkCatMinimal) { $chkCatMinimal.IsChecked = $false }
-                    if ($chkCatDeep) { $chkCatDeep.IsChecked = $false }
-                    if ($chkCatOem) { $chkCatOem.IsChecked = $false }
-                    if ($chkCatXbox) { $chkCatXbox.IsChecked = $false }
-                    if ($chkCatMedia) { $chkCatMedia.IsChecked = $false }
-                    & $populateApps
-                    & $updateStageView 3
-                } else {
-                    & $populateApps
-                    & $updateStageView 2
-                }
-            } elseif ($script:CurrentStage -eq 2) {
-                & $updateStageView 3
-            }
-        } catch {
-            Write-DebloatLog -Message "Exception in BtnNext click: $($_.Exception.Message)" -Level "ERROR"
-        }
-    })
-
-    $btnBack.Add_Click({
-        param([object]$eventSource, [System.Windows.RoutedEventArgs]$eventArgs)
-        try {
-            if ($script:CurrentStage -eq 5 -and $script:CameFromRestoreShortcut) {
-                $script:CameFromRestoreShortcut = $false
-                & $updateStageView 1
-            } elseif ($script:CurrentStage -gt 1) {
-                & $updateStageView ($script:CurrentStage - 1)
-            }
-        } catch {
-            Write-DebloatLog -Message "Exception in BtnBack click: $($_.Exception.Message)" -Level "ERROR"
-        }
-    })
-
     # Apply Action Pipeline
-    $btnApply.Add_Click({
-        param([object]$eventSource, [System.Windows.RoutedEventArgs]$eventArgs)
+    $applyOptimizationsAction = {
         & $updateStageView 4
         $progExecution.Value = 10
         $txtLiveLog.Clear()
@@ -2239,6 +2221,101 @@ function Show-DebloaterWindow {
 
         Start-Sleep -Milliseconds 800
         & $updateStageView 5
+    }
+
+    $btnApply.Add_Click({
+        param([object]$eventSource, [System.Windows.RoutedEventArgs]$eventArgs)
+        & $applyOptimizationsAction
+    })
+
+    # Wizard Stepper Navigation Buttons (Next / Back)
+    $btnNext.Add_Click({
+        param([object]$eventSource, [System.Windows.RoutedEventArgs]$eventArgs)
+        try {
+            Write-DebloatLog -Message "Navigating from Stage $($script:CurrentStage) with mode $($script:WelcomeMode)..." -Level "INFO" -NoConsole
+            if ($script:CurrentStage -eq 1) {
+                if ($script:WelcomeMode -eq "Recommended") {
+                    # 1. Preset Bloatware Apps: Recommended Safe Defaults
+                    if ($chkCatRecommended) { $chkCatRecommended.IsChecked = $true }
+                    if ($chkCatMinimal) { $chkCatMinimal.IsChecked = $false }
+                    if ($chkCatDeep) { $chkCatDeep.IsChecked = $false }
+                    if ($chkCatOem) { $chkCatOem.IsChecked = $false }
+                    if ($chkCatXbox) { $chkCatXbox.IsChecked = $false }
+                    if ($chkCatMedia) { $chkCatMedia.IsChecked = $false }
+                    & $populateApps
+
+                    # 2. Curated Safe Recommended System Tweaks
+                    if ($chkTelemetry) { $chkTelemetry.IsChecked = $true }
+                    if ($chkBingSearch) { $chkBingSearch.IsChecked = $true }
+                    if ($chkAdvertisingId) { $chkAdvertisingId.IsChecked = $true }
+                    if ($chkActivityHistory) { $chkActivityHistory.IsChecked = $true }
+                    if ($chkTailoredExp) { $chkTailoredExp.IsChecked = $true }
+
+                    if ($chkShowExt) { $chkShowExt.IsChecked = $true }
+                    if ($chkShowHidden) { $chkShowHidden.IsChecked = $true }
+                    if ($chkLaunchToThisPC) { $chkLaunchToThisPC.IsChecked = $true }
+                    if ($chkClassicContextMenu) { $chkClassicContextMenu.IsChecked = $true }
+                    if ($chkHideWidgets) { $chkHideWidgets.IsChecked = $true }
+                    if ($chkHideChat) { $chkHideChat.IsChecked = $true }
+                    if ($chkEndTask) { $chkEndTask.IsChecked = $true }
+                    if ($chkAlignLeft) { $chkAlignLeft.IsChecked = $true }
+                    if ($chkHideOneDriveNav) { $chkHideOneDriveNav.IsChecked = $true }
+                    if ($chkSearchHighlights) { $chkSearchHighlights.IsChecked = $true }
+                    if ($chkStartRecommended) { $chkStartRecommended.IsChecked = $true }
+
+                    if ($chkGameDVR) { $chkGameDVR.IsChecked = $true }
+                    if ($chkDeliveryOpt) { $chkDeliveryOpt.IsChecked = $true }
+                    if ($chkEdgeBackground) { $chkEdgeBackground.IsChecked = $true }
+                    if ($chkScheduledTasks) { $chkScheduledTasks.IsChecked = $true }
+                    if ($chkTelemetryService) { $chkTelemetryService.IsChecked = $true }
+
+                    if ($chkConsumerFeatures) { $chkConsumerFeatures.IsChecked = $true }
+                    if ($chkLockScreenAds) { $chkLockScreenAds.IsChecked = $true }
+
+                    if ($chkCopilotPolicy) { $chkCopilotPolicy.IsChecked = $true }
+                    if ($chkCopilotAppx) { $chkCopilotAppx.IsChecked = $true }
+                    if ($chkRecallAI) { $chkRecallAI.IsChecked = $true }
+                    if ($chkEdgeAI) { $chkEdgeAI.IsChecked = $true }
+                    if ($chkPaintAI) { $chkPaintAI.IsChecked = $true }
+                    if ($chkNotepadAI) { $chkNotepadAI.IsChecked = $true }
+
+                    if ($chkCreateRestorePoint) { $chkCreateRestorePoint.IsChecked = $true }
+                    if ($chkRegistrySnapshot) { $chkRegistrySnapshot.IsChecked = $true }
+
+                    # 3. Direct route to execution flow and auto-push
+                    & $applyOptimizationsAction
+                } else {
+                    & $populateApps
+                    & $updateStageView 2
+                }
+            } elseif ($script:CurrentStage -eq 2) {
+                & $updateStageView 3
+            } elseif ($script:CurrentStage -eq 3) {
+                & $applyOptimizationsAction
+            }
+        } catch {
+            Write-DebloatLog -Message "Exception in BtnNext click: $($_.Exception.Message)" -Level "ERROR"
+        }
+    })
+
+    $btnBack.Add_Click({
+        param([object]$eventSource, [System.Windows.RoutedEventArgs]$eventArgs)
+        try {
+            if ($script:CurrentStage -eq 5) {
+                if ($script:CameFromRestoreShortcut) {
+                    $script:CameFromRestoreShortcut = $false
+                    & $updateStageView 1
+                } elseif ($script:WelcomeMode -eq "Recommended") {
+                    & $updateStageView 1
+                } else {
+                    & $updateStageView 2
+                }
+            } elseif ($script:CurrentStage -gt 1) {
+                & $updateStageView ($script:CurrentStage - 1)
+            }
+        } catch {
+            Write-DebloatLog -Message "Exception in BtnBack click: $($_.Exception.Message)" -Level "ERROR"
+        }
     })
 
     # Summary View Buttons
@@ -3175,6 +3252,7 @@ function Show-DebloaterWindow {
     }
 
     # Minimize console host window on startup while keeping status mirrored
+    $script:ConsoleHwnd = [System.IntPtr]::Zero
     try {
         if (-not ([System.Management.Automation.PSTypeName]'Win32Utils.Win32ShowWindowConsole').Type) {
             $null = Add-Type -MemberDefinition @"
@@ -3182,19 +3260,23 @@ function Show-DebloaterWindow {
 [DllImport("kernel32.dll")] public static extern IntPtr GetConsoleWindow();
 "@ -Name "Win32ShowWindowConsole" -Namespace "Win32Utils" -PassThru -ErrorAction SilentlyContinue
         }
-        $consoleHandle = [Win32Utils.Win32ShowWindowConsole]::GetConsoleWindow()
-        if (-not $consoleHandle -or $consoleHandle -eq [System.IntPtr]::Zero) {
-            $consoleHandle = [System.Diagnostics.Process]::GetCurrentProcess().MainWindowHandle
+        $script:ConsoleHwnd = [Win32Utils.Win32ShowWindowConsole]::GetConsoleWindow()
+        if (-not $script:ConsoleHwnd -or $script:ConsoleHwnd -eq [System.IntPtr]::Zero) {
+            $script:ConsoleHwnd = [System.Diagnostics.Process]::GetCurrentProcess().MainWindowHandle
         }
-        if ($consoleHandle -and $consoleHandle -ne [System.IntPtr]::Zero) {
+        if ($script:ConsoleHwnd -and $script:ConsoleHwnd -ne [System.IntPtr]::Zero) {
             # SW_SHOWMINIMIZED = 2
-            [Win32Utils.Win32ShowWindowConsole]::ShowWindow($consoleHandle, 2) | Out-Null
+            [Win32Utils.Win32ShowWindowConsole]::ShowWindow($script:ConsoleHwnd, 2) | Out-Null
         }
     } catch {}
 
     # Window Closing & Closed Handlers: Guaranteed clean exit & temp purge
     $cleanTempAction = {
         try {
+            if ($script:ConsoleHwnd -and $script:ConsoleHwnd -ne [System.IntPtr]::Zero) {
+                # SW_RESTORE = 9
+                [Win32Utils.Win32ShowWindowConsole]::ShowWindow($script:ConsoleHwnd, 9) | Out-Null
+            }
             Write-Host "Cleaning temporary files..." -ForegroundColor Cyan
             Write-DebloatLog -Message "Cleaning temporary files on exit..." -Level "INFO" -NoConsole
             if (Get-Command Clear-DebloatTempSession -ErrorAction SilentlyContinue) {

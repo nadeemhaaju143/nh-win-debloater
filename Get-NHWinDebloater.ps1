@@ -6,7 +6,7 @@
         GitHub into a sandboxed temp environment, verifies archive integrity, and
         launches the modern WPF Guided Assistant or CLI in Single-Thread Apartment (STA) mode.
         Automatically cleans up downloaded archives and temporary sandboxes on exit.
-        Developed by Mohammed Nadeem BM - NH Digital (https://nhdigital.shop).
+        Developed by Nadeem - NH Digital (https://nhdigital.shop).
     .EXAMPLE
         irm nhdigital.shop/debloat | iex
     .EXAMPLE
@@ -33,19 +33,8 @@ function Invoke-NHWinDebloaterBootstrap {
     # 1. Enforce TLS 1.2
     [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls12 -bor [System.Net.SecurityProtocolType]::Tls11 -bor [System.Net.SecurityProtocolType]::Tls
 
-    Write-Host ""
-    Write-Host " ======================================================================" -ForegroundColor Cyan
-    Write-Host "   NH WIN DEBLOATER - ZERO-INSTALL QUICK-LAUNCH BOOTSTRAPPER" -ForegroundColor White
-    Write-Host "   Developed by Mohammed Nadeem BM - NH Digital | https://nhdigital.shop" -ForegroundColor DarkCyan
-    Write-Host " ======================================================================" -ForegroundColor Cyan
-    Write-Host ""
-
-    $isAdmin = ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
-    if (-not $isAdmin) {
-        Write-Host " [i] Notice: Running under Standard User privileges." -ForegroundColor Yellow
-        Write-Host "     Administrator elevation is recommended for system-wide package removal." -ForegroundColor Gray
-        Write-Host ""
-    }
+    Write-Host "NH Debloater"
+    Write-Host "Fetching"
 
     # 2. Setup Sandboxed Temp Target
     $tempDir = Join-Path $env:TEMP "NHWinDebloater"
@@ -58,20 +47,18 @@ function Invoke-NHWinDebloaterBootstrap {
         }
 
         # 3. Download Latest Archive
-        Write-Host " [+] Fetching latest '$Branch' release from GitHub..." -ForegroundColor Cyan
+        Write-Host "Downloading"
         try {
             Invoke-WebRequest -Uri $archiveUrl -OutFile $zipFile -UseBasicParsing -ErrorAction Stop
-            Write-Host " [OK] Download completed successfully." -ForegroundColor Green
         } catch {
             Write-Error "Failed to download NH Win Debloater archive from '$archiveUrl': $($_.Exception.Message)"
             return
         }
 
         # 4. Extract Archive Cleanly
-        Write-Host " [+] Extracting release archive..." -ForegroundColor Cyan
+        Write-Host "Extracting"
         try {
             Expand-Archive -Path $zipFile -DestinationPath $tempDir -Force -ErrorAction Stop
-            Write-Host " [OK] Extraction completed." -ForegroundColor Green
         } catch {
             Write-Error "Failed to extract release archive: $($_.Exception.Message)"
             return
@@ -86,8 +73,11 @@ function Invoke-NHWinDebloaterBootstrap {
             return
         }
 
-        Write-Host " [OK] Launching NH Win Debloater ($entrypoint)..." -ForegroundColor Green
-        Write-Host ""
+        Write-Host "Launching NH Debloater"
+        Start-Sleep -Milliseconds 300
+        if (-not $CLI) {
+            Clear-Host
+        }
 
         # 6. Execute in Single-Thread Apartment (STA) Mode
         $psArgs = [System.Collections.Generic.List[string]]::new()

@@ -1,7 +1,7 @@
 # NH Win Debloater
 
 <p align="center">
-  <a href="https://github.com/nadeemhaaju143/nh-win-debloater/releases/tag/v1.2.2"><img src="https://img.shields.io/badge/version-1.2.2-0EA5E9.svg" alt="Version 1.2.2"></a>
+  <a href="https://github.com/nadeemhaaju143/nh-win-debloater/releases/tag/v1.3.0"><img src="https://img.shields.io/badge/version-1.3.0-0EA5E9.svg" alt="Version 1.3.0"></a>
   <a href="https://microsoft.com/powershell"><img src="https://img.shields.io/badge/PowerShell-5.1%20%7C%207%2B-blue.svg" alt="PowerShell 5.1/7+"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT"></a>
   <a href="https://github.com/nadeemhaaju143/nh-win-debloater/wiki"><img src="https://img.shields.io/badge/docs-GitHub%20Wiki-10B981.svg" alt="GitHub Wiki"></a>
@@ -123,6 +123,17 @@ For air-gapped systems or manual offline execution:
    .\run.ps1 -DryRun
    ```
 3. Or double-click `Run.bat`, which automatically requests elevation and initializes the environment.
+
+---
+
+## What's New in v1.3.0
+
+- **Blank Bloatware App List Root Cause Fix:** Resolved layout occlusion where Tab 1's old Safety Legend border had `Grid.Row="3"` in a 3-row grid, causing WPF to place it in Row 2 directly over the `ScrollViewer` and `ListAppsContainer`. Relocated Safety Legend out of Tab 1 into the bottom navigation bar (`LegendBottomBar`), toggling visible only on Stage 2 and collapsed on all other stages.
+- **Enhanced Bloatware App Typography & Visuals:** Upgraded bloatware item template in `AppController.ps1` with `ModernCheckBox` styling, color-coded safety dots (`#10B981` Green, `#F59E0B` Amber, `#EF4444` Red), bold white title (`#F8FAFC`), description (`#94A3B8`), subtle package ID tag (`#1E293B` bg), and `INSTALLED` badge (`#075985` bg). Instant responsiveness for "Only show installed apps", "Select All", "Clear", and "Invert Selection" with zero UI freezes.
+- **Clean 5-Line Console Bootstrapper & Host Window Lifecycle:** Streamlined bootstrapper output to an exact 5-line terminal status: `NH Debloater`, `Fetching`, `Downloading`, `Extracting`, and `Launching NH Debloater`. Added instant `Clear-Host` on GUI launch, auto-minimized secondary host console window (`ShowWindow(hWnd, 2)`), and restored console on app close (`ShowWindow(hWnd, 9)`) with `"Cleaning temporary files..."` and `%TEMP%\NHWinDebloater*` scratch directory purging.
+- **Recommended Setup Direct Optimization Push:** Selecting `Recommended Setup` and clicking `Next` automatically applies safe recommended defaults (respecting Dry-Run if set), streams real-time logs, and navigates straight to Stage 4. Preserved multi-tab granular tuning flow to Stage 2 when `Custom Tuning` is selected.
+- **Tactile Button Click Animations & Brand Monogram:** Smooth native WPF tactile feedback (`ScaleTransform` 0.97 on mouse-down, 1.0 on mouse-up) and radial ripple effects on all buttons; updated geometric shield monogram emblem matching `nhdigital.shop`.
+- **Automated Verification Harness & 100% Quality Gates:** Expanded `tools/Test-UIVisibilityAndClicks.ps1` to 64/64 automated visual-tree checks passing (100%), executed `tools/Invoke-VMFunctionalVerification.ps1` with 9/9 real VM tests passing (100%), regenerated all 6 high-res screenshots in `Assets/screenshots/`, and passed 71/71 Pester tests with 0 PSScriptAnalyzer issues.
 
 ---
 

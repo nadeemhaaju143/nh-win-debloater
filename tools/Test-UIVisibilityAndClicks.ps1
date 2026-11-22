@@ -1,6 +1,6 @@
 <#
     .SYNOPSIS
-        Automated WPF Visual-Tree & UI Automation Test Harness for NH Win Debloater v1.2.0.
+        Automated WPF Visual-Tree & UI Automation Test Harness for NH Win Debloater v1.3.0.
     .DESCRIPTION
         Launches the live WPF application window and verifies single-canvas header,
         hardware specs slot, top-right button order, welcome flow, scope selection,
@@ -40,7 +40,7 @@ Import-Module (Join-Path $corePath "SystemTweaks.psm1") -Force
 
 Write-Host ""
 Write-Host " ======================================================================" -ForegroundColor Cyan
-Write-Host "   NH WIN DEBLOATER v1.2.0 - AUTOMATED UI VISIBILITY & CLICK HARNESS" -ForegroundColor White
+Write-Host "   NH WIN DEBLOATER v1.3.0 - AUTOMATED UI VISIBILITY & CLICK HARNESS" -ForegroundColor White
 Write-Host "   Developed by NH Digital | https://nhdigital.shop" -ForegroundColor DarkCyan
 Write-Host " ======================================================================" -ForegroundColor Cyan
 Write-Host ""
@@ -138,6 +138,7 @@ Assert-Check -Category "HardwareSpecs" -Description "TxtHardwareSpecs populated 
 $viewStage1 = $win.FindName("ViewStage1")
 $viewStage2 = $win.FindName("ViewStage2")
 $viewStage3 = $win.FindName("ViewStage3")
+$viewStage4 = $win.FindName("ViewStage4")
 $logoFallbackBox = $win.FindName("LogoFallbackBox")
 $radioScopeAllUsers = $win.FindName("RadioScopeAllUsers")
 $radioScopeCurrentUser = $win.FindName("RadioScopeCurrentUser")
@@ -202,6 +203,7 @@ $updateStageView = {
     $viewStage1.Visibility = if ($stage -eq 1) { [System.Windows.Visibility]::Visible } else { [System.Windows.Visibility]::Collapsed }
     $viewStage2.Visibility = if ($stage -eq 2) { [System.Windows.Visibility]::Visible } else { [System.Windows.Visibility]::Collapsed }
     $viewStage3.Visibility = if ($stage -eq 3) { [System.Windows.Visibility]::Visible } else { [System.Windows.Visibility]::Collapsed }
+    $viewStage4.Visibility = if ($stage -eq 4) { [System.Windows.Visibility]::Visible } else { [System.Windows.Visibility]::Collapsed }
 }
 
 $btnRecommendedSetup.Add_Click({
@@ -217,12 +219,14 @@ $btnNext.Add_Click({
     param([object]$s, [System.Windows.RoutedEventArgs]$e)
     if ($script:CurrentStage -eq 1) {
         if ($script:WelcomeMode -eq "Recommended") {
-            & $updateStageView 3
+            & $updateStageView 4
         } else {
             & $updateStageView 2
         }
     } elseif ($script:CurrentStage -eq 2) {
         & $updateStageView 3
+    } elseif ($script:CurrentStage -eq 3) {
+        & $updateStageView 4
     }
 })
 
@@ -240,13 +244,13 @@ $btnRecommendedSetup.RaiseEvent([System.Windows.RoutedEventArgs]::new([System.Wi
 Assert-Check -Category "ModeFlow" -Description "Clicking Recommended Setup stays on Stage 1 (no jump)" -Condition ($viewStage1.Visibility -eq [System.Windows.Visibility]::Visible)
 Assert-Check -Category "ModeFlow" -Description "Recommended Setup active state has vibrant cyan background" -Condition ($btnRecommendedSetup.BorderThickness.Top -eq 2)
 
-# Test Next Click on Recommended Setup -> jumps straight to Stage 3
+# Test Next Click on Recommended Setup -> routes directly to Stage 4 (execution flow)
 $btnNext.RaiseEvent([System.Windows.RoutedEventArgs]::new([System.Windows.Controls.Primitives.ButtonBase]::ClickEvent))
-Assert-Check -Category "ModeFlow" -Description "Clicking Next with Recommended Setup jumps directly to Stage 3" -Condition ($script:CurrentStage -eq 3 -and $viewStage3.Visibility -eq [System.Windows.Visibility]::Visible)
+Assert-Check -Category "ModeFlow" -Description "Clicking Next with Recommended Setup jumps directly to Stage 4" -Condition ($script:CurrentStage -eq 4 -and $viewStage4.Visibility -eq [System.Windows.Visibility]::Visible)
 
-# Test Back Click from Stage 3 -> returns to Stage 2 (or 1)
+# Test Back Click from Stage 4 -> returns safely
 $btnBack.RaiseEvent([System.Windows.RoutedEventArgs]::new([System.Windows.Controls.Primitives.ButtonBase]::ClickEvent))
-Assert-Check -Category "ModeFlow" -Description "Clicking Back from Stage 3 navigates back safely" -Condition ($script:CurrentStage -lt 3)
+Assert-Check -Category "ModeFlow" -Description "Clicking Back from Stage 4 navigates back safely" -Condition ($script:CurrentStage -lt 4)
 
 # Reset to Stage 1 and test Custom Tuning flow
 & $updateStageView 1
@@ -440,9 +444,14 @@ $allInverted = ($listAppsContainer.Items | Where-Object { -not $_.IsChecked }).C
 Assert-Check -Category "AppList" -Description "Invert selection toggles all items" -Condition $allInverted
 
 # Verify Safety Legend Bar
-# Row 3 in ViewStage2 Tab 1 has the bottom safety legend
-$hasLegend = $null -ne ($win.FindName("ViewStage2"))
-Assert-Check -Category "AppList" -Description "Safety Legend Bar present on bottom border" -Condition $hasLegend
+# Moved out of Tab 1 into bottom navigation bar (LegendBottomBar)
+$legendBottomBar = $win.FindName("LegendBottomBar")
+Assert-Check -Category "AppList" -Description "Safety Legend Bar present in bottom navigation bar (LegendBottomBar)" -Condition ($null -ne $legendBottomBar)
+
+$tabControl = $win.FindName("TabStage2Controls")
+$tab1Grid = $tabControl.Items[0].Content
+$overlappingChildren = @($tab1Grid.Children | Where-Object { [System.Windows.Controls.Grid]::GetRow($_) -ge 3 })
+Assert-Check -Category "AppList" -Description "Tab 1 Grid has zero overlapping row elements" -Condition ($overlappingChildren.Count -eq 0)
 
 # --- PART 1.6: Footer Verification ---
 $linkNhDigital = $win.FindName("LinkNhDigital")
@@ -452,7 +461,7 @@ $hasLink = ($null -ne $linkNhDigital -and $linkNhDigital.NavigateUri.AbsoluteUri
 $xamlText = Get-Content $xamlPath -Raw -Encoding UTF8
 $hasAttribution = ($xamlText -match "Nadeem" -and $xamlText -match "NH Digital")
 
-Assert-Check -Category "Footer" -Description "Footer credits Mohammed Nadeem BM / NH Digital" -Condition ($hasLink -and $hasAttribution) -Details "Link: $($linkNhDigital.NavigateUri.AbsoluteUri)"
+Assert-Check -Category "Footer" -Description "Footer credits Nadeem / NH Digital" -Condition ($hasLink -and $hasAttribution) -Details "Link: $($linkNhDigital.NavigateUri.AbsoluteUri)"
 
 $win.Close()
 

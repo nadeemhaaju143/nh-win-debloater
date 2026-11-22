@@ -301,6 +301,8 @@ if ($hw5) { $hw5.Text = "AMD Ryzen 9 5900X - 32.0 GB RAM" }
 
 $win5.FindName("ViewStage1").Visibility = [System.Windows.Visibility]::Collapsed
 $win5.FindName("ViewStage2").Visibility = [System.Windows.Visibility]::Visible
+$leg5 = $win5.FindName("LegendBottomBar")
+if ($leg5) { $leg5.Visibility = [System.Windows.Visibility]::Visible }
 $tabCtrl5 = $win5.FindName("TabStage2Controls")
 $tabCtrl5.SelectedIndex = 0 # Tab 1: Apps
 

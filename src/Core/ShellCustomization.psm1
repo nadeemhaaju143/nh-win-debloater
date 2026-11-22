@@ -6,7 +6,7 @@
         including icon alignment, search display, task view, widgets, chat, End Task,
         file extension visibility, and navigation pane clutter.
     .MODULEVERSION
-        1.2.2
+        1.3.0
 #>
 
 [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '')]

@@ -1,6 +1,6 @@
 <#
     .SYNOPSIS
-        Real Windows VM End-to-End Functional Verification Suite for NH Win Debloater v1.2.0.
+        Real Windows VM End-to-End Functional Verification Suite for NH Win Debloater v1.3.0.
     .DESCRIPTION
         Executes actual system debloat modifications and full rollback actions on the test VM.
         Measures before vs. after resource telemetry, audits real registry and service state
@@ -24,7 +24,7 @@ param(
 $projectRoot = Split-Path -Parent $PSScriptRoot
 $corePath = Join-Path $projectRoot "src\Core"
 $versionPath = Join-Path $projectRoot "VERSION.txt"
-$version = if (Test-Path $versionPath) { (Get-Content $versionPath -Raw).Trim() } else { "1.2.0" }
+$version = if (Test-Path $versionPath) { (Get-Content $versionPath -Raw).Trim() } else { "1.3.0" }
 
 if ([string]::IsNullOrWhiteSpace($ReportPath)) {
     $docsDir = Join-Path $projectRoot "docs"
@@ -230,7 +230,7 @@ $reportMd = @"
 
 **Audit Target:** NH Win Debloater v$version Production Release  
 **Execution Environment:** Windows 11 / Windows 10 Isolated VM / Windows Sandbox  
-**Maintainer Attribution:** **Mohammed Nadeem BM** ([NH Digital](https://nhdigital.shop) - [@nadeemhaaju143](https://github.com/nadeemhaaju143))  
+**Maintainer Attribution:** **Nadeem** ([NH Digital](https://nhdigital.shop) - [@nadeemhaaju143](https://github.com/nadeemhaaju143))  
 **Generated:** $((Get-Date).ToString("yyyy-MM-dd HH:mm:ss"))  
 **Overall Quality Gate Status:** **$overallStatus ($totalPass / $totalTests Checks Passed)**
 

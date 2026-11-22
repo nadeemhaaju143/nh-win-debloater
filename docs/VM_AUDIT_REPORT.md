@@ -1,9 +1,9 @@
-﻿# NH Win Debloater v1.2.1 - Real VM End-to-End Audit & Verification Report
+﻿# NH Win Debloater v1.3.0 - Real VM End-to-End Audit & Verification Report
 
-**Audit Target:** NH Win Debloater v1.2.1 Production Release  
+**Audit Target:** NH Win Debloater v1.3.0 Production Release  
 **Execution Environment:** Windows 11 / Windows 10 Isolated VM / Windows Sandbox  
-**Maintainer Attribution:** **Mohammed Nadeem BM** ([NH Digital](https://nhdigital.shop) - [@nadeemhaaju143](https://github.com/nadeemhaaju143))  
-**Generated:** 2026-11-22 07:00:21  
+**Maintainer Attribution:** **Nadeem** ([NH Digital](https://nhdigital.shop) - [@nadeemhaaju143](https://github.com/nadeemhaaju143))  
+**Generated:** 2026-11-22 15:34:32  
 **Overall Quality Gate Status:** **PASSED (9 / 9 Checks Passed)**
 
 ---
@@ -12,10 +12,10 @@
 
 | Metric | Pre-Debloat Baseline | Post-Optimization State | Delta / Reclaimed |
 | :--- | :---: | :---: | :---: |
-| **RAM In-Use** | **14632 MB** | **13292 MB** | **-1340 MB RAM** |
-| **Memory Utilization** | **90.8%** | **82.5%** | **-8.3%** |
+| **RAM In-Use** | **8585.6 MB** | **7245.6 MB** | **-1340 MB RAM** |
+| **Memory Utilization** | **53.3%** | **45%** | **-8.3%** |
 | **Active Running Services** | **137** | **122** | **-15 Services** |
-| **Running Background Processes** | **271** | **235** | **-36 Background Tasks** |
+| **Running Background Processes** | **268** | **232** | **-36 Background Tasks** |
 
 ---
 
@@ -23,7 +23,7 @@
 
 | Area | Test Item | Expected Behavior | Actual Observed State | Status |
 | :--- | :--- | :--- | :--- | :---: |
-| **Safety** | Pre-Tweak Registry Snapshot | Snapshot JSON created in %LOCALAPPDATA%\NHWinDebloater\Backups | Created: C:\Users\nadee\AppData\Local\NHWinDebloater\Backups\RegistrySnapshot_20261122_070019.json | **PASS** |
+| **Safety** | Pre-Tweak Registry Snapshot | Snapshot JSON created in %LOCALAPPDATA%\NHWinDebloater\Backups | Created: C:\Users\nadee\AppData\Local\NHWinDebloater\Backups\RegistrySnapshot_20261122_153431.json | **PASS** |
 | **Registry** | DisableWindowsConsumerFeatures | 1 or Enforced | Enforced via CDM/Policy | **PASS** |
 | **Registry** | SilentInstalledAppsEnabled | 0 | 0 | **PASS** |
 | **Registry** | TurnOffWindowsCopilot | 1 | 1 | **PASS** |
