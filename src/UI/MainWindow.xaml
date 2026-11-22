@@ -277,7 +277,7 @@
                 <Setter.Value>
                     <ControlTemplate TargetType="ScrollBar">
                         <Grid x:Name="Bg" Background="Transparent" SnapsToDevicePixels="true">
-                            <Track x:Name="PART_Track" IsDirectionReversed="true" EnableScrollBarDownPageSupport="True">
+                            <Track x:Name="PART_Track" IsDirectionReversed="true">
                                 <Track.DecreaseRepeatButton>
                                     <RepeatButton Command="{x:Static ScrollBar.PageUpCommand}" Opacity="0" Focusable="false"/>
                                 </Track.DecreaseRepeatButton>
@@ -467,7 +467,7 @@
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Text="NH Win Debloater" FontWeight="Bold" FontSize="18" Foreground="#F8FAFC"/>
                                 <Border x:Name="BadgeVersion" CornerRadius="4" Background="#0284C7" Margin="10,2,0,2" Padding="6,1">
-                                    <TextBlock x:Name="TxtVersion" Text="v1.2.0" FontSize="11" FontWeight="Bold" Foreground="#FFFFFF"/>
+                                    <TextBlock x:Name="TxtVersion" Text="v1.2.1" FontSize="11" FontWeight="Bold" Foreground="#FFFFFF"/>
                                 </Border>
                             </StackPanel>
                             <TextBlock Text="Less Bloat. Better Windows. Built for performance." FontSize="12" Foreground="#94A3B8"/>
@@ -2520,17 +2520,32 @@
                     <Border Background="#0B0F17" BorderBrush="#232D42" BorderThickness="1" CornerRadius="8" Padding="12" Margin="0,0,0,14">
                         <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                             <TextBlock Text="Language:" FontSize="12" Foreground="#94A3B8" Margin="0,0,14,0" VerticalAlignment="Center"/>
-                            <ComboBox x:Name="CmbLanguage" Height="30" Width="260" Background="#1E1E2E" Foreground="#F8FAFC" BorderBrush="#38BDF8" BorderThickness="1" VerticalContentAlignment="Center" FontSize="12" SelectedIndex="0">
-                                <ComboBox.Resources>
-                                    <SolidColorBrush x:Key="{x:Static SystemColors.WindowBrushKey}" Color="#1E1E2E"/>
-                                    <SolidColorBrush x:Key="{x:Static SystemColors.WindowTextBrushKey}" Color="#F8FAFC"/>
-                                </ComboBox.Resources>
-                                <ComboBoxItem Content="System Auto" Tag="auto" Background="#1E1E2E" Foreground="#F8FAFC"/>
-                                <ComboBoxItem Content="English (US)" Tag="en-US" Background="#1E1E2E" Foreground="#F8FAFC"/>
-                                <ComboBoxItem Content="Hindi (हिन्दी)" Tag="hi-IN" Background="#1E1E2E" Foreground="#F8FAFC"/>
-                                <ComboBoxItem Content="Kannada (ಕನ್ನಡ)" Tag="kn-IN" Background="#1E1E2E" Foreground="#F8FAFC"/>
-                                <ComboBoxItem Content="Spanish (Español)" Tag="es-ES" Background="#1E1E2E" Foreground="#F8FAFC"/>
-                                <ComboBoxItem Content="German (Deutsch)" Tag="de-DE" Background="#1E1E2E" Foreground="#F8FAFC"/>
+                            <ComboBox x:Name="CmbLanguage" Height="30" Width="260" MaxDropDownHeight="240" Background="#1E1E2E" Foreground="#F8FAFC" BorderBrush="#38BDF8" BorderThickness="1" VerticalContentAlignment="Center" FontSize="12" SelectedIndex="0">
+                                <ComboBox.ItemContainerStyle>
+                                    <Style TargetType="ComboBoxItem">
+                                        <Setter Property="Background" Value="#1E1E2E"/>
+                                        <Setter Property="Foreground" Value="#F8FAFC"/>
+                                        <Setter Property="Padding" Value="8,6"/>
+                                        <Setter Property="BorderThickness" Value="0,0,0,1"/>
+                                        <Setter Property="BorderBrush" Value="#232D42"/>
+                                        <Style.Triggers>
+                                            <Trigger Property="IsHighlighted" Value="True">
+                                                <Setter Property="Background" Value="#0EA5E9"/>
+                                                <Setter Property="Foreground" Value="#FFFFFF"/>
+                                            </Trigger>
+                                            <Trigger Property="IsSelected" Value="True">
+                                                <Setter Property="Background" Value="#0284C7"/>
+                                                <Setter Property="Foreground" Value="#FFFFFF"/>
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </ComboBox.ItemContainerStyle>
+                                <ComboBoxItem Content="System Auto" Tag="auto"/>
+                                <ComboBoxItem Content="English (US)" Tag="en-US"/>
+                                <ComboBoxItem Content="Hindi (हिन्दी)" Tag="hi-IN"/>
+                                <ComboBoxItem Content="Kannada (ಕನ್ನಡ)" Tag="kn-IN"/>
+                                <ComboBoxItem Content="Spanish (Español)" Tag="es-ES"/>
+                                <ComboBoxItem Content="German (Deutsch)" Tag="de-DE"/>
                             </ComboBox>
                         </StackPanel>
                     </Border>
@@ -2718,7 +2733,7 @@
                                 <StackPanel Orientation="Horizontal">
                                     <TextBlock Text="NH Win Debloater" FontWeight="Bold" FontSize="16" Foreground="#F8FAFC"/>
                                     <Border CornerRadius="4" Background="#0284C7" Margin="8,0,0,0" Padding="5,1">
-                                        <TextBlock Text="v1.2.0" FontSize="10" FontWeight="Bold" Foreground="#FFFFFF"/>
+                                        <TextBlock Text="v1.2.1" FontSize="10" FontWeight="Bold" Foreground="#FFFFFF"/>
                                     </Border>
                                 </StackPanel>
                                 <TextBlock Text="Less Bloat. Better Windows. Built for performance." FontSize="11" Foreground="#94A3B8"/>

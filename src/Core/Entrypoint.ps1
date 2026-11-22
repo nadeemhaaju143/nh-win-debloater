@@ -1,4 +1,4 @@
-﻿<#
+<#
     .SYNOPSIS
         NH Win Debloater - Main Entrypoint & Bootstrapper
     .DESCRIPTION
@@ -50,7 +50,7 @@ function Show-Header {
     Write-Host " ======================================================================" -ForegroundColor Cyan
     Write-Host "   NH WIN DEBLOATER v$($script:AppVersion)" -ForegroundColor White
     Write-Host "   Less Bloat. Better Windows." -ForegroundColor Gray
-    Write-Host "   Developed by Mohammed Nadeem BM • NH Digital | https://nhdigital.shop" -ForegroundColor DarkCyan
+    Write-Host "   Developed by Mohammed Nadeem BM - NH Digital | https://nhdigital.shop" -ForegroundColor DarkCyan
     Write-Host " ======================================================================" -ForegroundColor Cyan
     Write-Host ""
 }

@@ -9,6 +9,24 @@ The project follows a **progressive semantic minor versioning format**:
 
 ---
 
+## [1.2.1] - 2026-11-22
+
+### Patch Fixes & End-to-End Audit Verification
+- **WPF ScrollBar Track XAML Fix (`MainWindow.xaml`):**
+  - Removed unsupported `EnableScrollBarDownPageSupport="True"` attribute on `Track` element in the custom slim ScrollBar template that caused unhandled XAML parser exceptions during layout updates.
+- **Language Dropdown High-Contrast Styling (`MainWindow.xaml`):**
+  - Added explicit dark `ItemContainerStyle` and `MaxDropDownHeight="240"` on `CmbLanguage` ensuring high-contrast dark background (`#1E1E2E`), padding (`8,6`), hover highlight (`#0EA5E9`), and selected states (`#0284C7`), eliminating default white-on-white popups.
+- **UTF-8 XAML Encoding Safety (`AppController.ps1`):**
+  - Added `-Encoding UTF8` when loading `MainWindow.xaml` via `Get-Content` to prevent ANSI CP1252 parsing corruption of non-ASCII localized scripts (Hindi, Kannada, Spanish).
+- **Target Scope Dynamic Translation Binding (`AppController.ps1`):**
+  - Added missing `$radioScopeAllUsers` binding lookup to ensure all three scope radio buttons (`All Users`, `Current User`, `Default User / Sysprep`) update dynamically on runtime language selection.
+- **Automated Verification Harnesses (`tools/`):**
+  - Added `Test-UIVisibilityAndClicks.ps1` covering 55 visual-tree and UI Automation assertions with 100% pass rate.
+  - Added `Invoke-VMFunctionalVerification.ps1` auditing real registry state changes, Sysprep hive mounting/dismounting, and 1-Click Rollback.
+  - Published comprehensive end-to-end audit report to `docs/VM_AUDIT_REPORT.md` and captured 6 high-resolution proof screenshots in `assets/screenshots/`.
+
+---
+
 ## [1.2.0] - 2026-11-22
 
 ### Milestone: UI Stability, Live Hardware Top Bar, Multi-Language Engine & Sysprep Default User Support

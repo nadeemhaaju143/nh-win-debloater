@@ -1,4 +1,4 @@
-﻿<#
+<#
     .SYNOPSIS
         NH Win Debloater - System Tweaks & Recovery Engine
     .DESCRIPTION
@@ -8,7 +8,7 @@
         (Sandbox, WSL), creates System Restore Points, and captures pre-modification
         registry snapshots for transactional rollback.
     .MODULEVERSION
-        1.2.0
+        1.2.1
 #>
 
 [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '')]
@@ -881,7 +881,7 @@ function Get-DebloatSafetyImpact {
             AppCount      = $AppCount
             TweakCount    = $selectedTweakCount
             TotalCount    = $totalOps
-            SummaryText   = "$AppCount Apps • $selectedTweakCount Tweaks Selected"
+            SummaryText   = "$AppCount Apps - $selectedTweakCount Tweaks Selected"
             Description   = "System virtualization features selected (Hyper-V / WSL)."
         }
     }
@@ -897,7 +897,7 @@ function Get-DebloatSafetyImpact {
             AppCount      = $AppCount
             TweakCount    = $selectedTweakCount
             TotalCount    = $totalOps
-            SummaryText   = "$AppCount Apps • $selectedTweakCount Tweaks Selected"
+            SummaryText   = "$AppCount Apps - $selectedTweakCount Tweaks Selected"
             Description   = "Advanced tweaks selected (Services / Hibernation / App AI)."
         }
     }
@@ -913,7 +913,7 @@ function Get-DebloatSafetyImpact {
             AppCount      = $AppCount
             TweakCount    = $selectedTweakCount
             TotalCount    = $totalOps
-            SummaryText   = "$AppCount Apps • $selectedTweakCount Tweaks Selected"
+            SummaryText   = "$AppCount Apps - $selectedTweakCount Tweaks Selected"
             Description   = "All selected items are safe recommended optimizations."
         }
     }

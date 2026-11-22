@@ -1,4 +1,4 @@
-﻿<#
+<#
     .SYNOPSIS
         Cloud VM Verification & Metrics Comparison Runner for NH Win Debloater.
     .DESCRIPTION
@@ -65,7 +65,7 @@ Import-Module (Join-Path $corePath "SystemTweaks.psm1") -Force
 Import-Module (Join-Path $corePath "ExecutionLog.psm1") -Force
 
 $logFile = Initialize-DebloatLogger -Version $version
-Write-Host "     [✓] Log initialized at: $logFile" -ForegroundColor Green
+Write-Host "     [OK] Log initialized at: $logFile" -ForegroundColor Green
 
 # Test duplicate initialization suppression within 10 seconds
 $testLogDir = Join-Path $env:TEMP "NHWinDebloater_VM_DedupTest"
@@ -74,7 +74,7 @@ $null = Initialize-DebloatLogger -LogDirectory $testLogDir -Version $version
 $null = Initialize-DebloatLogger -LogDirectory $testLogDir -Version $version
 $initLines = Get-Content -Path (Join-Path $testLogDir "NHWinDebloater.log") | Where-Object { $_ -match "=== NH Win Debloater" }
 if (@($initLines).Count -eq 1) {
-    Write-Host "     [✓] Duplicate Session Initialized header suppressed successfully." -ForegroundColor Green
+    Write-Host "     [OK] Duplicate Session Initialized header suppressed successfully." -ForegroundColor Green
 } else {
     Write-Warning "Duplicate Session Initialized header detected."
 }
@@ -97,19 +97,19 @@ $regPaths = @(
     "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced"
 )
 $snapFile = Export-RegistrySnapshot -RegistryPaths $regPaths
-Write-Host "     [✓] Snapshot created: $snapFile" -ForegroundColor Green
+Write-Host "     [OK] Snapshot created: $snapFile" -ForegroundColor Green
 Write-DebloatLog -Message "Pre-tweak registry snapshot captured: $(Split-Path $snapFile -Leaf)" -Level "SUCCESS" -NoConsole
 
 # Test Stage 5 Dropdown Formatting
 $backups = @(Get-DebloatBackup)
 if ($backups.Count -gt 0) {
     $firstBackup = $backups[0]
-    $dropdownDisplay = "$($firstBackup.LastModified) — $($firstBackup.FileName) ($($firstBackup.SizeKb) KB)"
-    Write-Host "     [✓] Stage 5 Dropdown Formatting: $dropdownDisplay" -ForegroundColor Green
+    $dropdownDisplay = "$($firstBackup.LastModified) - $($firstBackup.FileName) ($($firstBackup.SizeKb) KB)"
+    Write-Host "     [OK] Stage 5 Dropdown Formatting: $dropdownDisplay" -ForegroundColor Green
 
     # Test 1-Click Rollback Preview
     $previewResults = Restore-RegistrySnapshot -SnapshotPath $firstBackup.FilePath -WhatIf
-    Write-Host "     [✓] Stage 5 Rollback Preview: $($previewResults.Count) registry keys eligible for restore." -ForegroundColor Green
+    Write-Host "     [OK] Stage 5 Rollback Preview: $($previewResults.Count) registry keys eligible for restore." -ForegroundColor Green
     Write-DebloatLog -Message "Rollback preview verified for $($firstBackup.FileName): $($previewResults.Count) keys" -Level "PREVIEW" -NoConsole
 } else {
     Write-Warning "No backups found by Get-DebloatBackup."
@@ -141,7 +141,7 @@ foreach ($act in $actions) {
         } else {
             $null = & $act.Script
             $tweaksApplied++
-            Write-Host "     [✓] Applied: $($act.Name)" -ForegroundColor Green
+            Write-Host "     [OK] Applied: $($act.Name)" -ForegroundColor Green
             Write-DebloatLog -Message "Optimized: $($act.Name)" -Level "SUCCESS" -NoConsole
         }
     } catch {
@@ -195,7 +195,7 @@ Write-Host (("| Running Background Services       | {0,-19} | {1,-19} | {2,-24} 
 Write-Host "| Stage 5 Registry Snapshot         | None                | Created (Valid)     | Dropdown & Rollback Ready|" -ForegroundColor White
 Write-Host "| Execution Log Persistence         | Default             | Full Audit Trail    | Dynamic v$version Verified    |" -ForegroundColor White
 Write-Host ""
-Write-Host " [✓] Cloud VM Verification Completed Successfully." -ForegroundColor Green
+Write-Host " [OK] Cloud VM Verification Completed Successfully." -ForegroundColor Green
 
 # Stage artifacts for HyperExecute artifact collection
 try {

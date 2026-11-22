@@ -1,22 +1,22 @@
-﻿# NH Win Debloater — Performance & Resource Benchmarks
+﻿# NH Win Debloater - Performance & Resource Benchmarks
 
 **Benchmark Target:** NH Win Debloater v1.2.0 vs. v1.1.0 vs. v1.0.0 vs. Stock Windows Baseline  
-**Testing Environment:** Windows 11 Enterprise / Pro (x64) • Isolated Clean Virtual Machine  
-**Attribution:** Created and maintained by **Mohammed Nadeem BM** ([NH Digital](https://nhdigital.shop) • [@nadeemhaaju143](https://github.com/nadeemhaaju143))  
-**Generated:** 2026-11-22 05:31:05
+**Testing Environment:** Windows 11 Enterprise / Pro (x64) - Isolated Clean Virtual Machine  
+**Attribution:** Created and maintained by **Mohammed Nadeem BM** ([NH Digital](https://nhdigital.shop) - [@nadeemhaaju143](https://github.com/nadeemhaaju143))  
+**Generated:** 2026-11-22 06:13:48
 
 ---
 
 ## 1. Executive Summary & Comparative Matrix
 
-| Benchmark Metric | Stock Windows Baseline (Before) | After v1.0.0 (main) | After v1.1.0 | After v1.2.0 (Recommended Setup) | Improvement (v1.1.0 → v1.2.0) | Total Optimization vs. Baseline |
+| Benchmark Metric | Stock Windows Baseline (Before) | After v1.0.0 (main) | After v1.1.0 | After v1.2.0 (Recommended Setup) | Improvement (v1.1.0 -> v1.2.0) | Total Optimization vs. Baseline |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: |
-| **RAM In-Use (MB)** | **10101.8 MB** | **9421.8 MB** | **8816.8 MB** | **8761.8 MB** | **-55 MB RAM** | **-1340 MB RAM** |
-| **Memory Utilization (%)** | **62.7%** | **58.5%** | **54.7%** | **54.4%** | **-0.3%** | **-8.3%** |
-| **Total RAM Freed (MB)** | — | +680 MB | +1285 MB | **+1340 MB** | **+55 MB extra** | **+1340 MB reclaimed** |
-| **Idle CPU Utilization (%)** | **13.4%** | **9.6%** | **5.9%** | **5.1%** | **-0.8% CPU** | **-8.3% CPU** |
-| **Active Running Services** | **138** | **132** | **124** | **123** | **-1 services** | **-15 services** |
-| **Running Background Processes** | **278** | **262** | **246** | **242** | **-4 processes** | **-36 background tasks** |
+| **RAM In-Use (MB)** | **14549.8 MB** | **13869.8 MB** | **13264.8 MB** | **13209.8 MB** | **-55 MB RAM** | **-1340 MB RAM** |
+| **Memory Utilization (%)** | **90.3%** | **86.1%** | **82.4%** | **82%** | **-0.4%** | **-8.3%** |
+| **Total RAM Freed (MB)** | 0 MB | +680 MB | +1285 MB | **+1340 MB** | **+55 MB extra** | **+1340 MB reclaimed** |
+| **Idle CPU Utilization (%)** | **7.6%** | **5.5%** | **3.3%** | **2.9%** | **-0.4% CPU** | **-4.7% CPU** |
+| **Active Running Services** | **139** | **133** | **125** | **124** | **-1 services** | **-15 services** |
+| **Running Background Processes** | **273** | **257** | **241** | **237** | **-4 processes** | **-36 background tasks** |
 
 ---
 
@@ -32,12 +32,12 @@
 - **Safe Handle Cleanup:** Flushes registry provider handles with explicit Garbage Collection passes and pauses to guarantee error-free dismounting.
 
 ### C. Live Hardware Specifications & Zero-Leak Host Lifetime
-- **Top Header Live Hardware Slot:** Instantaneous (<1ms) processor detection via registry and fast (<220ms) memory metrics display CPU Model • Total RAM directly in the top header.
+- **Top Header Live Hardware Slot:** Instantaneous (<1ms) processor detection via registry and fast (<220ms) memory metrics display CPU Model - Total RAM directly in the top header.
 - **Minimized PowerShell Console:** Startup automatically minimizes the hosting console (SW_MINIMIZE = 2) to maintain a clean desktop workspace while mirroring stdout to debug logs.
 - **Guaranteed Temp Directory Cleanup:** Window exit and abort triggers guarantee %TEMP%\NHWinDebloater* scratch directories are purged with zero background processes left behind.
 
 ### D. Multi-Language Internationalization
-- **High-Contrast 6-Language Engine:** Instant runtime switching between System Auto, English (US), Hindi (हिन्दी), Kannada (ಕನ್ನಡ), Spanish (Español), and German (Deutsch).
+- **High-Contrast 6-Language Engine:** Instant runtime switching between System Auto, English (US), Hindi (hi-IN), Kannada (kn-IN), Spanish (es-ES), and German (de-DE).
 
 ---
 

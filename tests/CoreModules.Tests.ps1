@@ -1,4 +1,4 @@
-﻿[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseDeclaredVarsMoreThanAssignments', '')]
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseDeclaredVarsMoreThanAssignments', '')]
 param()
 
 BeforeAll {
@@ -652,7 +652,7 @@ Describe "Registry Snapshot & Rollback Engine" {
         $backups = @(Get-DebloatBackup -BackupDirectory $tempBackupDir)
         $backups.Count | Should -BeGreaterOrEqual 1
         $b = $backups[0]
-        $formatted = "$($b.LastModified) — $($b.FileName) ($($b.SizeKb) KB)"
+        $formatted = "$($b.LastModified) - $($b.FileName) ($($b.SizeKb) KB)"
         $formatted | Should -Match "RegistrySnapshot_.*\.json"
         $formatted | Should -Match "KB\)"
 
