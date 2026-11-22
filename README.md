@@ -1,7 +1,7 @@
 # NH Win Debloater
 
 <p align="center">
-  <a href="https://github.com/nadeemhaaju143/nh-win-debloater/releases/tag/v1.3.0"><img src="https://img.shields.io/badge/version-1.3.0-0EA5E9.svg" alt="Version 1.3.0"></a>
+  <a href="https://github.com/nadeemhaaju143/nh-win-debloater/releases/tag/v1.3.1"><img src="https://img.shields.io/badge/version-1.3.1-0EA5E9.svg" alt="Version 1.3.1"></a>
   <a href="https://microsoft.com/powershell"><img src="https://img.shields.io/badge/PowerShell-5.1%20%7C%207%2B-blue.svg" alt="PowerShell 5.1/7+"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT"></a>
   <a href="https://github.com/nadeemhaaju143/nh-win-debloater/wiki"><img src="https://img.shields.io/badge/docs-GitHub%20Wiki-10B981.svg" alt="GitHub Wiki"></a>
@@ -123,6 +123,17 @@ For air-gapped systems or manual offline execution:
    .\run.ps1 -DryRun
    ```
 3. Or double-click `Run.bat`, which automatically requests elevation and initializes the environment.
+
+---
+
+## What's New in v1.3.1
+
+- **Stage 3 Pre-Apply Deployment Summary & Safety Controls:** Selecting `Recommended Setup` and clicking `Next` routes directly to Stage 3 Review & Deployment Summary instead of prematurely executing, presenting full visibility into Target Scope, Execution Mode, Impact Summary, safety options (System Restore Point, Registry Snapshot, Explorer Process Restart, Dry-Run WhatIf), and an inspection preview terminal before executing optimizations.
+- **Terminal Line-Clear Preserving Command History:** Replaced destructive `Clear-Host` with console cursor line clearing that erases only the 5 bootstrapper status lines, keeping the user's `irm nhdigital.shop/debloat | iex` command line and prior terminal session history visible. Auto-minimizes console during GUI runtime and cleans up `%TEMP%\NHWinDebloater*` on exit.
+- **Protected Essential Windows Apps:** Hard-protected Windows Terminal, Microsoft Store, Notepad, Snipping Tool, Paint, Calculator, Camera, Media Player, and Photos across removal algorithms and presets, ensuring essential system tooling is never deleted or presented in debloat lists.
+- **Optional Copilot & OneDrive Preset Entries:** Presets now include `Microsoft.Copilot` and `Microsoft.OneDrive` configured as unchecked optional items by default, giving users full granular control over cloud sync and AI integrations.
+- **Tab Header & Localization Refinement:** Renamed Tab 1 to `Apps & Bloatware` across UI stepper indicators and localized `TabApps` and `Apply Changes` across all 5 supported languages (`en-US`, `hi-IN`, `kn-IN`, `es-ES`, `de-DE`).
+- **VM Functional Verification:** 10/10 automated VM functional verification checks passed (100%), including real-world essential apps preservation, registry tweak validation, atomic rollback, and scratch directory purging.
 
 ---
 

@@ -74,9 +74,23 @@ function Invoke-NHWinDebloaterBootstrap {
         }
 
         Write-Host "Launching NH Debloater"
-        Start-Sleep -Milliseconds 300
+        Start-Sleep -Milliseconds 250
         if (-not $CLI) {
-            Clear-Host
+            try {
+                $bufWidth = [Console]::BufferWidth
+                if ($bufWidth -gt 0) {
+                    $blank = " " * ($bufWidth - 1)
+                    $curTop = [Console]::CursorTop
+                    $startTop = [Math]::Max(0, $curTop - 5)
+                    for ($line = $startTop; $line -le $curTop; $line++) {
+                        [Console]::SetCursorPosition(0, $line)
+                        [Console]::Write($blank)
+                    }
+                    [Console]::SetCursorPosition(0, $startTop)
+                }
+            } catch {
+                # Fallback if console host does not support cursor positioning
+            }
         }
 
         # 6. Execute in Single-Thread Apartment (STA) Mode

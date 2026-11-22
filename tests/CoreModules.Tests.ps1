@@ -30,7 +30,7 @@ Describe "AppManager Module" {
 
     It "Loads presets cleanly" {
         $defaultPreset = Get-DebloatPreset -PresetName "Default" -PresetsPath $presetsPath
-        $defaultPreset.Count | Should -Be 85
+        $defaultPreset.Count | Should -Be 86
 
         $minimalPreset = Get-DebloatPreset -PresetName "Minimal" -PresetsPath $presetsPath
         $minimalPreset.Count | Should -BeGreaterThan 0

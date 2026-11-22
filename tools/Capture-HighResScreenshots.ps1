@@ -313,9 +313,10 @@ if ($appContainer) {
         @{ Dot = "[SAFE]"; Badge = "RECOMMENDED"; Name = "Clipchamp Video Editor"; Desc = "Sponsored cloud video editor"; Inst = $true; Checked = $true; Bg = "#064E3B"; Fg = "#10B981" },
         @{ Dot = "[SAFE]"; Badge = "RECOMMENDED"; Name = "Microsoft News / Weather"; Desc = "Pre-installed MSN feed and telemetry consumer"; Inst = $true; Checked = $true; Bg = "#064E3B"; Fg = "#10B981" },
         @{ Dot = "[SAFE]"; Badge = "RECOMMENDED"; Name = "Spotify Music"; Desc = "Promotional third-party streaming bundle"; Inst = $false; Checked = $true; Bg = "#064E3B"; Fg = "#10B981" },
+        @{ Dot = "[OPTIONAL]"; Badge = "OPTIONAL"; Name = "Microsoft Copilot"; Desc = "AI assistant sidebar & web search integration"; Inst = $true; Checked = $false; Bg = "#451A03"; Fg = "#F59E0B" },
+        @{ Dot = "[OPTIONAL]"; Badge = "OPTIONAL"; Name = "Microsoft OneDrive"; Desc = "Cloud file storage & sync provider"; Inst = $true; Checked = $false; Bg = "#451A03"; Fg = "#F59E0B" },
         @{ Dot = "[OPTIONAL]"; Badge = "OPTIONAL"; Name = "Xbox Gaming App Suite"; Desc = "Xbox Game Bar, identity provider & live services"; Inst = $true; Checked = $false; Bg = "#451A03"; Fg = "#F59E0B" },
-        @{ Dot = "[OPTIONAL]"; Badge = "OPTIONAL"; Name = "Microsoft To Do"; Desc = "Task manager & cloud task synchronization"; Inst = $false; Checked = $false; Bg = "#451A03"; Fg = "#F59E0B" },
-        @{ Dot = "[RISK]"; Badge = "NOT RECOMMENDED"; Name = "Microsoft Store"; Desc = "Core UWP package runtime & application catalog"; Inst = $true; Checked = $false; Bg = "#450A0A"; Fg = "#EF4444" }
+        @{ Dot = "[OPTIONAL]"; Badge = "OPTIONAL"; Name = "Microsoft To Do"; Desc = "Task manager & cloud task synchronization"; Inst = $false; Checked = $false; Bg = "#451A03"; Fg = "#F59E0B" }
     )
     foreach ($a in $appsData) {
         $cb = [System.Windows.Controls.CheckBox]::new()

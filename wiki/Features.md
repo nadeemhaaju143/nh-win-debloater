@@ -86,8 +86,17 @@ Safely reclaims hundreds of megabytes of working memory by tuning non-essential 
 
 ---
 
-## 8. Sysprep & Default User Profile Hive Synchronization (v1.3.0)
+## 8. Sysprep & Default User Profile Hive Synchronization (v1.3.1)
 
 - **Native Hive Mount Engine (`Mount-DefaultUserHive` & `Dismount-DefaultUserHive`):** Safely mounts the Default User registry hive at `C:\Users\Default\NTUSER.DAT` into `HKLM\NHDefaultUser`.
 - **Golden Image & Multi-User Deployment:** Replicates current user optimization rules directly to the Default User template. Every new local account, active directory domain user, or sysprep provisioned workstation automatically boots into a clean, debloated environment.
 - **Safe Handle Deallocation:** Uses multi-pass .NET Garbage Collection (`[GC]::Collect()`) and provider handle synchronization to guarantee clean dismounting without file locks.
+
+---
+
+## 9. Stage 3 Deployment / Pre-Apply Summary & Safety Inspection (v1.3.1)
+
+- **Pre-Execution Visibility:** Provides a complete pre-apply deployment summary before mutating system settings or removing packages.
+- **Dynamic Configuration Display:** Displays live Target Scope (Current User, All Users, or Sysprep Default Profile), Execution Mode (Live vs Dry-Run Simulation), and concise change summaries.
+- **Integrated Safety Checkpoints:** Features independent safety toggles for System Restore Point creation, pre-tweak Registry Snapshots, Explorer process restart, and Dry-Run mode.
+- **Embedded WhatIf Inspection Terminal:** Maintainers and power users can run an instant dry-run preview directly within Stage 3 to review scheduled registry edits and app deletions before clicking **Apply Changes**.

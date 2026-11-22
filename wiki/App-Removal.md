@@ -13,6 +13,14 @@ To prevent operating system instability, accidental loss of system security, or 
 | `Microsoft.WindowsStore` | **Microsoft Store** | Required for installing, updating, and servicing legitimate software |
 | `Microsoft.SecHealthUI` | **Windows Security** | Core antivirus, firewall, and device security management dashboard |
 | `Microsoft.DesktopAppInstaller` | **App Installer (WinGet)** | Required for package management and CLI winget deployments |
+| `Microsoft.WindowsTerminal` | **Windows Terminal** | Essential administrative console and shell host |
+| `Microsoft.WindowsNotepad` | **Notepad** | Essential native text editor |
+| `Microsoft.ScreenSketch` | **Snipping Tool** | Essential screen capture utility |
+| `Microsoft.Paint` / `MSPaint` | **Paint** | Essential graphic editor |
+| `Microsoft.WindowsCalculator` | **Calculator** | Essential numerical calculation tool |
+| `Microsoft.WindowsCamera` | **Camera** | Essential video input and conferencing tool |
+| `Microsoft.ZuneMusic` / `Video` | **Media Player** | Essential audio and video playback runtime |
+| `Microsoft.Windows.Photos` | **Photos** | Essential image viewing utility |
 | `Microsoft.VCLibs.*` | **VC++ Runtimes** | Core C++ shared libraries required by desktop applications |
 | `Microsoft.UI.Xaml.*` | **WinUI Framework** | Required for modern Windows UI rendering |
 | `Microsoft.NET.Native.*` | **.NET Native Framework** | Critical runtime engine for UWP applications |
@@ -29,13 +37,17 @@ Pre-installed consumer apps that do not affect core system features:
 - **Third-Party Trials:** McAfee/Norton pre-loaders, Amazon apps, Adobe promo stubs.
 - **Consumer Nudges:** Feedback Hub, Tips, Get Help, Microsoft News, MSN Weather, Mixed Reality Portal.
 
+### Category: Optional Cloud & AI Services (Unchecked by Default)
+- **Microsoft Copilot:** AI assistant sidebar and web search integrations (unchecked by default).
+- **Microsoft OneDrive:** Cloud file storage and sync integration (unchecked by default).
+
 ### Category: Minimal Debloat
 Lightweight preset for cautious users:
 - Removes sponsored promotional apps while leaving all built-in utility tools, media players, and Xbox tools completely untouched.
 
 ### Category: Deep Debloat
 Aggressive preset for workstations and benchmark rigs:
-- Removes all non-essential consumer packages including built-in media players (Zune Music/Video, Movies & TV), Voice Recorder, Sticky Notes, and Mail/Calendar.
+- Removes all non-essential consumer packages while strictly preserving protected essential Windows utilities.
 
 ### Category: Xbox & Gaming Integration
 For workstations that do not play Xbox games:
@@ -50,7 +62,7 @@ Manufacturer-specific pre-installed bloat:
 
 ## 3. App Selection Safety Indicators & Legend
 
-In v1.3.0, every application in the catalog features a high-contrast safety indicator and badge:
+In v1.3.1, every application in the catalog features a high-contrast safety indicator and badge:
 
 - 🟢 **Recommended (Green `#10B981`):** Safe bloatware packages universally recommended for removal without affecting workflow.
 - 🟡 **Optional (Amber `#F59E0B`):** User preference applications such as Xbox services, built-in media tools, or office viewers.

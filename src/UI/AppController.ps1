@@ -7,7 +7,7 @@
         category filters, executes dry-run previews, and triggers atomic debloat pipelines
         with dedicated AI integration, privacy, gaming, and system tweak controls.
     .MODULEVERSION
-        1.3.0
+        1.3.1
 #>
 
 [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '')]
@@ -283,11 +283,17 @@ function Show-DebloaterWindow {
     $badgeStage3Impact = $window.FindName("BadgeStage3Impact")
     $iconStage3Impact = $window.FindName("IconStage3Impact")
     $txtStage3Impact = $window.FindName("TxtStage3Impact")
+    $txtStage3Scope = $window.FindName("TxtStage3Scope")
+    $txtStage3Mode = $window.FindName("TxtStage3Mode")
     $chkCreateRestorePoint = $window.FindName("ChkCreateRestorePoint")
     $chkRegistrySnapshot = $window.FindName("ChkRegistrySnapshot")
+    $chkRestartExplorer = $window.FindName("ChkRestartExplorer")
+    $chkDryRunStage3 = $window.FindName("ChkDryRunStage3")
     $btnRunDryRun = $window.FindName("BtnRunDryRun")
     $txtDryRunStatus = $window.FindName("TxtDryRunStatus")
     $txtDryRunLog = $window.FindName("TxtDryRunLog")
+    $tabHeaderApps = $window.FindName("TabHeaderApps")
+    $txtBtnApply = $window.FindName("TxtBtnApply")
 
     # Execution Progress
     $txtProgressStatus = $window.FindName("TxtProgressStatus")
@@ -693,6 +699,23 @@ function Show-DebloaterWindow {
                 $btnNext.Visibility = [System.Windows.Visibility]::Collapsed
                 $btnApply.Visibility = [System.Windows.Visibility]::Visible
                 $btnFinish.Visibility = [System.Windows.Visibility]::Collapsed
+
+                $activeScopeText = if ($radioScopeDefaultUser -and $radioScopeDefaultUser.IsChecked) {
+                    "Default User / Sysprep"
+                } elseif ($radioScopeCurrentUser -and $radioScopeCurrentUser.IsChecked) {
+                    "Current User Only"
+                } else {
+                    "All Users (Recommended)"
+                }
+                if ($txtStage3Scope) { $txtStage3Scope.Text = $activeScopeText }
+
+                $isDry = [bool]($script:GlobalDryRun -or ($chkDryRunStage3 -and $chkDryRunStage3.IsChecked))
+                if ($chkDryRunStage3) { $chkDryRunStage3.IsChecked = $isDry }
+                if ($txtStage3Mode) {
+                    $modeColor = if ($isDry) { "#F59E0B" } else { "#10B981" }
+                    $txtStage3Mode.Text = if ($isDry) { "Dry-Run Simulation (WhatIf)" } else { "Live System Optimization" }
+                    $txtStage3Mode.Foreground = [System.Windows.Media.BrushConverter]::new().ConvertFromString($modeColor)
+                }
                 & $updateLiveImpactSummary
             }
             4 {
@@ -853,7 +876,7 @@ function Show-DebloaterWindow {
         # Stage 3 Updates
         if ($txtStage3Summary) {
             $bullet = [char]0x2022
-            $txtStage3Summary.Text = "$selectedAppCount Bloatware Apps $bullet $($impact.TweakCount) System Tweaks Queued ($($impact.TotalCount) Operations)"
+            $txtStage3Summary.Text = "$selectedAppCount Apps & Bloatware $bullet $($impact.TweakCount) System Tweaks Queued ($($impact.TotalCount) Operations)"
         }
         if ($badgeStage3Impact) {
             $badgeStage3Impact.Background = $bgBrush
@@ -1009,23 +1032,24 @@ function Show-DebloaterWindow {
                 "Microsoft.WindowsAlarms"                = @{ Name = "Clock & Alarms"; Desc = "Timers, stopwatches and alarms" }
                 "Microsoft.WindowsCalculator"            = @{ Name = "Calculator"; Desc = "Standard system math calculator" }
                 "Microsoft.WindowsCamera"                = @{ Name = "Camera"; Desc = "Webcam and video recording utility" }
+                "Microsoft.Copilot"                      = @{ Name = "Microsoft Copilot"; Desc = "AI assistant app and taskbar integration" }
+                "Microsoft.OneDrive"                     = @{ Name = "Microsoft OneDrive"; Desc = "Cloud storage sync and background client" }
             }
 
             foreach ($app in $appMap.Values) {
                 $isInst = $script:InstalledAppMap.ContainsKey($app.AppId.ToLower())
 
                 $isProtected = Test-IsProtectedApp -AppId $app.AppId -PresetsPath $presetsPath
+                if ($isProtected) {
+                    continue # Exclude protected essential apps completely from bloatware list
+                }
+
                 $safetyTier = "Recommended"
                 $dotColor = "#10B981"
                 $badgeBg = "#064E3B"
                 $badgeFg = "#10B981"
 
-                if ($isProtected) {
-                    $safetyTier = "Not Recommended"
-                    $dotColor = "#EF4444"
-                    $badgeBg = "#450A0A"
-                    $badgeFg = "#EF4444"
-                } elseif ($app.AppId -match "Xbox|Gaming|Zune|Media|Solitaire|Weather|News|Bing|Maps|People|Mail|Office|OneNote|Skype|Clipchamp") {
+                if ($app.AppId -match "Xbox|Gaming|Zune|Media|Solitaire|Weather|News|Bing|Maps|People|Mail|Office|OneNote|Skype|Clipchamp|Copilot|OneDrive") {
                     $safetyTier = "Optional"
                     $dotColor = "#F59E0B"
                     $badgeBg = "#451A03"
@@ -1049,7 +1073,8 @@ function Show-DebloaterWindow {
                     $cb.Style = $window.Resources["ModernCheckBox"]
                 }
                 $cb.Tag = $app.AppId
-                $cb.IsChecked = if ($safetyTier -eq "Not Recommended") { $false } else { $true }
+                $isUncheckedByDefault = ($app.AppId -eq "Microsoft.Copilot" -or $app.AppId -eq "Microsoft.OneDrive" -or $app.AppId -like "*Copilot*" -or $app.AppId -like "*OneDrive*")
+                $cb.IsChecked = if ($isUncheckedByDefault) { $false } else { $true }
                 $cb.Margin = [System.Windows.Thickness]::new(4, 3, 4, 3)
 
                 $sp = [System.Windows.Controls.StackPanel]::new()
@@ -1888,6 +1913,19 @@ function Show-DebloaterWindow {
         $txtDryRunStatus.Text = "Dry-Run complete: $selectedCount packages and selected tweaks simulated."
     })
 
+    if ($chkDryRunStage3) {
+        $chkDryRunStage3.Add_Click({
+            param([object]$eventSource, [System.Windows.RoutedEventArgs]$eventArgs)
+            $isDry = [bool]$chkDryRunStage3.IsChecked
+            $script:GlobalDryRun = $isDry
+            if ($txtStage3Mode) {
+                $modeColor = if ($isDry) { "#F59E0B" } else { "#10B981" }
+                $txtStage3Mode.Text = if ($isDry) { "Dry-Run Simulation (WhatIf)" } else { "Live System Optimization" }
+                $txtStage3Mode.Foreground = [System.Windows.Media.BrushConverter]::new().ConvertFromString($modeColor)
+            }
+        })
+    }
+
     # Step Navigation Buttons
     # Stage 1 Hero Buttons: Recommended Setup & Custom Tuning
     $btnRecommendedSetup = $window.FindName("BtnRecommendedSetup")
@@ -1990,6 +2028,11 @@ function Show-DebloaterWindow {
         }
 
         & $appendLog "Starting NH Win Debloater optimization pipeline..." "INFO"
+
+        $isDryRun = [bool]($script:GlobalDryRun -or ($chkDryRunStage3 -and $chkDryRunStage3.IsChecked))
+        if ($isDryRun) {
+            & $appendLog "DRY-RUN / WHATIF PREVIEW ACTIVE: System changes will be simulated without writing to disk." "WARN"
+        }
 
         $targetScope = if ($radioScopeCurrentUser.IsChecked) { "CurrentUser" } elseif ($radioScopeDefaultUser.IsChecked) { "DefaultUser" } else { "AllUsers" }
         & $appendLog "Selected execution scope: $targetScope" "INFO"
@@ -2209,6 +2252,21 @@ function Show-DebloaterWindow {
             & $appendLog "Default User profile hive dismounted cleanly." "SUCCESS"
         }
 
+        # 11. Optional Explorer Restart
+        if ($chkRestartExplorer -and $chkRestartExplorer.IsChecked -and -not $isDryRun) {
+            & $appendLog "Restarting Windows Explorer to immediately refresh shell..." "INFO"
+            try {
+                Stop-Process -Name explorer -Force -ErrorAction SilentlyContinue
+                Start-Sleep -Milliseconds 600
+                if (-not (Get-Process -Name explorer -ErrorAction SilentlyContinue)) {
+                    Start-Process "explorer.exe" -ErrorAction SilentlyContinue
+                }
+                & $appendLog "Windows Explorer restarted successfully." "SUCCESS"
+            } catch {
+                & $appendLog "Note: Explorer restart scheduled on next sign-in." "INFO"
+            }
+        }
+
         $progExecution.Value = 100
 
         & $appendLog "Pipeline execution finished successfully." "SUCCESS"
@@ -2273,7 +2331,7 @@ function Show-DebloaterWindow {
                     if ($chkLockScreenAds) { $chkLockScreenAds.IsChecked = $true }
 
                     if ($chkCopilotPolicy) { $chkCopilotPolicy.IsChecked = $true }
-                    if ($chkCopilotAppx) { $chkCopilotAppx.IsChecked = $true }
+                    if ($chkCopilotAppx) { $chkCopilotAppx.IsChecked = $false }
                     if ($chkRecallAI) { $chkRecallAI.IsChecked = $true }
                     if ($chkEdgeAI) { $chkEdgeAI.IsChecked = $true }
                     if ($chkPaintAI) { $chkPaintAI.IsChecked = $true }
@@ -2282,8 +2340,9 @@ function Show-DebloaterWindow {
                     if ($chkCreateRestorePoint) { $chkCreateRestorePoint.IsChecked = $true }
                     if ($chkRegistrySnapshot) { $chkRegistrySnapshot.IsChecked = $true }
 
-                    # 3. Direct route to execution flow and auto-push
-                    & $applyOptimizationsAction
+                    # 3. Route to Stage 3 Deployment / Pre-Apply Summary
+                    & $updateLiveImpactSummary
+                    & $updateStageView 3
                 } else {
                     & $populateApps
                     & $updateStageView 2
@@ -2306,6 +2365,12 @@ function Show-DebloaterWindow {
                     $script:CameFromRestoreShortcut = $false
                     & $updateStageView 1
                 } elseif ($script:WelcomeMode -eq "Recommended") {
+                    & $updateStageView 1
+                } else {
+                    & $updateStageView 2
+                }
+            } elseif ($script:CurrentStage -eq 3) {
+                if ($script:WelcomeMode -eq "Recommended") {
                     & $updateStageView 1
                 } else {
                     & $updateStageView 2
@@ -3045,6 +3110,8 @@ function Show-DebloaterWindow {
             $tb = $btnApply.Content.Children | Where-Object { $_ -is [System.Windows.Controls.TextBlock] }
             if ($tb) { $tb.Text = $t.Apply }
         }
+        if ($txtBtnApply -and $t.Apply) { $txtBtnApply.Text = $t.Apply }
+        if ($tabHeaderApps -and $t.TabApps) { $tabHeaderApps.Text = $t.TabApps }
         if ($btnFinish -and $btnFinish.Content -and $btnFinish.Content.Children) {
             $tb = $btnFinish.Content.Children | Where-Object { $_ -is [System.Windows.Controls.TextBlock] }
             if ($tb) { $tb.Text = $t.Finish }

@@ -702,7 +702,7 @@
                             <TextBlock x:Name="TxtStepNum2" Text="2" FontSize="11" FontWeight="Bold" Foreground="#94A3B8" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Border>
                         <Path x:Name="CheckStep2" Data="{StaticResource IconCheckCircle}" Fill="#10B981" Width="14" Height="14" Stretch="Uniform" Margin="0,0,8,0" Visibility="Collapsed" VerticalAlignment="Center"/>
-                        <TextBlock x:Name="StepTag2" Text="2. Select Bloat &amp; Tweaks" FontWeight="Normal" Foreground="#64748B" FontSize="12" VerticalAlignment="Center"/>
+                        <TextBlock x:Name="StepTag2" Text="2. Apps &amp; Bloatware" FontWeight="Normal" Foreground="#64748B" FontSize="12" VerticalAlignment="Center"/>
                     </StackPanel>
                 </Border>
                 <TextBlock Text="›" Foreground="#475569" FontSize="14" FontWeight="Bold" Margin="0,0,8,0" VerticalAlignment="Center"/>
@@ -714,7 +714,7 @@
                             <TextBlock x:Name="TxtStepNum3" Text="3" FontSize="11" FontWeight="Bold" Foreground="#94A3B8" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Border>
                         <Path x:Name="CheckStep3" Data="{StaticResource IconCheckCircle}" Fill="#10B981" Width="14" Height="14" Stretch="Uniform" Margin="0,0,8,0" Visibility="Collapsed" VerticalAlignment="Center"/>
-                        <TextBlock x:Name="StepTag3" Text="3. Safety &amp; Dry-Run" FontWeight="Normal" Foreground="#64748B" FontSize="12" VerticalAlignment="Center"/>
+                        <TextBlock x:Name="StepTag3" Text="3. Review &amp; Summary" FontWeight="Normal" Foreground="#64748B" FontSize="12" VerticalAlignment="Center"/>
                     </StackPanel>
                 </Border>
                 <TextBlock Text="›" Foreground="#475569" FontSize="14" FontWeight="Bold" Margin="0,0,8,0" VerticalAlignment="Center"/>
@@ -921,7 +921,7 @@
                         <TabItem.Header>
                             <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                                 <Path Data="{StaticResource IconAppGrid}" Fill="#38BDF8" Width="14" Height="14" Stretch="Uniform" Margin="0,0,6,0" VerticalAlignment="Center"/>
-                                <TextBlock Text="Bloatware Applications" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                                <TextBlock x:Name="TabHeaderApps" Text="Apps &amp; Bloatware" VerticalAlignment="Center" Margin="0,0,6,0"/>
                                 <Border Background="#1A2234" CornerRadius="8" Padding="6,1" VerticalAlignment="Center">
                                     <TextBlock x:Name="TxtTabAppsCount" Text="84" FontSize="10" FontWeight="Bold" Foreground="#38BDF8"/>
                                 </Border>
@@ -982,7 +982,7 @@
                                                     </EventTrigger>
                                                 </Border.Triggers>
                                                 <StackPanel>
-                                                    <TextBlock Text="Select Bloatware Categories:" FontSize="11" FontWeight="Bold" Foreground="#38BDF8" Margin="0,0,0,8"/>
+                                                    <TextBlock Text="Select App Categories:" FontSize="11" FontWeight="Bold" Foreground="#38BDF8" Margin="0,0,0,8"/>
                                                     <CheckBox x:Name="ChkCatRecommended" Style="{StaticResource ModernCheckBox}" Content="Recommended Safe Bloat (84 Apps)" IsChecked="True"/>
                                                     <CheckBox x:Name="ChkCatMinimal" Style="{StaticResource ModernCheckBox}" Content="Minimal Sponsored Only (11 Apps)" IsChecked="False"/>
                                                     <CheckBox x:Name="ChkCatDeep" Style="{StaticResource ModernCheckBox}" Content="Deep Debloat (All 162 Packages)" IsChecked="False"/>
@@ -1017,7 +1017,7 @@
                                             <TextBlock Text="Deselect All" VerticalAlignment="Center"/>
                                         </StackPanel>
                                     </Button>
-                                    <Button x:Name="BtnInvertSelection" Style="{StaticResource ModernBtn}" Margin="0,0,0,0" Padding="10,4" ToolTip="Invert selection: Toggle all currently visible bloatware apps">
+                                    <Button x:Name="BtnInvertSelection" Style="{StaticResource ModernBtn}" Margin="0,0,0,0" Padding="10,4" ToolTip="Invert selection: Toggle all currently visible apps">
                                         <StackPanel Orientation="Horizontal">
                                             <Path Data="{StaticResource IconLayersFeatures}" Fill="#38BDF8" Width="11" Height="11" Stretch="Uniform" Margin="0,0,6,0" VerticalAlignment="Center"/>
                                             <TextBlock Text="Invert" VerticalAlignment="Center"/>
@@ -2065,7 +2065,7 @@
                 </TabControl>
             </Grid>
 
-            <!-- STAGE 3: Safety & Dry-Run Preview -->
+            <!-- STAGE 3: Deployment & Pre-Apply Summary -->
             <Grid x:Name="ViewStage3" Visibility="Collapsed">
                 <Grid.RenderTransform>
                     <TransformGroup>
@@ -2081,11 +2081,11 @@
                 </Grid.RowDefinitions>
 
                 <StackPanel Grid.Row="0" Margin="0,0,0,10">
-                    <TextBlock Text="Safety Guard &amp; Pre-Execution Check" FontSize="18" FontWeight="Bold" Foreground="#F8FAFC"/>
-                    <TextBlock Text="Review recovery safeguards and run an optional WhatIf preview simulation." FontSize="13" Foreground="#94A3B8"/>
+                    <TextBlock Text="Deployment &amp; Pre-Apply Summary" FontSize="18" FontWeight="Bold" Foreground="#F8FAFC"/>
+                    <TextBlock Text="Review your target scope, safety safeguards, and queued optimizations before applying." FontSize="13" Foreground="#94A3B8"/>
                 </StackPanel>
 
-                <!-- Live Target Execution Plan & Overall Safety Rating Card -->
+                <!-- Live Target Scope & Execution Plan Card -->
                 <Border Grid.Row="1" Background="#131926" CornerRadius="8" BorderBrush="#232D42" BorderThickness="1" Padding="14,10" Margin="0,0,0,10">
                     <Grid>
                         <Grid.ColumnDefinitions>
@@ -2093,8 +2093,13 @@
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
                         <StackPanel Grid.Column="0" VerticalAlignment="Center">
-                            <TextBlock Text="Target Execution Plan:" FontSize="11" FontWeight="SemiBold" Foreground="#94A3B8"/>
-                            <TextBlock x:Name="TxtStage3Summary" Text="84 Bloatware Apps • 18 System Tweaks Queued (102 Operations)" FontSize="15" FontWeight="Bold" Foreground="#F8FAFC" Margin="0,2,0,0"/>
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,3">
+                                <TextBlock Text="Target Scope: " FontSize="12" FontWeight="SemiBold" Foreground="#94A3B8"/>
+                                <TextBlock x:Name="TxtStage3Scope" Text="All Users (System-wide)" FontSize="12" FontWeight="Bold" Foreground="#38BDF8"/>
+                                <TextBlock Text=" • Execution: " FontSize="12" FontWeight="SemiBold" Foreground="#94A3B8" Margin="8,0,0,0"/>
+                                <TextBlock x:Name="TxtStage3Mode" Text="Live System Optimization" FontSize="12" FontWeight="Bold" Foreground="#10B981"/>
+                            </StackPanel>
+                            <TextBlock x:Name="TxtStage3Summary" Text="84 Apps &amp; Bloatware • 18 System Tweaks Queued (102 Operations)" FontSize="15" FontWeight="Bold" Foreground="#F8FAFC"/>
                         </StackPanel>
                         <Border Grid.Column="1" x:Name="BadgeStage3Impact" Background="#064E3B" BorderBrush="#059669" BorderThickness="1" CornerRadius="6" Padding="12,6" VerticalAlignment="Center">
                             <StackPanel Orientation="Horizontal">
@@ -2105,15 +2110,25 @@
                     </Grid>
                 </Border>
 
-                <!-- Safety Options -->
+                <!-- Safety Safeguards & Deployment Options -->
                 <Border Grid.Row="2" Background="#131926" CornerRadius="8" BorderBrush="#232D42" BorderThickness="1" Padding="14,10" Margin="0,0,0,10">
-                    <StackPanel>
-                        <CheckBox x:Name="ChkCreateRestorePoint" Style="{StaticResource ModernCheckBox}" Content="Create Windows System Restore Point checkpoint" IsChecked="True" FontWeight="Bold"/>
-                        <CheckBox x:Name="ChkRegistrySnapshot" Style="{StaticResource ModernCheckBox}" Content="Capture Pre-Tweak Registry Snapshot to %LOCALAPPDATA%\NHWinDebloater\Backups\" IsChecked="True" FontWeight="Bold" Margin="0,8,0,0"/>
-                    </StackPanel>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <CheckBox x:Name="ChkCreateRestorePoint" Grid.Row="0" Grid.Column="0" Style="{StaticResource ModernCheckBox}" Content="Create Windows System Restore Point checkpoint" IsChecked="True" FontWeight="SemiBold" Margin="0,0,8,8"/>
+                        <CheckBox x:Name="ChkRegistrySnapshot" Grid.Row="0" Grid.Column="1" Style="{StaticResource ModernCheckBox}" Content="Capture Pre-Tweak Registry Snapshot to Backups\" IsChecked="True" FontWeight="SemiBold" Margin="0,0,0,8"/>
+                        <CheckBox x:Name="ChkRestartExplorer" Grid.Row="1" Grid.Column="0" Style="{StaticResource ModernCheckBox}" Content="Restart Windows Explorer to refresh Taskbar &amp; Desktop" IsChecked="True" FontWeight="SemiBold" Margin="0,0,8,0"/>
+                        <CheckBox x:Name="ChkDryRunStage3" Grid.Row="1" Grid.Column="1" Style="{StaticResource ModernCheckBox}" Content="Dry-Run Simulation Mode (Simulate without OS changes)" IsChecked="False" FontWeight="SemiBold" Margin="0,0,0,0"/>
+                    </Grid>
                 </Border>
 
-                <!-- Dry-Run Preview Box -->
+                <!-- Change Queue Inspection & Simulation Box -->
                 <Border Grid.Row="3" Background="#0B0F17" CornerRadius="8" BorderBrush="#232D42" BorderThickness="1" Padding="12">
                     <Grid>
                         <Grid.RowDefinitions>
@@ -2124,10 +2139,10 @@
                             <Button x:Name="BtnRunDryRun" Style="{StaticResource ModernBtn}" Margin="0,0,10,0" Padding="12,5">
                                 <StackPanel Orientation="Horizontal">
                                     <Path Data="{StaticResource IconPlay}" Fill="#38BDF8" Width="12" Height="12" Stretch="Uniform" Margin="0,0,6,0" VerticalAlignment="Center"/>
-                                    <TextBlock Text="Run Dry-Run Preview (WhatIf)" VerticalAlignment="Center"/>
+                                    <TextBlock Text="Inspect Change Queue (WhatIf)" VerticalAlignment="Center"/>
                                 </StackPanel>
                             </Button>
-                            <TextBlock x:Name="TxtDryRunStatus" Text="Click to simulate changes without applying anything." VerticalAlignment="Center" FontSize="12" Foreground="#38BDF8"/>
+                            <TextBlock x:Name="TxtDryRunStatus" Text="Click to inspect all queued operations before applying." VerticalAlignment="Center" FontSize="12" Foreground="#38BDF8"/>
                         </StackPanel>
                         <TextBox x:Name="TxtDryRunLog" Grid.Row="1" IsReadOnly="True" VerticalScrollBarVisibility="Auto" Background="#0B0F17" Foreground="#E2E8F0" FontFamily="Consolas, Lucida Console" FontSize="12" BorderThickness="0" Padding="8"/>
                     </Grid>
@@ -2431,7 +2446,7 @@
                     <Button x:Name="BtnApply" Style="{StaticResource PrimaryBtn}" Visibility="Collapsed" Margin="0,0,10,0">
                         <StackPanel Orientation="Horizontal">
                             <Path Data="{StaticResource IconLightning}" Fill="#FFFFFF" Width="12" Height="12" Stretch="Uniform" Margin="0,0,6,0" VerticalAlignment="Center"/>
-                            <TextBlock Text="Apply Optimizations" VerticalAlignment="Center"/>
+                            <TextBlock x:Name="TxtBtnApply" Text="Apply Changes" VerticalAlignment="Center"/>
                         </StackPanel>
                     </Button>
                     <Button x:Name="BtnFinish" Style="{StaticResource PrimaryBtn}" Visibility="Collapsed">

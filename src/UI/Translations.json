@@ -8,11 +8,12 @@
     "CusDesc": "Tailor apps, privacy, explorer, gaming & AI",
     "Back": "Back",
     "Next": "Next",
-    "Apply": "Apply Optimizations",
+    "Apply": "Apply Changes",
     "Finish": "Finish & Exit",
     "ScopeAll": "All Users (Recommended)",
     "ScopeCur": "Current User Only",
-    "ScopeDef": "Default User / Sysprep"
+    "ScopeDef": "Default User / Sysprep",
+    "TabApps": "Apps & Bloatware"
   },
   "hi-IN": {
     "Heading": "एनएच विन डीब्लोटर में आपका स्वागत है",
@@ -23,11 +24,12 @@
     "CusDesc": "ऐप्स, गोपनीयता, एक्सप्लोरर, गेमिंग और एआई अनुकूलित करें",
     "Back": "पीछे",
     "Next": "आगे",
-    "Apply": "लागू करें",
+    "Apply": "परिवर्तन लागू करें",
     "Finish": "समाप्त करें और बाहर निकलें",
     "ScopeAll": "सभी उपयोगकर्ता (अनुशंसित)",
     "ScopeCur": "केवल वर्तमान उपयोगकर्ता",
-    "ScopeDef": "डिफ़ॉल्ट उपयोगकर्ता / सिसप्रेप"
+    "ScopeDef": "डिफ़ॉल्ट उपयोगकर्ता / सिसप्रेप",
+    "TabApps": "एप्स और ब्लोटवेयर"
   },
   "kn-IN": {
     "Heading": "ಎನ್ ಹೆಚ್ ವಿನ್ ಡಿಬ್ಲೋಟರ್ ಗೆ ಸುಸ್ವಾಗತ",
@@ -38,11 +40,12 @@
     "CusDesc": "ಅಪ್ಲಿಕೇಶನ್‌ಗಳು, ಗೌಪ್ಯತೆ ಮತ್ತು ಗೇಮಿಂಗ್ ಹೊಂದಿಸಿ",
     "Back": "ಹಿಂದೆ",
     "Next": "ಮುಂದೆ",
-    "Apply": "ಅನ್ವಯಿಸು",
+    "Apply": "ಬದಲಾವಣೆಗಳನ್ನು ಅನ್ವಯಿಸು",
     "Finish": "ಮುಕ್ತಾಯ ಮತ್ತು ನಿರ್ಗಮಿಸಿ",
     "ScopeAll": "ಎಲ್ಲಾ ಬಳಕೆದಾರರು (ಶಿಫಾರಸು ಮಾಡಲಾಗಿದೆ)",
     "ScopeCur": "ಪ್ರಸ್ತುತ ಬಳಕೆದಾರ ಮಾತ್ರ",
-    "ScopeDef": "ಡೀಫಾಲ್ಟ್ ಬಳಕೆದಾರ / ಸಿಸ್ಪ್ರೆಪ್"
+    "ScopeDef": "ಡೀಫಾಲ್ಟ್ ಬಳಕೆದಾರ / ಸಿಸ್ಪ್ರೆಪ್",
+    "TabApps": "ಅಪ್ಲಿಕೇಶನ್‌ಗಳು ಮತ್ತು ಬ್ಲೋಟ್‌ವೇರ್"
   },
   "es-ES": {
     "Heading": "Bienvenido a NH Win Debloater",
@@ -53,11 +56,12 @@
     "CusDesc": "Personalice aplicaciones, privacidad, explorador, juegos e IA",
     "Back": "Atrás",
     "Next": "Siguiente",
-    "Apply": "Aplicar Optimizaciones",
+    "Apply": "Aplicar Cambios",
     "Finish": "Finalizar y Salir",
     "ScopeAll": "Todos los usuarios (Recomendado)",
     "ScopeCur": "Solo usuario actual",
-    "ScopeDef": "Usuario predeterminado / Sysprep"
+    "ScopeDef": "Usuario predeterminado / Sysprep",
+    "TabApps": "Apps y Bloatware"
   },
   "de-DE": {
     "Heading": "Willkommen bei NH Win Debloater",
@@ -68,10 +72,11 @@
     "CusDesc": "Apps, Datenschutz, Explorer, Gaming & KI anpassen",
     "Back": "Zurück",
     "Next": "Weiter",
-    "Apply": "Optimierungen anwenden",
+    "Apply": "Änderungen anwenden",
     "Finish": "Fertigstellen & Beenden",
     "ScopeAll": "Alle Benutzer (Empfohlen)",
     "ScopeCur": "Nur aktueller Benutzer",
-    "ScopeDef": "Standardbenutzer / Sysprep"
+    "ScopeDef": "Standardbenutzer / Sysprep",
+    "TabApps": "Apps & Bloatware"
   }
 }
