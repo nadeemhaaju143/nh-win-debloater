@@ -7,7 +7,7 @@
         supports multi-user and default-user Sysprep environments,
         and provides reinstall capability for default/Store apps.
     .MODULEVERSION
-        1.3.0
+        1.3.1
 #>
 
 [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '')]
@@ -17,14 +17,24 @@ param()
 
 $script:ProtectedSystemPackages = @(
     "Microsoft.WindowsStore",
+    "Microsoft.StorePurchaseApp",
+    "Microsoft.Services.Store.Engagement",
     "Microsoft.SecHealthUI",
     "Microsoft.DesktopAppInstaller",
     "Microsoft.WindowsTerminal",
+    "Microsoft.WindowsNotepad",
+    "Microsoft.ScreenSketch",
+    "Microsoft.Paint",
+    "Microsoft.MSPaint",
+    "Microsoft.WindowsCalculator",
+    "Microsoft.WindowsCamera",
+    "Microsoft.ZuneMusic",
+    "Microsoft.ZuneVideo",
+    "Microsoft.WindowsMediaPlayer",
+    "Microsoft.Windows.Photos",
     "Microsoft.VCLibs",
     "Microsoft.NET.Native",
     "Microsoft.UI.Xaml",
-    "Microsoft.Services.Store.Engagement",
-    "Microsoft.StorePurchaseApp",
     "Microsoft.Windows.ShellExperienceHost",
     "Microsoft.Windows.StartMenuExperienceHost",
     "Microsoft.Windows.Search"

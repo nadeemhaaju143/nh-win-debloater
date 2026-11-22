@@ -9,6 +9,37 @@ The project follows a **progressive semantic minor versioning format**:
 
 ---
 
+## [1.3.1] - 2026-11-22
+
+### Stage 3 Pre-Apply Deployment Summary, Terminal Line-Clear & Essential App Protection
+- **Stage 3 Pre-Apply Deployment Summary & Safety Controls (`MainWindow.xaml`, `AppController.ps1`):**
+  - Updated `Recommended Setup` workflow: selecting `Recommended Setup` highlights the choice on Stage 1; clicking `Next` advances directly to **Stage 3 Deployment / Pre-Apply Summary** (instead of immediately applying or jumping to Stage 4), allowing maintainers and users to review all selected optimizations before execution.
+  - Stage 3 displays live Target Scope (`TxtStage3Scope`), Execution Mode (`TxtStage3Mode`), Summary (`TxtStage3Summary`), Impact badge (`BadgeStage3Impact`), and a dedicated 2x2 grid of safety options: System Restore Point (`ChkCreateRestorePoint`), Registry Snapshot (`ChkRegistrySnapshot`), Explorer Process Restart (`ChkRestartExplorer`), and Dry-Run (`ChkDryRunStage3`).
+  - Added Dry-Run WhatIf inspection terminal (`BtnRunDryRun`, `TxtDryRunLog`) within Stage 3 for inspecting projected actions without system mutation.
+  - Explicit `Apply Changes` button (`BtnApply` with text `Apply Changes`) initiates execution with real-time log streaming.
+  - Back button routing: returns to Stage 1 when navigated from Recommended Setup, or Stage 2 when navigated from Custom Tuning.
+- **Terminal Line-Clear Preserving Command History (`Get-NHWinDebloater.ps1`):**
+  - Replaced destructive `Clear-Host` with console cursor positioning and line blanking (`[Console]::SetCursorPosition`).
+  - Erases only the 5 temporary bootstrapper status lines (`NH Debloater`, `Fetching`, `Downloading`, `Extracting`, `Launching NH Debloater`), preserving the caller's `irm nhdigital.shop/debloat | iex` command line and prior terminal session history intact.
+  - Terminal auto-minimizes during GUI execution (`ShowWindow(hWnd, 2)`), restores on exit (`ShowWindow(hWnd, 9)`), logs `"Cleaning temporary files..."`, and purges `%TEMP%\NHWinDebloater*`.
+- **Protected Essential Built-In Windows Apps (`ProtectedApps.json`, `AppManager.psm1`, `DefaultApps.json`, `DeepDebloatApps.json`, `AppController.ps1`):**
+  - Hardened protection for essential Windows apps: Windows Terminal (`Microsoft.WindowsTerminal`), Microsoft Store (`Microsoft.WindowsStore`, `Microsoft.StorePurchaseApp`, `Microsoft.Services.Store.Engagement`), Notepad (`Microsoft.WindowsNotepad`), Snipping Tool (`Microsoft.ScreenSketch`), Paint (`Microsoft.Paint`, `Microsoft.MSPaint`), Calculator (`Microsoft.WindowsCalculator`), Camera (`Microsoft.WindowsCamera`), Media Player (`Microsoft.ZuneMusic`, `Microsoft.ZuneVideo`, `Microsoft.WindowsMediaPlayer`), and Photos (`Microsoft.Windows.Photos`).
+  - Completely purged essential packages from `DefaultApps.json` and `DeepDebloatApps.json`.
+  - Added filter guard in `AppController.ps1` ensuring protected apps never render in the removal list or get targeted for deletion.
+- **Optional Copilot & OneDrive Preset Entries (Unchecked by Default):**
+  - Included `Microsoft.Copilot` and `Microsoft.OneDrive` in debloat catalog presets with user-friendly descriptions and optional categorizations.
+  - Initial selection state defaults to unchecked (`$false`) to prevent unwanted uninstallation unless explicitly selected by the user.
+- **Tab Header & Localization Refinement (`MainWindow.xaml`, `Translations.json`):**
+  - Renamed Tab 1 header to `Apps & Bloatware` across UI templates and stepper indicators.
+  - Added `TabApps` and updated `Apply` ("Apply Changes") translations across all 5 supported languages (`en-US`, `hi-IN`, `kn-IN`, `es-ES`, `de-DE`).
+- **VM Functional Verification & Quality Gates:**
+  - Expanded `tools/Test-UIVisibilityAndClicks.ps1` to 72/72 visual-tree and interaction checks passing (100%).
+  - Expanded `tools/Invoke-VMFunctionalVerification.ps1` to 10/10 end-to-end VM tests passing (100%), including real-world essential apps preservation, registry tweak validation, atomic rollback, and scratch purging.
+  - Regenerated all 6 high-resolution screenshots in `Assets/screenshots/`.
+  - 100% Pester test suite passing (71/71 tests) and 0 PSScriptAnalyzer issues.
+
+---
+
 ## [1.3.0] - 2026-11-22
 
 ### Bloatware App List Fix, Clean Console Bootstrapper & UX Polish

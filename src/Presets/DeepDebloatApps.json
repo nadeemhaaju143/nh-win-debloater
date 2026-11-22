@@ -1,986 +1,926 @@
 [
     {
-        "AppId":  "Clipchamp.Clipchamp",
-        "DisplayName":  "Clipchamp.Clipchamp",
-        "Recommendation":  "safe",
-        "RemovalMethod":  "Appx"
+        "AppId": "Clipchamp.Clipchamp",
+        "DisplayName": "Clipchamp.Clipchamp",
+        "Recommendation": "safe",
+        "RemovalMethod": "Appx"
     },
     {
-        "AppId":  "Microsoft.3DBuilder",
-        "DisplayName":  "Microsoft.3DBuilder",
-        "Recommendation":  "safe",
-        "RemovalMethod":  "Appx"
+        "AppId": "Microsoft.3DBuilder",
+        "DisplayName": "Microsoft.3DBuilder",
+        "Recommendation": "safe",
+        "RemovalMethod": "Appx"
     },
     {
-        "AppId":  "Microsoft.549981C3F5F10",
-        "DisplayName":  "Microsoft.549981C3F5F10",
-        "Recommendation":  "safe",
-        "RemovalMethod":  "Appx"
+        "AppId": "Microsoft.549981C3F5F10",
+        "DisplayName": "Microsoft.549981C3F5F10",
+        "Recommendation": "safe",
+        "RemovalMethod": "Appx"
     },
     {
-        "AppId":  "Microsoft.BingFinance",
-        "DisplayName":  "Microsoft.BingFinance",
-        "Recommendation":  "safe",
-        "RemovalMethod":  "Appx"
+        "AppId": "Microsoft.BingFinance",
+        "DisplayName": "Microsoft.BingFinance",
+        "Recommendation": "safe",
+        "RemovalMethod": "Appx"
     },
     {
-        "AppId":  "Microsoft.BingFoodAndDrink",
-        "DisplayName":  "Microsoft.BingFoodAndDrink",
-        "Recommendation":  "safe",
-        "RemovalMethod":  "Appx"
+        "AppId": "Microsoft.BingFoodAndDrink",
+        "DisplayName": "Microsoft.BingFoodAndDrink",
+        "Recommendation": "safe",
+        "RemovalMethod": "Appx"
     },
     {
-        "AppId":  "Microsoft.BingHealthAndFitness",
-        "DisplayName":  "Microsoft.BingHealthAndFitness",
-        "Recommendation":  "safe",
-        "RemovalMethod":  "Appx"
+        "AppId": "Microsoft.BingHealthAndFitness",
+        "DisplayName": "Microsoft.BingHealthAndFitness",
+        "Recommendation": "safe",
+        "RemovalMethod": "Appx"
     },
     {
-        "AppId":  "Microsoft.BingNews",
-        "DisplayName":  "Microsoft.BingNews",
-        "Recommendation":  "safe",
-        "RemovalMethod":  "Appx"
+        "AppId": "Microsoft.BingNews",
+        "DisplayName": "Microsoft.BingNews",
+        "Recommendation": "safe",
+        "RemovalMethod": "Appx"
     },
     {
-        "AppId":  "Microsoft.BingSports",
-        "DisplayName":  "Microsoft.BingSports",
-        "Recommendation":  "safe",
-        "RemovalMethod":  "Appx"
+        "AppId": "Microsoft.BingSports",
+        "DisplayName": "Microsoft.BingSports",
+        "Recommendation": "safe",
+        "RemovalMethod": "Appx"
     },
     {
-        "AppId":  "Microsoft.BingTranslator",
-        "DisplayName":  "Microsoft.BingTranslator",
-        "Recommendation":  "safe",
-        "RemovalMethod":  "Appx"
+        "AppId": "Microsoft.BingTranslator",
+        "DisplayName": "Microsoft.BingTranslator",
+        "Recommendation": "safe",
+        "RemovalMethod": "Appx"
     },
     {
-        "AppId":  "Microsoft.BingTravel",
-        "DisplayName":  "Microsoft.BingTravel",
-        "Recommendation":  "safe",
-        "RemovalMethod":  "Appx"
+        "AppId": "Microsoft.BingTravel",
+        "DisplayName": "Microsoft.BingTravel",
+        "Recommendation": "safe",
+        "RemovalMethod": "Appx"
     },
     {
-        "AppId":  "Microsoft.BingWeather",
-        "DisplayName":  "Microsoft.BingWeather",
-        "Recommendation":  "safe",
-        "RemovalMethod":  "Appx"
+        "AppId": "Microsoft.BingWeather",
+        "DisplayName": "Microsoft.BingWeather",
+        "Recommendation": "safe",
+        "RemovalMethod": "Appx"
     },
     {
-        "AppId":  "XP9CXNGPPJ97XX",
-        "DisplayName":  "XP9CXNGPPJ97XX",
-        "Recommendation":  "safe",
-        "RemovalMethod":  "WinGet"
+        "AppId": "XP9CXNGPPJ97XX",
+        "DisplayName": "XP9CXNGPPJ97XX",
+        "Recommendation": "safe",
+        "RemovalMethod": "WinGet"
     },
     {
-        "AppId":  "Microsoft.Windows.AIHub",
-        "DisplayName":  "Microsoft.Windows.AIHub",
-        "Recommendation":  "safe",
-        "RemovalMethod":  "Appx"
+        "AppId": "Microsoft.Windows.AIHub",
+        "DisplayName": "Microsoft.Windows.AIHub",
+        "Recommendation": "safe",
+        "RemovalMethod": "Appx"
     },
     {
-        "AppId":  "Microsoft.PCManager",
-        "DisplayName":  "Microsoft.PCManager",
-        "Recommendation":  "safe",
-        "RemovalMethod":  "Appx"
+        "AppId": "Microsoft.PCManager",
+        "DisplayName": "Microsoft.PCManager",
+        "Recommendation": "safe",
+        "RemovalMethod": "Appx"
     },
     {
-        "AppId":  "Microsoft.MicrosoftPCManager",
-        "DisplayName":  "Microsoft.MicrosoftPCManager",
-        "Recommendation":  "safe",
-        "RemovalMethod":  "Appx"
+        "AppId": "Microsoft.MicrosoftPCManager",
+        "DisplayName": "Microsoft.MicrosoftPCManager",
+        "Recommendation": "safe",
+        "RemovalMethod": "Appx"
     },
     {
-        "AppId":  "Microsoft.Getstarted",
-        "DisplayName":  "Microsoft.Getstarted",
-        "Recommendation":  "safe",
-        "RemovalMethod":  "Appx"
+        "AppId": "Microsoft.Getstarted",
+        "DisplayName": "Microsoft.Getstarted",
+        "Recommendation": "safe",
+        "RemovalMethod": "Appx"
     },
     {
-        "AppId":  "Microsoft.Messaging",
-        "DisplayName":  "Microsoft.Messaging",
-        "Recommendation":  "safe",
-        "RemovalMethod":  "Appx"
+        "AppId": "Microsoft.Messaging",
+        "DisplayName": "Microsoft.Messaging",
+        "Recommendation": "safe",
+        "RemovalMethod": "Appx"
     },
     {
-        "AppId":  "Microsoft.Microsoft3DViewer",
-        "DisplayName":  "Microsoft.Microsoft3DViewer",
-        "Recommendation":  "safe",
-        "RemovalMethod":  "Appx"
+        "AppId": "Microsoft.Microsoft3DViewer",
+        "DisplayName": "Microsoft.Microsoft3DViewer",
+        "Recommendation": "safe",
+        "RemovalMethod": "Appx"
     },
     {
-        "AppId":  "Microsoft.MicrosoftJournal",
-        "DisplayName":  "Microsoft.MicrosoftJournal",
-        "Recommendation":  "safe",
-        "RemovalMethod":  "Appx"
+        "AppId": "Microsoft.MicrosoftJournal",
+        "DisplayName": "Microsoft.MicrosoftJournal",
+        "Recommendation": "safe",
+        "RemovalMethod": "Appx"
     },
     {
-        "AppId":  "Microsoft.MicrosoftOfficeHub",
-        "DisplayName":  "Microsoft.MicrosoftOfficeHub",
-        "Recommendation":  "safe",
-        "RemovalMethod":  "Appx"
+        "AppId": "Microsoft.MicrosoftOfficeHub",
+        "DisplayName": "Microsoft.MicrosoftOfficeHub",
+        "Recommendation": "safe",
+        "RemovalMethod": "Appx"
     },
     {
-        "AppId":  "Microsoft.MicrosoftPowerBIForWindows",
-        "DisplayName":  "Microsoft.MicrosoftPowerBIForWindows",
-        "Recommendation":  "safe",
-        "RemovalMethod":  "Appx"
+        "AppId": "Microsoft.MicrosoftPowerBIForWindows",
+        "DisplayName": "Microsoft.MicrosoftPowerBIForWindows",
+        "Recommendation": "safe",
+        "RemovalMethod": "Appx"
     },
     {
-        "AppId":  "Microsoft.MicrosoftSolitaireCollection",
-        "DisplayName":  "Microsoft.MicrosoftSolitaireCollection",
-        "Recommendation":  "safe",
-        "RemovalMethod":  "Appx"
+        "AppId": "Microsoft.MicrosoftSolitaireCollection",
+        "DisplayName": "Microsoft.MicrosoftSolitaireCollection",
+        "Recommendation": "safe",
+        "RemovalMethod": "Appx"
     },
     {
-        "AppId":  "Microsoft.MicrosoftStickyNotes",
-        "DisplayName":  "Microsoft.MicrosoftStickyNotes",
-        "Recommendation":  "safe",
-        "RemovalMethod":  "Appx"
+        "AppId": "Microsoft.MicrosoftStickyNotes",
+        "DisplayName": "Microsoft.MicrosoftStickyNotes",
+        "Recommendation": "safe",
+        "RemovalMethod": "Appx"
     },
     {
-        "AppId":  "Microsoft.MixedReality.Portal",
-        "DisplayName":  "Microsoft.MixedReality.Portal",
-        "Recommendation":  "safe",
-        "RemovalMethod":  "Appx"
+        "AppId": "Microsoft.MixedReality.Portal",
+        "DisplayName": "Microsoft.MixedReality.Portal",
+        "Recommendation": "safe",
+        "RemovalMethod": "Appx"
     },
     {
-        "AppId":  "Microsoft.NetworkSpeedTest",
-        "DisplayName":  "Microsoft.NetworkSpeedTest",
-        "Recommendation":  "safe",
-        "RemovalMethod":  "Appx"
+        "AppId": "Microsoft.NetworkSpeedTest",
+        "DisplayName": "Microsoft.NetworkSpeedTest",
+        "Recommendation": "safe",
+        "RemovalMethod": "Appx"
     },
     {
-        "AppId":  "Microsoft.Office.OneNote",
-        "DisplayName":  "Microsoft.Office.OneNote",
-        "Recommendation":  "safe",
-        "RemovalMethod":  "Appx"
+        "AppId": "Microsoft.Office.OneNote",
+        "DisplayName": "Microsoft.Office.OneNote",
+        "Recommendation": "safe",
+        "RemovalMethod": "Appx"
     },
     {
-        "AppId":  "Microsoft.Office.Sway",
-        "DisplayName":  "Microsoft.Office.Sway",
-        "Recommendation":  "safe",
-        "RemovalMethod":  "Appx"
+        "AppId": "Microsoft.Office.Sway",
+        "DisplayName": "Microsoft.Office.Sway",
+        "Recommendation": "safe",
+        "RemovalMethod": "Appx"
     },
     {
-        "AppId":  "Microsoft.OneConnect",
-        "DisplayName":  "Microsoft.OneConnect",
-        "Recommendation":  "safe",
-        "RemovalMethod":  "Appx"
+        "AppId": "Microsoft.OneConnect",
+        "DisplayName": "Microsoft.OneConnect",
+        "Recommendation": "safe",
+        "RemovalMethod": "Appx"
     },
     {
-        "AppId":  "Microsoft.Print3D",
-        "DisplayName":  "Microsoft.Print3D",
-        "Recommendation":  "safe",
-        "RemovalMethod":  "Appx"
+        "AppId": "Microsoft.Print3D",
+        "DisplayName": "Microsoft.Print3D",
+        "Recommendation": "safe",
+        "RemovalMethod": "Appx"
     },
     {
-        "AppId":  "Microsoft.PowerAutomateDesktop",
-        "DisplayName":  "Microsoft.PowerAutomateDesktop",
-        "Recommendation":  "safe",
-        "RemovalMethod":  "Appx"
+        "AppId": "Microsoft.PowerAutomateDesktop",
+        "DisplayName": "Microsoft.PowerAutomateDesktop",
+        "Recommendation": "safe",
+        "RemovalMethod": "Appx"
     },
     {
-        "AppId":  "Microsoft.SkypeApp",
-        "DisplayName":  "Microsoft.SkypeApp",
-        "Recommendation":  "safe",
-        "RemovalMethod":  "Appx"
+        "AppId": "Microsoft.SkypeApp",
+        "DisplayName": "Microsoft.SkypeApp",
+        "Recommendation": "safe",
+        "RemovalMethod": "Appx"
     },
     {
-        "AppId":  "Microsoft.Todos",
-        "DisplayName":  "Microsoft.Todos",
-        "Recommendation":  "safe",
-        "RemovalMethod":  "Appx"
+        "AppId": "Microsoft.Todos",
+        "DisplayName": "Microsoft.Todos",
+        "Recommendation": "safe",
+        "RemovalMethod": "Appx"
     },
     {
-        "AppId":  "Microsoft.Windows.DevHome",
-        "DisplayName":  "Microsoft.Windows.DevHome",
-        "Recommendation":  "safe",
-        "RemovalMethod":  "Appx"
+        "AppId": "Microsoft.Windows.DevHome",
+        "DisplayName": "Microsoft.Windows.DevHome",
+        "Recommendation": "safe",
+        "RemovalMethod": "Appx"
     },
     {
-        "AppId":  "Microsoft.WindowsAlarms",
-        "DisplayName":  "Microsoft.WindowsAlarms",
-        "Recommendation":  "safe",
-        "RemovalMethod":  "Appx"
+        "AppId": "Microsoft.WindowsAlarms",
+        "DisplayName": "Microsoft.WindowsAlarms",
+        "Recommendation": "safe",
+        "RemovalMethod": "Appx"
     },
     {
-        "AppId":  "Microsoft.WindowsFeedbackHub",
-        "DisplayName":  "Microsoft.WindowsFeedbackHub",
-        "Recommendation":  "safe",
-        "RemovalMethod":  "Appx"
+        "AppId": "Microsoft.WindowsFeedbackHub",
+        "DisplayName": "Microsoft.WindowsFeedbackHub",
+        "Recommendation": "safe",
+        "RemovalMethod": "Appx"
     },
     {
-        "AppId":  "Microsoft.WindowsMaps",
-        "DisplayName":  "Microsoft.WindowsMaps",
-        "Recommendation":  "safe",
-        "RemovalMethod":  "Appx"
+        "AppId": "Microsoft.WindowsMaps",
+        "DisplayName": "Microsoft.WindowsMaps",
+        "Recommendation": "safe",
+        "RemovalMethod": "Appx"
     },
     {
-        "AppId":  "Microsoft.WindowsSoundRecorder",
-        "DisplayName":  "Microsoft.WindowsSoundRecorder",
-        "Recommendation":  "safe",
-        "RemovalMethod":  "Appx"
+        "AppId": "Microsoft.WindowsSoundRecorder",
+        "DisplayName": "Microsoft.WindowsSoundRecorder",
+        "Recommendation": "safe",
+        "RemovalMethod": "Appx"
     },
     {
-        "AppId":  "Microsoft.XboxApp",
-        "DisplayName":  "Microsoft.XboxApp",
-        "Recommendation":  "safe",
-        "RemovalMethod":  "Appx"
+        "AppId": "Microsoft.XboxApp",
+        "DisplayName": "Microsoft.XboxApp",
+        "Recommendation": "safe",
+        "RemovalMethod": "Appx"
     },
     {
-        "AppId":  "Microsoft.ZuneVideo",
-        "DisplayName":  "Microsoft.ZuneVideo",
-        "Recommendation":  "safe",
-        "RemovalMethod":  "Appx"
+        "AppId": "MicrosoftCorporationII.MicrosoftFamily",
+        "DisplayName": "MicrosoftCorporationII.MicrosoftFamily",
+        "Recommendation": "safe",
+        "RemovalMethod": "Appx"
     },
     {
-        "AppId":  "MicrosoftCorporationII.MicrosoftFamily",
-        "DisplayName":  "MicrosoftCorporationII.MicrosoftFamily",
-        "Recommendation":  "safe",
-        "RemovalMethod":  "Appx"
+        "AppId": "MicrosoftCorporationII.QuickAssist",
+        "DisplayName": "MicrosoftCorporationII.QuickAssist",
+        "Recommendation": "safe",
+        "RemovalMethod": "Appx"
     },
     {
-        "AppId":  "MicrosoftCorporationII.QuickAssist",
-        "DisplayName":  "MicrosoftCorporationII.QuickAssist",
-        "Recommendation":  "safe",
-        "RemovalMethod":  "Appx"
+        "AppId": "MicrosoftTeams",
+        "DisplayName": "MicrosoftTeams",
+        "Recommendation": "safe",
+        "RemovalMethod": "Appx"
     },
     {
-        "AppId":  "MicrosoftTeams",
-        "DisplayName":  "MicrosoftTeams",
-        "Recommendation":  "safe",
-        "RemovalMethod":  "Appx"
+        "AppId": "MSTeams",
+        "DisplayName": "MSTeams",
+        "Recommendation": "safe",
+        "RemovalMethod": "Appx"
     },
     {
-        "AppId":  "MSTeams",
-        "DisplayName":  "MSTeams",
-        "Recommendation":  "safe",
-        "RemovalMethod":  "Appx"
+        "AppId": "ACGMediaPlayer",
+        "DisplayName": "ACGMediaPlayer",
+        "Recommendation": "safe",
+        "RemovalMethod": "Appx"
     },
     {
-        "AppId":  "ACGMediaPlayer",
-        "DisplayName":  "ACGMediaPlayer",
-        "Recommendation":  "safe",
-        "RemovalMethod":  "Appx"
+        "AppId": "ActiproSoftwareLLC",
+        "DisplayName": "ActiproSoftwareLLC",
+        "Recommendation": "safe",
+        "RemovalMethod": "Appx"
     },
     {
-        "AppId":  "ActiproSoftwareLLC",
-        "DisplayName":  "ActiproSoftwareLLC",
-        "Recommendation":  "safe",
-        "RemovalMethod":  "Appx"
+        "AppId": "AdobeSystemsIncorporated.AdobePhotoshopExpress",
+        "DisplayName": "AdobeSystemsIncorporated.AdobePhotoshopExpress",
+        "Recommendation": "safe",
+        "RemovalMethod": "Appx"
     },
     {
-        "AppId":  "AdobeSystemsIncorporated.AdobePhotoshopExpress",
-        "DisplayName":  "AdobeSystemsIncorporated.AdobePhotoshopExpress",
-        "Recommendation":  "safe",
-        "RemovalMethod":  "Appx"
+        "AppId": "Amazon.com.Amazon",
+        "DisplayName": "Amazon.com.Amazon",
+        "Recommendation": "safe",
+        "RemovalMethod": "Appx"
     },
     {
-        "AppId":  "Amazon.com.Amazon",
-        "DisplayName":  "Amazon.com.Amazon",
-        "Recommendation":  "safe",
-        "RemovalMethod":  "Appx"
+        "AppId": "AmazonVideo.PrimeVideo",
+        "DisplayName": "AmazonVideo.PrimeVideo",
+        "Recommendation": "safe",
+        "RemovalMethod": "Appx"
     },
     {
-        "AppId":  "AmazonVideo.PrimeVideo",
-        "DisplayName":  "AmazonVideo.PrimeVideo",
-        "Recommendation":  "safe",
-        "RemovalMethod":  "Appx"
+        "AppId": "Asphalt8Airborne",
+        "DisplayName": "Asphalt8Airborne",
+        "Recommendation": "safe",
+        "RemovalMethod": "Appx"
     },
     {
-        "AppId":  "Asphalt8Airborne",
-        "DisplayName":  "Asphalt8Airborne",
-        "Recommendation":  "safe",
-        "RemovalMethod":  "Appx"
+        "AppId": "AutodeskSketchBook",
+        "DisplayName": "AutodeskSketchBook",
+        "Recommendation": "safe",
+        "RemovalMethod": "Appx"
     },
     {
-        "AppId":  "AutodeskSketchBook",
-        "DisplayName":  "AutodeskSketchBook",
-        "Recommendation":  "safe",
-        "RemovalMethod":  "Appx"
+        "AppId": "CaesarsSlotsFreeCasino",
+        "DisplayName": "CaesarsSlotsFreeCasino",
+        "Recommendation": "safe",
+        "RemovalMethod": "Appx"
     },
     {
-        "AppId":  "CaesarsSlotsFreeCasino",
-        "DisplayName":  "CaesarsSlotsFreeCasino",
-        "Recommendation":  "safe",
-        "RemovalMethod":  "Appx"
+        "AppId": "COOKINGFEVER",
+        "DisplayName": "COOKINGFEVER",
+        "Recommendation": "safe",
+        "RemovalMethod": "Appx"
     },
     {
-        "AppId":  "COOKINGFEVER",
-        "DisplayName":  "COOKINGFEVER",
-        "Recommendation":  "safe",
-        "RemovalMethod":  "Appx"
+        "AppId": "CyberLinkMediaSuiteEssentials",
+        "DisplayName": "CyberLinkMediaSuiteEssentials",
+        "Recommendation": "safe",
+        "RemovalMethod": "Appx"
     },
     {
-        "AppId":  "CyberLinkMediaSuiteEssentials",
-        "DisplayName":  "CyberLinkMediaSuiteEssentials",
-        "Recommendation":  "safe",
-        "RemovalMethod":  "Appx"
+        "AppId": "DisneyMagicKingdoms",
+        "DisplayName": "DisneyMagicKingdoms",
+        "Recommendation": "safe",
+        "RemovalMethod": "Appx"
     },
     {
-        "AppId":  "DisneyMagicKingdoms",
-        "DisplayName":  "DisneyMagicKingdoms",
-        "Recommendation":  "safe",
-        "RemovalMethod":  "Appx"
+        "AppId": "Disney.37853FC22B2CE",
+        "DisplayName": "Disney.37853FC22B2CE",
+        "Recommendation": "safe",
+        "RemovalMethod": "Appx"
     },
     {
-        "AppId":  "Disney.37853FC22B2CE",
-        "DisplayName":  "Disney.37853FC22B2CE",
-        "Recommendation":  "safe",
-        "RemovalMethod":  "Appx"
+        "AppId": "DrawboardPDF",
+        "DisplayName": "DrawboardPDF",
+        "Recommendation": "safe",
+        "RemovalMethod": "Appx"
     },
     {
-        "AppId":  "DrawboardPDF",
-        "DisplayName":  "DrawboardPDF",
-        "Recommendation":  "safe",
-        "RemovalMethod":  "Appx"
+        "AppId": "Duolingo-LearnLanguagesforFree",
+        "DisplayName": "Duolingo-LearnLanguagesforFree",
+        "Recommendation": "safe",
+        "RemovalMethod": "Appx"
     },
     {
-        "AppId":  "Duolingo-LearnLanguagesforFree",
-        "DisplayName":  "Duolingo-LearnLanguagesforFree",
-        "Recommendation":  "safe",
-        "RemovalMethod":  "Appx"
+        "AppId": "FACEBOOK.FACEBOOK",
+        "DisplayName": "FACEBOOK.FACEBOOK",
+        "Recommendation": "safe",
+        "RemovalMethod": "Appx"
     },
     {
-        "AppId":  "FACEBOOK.FACEBOOK",
-        "DisplayName":  "FACEBOOK.FACEBOOK",
-        "Recommendation":  "safe",
-        "RemovalMethod":  "Appx"
+        "AppId": "FarmVille2CountryEscape",
+        "DisplayName": "FarmVille2CountryEscape",
+        "Recommendation": "safe",
+        "RemovalMethod": "Appx"
     },
     {
-        "AppId":  "FarmVille2CountryEscape",
-        "DisplayName":  "FarmVille2CountryEscape",
-        "Recommendation":  "safe",
-        "RemovalMethod":  "Appx"
+        "AppId": "Flipboard",
+        "DisplayName": "Flipboard",
+        "Recommendation": "safe",
+        "RemovalMethod": "Appx"
     },
     {
-        "AppId":  "Flipboard",
-        "DisplayName":  "Flipboard",
-        "Recommendation":  "safe",
-        "RemovalMethod":  "Appx"
+        "AppId": "HiddenCity",
+        "DisplayName": "HiddenCity",
+        "Recommendation": "safe",
+        "RemovalMethod": "Appx"
     },
     {
-        "AppId":  "HiddenCity",
-        "DisplayName":  "HiddenCity",
-        "Recommendation":  "safe",
-        "RemovalMethod":  "Appx"
+        "AppId": "HULULLC.HULUPLUS",
+        "DisplayName": "HULULLC.HULUPLUS",
+        "Recommendation": "safe",
+        "RemovalMethod": "Appx"
     },
     {
-        "AppId":  "HULULLC.HULUPLUS",
-        "DisplayName":  "HULULLC.HULUPLUS",
-        "Recommendation":  "safe",
-        "RemovalMethod":  "Appx"
+        "AppId": "iHeartRadio",
+        "DisplayName": "iHeartRadio",
+        "Recommendation": "safe",
+        "RemovalMethod": "Appx"
     },
     {
-        "AppId":  "iHeartRadio",
-        "DisplayName":  "iHeartRadio",
-        "Recommendation":  "safe",
-        "RemovalMethod":  "Appx"
+        "AppId": "Facebook.Instagram",
+        "DisplayName": "Facebook.Instagram",
+        "Recommendation": "safe",
+        "RemovalMethod": "Appx"
     },
     {
-        "AppId":  "Facebook.Instagram",
-        "DisplayName":  "Facebook.Instagram",
-        "Recommendation":  "safe",
-        "RemovalMethod":  "Appx"
+        "AppId": "king.com.BubbleWitch3Saga",
+        "DisplayName": "king.com.BubbleWitch3Saga",
+        "Recommendation": "safe",
+        "RemovalMethod": "Appx"
     },
     {
-        "AppId":  "king.com.BubbleWitch3Saga",
-        "DisplayName":  "king.com.BubbleWitch3Saga",
-        "Recommendation":  "safe",
-        "RemovalMethod":  "Appx"
+        "AppId": "king.com.CandyCrushSaga",
+        "DisplayName": "king.com.CandyCrushSaga",
+        "Recommendation": "safe",
+        "RemovalMethod": "Appx"
     },
     {
-        "AppId":  "king.com.CandyCrushSaga",
-        "DisplayName":  "king.com.CandyCrushSaga",
-        "Recommendation":  "safe",
-        "RemovalMethod":  "Appx"
+        "AppId": "king.com.CandyCrushSodaSaga",
+        "DisplayName": "king.com.CandyCrushSodaSaga",
+        "Recommendation": "safe",
+        "RemovalMethod": "Appx"
     },
     {
-        "AppId":  "king.com.CandyCrushSodaSaga",
-        "DisplayName":  "king.com.CandyCrushSodaSaga",
-        "Recommendation":  "safe",
-        "RemovalMethod":  "Appx"
+        "AppId": "LinkedInforWindows",
+        "DisplayName": "LinkedInforWindows",
+        "Recommendation": "safe",
+        "RemovalMethod": "Appx"
     },
     {
-        "AppId":  "LinkedInforWindows",
-        "DisplayName":  "LinkedInforWindows",
-        "Recommendation":  "safe",
-        "RemovalMethod":  "Appx"
+        "AppId": "MarchofEmpires",
+        "DisplayName": "MarchofEmpires",
+        "Recommendation": "safe",
+        "RemovalMethod": "Appx"
     },
     {
-        "AppId":  "MarchofEmpires",
-        "DisplayName":  "MarchofEmpires",
-        "Recommendation":  "safe",
-        "RemovalMethod":  "Appx"
+        "AppId": "4DF9E0F8.Netflix",
+        "DisplayName": "4DF9E0F8.Netflix",
+        "Recommendation": "safe",
+        "RemovalMethod": "Appx"
     },
     {
-        "AppId":  "4DF9E0F8.Netflix",
-        "DisplayName":  "4DF9E0F8.Netflix",
-        "Recommendation":  "safe",
-        "RemovalMethod":  "Appx"
+        "AppId": "NYTCrossword",
+        "DisplayName": "NYTCrossword",
+        "Recommendation": "safe",
+        "RemovalMethod": "Appx"
     },
     {
-        "AppId":  "NYTCrossword",
-        "DisplayName":  "NYTCrossword",
-        "Recommendation":  "safe",
-        "RemovalMethod":  "Appx"
+        "AppId": "OneCalendar",
+        "DisplayName": "OneCalendar",
+        "Recommendation": "safe",
+        "RemovalMethod": "Appx"
     },
     {
-        "AppId":  "OneCalendar",
-        "DisplayName":  "OneCalendar",
-        "Recommendation":  "safe",
-        "RemovalMethod":  "Appx"
+        "AppId": "PandoraMediaInc",
+        "DisplayName": "PandoraMediaInc",
+        "Recommendation": "safe",
+        "RemovalMethod": "Appx"
     },
     {
-        "AppId":  "PandoraMediaInc",
-        "DisplayName":  "PandoraMediaInc",
-        "Recommendation":  "safe",
-        "RemovalMethod":  "Appx"
+        "AppId": "PhototasticCollage",
+        "DisplayName": "PhototasticCollage",
+        "Recommendation": "safe",
+        "RemovalMethod": "Appx"
     },
     {
-        "AppId":  "PhototasticCollage",
-        "DisplayName":  "PhototasticCollage",
-        "Recommendation":  "safe",
-        "RemovalMethod":  "Appx"
+        "AppId": "PicsArt-PhotoStudio",
+        "DisplayName": "PicsArt-PhotoStudio",
+        "Recommendation": "safe",
+        "RemovalMethod": "Appx"
     },
     {
-        "AppId":  "PicsArt-PhotoStudio",
-        "DisplayName":  "PicsArt-PhotoStudio",
-        "Recommendation":  "safe",
-        "RemovalMethod":  "Appx"
+        "AppId": "PolarrPhotoEditorAcademicEdition",
+        "DisplayName": "PolarrPhotoEditorAcademicEdition",
+        "Recommendation": "safe",
+        "RemovalMethod": "Appx"
     },
     {
-        "AppId":  "PolarrPhotoEditorAcademicEdition",
-        "DisplayName":  "PolarrPhotoEditorAcademicEdition",
-        "Recommendation":  "safe",
-        "RemovalMethod":  "Appx"
+        "AppId": "flaregamesGmbH.RoyalRevolt",
+        "DisplayName": "flaregamesGmbH.RoyalRevolt",
+        "Recommendation": "safe",
+        "RemovalMethod": "Appx"
     },
     {
-        "AppId":  "flaregamesGmbH.RoyalRevolt",
-        "DisplayName":  "flaregamesGmbH.RoyalRevolt",
-        "Recommendation":  "safe",
-        "RemovalMethod":  "Appx"
+        "AppId": "Sidia.LiveWallpaper",
+        "DisplayName": "Sidia.LiveWallpaper",
+        "Recommendation": "safe",
+        "RemovalMethod": "Appx"
     },
     {
-        "AppId":  "Sidia.LiveWallpaper",
-        "DisplayName":  "Sidia.LiveWallpaper",
-        "Recommendation":  "safe",
-        "RemovalMethod":  "Appx"
+        "AppId": "SlingTV",
+        "DisplayName": "SlingTV",
+        "Recommendation": "safe",
+        "RemovalMethod": "Appx"
     },
     {
-        "AppId":  "SlingTV",
-        "DisplayName":  "SlingTV",
-        "Recommendation":  "safe",
-        "RemovalMethod":  "Appx"
+        "AppId": "SpotifyAB.SpotifyMusic",
+        "DisplayName": "SpotifyAB.SpotifyMusic",
+        "Recommendation": "safe",
+        "RemovalMethod": "Appx"
     },
     {
-        "AppId":  "SpotifyAB.SpotifyMusic",
-        "DisplayName":  "SpotifyAB.SpotifyMusic",
-        "Recommendation":  "safe",
-        "RemovalMethod":  "Appx"
+        "AppId": "BytedancePte.Ltd.TikTok",
+        "DisplayName": "BytedancePte.Ltd.TikTok",
+        "Recommendation": "safe",
+        "RemovalMethod": "Appx"
     },
     {
-        "AppId":  "BytedancePte.Ltd.TikTok",
-        "DisplayName":  "BytedancePte.Ltd.TikTok",
-        "Recommendation":  "safe",
-        "RemovalMethod":  "Appx"
+        "AppId": "TuneInRadio",
+        "DisplayName": "TuneInRadio",
+        "Recommendation": "safe",
+        "RemovalMethod": "Appx"
     },
     {
-        "AppId":  "TuneInRadio",
-        "DisplayName":  "TuneInRadio",
-        "Recommendation":  "safe",
-        "RemovalMethod":  "Appx"
+        "AppId": "WinZipUniversal",
+        "DisplayName": "WinZipUniversal",
+        "Recommendation": "safe",
+        "RemovalMethod": "Appx"
     },
     {
-        "AppId":  "WinZipUniversal",
-        "DisplayName":  "WinZipUniversal",
-        "Recommendation":  "safe",
-        "RemovalMethod":  "Appx"
+        "AppId": "Microsoft.BingSearch",
+        "DisplayName": "Microsoft.BingSearch",
+        "Recommendation": "optional",
+        "RemovalMethod": "Appx"
     },
     {
-        "AppId":  "Microsoft.BingSearch",
-        "DisplayName":  "Microsoft.BingSearch",
-        "Recommendation":  "optional",
-        "RemovalMethod":  "Appx"
+        "AppId": "Microsoft.Edge",
+        "DisplayName": "Microsoft.Edge",
+        "Recommendation": "unsafe",
+        "RemovalMethod": "WinGet"
     },
     {
-        "AppId":  "Microsoft.Edge",
-        "DisplayName":  "Microsoft.Edge",
-        "Recommendation":  "unsafe",
-        "RemovalMethod":  "WinGet"
+        "AppId": "XPFFTQ037JWMHS",
+        "DisplayName": "XPFFTQ037JWMHS",
+        "Recommendation": "unsafe",
+        "RemovalMethod": "WinGet"
     },
     {
-        "AppId":  "XPFFTQ037JWMHS",
-        "DisplayName":  "XPFFTQ037JWMHS",
-        "Recommendation":  "unsafe",
-        "RemovalMethod":  "WinGet"
+        "AppId": "Microsoft.GamingApp",
+        "DisplayName": "Microsoft.GamingApp",
+        "Recommendation": "optional",
+        "RemovalMethod": "Appx"
     },
     {
-        "AppId":  "Microsoft.GamingApp",
-        "DisplayName":  "Microsoft.GamingApp",
-        "Recommendation":  "optional",
-        "RemovalMethod":  "Appx"
+        "AppId": "Microsoft.GetHelp",
+        "DisplayName": "Microsoft.GetHelp",
+        "Recommendation": "unsafe",
+        "RemovalMethod": "Appx"
     },
     {
-        "AppId":  "Microsoft.GetHelp",
-        "DisplayName":  "Microsoft.GetHelp",
-        "Recommendation":  "unsafe",
-        "RemovalMethod":  "Appx"
+        "AppId": "Microsoft.M365Companions",
+        "DisplayName": "Microsoft.M365Companions",
+        "Recommendation": "optional",
+        "RemovalMethod": "Appx"
     },
     {
-        "AppId":  "Microsoft.M365Companions",
-        "DisplayName":  "Microsoft.M365Companions",
-        "Recommendation":  "optional",
-        "RemovalMethod":  "Appx"
+        "AppId": "Microsoft.OneDrive",
+        "DisplayName": "Microsoft.OneDrive",
+        "Recommendation": "optional",
+        "RemovalMethod": "WinGet"
     },
     {
-        "AppId":  "Microsoft.MSPaint",
-        "DisplayName":  "Microsoft.MSPaint",
-        "Recommendation":  "optional",
-        "RemovalMethod":  "Appx"
+        "AppId": "Microsoft.OutlookForWindows",
+        "DisplayName": "Microsoft.OutlookForWindows",
+        "Recommendation": "optional",
+        "RemovalMethod": "Appx"
     },
     {
-        "AppId":  "Microsoft.OneDrive",
-        "DisplayName":  "Microsoft.OneDrive",
-        "Recommendation":  "optional",
-        "RemovalMethod":  "WinGet"
+        "AppId": "Microsoft.People",
+        "DisplayName": "Microsoft.People",
+        "Recommendation": "safe",
+        "RemovalMethod": "Appx"
     },
     {
-        "AppId":  "Microsoft.OutlookForWindows",
-        "DisplayName":  "Microsoft.OutlookForWindows",
-        "Recommendation":  "optional",
-        "RemovalMethod":  "Appx"
+        "AppId": "MicrosoftCorporationII.Windows365",
+        "DisplayName": "MicrosoftCorporationII.Windows365",
+        "Recommendation": "optional",
+        "RemovalMethod": "Appx"
     },
     {
-        "AppId":  "Microsoft.Paint",
-        "DisplayName":  "Microsoft.Paint",
-        "Recommendation":  "optional",
-        "RemovalMethod":  "Appx"
+        "AppId": "Microsoft.RemoteDesktop",
+        "DisplayName": "Microsoft.RemoteDesktop",
+        "Recommendation": "optional",
+        "RemovalMethod": "Appx"
     },
     {
-        "AppId":  "Microsoft.People",
-        "DisplayName":  "Microsoft.People",
-        "Recommendation":  "safe",
-        "RemovalMethod":  "Appx"
+        "AppId": "Microsoft.StartExperiencesApp",
+        "DisplayName": "Microsoft.StartExperiencesApp",
+        "Recommendation": "optional",
+        "RemovalMethod": "Appx"
     },
     {
-        "AppId":  "MicrosoftCorporationII.Windows365",
-        "DisplayName":  "MicrosoftCorporationII.Windows365",
-        "Recommendation":  "optional",
-        "RemovalMethod":  "Appx"
+        "AppId": "Microsoft.SurfaceHub",
+        "DisplayName": "Microsoft.SurfaceHub",
+        "Recommendation": "optional",
+        "RemovalMethod": "Appx"
     },
     {
-        "AppId":  "Microsoft.RemoteDesktop",
-        "DisplayName":  "Microsoft.RemoteDesktop",
-        "Recommendation":  "optional",
-        "RemovalMethod":  "Appx"
+        "AppId": "Microsoft.Whiteboard",
+        "DisplayName": "Microsoft.Whiteboard",
+        "Recommendation": "optional",
+        "RemovalMethod": "Appx"
     },
     {
-        "AppId":  "Microsoft.ScreenSketch",
-        "DisplayName":  "Microsoft.ScreenSketch",
-        "Recommendation":  "optional",
-        "RemovalMethod":  "Appx"
+        "AppId": "Microsoft.windowscommunicationsapps",
+        "DisplayName": "Microsoft.windowscommunicationsapps",
+        "Recommendation": "safe",
+        "RemovalMethod": "Appx"
     },
     {
-        "AppId":  "Microsoft.StartExperiencesApp",
-        "DisplayName":  "Microsoft.StartExperiencesApp",
-        "Recommendation":  "optional",
-        "RemovalMethod":  "Appx"
+        "AppId": "Microsoft.Xbox.TCUI",
+        "DisplayName": "Microsoft.Xbox.TCUI",
+        "Recommendation": "unsafe",
+        "RemovalMethod": "Appx"
     },
     {
-        "AppId":  "Microsoft.SurfaceHub",
-        "DisplayName":  "Microsoft.SurfaceHub",
-        "Recommendation":  "optional",
-        "RemovalMethod":  "Appx"
+        "AppId": "Microsoft.XboxGameOverlay",
+        "DisplayName": "Microsoft.XboxGameOverlay",
+        "Recommendation": "optional",
+        "RemovalMethod": "Appx"
     },
     {
-        "AppId":  "Microsoft.Whiteboard",
-        "DisplayName":  "Microsoft.Whiteboard",
-        "Recommendation":  "optional",
-        "RemovalMethod":  "Appx"
+        "AppId": "Microsoft.XboxGamingOverlay",
+        "DisplayName": "Microsoft.XboxGamingOverlay",
+        "Recommendation": "optional",
+        "RemovalMethod": "Appx"
     },
     {
-        "AppId":  "Microsoft.Windows.Photos",
-        "DisplayName":  "Microsoft.Windows.Photos",
-        "Recommendation":  "optional",
-        "RemovalMethod":  "Appx"
+        "AppId": "Microsoft.XboxIdentityProvider",
+        "DisplayName": "Microsoft.XboxIdentityProvider",
+        "Recommendation": "unsafe",
+        "RemovalMethod": "Appx"
     },
     {
-        "AppId":  "Microsoft.WindowsCalculator",
-        "DisplayName":  "Microsoft.WindowsCalculator",
-        "Recommendation":  "optional",
-        "RemovalMethod":  "Appx"
+        "AppId": "Microsoft.XboxSpeechToTextOverlay",
+        "DisplayName": "Microsoft.XboxSpeechToTextOverlay",
+        "Recommendation": "unsafe",
+        "RemovalMethod": "Appx"
     },
     {
-        "AppId":  "Microsoft.WindowsCamera",
-        "DisplayName":  "Microsoft.WindowsCamera",
-        "Recommendation":  "optional",
-        "RemovalMethod":  "Appx"
+        "AppId": "Microsoft.YourPhone",
+        "DisplayName": "Microsoft.YourPhone",
+        "Recommendation": "optional",
+        "RemovalMethod": "Appx"
     },
     {
-        "AppId":  "Microsoft.windowscommunicationsapps",
-        "DisplayName":  "Microsoft.windowscommunicationsapps",
-        "Recommendation":  "safe",
-        "RemovalMethod":  "Appx"
+        "AppId": "MicrosoftWindows.CrossDevice",
+        "DisplayName": "MicrosoftWindows.CrossDevice",
+        "Recommendation": "optional",
+        "RemovalMethod": "Appx"
     },
     {
-        "AppId":  "Microsoft.WindowsNotepad",
-        "DisplayName":  "Microsoft.WindowsNotepad",
-        "Recommendation":  "optional",
-        "RemovalMethod":  "Appx"
+        "AppId": "MicrosoftWindows.Client.WebExperience",
+        "DisplayName": "MicrosoftWindows.Client.WebExperience",
+        "Recommendation": "optional",
+        "RemovalMethod": "Appx"
     },
     {
-        "AppId":  "Microsoft.WindowsStore",
-        "DisplayName":  "Microsoft.WindowsStore",
-        "Recommendation":  "unsafe",
-        "RemovalMethod":  "Appx"
+        "AppId": "Microsoft.WidgetsPlatformRuntime",
+        "DisplayName": "Microsoft.WidgetsPlatformRuntime",
+        "Recommendation": "optional",
+        "RemovalMethod": "Appx"
     },
     {
-        "AppId":  "Microsoft.WindowsTerminal",
-        "DisplayName":  "Microsoft.WindowsTerminal",
-        "Recommendation":  "unsafe",
-        "RemovalMethod":  "Appx"
+        "AppId": "AD2F1837.OMENCommandCenter",
+        "DisplayName": "AD2F1837.OMENCommandCenter",
+        "Recommendation": "optional",
+        "RemovalMethod": "Appx"
     },
     {
-        "AppId":  "Microsoft.Xbox.TCUI",
-        "DisplayName":  "Microsoft.Xbox.TCUI",
-        "Recommendation":  "unsafe",
-        "RemovalMethod":  "Appx"
+        "AppId": "AcerIncorporated.AcerCareCenterS",
+        "DisplayName": "AcerIncorporated.AcerCareCenterS",
+        "Recommendation": "optional",
+        "RemovalMethod": "Appx"
     },
     {
-        "AppId":  "Microsoft.XboxGameOverlay",
-        "DisplayName":  "Microsoft.XboxGameOverlay",
-        "Recommendation":  "optional",
-        "RemovalMethod":  "Appx"
+        "AppId": "B9ECED6F.ASUSPCAssistant",
+        "DisplayName": "B9ECED6F.ASUSPCAssistant",
+        "Recommendation": "optional",
+        "RemovalMethod": "Appx"
     },
     {
-        "AppId":  "Microsoft.XboxGamingOverlay",
-        "DisplayName":  "Microsoft.XboxGamingOverlay",
-        "Recommendation":  "optional",
-        "RemovalMethod":  "Appx"
+        "AppId": "B9ECED6F.Glidex",
+        "DisplayName": "B9ECED6F.Glidex",
+        "Recommendation": "optional",
+        "RemovalMethod": "Appx"
     },
     {
-        "AppId":  "Microsoft.XboxIdentityProvider",
-        "DisplayName":  "Microsoft.XboxIdentityProvider",
-        "Recommendation":  "unsafe",
-        "RemovalMethod":  "Appx"
+        "AppId": "SAMSUNGELECTRONICSCoLtd.SamsungQuickShare",
+        "DisplayName": "SAMSUNGELECTRONICSCoLtd.SamsungQuickShare",
+        "Recommendation": "optional",
+        "RemovalMethod": "Appx"
     },
     {
-        "AppId":  "Microsoft.XboxSpeechToTextOverlay",
-        "DisplayName":  "Microsoft.XboxSpeechToTextOverlay",
-        "Recommendation":  "unsafe",
-        "RemovalMethod":  "Appx"
+        "AppId": "9426MICRO-STARINTERNATION.MSICenter",
+        "DisplayName": "9426MICRO-STARINTERNATION.MSICenter",
+        "Recommendation": "optional",
+        "RemovalMethod": "Appx"
     },
     {
-        "AppId":  "Microsoft.YourPhone",
-        "DisplayName":  "Microsoft.YourPhone",
-        "Recommendation":  "optional",
-        "RemovalMethod":  "Appx"
+        "AppId": "SAMSUNGELECTRONICSCO.LTD.PCGallery",
+        "DisplayName": "SAMSUNGELECTRONICSCO.LTD.PCGallery",
+        "Recommendation": "optional",
+        "RemovalMethod": "Appx"
     },
     {
-        "AppId":  "Microsoft.ZuneMusic",
-        "DisplayName":  "Microsoft.ZuneMusic",
-        "Recommendation":  "optional",
-        "RemovalMethod":  "Appx"
+        "AppId": "SAMSUNGELECTRONICSCoLtd.SamsungFlux",
+        "DisplayName": "SAMSUNGELECTRONICSCoLtd.SamsungFlux",
+        "Recommendation": "optional",
+        "RemovalMethod": "Appx"
     },
     {
-        "AppId":  "MicrosoftWindows.CrossDevice",
-        "DisplayName":  "MicrosoftWindows.CrossDevice",
-        "Recommendation":  "optional",
-        "RemovalMethod":  "Appx"
+        "AppId": "SAMSUNGELECTRONICSCoLtd.SamsungNotes",
+        "DisplayName": "SAMSUNGELECTRONICSCoLtd.SamsungNotes",
+        "Recommendation": "optional",
+        "RemovalMethod": "Appx"
     },
     {
-        "AppId":  "MicrosoftWindows.Client.WebExperience",
-        "DisplayName":  "MicrosoftWindows.Client.WebExperience",
-        "Recommendation":  "optional",
-        "RemovalMethod":  "Appx"
+        "AppId": "B9ECED6F.ScreenPadMaster",
+        "DisplayName": "B9ECED6F.ScreenPadMaster",
+        "Recommendation": "optional",
+        "RemovalMethod": "Appx"
     },
     {
-        "AppId":  "Microsoft.WidgetsPlatformRuntime",
-        "DisplayName":  "Microsoft.WidgetsPlatformRuntime",
-        "Recommendation":  "optional",
-        "RemovalMethod":  "Appx"
+        "AppId": "SAMSUNGELECTRONICSCO.LTD.SamsungStudio",
+        "DisplayName": "SAMSUNGELECTRONICSCO.LTD.SamsungStudio",
+        "Recommendation": "optional",
+        "RemovalMethod": "Appx"
     },
     {
-        "AppId":  "AD2F1837.OMENCommandCenter",
-        "DisplayName":  "AD2F1837.OMENCommandCenter",
-        "Recommendation":  "optional",
-        "RemovalMethod":  "Appx"
+        "AppId": "SAMSUNGELECTRONICSCO.LTD.SamsungScreenRecording",
+        "DisplayName": "SAMSUNGELECTRONICSCO.LTD.SamsungScreenRecording",
+        "Recommendation": "optional",
+        "RemovalMethod": "Appx"
     },
     {
-        "AppId":  "AcerIncorporated.AcerCareCenterS",
-        "DisplayName":  "AcerIncorporated.AcerCareCenterS",
-        "Recommendation":  "optional",
-        "RemovalMethod":  "Appx"
+        "AppId": "SAMSUNGELECTRONICSCO.LTD.Bixby",
+        "DisplayName": "SAMSUNGELECTRONICSCO.LTD.Bixby",
+        "Recommendation": "optional",
+        "RemovalMethod": "Appx"
     },
     {
-        "AppId":  "B9ECED6F.ASUSPCAssistant",
-        "DisplayName":  "B9ECED6F.ASUSPCAssistant",
-        "Recommendation":  "optional",
-        "RemovalMethod":  "Appx"
+        "AppId": "SAMSUNGELECTRONICSCO.LTD.SamsungWelcome",
+        "DisplayName": "SAMSUNGELECTRONICSCO.LTD.SamsungWelcome",
+        "Recommendation": "optional",
+        "RemovalMethod": "Appx"
     },
     {
-        "AppId":  "B9ECED6F.Glidex",
-        "DisplayName":  "B9ECED6F.Glidex",
-        "Recommendation":  "optional",
-        "RemovalMethod":  "Appx"
+        "AppId": "SAMSUNGELECTRONICSCO.LTD.SmartThingsWindows",
+        "DisplayName": "SAMSUNGELECTRONICSCO.LTD.SmartThingsWindows",
+        "Recommendation": "optional",
+        "RemovalMethod": "Appx"
     },
     {
-        "AppId":  "SAMSUNGELECTRONICSCoLtd.SamsungQuickShare",
-        "DisplayName":  "SAMSUNGELECTRONICSCoLtd.SamsungQuickShare",
-        "Recommendation":  "optional",
-        "RemovalMethod":  "Appx"
+        "AppId": "SAMSUNGELECTRONICSCoLtd.MultiControl",
+        "DisplayName": "SAMSUNGELECTRONICSCoLtd.MultiControl",
+        "Recommendation": "optional",
+        "RemovalMethod": "Appx"
     },
     {
-        "AppId":  "9426MICRO-STARINTERNATION.MSICenter",
-        "DisplayName":  "9426MICRO-STARINTERNATION.MSICenter",
-        "Recommendation":  "optional",
-        "RemovalMethod":  "Appx"
+        "AppId": "SAMSUNGELECTRONICSCoLtd.SecondScreen",
+        "DisplayName": "SAMSUNGELECTRONICSCoLtd.SecondScreen",
+        "Recommendation": "optional",
+        "RemovalMethod": "Appx"
     },
     {
-        "AppId":  "SAMSUNGELECTRONICSCO.LTD.PCGallery",
-        "DisplayName":  "SAMSUNGELECTRONICSCO.LTD.PCGallery",
-        "Recommendation":  "optional",
-        "RemovalMethod":  "Appx"
+        "AppId": "SAMSUNGELECTRONICSCO.LTD.PENUP",
+        "DisplayName": "SAMSUNGELECTRONICSCO.LTD.PENUP",
+        "Recommendation": "optional",
+        "RemovalMethod": "Appx"
     },
     {
-        "AppId":  "SAMSUNGELECTRONICSCoLtd.SamsungFlux",
-        "DisplayName":  "SAMSUNGELECTRONICSCoLtd.SamsungFlux",
-        "Recommendation":  "optional",
-        "RemovalMethod":  "Appx"
+        "AppId": "9426MICRO-STARINTERNATION.BusinessCenter",
+        "DisplayName": "9426MICRO-STARINTERNATION.BusinessCenter",
+        "Recommendation": "optional",
+        "RemovalMethod": "Appx"
     },
     {
-        "AppId":  "SAMSUNGELECTRONICSCoLtd.SamsungNotes",
-        "DisplayName":  "SAMSUNGELECTRONICSCoLtd.SamsungNotes",
-        "Recommendation":  "optional",
-        "RemovalMethod":  "Appx"
+        "AppId": "AcerIncorporated.AcerRegistration",
+        "DisplayName": "AcerIncorporated.AcerRegistration",
+        "Recommendation": "optional",
+        "RemovalMethod": "Appx"
     },
     {
-        "AppId":  "B9ECED6F.ScreenPadMaster",
-        "DisplayName":  "B9ECED6F.ScreenPadMaster",
-        "Recommendation":  "optional",
-        "RemovalMethod":  "Appx"
+        "AppId": "E0469640.SmartAppearance",
+        "DisplayName": "E0469640.SmartAppearance",
+        "Recommendation": "optional",
+        "RemovalMethod": "Appx"
     },
     {
-        "AppId":  "SAMSUNGELECTRONICSCO.LTD.SamsungStudio",
-        "DisplayName":  "SAMSUNGELECTRONICSCO.LTD.SamsungStudio",
-        "Recommendation":  "optional",
-        "RemovalMethod":  "Appx"
+        "AppId": "LGElectronics.LGMonitorApp",
+        "DisplayName": "LGElectronics.LGMonitorApp",
+        "Recommendation": "optional",
+        "RemovalMethod": "Appx"
     },
     {
-        "AppId":  "SAMSUNGELECTRONICSCO.LTD.SamsungScreenRecording",
-        "DisplayName":  "SAMSUNGELECTRONICSCO.LTD.SamsungScreenRecording",
-        "Recommendation":  "optional",
-        "RemovalMethod":  "Appx"
+        "AppId": "AD2F1837.HPAIExperienceCenter",
+        "DisplayName": "AD2F1837.HPAIExperienceCenter",
+        "Recommendation": "optional",
+        "RemovalMethod": "Appx"
     },
     {
-        "AppId":  "SAMSUNGELECTRONICSCO.LTD.Bixby",
-        "DisplayName":  "SAMSUNGELECTRONICSCO.LTD.Bixby",
-        "Recommendation":  "optional",
-        "RemovalMethod":  "Appx"
+        "AppId": "AD2F1837.HPConnectedMusic",
+        "DisplayName": "AD2F1837.HPConnectedMusic",
+        "Recommendation": "optional",
+        "RemovalMethod": "Appx"
     },
     {
-        "AppId":  "SAMSUNGELECTRONICSCO.LTD.SamsungWelcome",
-        "DisplayName":  "SAMSUNGELECTRONICSCO.LTD.SamsungWelcome",
-        "Recommendation":  "optional",
-        "RemovalMethod":  "Appx"
+        "AppId": "AD2F1837.HPConnectedPhotopoweredbySnapfish",
+        "DisplayName": "AD2F1837.HPConnectedPhotopoweredbySnapfish",
+        "Recommendation": "optional",
+        "RemovalMethod": "Appx"
     },
     {
-        "AppId":  "SAMSUNGELECTRONICSCO.LTD.SmartThingsWindows",
-        "DisplayName":  "SAMSUNGELECTRONICSCO.LTD.SmartThingsWindows",
-        "Recommendation":  "optional",
-        "RemovalMethod":  "Appx"
+        "AppId": "AD2F1837.HPDesktopSupportUtilities",
+        "DisplayName": "AD2F1837.HPDesktopSupportUtilities",
+        "Recommendation": "optional",
+        "RemovalMethod": "Appx"
     },
     {
-        "AppId":  "SAMSUNGELECTRONICSCoLtd.MultiControl",
-        "DisplayName":  "SAMSUNGELECTRONICSCoLtd.MultiControl",
-        "Recommendation":  "optional",
-        "RemovalMethod":  "Appx"
+        "AppId": "AD2F1837.HPEasyClean",
+        "DisplayName": "AD2F1837.HPEasyClean",
+        "Recommendation": "optional",
+        "RemovalMethod": "Appx"
     },
     {
-        "AppId":  "SAMSUNGELECTRONICSCoLtd.SecondScreen",
-        "DisplayName":  "SAMSUNGELECTRONICSCoLtd.SecondScreen",
-        "Recommendation":  "optional",
-        "RemovalMethod":  "Appx"
+        "AppId": "AD2F1837.HPFileViewer",
+        "DisplayName": "AD2F1837.HPFileViewer",
+        "Recommendation": "optional",
+        "RemovalMethod": "Appx"
     },
     {
-        "AppId":  "SAMSUNGELECTRONICSCO.LTD.PENUP",
-        "DisplayName":  "SAMSUNGELECTRONICSCO.LTD.PENUP",
-        "Recommendation":  "optional",
-        "RemovalMethod":  "Appx"
+        "AppId": "AD2F1837.HPJumpStarts",
+        "DisplayName": "AD2F1837.HPJumpStarts",
+        "Recommendation": "optional",
+        "RemovalMethod": "Appx"
     },
     {
-        "AppId":  "9426MICRO-STARINTERNATION.BusinessCenter",
-        "DisplayName":  "9426MICRO-STARINTERNATION.BusinessCenter",
-        "Recommendation":  "optional",
-        "RemovalMethod":  "Appx"
+        "AppId": "AD2F1837.HPPCHardwareDiagnosticsWindows",
+        "DisplayName": "AD2F1837.HPPCHardwareDiagnosticsWindows",
+        "Recommendation": "optional",
+        "RemovalMethod": "Appx"
     },
     {
-        "AppId":  "AcerIncorporated.AcerRegistration",
-        "DisplayName":  "AcerIncorporated.AcerRegistration",
-        "Recommendation":  "optional",
-        "RemovalMethod":  "Appx"
+        "AppId": "AD2F1837.HPPowerManager",
+        "DisplayName": "AD2F1837.HPPowerManager",
+        "Recommendation": "optional",
+        "RemovalMethod": "Appx"
     },
     {
-        "AppId":  "E0469640.SmartAppearance",
-        "DisplayName":  "E0469640.SmartAppearance",
-        "Recommendation":  "optional",
-        "RemovalMethod":  "Appx"
+        "AppId": "AD2F1837.HPPrinterControl",
+        "DisplayName": "AD2F1837.HPPrinterControl",
+        "Recommendation": "optional",
+        "RemovalMethod": "Appx"
     },
     {
-        "AppId":  "LGElectronics.LGMonitorApp",
-        "DisplayName":  "LGElectronics.LGMonitorApp",
-        "Recommendation":  "optional",
-        "RemovalMethod":  "Appx"
+        "AppId": "AD2F1837.HPPrivacySettings",
+        "DisplayName": "AD2F1837.HPPrivacySettings",
+        "Recommendation": "optional",
+        "RemovalMethod": "Appx"
     },
     {
-        "AppId":  "AD2F1837.HPAIExperienceCenter",
-        "DisplayName":  "AD2F1837.HPAIExperienceCenter",
-        "Recommendation":  "optional",
-        "RemovalMethod":  "Appx"
+        "AppId": "AD2F1837.HPQuickDrop",
+        "DisplayName": "AD2F1837.HPQuickDrop",
+        "Recommendation": "optional",
+        "RemovalMethod": "Appx"
     },
     {
-        "AppId":  "AD2F1837.HPConnectedMusic",
-        "DisplayName":  "AD2F1837.HPConnectedMusic",
-        "Recommendation":  "optional",
-        "RemovalMethod":  "Appx"
+        "AppId": "AD2F1837.HPQuickTouch",
+        "DisplayName": "AD2F1837.HPQuickTouch",
+        "Recommendation": "optional",
+        "RemovalMethod": "Appx"
     },
     {
-        "AppId":  "AD2F1837.HPConnectedPhotopoweredbySnapfish",
-        "DisplayName":  "AD2F1837.HPConnectedPhotopoweredbySnapfish",
-        "Recommendation":  "optional",
-        "RemovalMethod":  "Appx"
+        "AppId": "AD2F1837.HPRegistration",
+        "DisplayName": "AD2F1837.HPRegistration",
+        "Recommendation": "optional",
+        "RemovalMethod": "Appx"
     },
     {
-        "AppId":  "AD2F1837.HPDesktopSupportUtilities",
-        "DisplayName":  "AD2F1837.HPDesktopSupportUtilities",
-        "Recommendation":  "optional",
-        "RemovalMethod":  "Appx"
+        "AppId": "AD2F1837.HPSupportAssistant",
+        "DisplayName": "AD2F1837.HPSupportAssistant",
+        "Recommendation": "optional",
+        "RemovalMethod": "Appx"
     },
     {
-        "AppId":  "AD2F1837.HPEasyClean",
-        "DisplayName":  "AD2F1837.HPEasyClean",
-        "Recommendation":  "optional",
-        "RemovalMethod":  "Appx"
+        "AppId": "AD2F1837.HPSureShieldAI",
+        "DisplayName": "AD2F1837.HPSureShieldAI",
+        "Recommendation": "optional",
+        "RemovalMethod": "Appx"
     },
     {
-        "AppId":  "AD2F1837.HPFileViewer",
-        "DisplayName":  "AD2F1837.HPFileViewer",
-        "Recommendation":  "optional",
-        "RemovalMethod":  "Appx"
+        "AppId": "AD2F1837.HPSystemInformation",
+        "DisplayName": "AD2F1837.HPSystemInformation",
+        "Recommendation": "optional",
+        "RemovalMethod": "Appx"
     },
     {
-        "AppId":  "AD2F1837.HPJumpStarts",
-        "DisplayName":  "AD2F1837.HPJumpStarts",
-        "Recommendation":  "optional",
-        "RemovalMethod":  "Appx"
+        "AppId": "AD2F1837.HPWelcome",
+        "DisplayName": "AD2F1837.HPWelcome",
+        "Recommendation": "optional",
+        "RemovalMethod": "Appx"
     },
     {
-        "AppId":  "AD2F1837.HPPCHardwareDiagnosticsWindows",
-        "DisplayName":  "AD2F1837.HPPCHardwareDiagnosticsWindows",
-        "Recommendation":  "optional",
-        "RemovalMethod":  "Appx"
+        "AppId": "AD2F1837.HPWorkWell",
+        "DisplayName": "AD2F1837.HPWorkWell",
+        "Recommendation": "optional",
+        "RemovalMethod": "Appx"
     },
     {
-        "AppId":  "AD2F1837.HPPowerManager",
-        "DisplayName":  "AD2F1837.HPPowerManager",
-        "Recommendation":  "optional",
-        "RemovalMethod":  "Appx"
+        "AppId": "AD2F1837.myHP",
+        "DisplayName": "AD2F1837.myHP",
+        "Recommendation": "optional",
+        "RemovalMethod": "Appx"
     },
     {
-        "AppId":  "AD2F1837.HPPrinterControl",
-        "DisplayName":  "AD2F1837.HPPrinterControl",
-        "Recommendation":  "optional",
-        "RemovalMethod":  "Appx"
+        "AppId": "E046963F.LenovoCompanion",
+        "DisplayName": "E046963F.LenovoCompanion",
+        "Recommendation": "optional",
+        "RemovalMethod": "Appx"
     },
     {
-        "AppId":  "AD2F1837.HPPrivacySettings",
-        "DisplayName":  "AD2F1837.HPPrivacySettings",
-        "Recommendation":  "optional",
-        "RemovalMethod":  "Appx"
+        "AppId": "LenovoCompanyLimited.LenovoVantageService",
+        "DisplayName": "LenovoCompanyLimited.LenovoVantageService",
+        "Recommendation": "optional",
+        "RemovalMethod": "Appx"
     },
     {
-        "AppId":  "AD2F1837.HPQuickDrop",
-        "DisplayName":  "AD2F1837.HPQuickDrop",
-        "Recommendation":  "optional",
-        "RemovalMethod":  "Appx"
+        "AppId": "DellInc.DellSupportAssistforPCs",
+        "DisplayName": "DellInc.DellSupportAssistforPCs",
+        "Recommendation": "optional",
+        "RemovalMethod": "Appx"
     },
     {
-        "AppId":  "AD2F1837.HPQuickTouch",
-        "DisplayName":  "AD2F1837.HPQuickTouch",
-        "Recommendation":  "optional",
-        "RemovalMethod":  "Appx"
+        "AppId": "DellInc.DellDigitalDelivery",
+        "DisplayName": "DellInc.DellDigitalDelivery",
+        "Recommendation": "optional",
+        "RemovalMethod": "Appx"
     },
     {
-        "AppId":  "AD2F1837.HPRegistration",
-        "DisplayName":  "AD2F1837.HPRegistration",
-        "Recommendation":  "optional",
-        "RemovalMethod":  "Appx"
+        "AppId": "DellInc.DellMobileConnect",
+        "DisplayName": "DellInc.DellMobileConnect",
+        "Recommendation": "optional",
+        "RemovalMethod": "Appx"
     },
     {
-        "AppId":  "AD2F1837.HPSupportAssistant",
-        "DisplayName":  "AD2F1837.HPSupportAssistant",
-        "Recommendation":  "optional",
-        "RemovalMethod":  "Appx"
-    },
-    {
-        "AppId":  "AD2F1837.HPSureShieldAI",
-        "DisplayName":  "AD2F1837.HPSureShieldAI",
-        "Recommendation":  "optional",
-        "RemovalMethod":  "Appx"
-    },
-    {
-        "AppId":  "AD2F1837.HPSystemInformation",
-        "DisplayName":  "AD2F1837.HPSystemInformation",
-        "Recommendation":  "optional",
-        "RemovalMethod":  "Appx"
-    },
-    {
-        "AppId":  "AD2F1837.HPWelcome",
-        "DisplayName":  "AD2F1837.HPWelcome",
-        "Recommendation":  "optional",
-        "RemovalMethod":  "Appx"
-    },
-    {
-        "AppId":  "AD2F1837.HPWorkWell",
-        "DisplayName":  "AD2F1837.HPWorkWell",
-        "Recommendation":  "optional",
-        "RemovalMethod":  "Appx"
-    },
-    {
-        "AppId":  "AD2F1837.myHP",
-        "DisplayName":  "AD2F1837.myHP",
-        "Recommendation":  "optional",
-        "RemovalMethod":  "Appx"
-    },
-    {
-        "AppId":  "E046963F.LenovoCompanion",
-        "DisplayName":  "E046963F.LenovoCompanion",
-        "Recommendation":  "optional",
-        "RemovalMethod":  "Appx"
-    },
-    {
-        "AppId":  "LenovoCompanyLimited.LenovoVantageService",
-        "DisplayName":  "LenovoCompanyLimited.LenovoVantageService",
-        "Recommendation":  "optional",
-        "RemovalMethod":  "Appx"
-    },
-    {
-        "AppId":  "DellInc.DellSupportAssistforPCs",
-        "DisplayName":  "DellInc.DellSupportAssistforPCs",
-        "Recommendation":  "optional",
-        "RemovalMethod":  "Appx"
-    },
-    {
-        "AppId":  "DellInc.DellDigitalDelivery",
-        "DisplayName":  "DellInc.DellDigitalDelivery",
-        "Recommendation":  "optional",
-        "RemovalMethod":  "Appx"
-    },
-    {
-        "AppId":  "DellInc.DellMobileConnect",
-        "DisplayName":  "DellInc.DellMobileConnect",
-        "Recommendation":  "optional",
-        "RemovalMethod":  "Appx"
+        "AppId": "Microsoft.Copilot",
+        "DisplayName": "Microsoft.Copilot",
+        "Recommendation": "Optional",
+        "RemovalMethod": "Appx"
     }
 ]

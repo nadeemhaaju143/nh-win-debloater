@@ -1,6 +1,6 @@
 <#
     .SYNOPSIS
-        Automated WPF Visual-Tree & UI Automation Test Harness for NH Win Debloater v1.3.0.
+        Automated WPF Visual-Tree & UI Automation Test Harness for NH Win Debloater v1.3.1.
     .DESCRIPTION
         Launches the live WPF application window and verifies single-canvas header,
         hardware specs slot, top-right button order, welcome flow, scope selection,
@@ -40,7 +40,7 @@ Import-Module (Join-Path $corePath "SystemTweaks.psm1") -Force
 
 Write-Host ""
 Write-Host " ======================================================================" -ForegroundColor Cyan
-Write-Host "   NH WIN DEBLOATER v1.3.0 - AUTOMATED UI VISIBILITY & CLICK HARNESS" -ForegroundColor White
+Write-Host "   NH WIN DEBLOATER v1.3.1 - AUTOMATED UI VISIBILITY & CLICK HARNESS" -ForegroundColor White
 Write-Host "   Developed by NH Digital | https://nhdigital.shop" -ForegroundColor DarkCyan
 Write-Host " ======================================================================" -ForegroundColor Cyan
 Write-Host ""
@@ -219,7 +219,7 @@ $btnNext.Add_Click({
     param([object]$s, [System.Windows.RoutedEventArgs]$e)
     if ($script:CurrentStage -eq 1) {
         if ($script:WelcomeMode -eq "Recommended") {
-            & $updateStageView 4
+            & $updateStageView 3
         } else {
             & $updateStageView 2
         }
@@ -232,7 +232,13 @@ $btnNext.Add_Click({
 
 $btnBack.Add_Click({
     param([object]$s, [System.Windows.RoutedEventArgs]$e)
-    if ($script:CurrentStage -gt 1) {
+    if ($script:CurrentStage -eq 3) {
+        if ($script:WelcomeMode -eq "Recommended") {
+            & $updateStageView 1
+        } else {
+            & $updateStageView 2
+        }
+    } elseif ($script:CurrentStage -gt 1) {
         & $updateStageView ($script:CurrentStage - 1)
     }
 })
@@ -244,13 +250,13 @@ $btnRecommendedSetup.RaiseEvent([System.Windows.RoutedEventArgs]::new([System.Wi
 Assert-Check -Category "ModeFlow" -Description "Clicking Recommended Setup stays on Stage 1 (no jump)" -Condition ($viewStage1.Visibility -eq [System.Windows.Visibility]::Visible)
 Assert-Check -Category "ModeFlow" -Description "Recommended Setup active state has vibrant cyan background" -Condition ($btnRecommendedSetup.BorderThickness.Top -eq 2)
 
-# Test Next Click on Recommended Setup -> routes directly to Stage 4 (execution flow)
+# Test Next Click on Recommended Setup -> routes directly to Stage 3 (Pre-Apply Summary)
 $btnNext.RaiseEvent([System.Windows.RoutedEventArgs]::new([System.Windows.Controls.Primitives.ButtonBase]::ClickEvent))
-Assert-Check -Category "ModeFlow" -Description "Clicking Next with Recommended Setup jumps directly to Stage 4" -Condition ($script:CurrentStage -eq 4 -and $viewStage4.Visibility -eq [System.Windows.Visibility]::Visible)
+Assert-Check -Category "ModeFlow" -Description "Clicking Next with Recommended Setup routes to Stage 3 Pre-Apply Summary" -Condition ($script:CurrentStage -eq 3 -and $viewStage3.Visibility -eq [System.Windows.Visibility]::Visible)
 
-# Test Back Click from Stage 4 -> returns safely
+# Test Back Click from Stage 3 on Recommended Setup -> returns to Stage 1
 $btnBack.RaiseEvent([System.Windows.RoutedEventArgs]::new([System.Windows.Controls.Primitives.ButtonBase]::ClickEvent))
-Assert-Check -Category "ModeFlow" -Description "Clicking Back from Stage 4 navigates back safely" -Condition ($script:CurrentStage -lt 4)
+Assert-Check -Category "ModeFlow" -Description "Clicking Back from Stage 3 on Recommended Setup returns to Stage 1" -Condition ($script:CurrentStage -eq 1 -and $viewStage1.Visibility -eq [System.Windows.Visibility]::Visible)
 
 # Reset to Stage 1 and test Custom Tuning flow
 & $updateStageView 1
@@ -453,7 +459,50 @@ $tab1Grid = $tabControl.Items[0].Content
 $overlappingChildren = @($tab1Grid.Children | Where-Object { [System.Windows.Controls.Grid]::GetRow($_) -ge 3 })
 Assert-Check -Category "AppList" -Description "Tab 1 Grid has zero overlapping row elements" -Condition ($overlappingChildren.Count -eq 0)
 
-# --- PART 1.6: Footer Verification ---
+# --- PART 1.5: Stage 3 Pre-Apply Summary & Apps & Bloatware Checks ---
+$tabHeaderApps = $win.FindName("TabHeaderApps")
+Assert-Check -Category "Stage2" -Description "Tab 1 renamed to 'Apps & Bloatware'" -Condition ($null -ne $tabHeaderApps -and $tabHeaderApps.Text -eq "Apps & Bloatware")
+
+$txtStage3Scope = $win.FindName("TxtStage3Scope")
+$txtStage3Mode = $win.FindName("TxtStage3Mode")
+$chkRestartExplorer = $win.FindName("ChkRestartExplorer")
+$chkDryRunStage3 = $win.FindName("ChkDryRunStage3")
+Assert-Check -Category "Stage3" -Description "Stage 3 Target Scope indicator (TxtStage3Scope) exists" -Condition ($null -ne $txtStage3Scope)
+Assert-Check -Category "Stage3" -Description "Stage 3 Execution Mode indicator (TxtStage3Mode) exists" -Condition ($null -ne $txtStage3Mode)
+Assert-Check -Category "Stage3" -Description "Stage 3 Restart Explorer toggle (ChkRestartExplorer) exists" -Condition ($null -ne $chkRestartExplorer)
+Assert-Check -Category "Stage3" -Description "Stage 3 Dry-Run Simulation toggle (ChkDryRunStage3) exists" -Condition ($null -ne $chkDryRunStage3)
+
+$txtBtnApply = $win.FindName("TxtBtnApply")
+Assert-Check -Category "Stage3" -Description "Stage 3 Apply button displays 'Apply Changes'" -Condition ($null -ne $txtBtnApply -and $txtBtnApply.Text -eq "Apply Changes")
+
+# --- PART 1.6: Essential Apps Protection & Copilot/OneDrive Presets ---
+$presetsDir = Join-Path $projectRoot "src\Presets"
+$protectedJsonPath = Join-Path $presetsDir "ProtectedApps.json"
+$protectedList = (Get-Content $protectedJsonPath -Raw | ConvertFrom-Json)
+$essentialApps = @(
+    "Microsoft.WindowsTerminal", "Microsoft.WindowsStore", "Microsoft.WindowsNotepad",
+    "Microsoft.ScreenSketch", "Microsoft.Paint", "Microsoft.MSPaint",
+    "Microsoft.WindowsCalculator", "Microsoft.WindowsCamera", "Microsoft.ZuneMusic",
+    "Microsoft.ZuneVideo", "Microsoft.WindowsMediaPlayer", "Microsoft.Windows.Photos"
+)
+$allProtected = ($essentialApps | Where-Object { $protectedList -notcontains $_ }).Count -eq 0
+Assert-Check -Category "ProtectedApps" -Description "All essential built-in apps are in ProtectedApps.json" -Condition $allProtected
+
+$defaultAppsJson = (Get-Content (Join-Path $presetsDir "DefaultApps.json") -Raw | ConvertFrom-Json)
+$deepAppsJson = (Get-Content (Join-Path $presetsDir "DeepDebloatApps.json") -Raw | ConvertFrom-Json)
+
+$defaultAppIds = @($defaultAppsJson | ForEach-Object { $_.AppId })
+$deepAppIds = @($deepAppsJson | ForEach-Object { $_.AppId })
+
+$hasProtectedInDefault = ($essentialApps | Where-Object { $defaultAppIds -contains $_ }).Count -gt 0
+$hasProtectedInDeep = ($essentialApps | Where-Object { $deepAppIds -contains $_ }).Count -gt 0
+Assert-Check -Category "ProtectedApps" -Description "Essential built-in apps are excluded from DefaultApps.json" -Condition (-not $hasProtectedInDefault)
+Assert-Check -Category "ProtectedApps" -Description "Essential built-in apps are excluded from DeepDebloatApps.json" -Condition (-not $hasProtectedInDeep)
+
+$copilotOneDriveInPresets = ($defaultAppIds -contains "Microsoft.Copilot" -and $defaultAppIds -contains "Microsoft.OneDrive" -and $deepAppIds -contains "Microsoft.Copilot" -and $deepAppIds -contains "Microsoft.OneDrive")
+Assert-Check -Category "ProtectedApps" -Description "Copilot & OneDrive included in removable app lists" -Condition $copilotOneDriveInPresets
+
+# --- PART 1.7: Footer Verification ---
 $linkNhDigital = $win.FindName("LinkNhDigital")
 $hasLink = ($null -ne $linkNhDigital -and $linkNhDigital.NavigateUri.AbsoluteUri -eq "https://nhdigital.shop/")
 
