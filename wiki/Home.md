@@ -15,7 +15,7 @@
 
 ---
 
-## Performance & Resource Benchmarks (v1.2.0)
+## Performance & Resource Benchmarks (v1.2.1)
 
 Tested on clean isolated Windows 11 Enterprise (x64) measuring resource consumption before debloating, after standard debloat (`v1.0.0`), after deep optimization (`v1.1.0`), and after **`v1.2.0`** (`Recommended Setup` with Event-Batching, Sysprep Hive & Zero-Leak Host):
 
