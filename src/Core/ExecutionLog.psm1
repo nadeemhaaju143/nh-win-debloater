@@ -5,7 +5,7 @@
         Provides structured level-based logging, dry-run preview support,
         execution tracking, and backup inventory discovery.
     .MODULEVERSION
-        1.2.0
+        1.2.1
 #>
 
 [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '')]

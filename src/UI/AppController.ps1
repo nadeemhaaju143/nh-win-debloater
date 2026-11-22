@@ -1,4 +1,4 @@
-﻿<#
+<#
     .SYNOPSIS
         NH Win Debloater - UI Controller Engine
     .DESCRIPTION
@@ -7,7 +7,7 @@
         category filters, executes dry-run previews, and triggers atomic debloat pipelines
         with dedicated AI integration, privacy, gaming, and system tweak controls.
     .MODULEVERSION
-        1.2.0
+        1.2.1
 #>
 
 [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '')]
@@ -58,7 +58,7 @@ function Show-DebloaterWindow {
         return
     }
 
-    $xaml = Get-Content -Path $xamlPath -Raw
+    $xaml = Get-Content -Path $xamlPath -Raw -Encoding UTF8
     $reader = [System.Xml.XmlReader]::Create([System.IO.StringReader]::new($xaml))
     try {
         $window = [System.Windows.Markup.XamlReader]::Load($reader)
@@ -120,6 +120,7 @@ function Show-DebloaterWindow {
     $radioPresetMinimal = $window.FindName("RadioPresetMinimal")
     $radioPresetDefault = $window.FindName("RadioPresetDefault")
     $radioPresetDeep = $window.FindName("RadioPresetDeep")
+    $radioScopeAllUsers = $window.FindName("RadioScopeAllUsers")
     $radioScopeCurrentUser = $window.FindName("RadioScopeCurrentUser")
     $radioScopeDefaultUser = $window.FindName("RadioScopeDefaultUser")
 
@@ -419,7 +420,8 @@ function Show-DebloaterWindow {
         }
 
         if ($txtHardwareSpecs) {
-            $txtHardwareSpecs.Text = "$cpuClean • ${totalRamGb} GB RAM"
+            $bullet = [char]0x2022
+            $txtHardwareSpecs.Text = "$cpuClean $bullet ${totalRamGb} GB RAM"
         }
 
         $build = (Get-ItemProperty "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion" -ErrorAction SilentlyContinue).CurrentBuild
@@ -587,7 +589,7 @@ function Show-DebloaterWindow {
             } else {
                 foreach ($b in $backups) {
                     $cboItem = [System.Windows.Controls.ComboBoxItem]::new()
-                    $cboItem.Content = "$($b.LastModified) — $($b.FileName) ($($b.SizeKb) KB)"
+                    $cboItem.Content = "$($b.LastModified) - $($b.FileName) ($($b.SizeKb) KB)"
                     $cboItem.Tag = $b
                     $null = $cboRegistrySnapshots.Items.Add($cboItem)
                 }
@@ -817,7 +819,8 @@ function Show-DebloaterWindow {
 
         # 5. Update UI Controls
         if ($txtGlobalSelectionSummary) {
-            $txtGlobalSelectionSummary.Text = "$selectedAppCount Apps • $($impact.TweakCount) Tweaks selected"
+            $bullet = [char]0x2022
+            $txtGlobalSelectionSummary.Text = "$selectedAppCount Apps $bullet $($impact.TweakCount) Tweaks selected"
         }
 
         $brushConv = [System.Windows.Media.BrushConverter]::new()
@@ -840,7 +843,8 @@ function Show-DebloaterWindow {
 
         # Stage 3 Updates
         if ($txtStage3Summary) {
-            $txtStage3Summary.Text = "$selectedAppCount Bloatware Apps • $($impact.TweakCount) System Tweaks Queued ($($impact.TotalCount) Operations)"
+            $bullet = [char]0x2022
+            $txtStage3Summary.Text = "$selectedAppCount Bloatware Apps $bullet $($impact.TweakCount) System Tweaks Queued ($($impact.TotalCount) Operations)"
         }
         if ($badgeStage3Impact) {
             $badgeStage3Impact.Background = $bgBrush
@@ -957,7 +961,8 @@ function Show-DebloaterWindow {
             if ($txtToggleAppCategoriesText) {
                 $txtToggleAppCategoriesText.Text = $catHeader
             } elseif ($toggleAppCategories) {
-                $toggleAppCategories.Content = "$catHeader ▼"
+                $chevron = [char]0x25BC
+                $toggleAppCategories.Content = "$catHeader $chevron"
             }
 
             $listAppsContainer.Items.Clear()
@@ -1002,20 +1007,17 @@ function Show-DebloaterWindow {
 
                 $isProtected = Test-IsProtectedApp -AppId $app.AppId -PresetsPath $presetsPath
                 $safetyTier = "Recommended"
-                $dotEmoji = "🟢"
                 $dotColor = "#10B981"
                 $badgeBg = "#064E3B"
                 $badgeFg = "#10B981"
 
                 if ($isProtected) {
                     $safetyTier = "Not Recommended"
-                    $dotEmoji = "🔴"
                     $dotColor = "#EF4444"
                     $badgeBg = "#450A0A"
                     $badgeFg = "#EF4444"
                 } elseif ($app.AppId -match "Xbox|Gaming|Zune|Media|Solitaire|Weather|News|Bing|Maps|People|Mail|Office|OneNote|Skype|Clipchamp") {
                     $safetyTier = "Optional"
-                    $dotEmoji = "🟡"
                     $dotColor = "#F59E0B"
                     $badgeBg = "#451A03"
                     $badgeFg = "#F59E0B"
@@ -1042,11 +1044,13 @@ function Show-DebloaterWindow {
                 $sp.Orientation = [System.Windows.Controls.Orientation]::Horizontal
                 $sp.VerticalAlignment = [System.Windows.VerticalAlignment]::Center
 
-                $txtDot = [System.Windows.Controls.TextBlock]::new()
-                $txtDot.Text = "$dotEmoji "
-                $txtDot.FontSize = 10
-                $txtDot.VerticalAlignment = [System.Windows.VerticalAlignment]::Center
-                $sp.Children.Add($txtDot) | Out-Null
+                $dotShape = [System.Windows.Shapes.Ellipse]::new()
+                $dotShape.Width = 8
+                $dotShape.Height = 8
+                $dotShape.Fill = [System.Windows.Media.BrushConverter]::new().ConvertFromString($dotColor)
+                $dotShape.Margin = [System.Windows.Thickness]::new(0, 0, 6, 0)
+                $dotShape.VerticalAlignment = [System.Windows.VerticalAlignment]::Center
+                $sp.Children.Add($dotShape) | Out-Null
 
                 $badge = [System.Windows.Controls.Border]::new()
                 $badge.CornerRadius = [System.Windows.CornerRadius]::new(3)
@@ -1071,7 +1075,7 @@ function Show-DebloaterWindow {
                 $sp.Children.Add($txtTitle) | Out-Null
 
                 $txtDesc = [System.Windows.Controls.TextBlock]::new()
-                $txtDesc.Text = " — $cleanDesc"
+                $txtDesc.Text = " - $cleanDesc"
                 $txtDesc.Foreground = [System.Windows.Media.BrushConverter]::new().ConvertFromString("#94A3B8")
                 $txtDesc.FontSize = 11
                 $txtDesc.Margin = [System.Windows.Thickness]::new(4, 0, 0, 0)
@@ -2781,7 +2785,7 @@ function Show-DebloaterWindow {
         $btnClose.Add_Click({ $window.Close() })
     }
 
-    # Top Integrated Canvas Controls: Heart Support, Settings (Preferences), Quick Actions Menu (☰)
+    # Top Integrated Canvas Controls: Heart Support, Settings (Preferences), Quick Actions Menu, Close
     $btnSupport = $window.FindName("BtnSupport")
     $popupSupport = $window.FindName("PopupSupport")
     $btnSupportOneTime = $window.FindName("BtnSupportOneTime")
@@ -2871,94 +2875,35 @@ function Show-DebloaterWindow {
 
     # Multi-Language Engine Wiring
     $cmbLanguage = $window.FindName("CmbLanguage")
+    $translationsPath = Join-Path $ProjectRoot "src\UI\Translations.json"
+    $translationsObj = $null
+    if (Test-Path $translationsPath) {
+        try {
+            $translationsJson = Get-Content -Path $translationsPath -Raw -Encoding UTF8
+            $translationsObj = ConvertFrom-Json $translationsJson
+        } catch {
+            $translationsObj = $null
+        }
+    }
+
     $applyLanguage = {
         param([string]$langCode)
-        $translations = @{
-            "en-US" = @{
-                Heading  = "Welcome to NH Win Debloater"
-                Sub      = "Streamline Windows, reclaim memory, and keep full control in a few clicks."
-                RecTitle = "Recommended Setup"
-                RecDesc  = "Curated safe optimizations & RAM boost"
-                CusTitle = "Custom Tuning"
-                CusDesc  = "Tailor apps, privacy, explorer, gaming & AI"
-                Back     = "Back"
-                Next     = "Next"
-                Apply    = "Apply Optimizations"
-                Finish   = "Finish & Exit"
-                ScopeAll = "All Users (Recommended)"
-                ScopeCur = "Current User Only"
-                ScopeDef = "Default User / Sysprep"
-            }
-            "hi-IN" = @{
-                Heading  = "एनएच विन डीब्लोटर में आपका स्वागत है"
-                Sub      = "विंडोज को सुव्यवस्थित करें, मेमोरी पुनः प्राप्त करें और पूर्ण नियंत्रण बनाए रखें।"
-                RecTitle = "अनुशंसित सेटअप"
-                RecDesc  = "सुरक्षित अनुकूलन और रैम बूस्ट"
-                CusTitle = "कस्टम ट्यूनिंग"
-                CusDesc  = "ऐप्स, गोपनीयता, एक्सप्लोरर, गेमिंग और एआई अनुकूलित करें"
-                Back     = "पीछे"
-                Next     = "आगे"
-                Apply    = "लागू करें"
-                Finish   = "समाप्त करें और बाहर निकलें"
-                ScopeAll = "सभी उपयोगकर्ता (अनुशंसित)"
-                ScopeCur = "केवल वर्तमान उपयोगकर्ता"
-                ScopeDef = "डिफ़ॉल्ट उपयोगकर्ता / सिसप्रेप"
-            }
-            "kn-IN" = @{
-                Heading  = "ಎನ್ ಹೆಚ್ ವಿನ್ ಡಿಬ್ಲೋಟರ್ ಗೆ ಸುಸ್ವಾಗತ"
-                Sub      = "ವಿಂಡೋಸ್ ಅನ್ನು ಸರಳಗೊಳಿಸಿ, ಮೆಮೊರಿಯನ್ನು ಉಳಿಸಿ ಮತ್ತು ಸಂಪೂರ್ಣ ನಿಯಂತ್ರಣವನ್ನು ಕಾಪಾಡಿ."
-                RecTitle = "ಶಿಫಾರಸು ಮಾಡಿದ ಸೆಟಪ್"
-                RecDesc  = "ಸುರಕ್ಷಿತ ಆಪ್ಟಿಮೈಸೇಶನ್ ಮತ್ತು RAM ಬೂಸ್ಟ್"
-                CusTitle = "ಕಸ್ಟಮ್ ಟ್ಯೂನಿಂಗ್"
-                CusDesc  = "ಅಪ್ಲಿಕೇಶನ್‌ಗಳು, ಗೌಪ್ಯತೆ ಮತ್ತು ಗೇಮಿಂಗ್ ಹೊಂದಿಸಿ"
-                Back     = "ಹಿಂದೆ"
-                Next     = "ಮುಂದೆ"
-                Apply    = "ಅನ್ವಯಿಸು"
-                Finish   = "ಮುಕ್ತಾಯ ಮತ್ತು ನಿರ್ಗಮಿಸಿ"
-                ScopeAll = "ಎಲ್ಲಾ ಬಳಕೆದಾರರು (ಶಿಫಾರಸು ಮಾಡಲಾಗಿದೆ)"
-                ScopeCur = "ಪ್ರಸ್ತುತ ಬಳಕೆದಾರ ಮಾತ್ರ"
-                ScopeDef = "ಡೀಫಾಲ್ಟ್ ಬಳಕೆದಾರ / ಸಿಸ್ಪ್ರೆಪ್"
-            }
-            "es-ES" = @{
-                Heading  = "Bienvenido a NH Win Debloater"
-                Sub      = "Optimice Windows, recupere memoria y mantenga el control total en pocos clics."
-                RecTitle = "Configuración Recomendada"
-                RecDesc  = "Optimizaciones seguras seleccionadas y mejora de RAM"
-                CusTitle = "Ajuste Personalizado"
-                CusDesc  = "Personalice aplicaciones, privacidad, explorador, juegos e IA"
-                Back     = "Atrás"
-                Next     = "Siguiente"
-                Apply    = "Aplicar Optimizaciones"
-                Finish   = "Finalizar y Salir"
-                ScopeAll = "Todos los usuarios (Recomendado)"
-                ScopeCur = "Solo usuario actual"
-                ScopeDef = "Usuario predeterminado / Sysprep"
-            }
-            "de-DE" = @{
-                Heading  = "Willkommen bei NH Win Debloater"
-                Sub      = "Windows optimieren, Arbeitsspeicher freigeben und volle Kontrolle behalten."
-                RecTitle = "Empfohlene Konfiguration"
-                RecDesc  = "Kuratierte sichere Optimierungen & RAM-Boost"
-                CusTitle = "Benutzerdefinierte Abstimmung"
-                CusDesc  = "Apps, Datenschutz, Explorer, Gaming & KI anpassen"
-                Back     = "Zurück"
-                Next     = "Weiter"
-                Apply    = "Optimierungen anwenden"
-                Finish   = "Fertigstellen & Beenden"
-                ScopeAll = "Alle Benutzer (Empfohlen)"
-                ScopeCur = "Nur aktueller Benutzer"
-                ScopeDef = "Standardbenutzer / Sysprep"
-            }
-        }
 
         $code = if ($langCode -eq "auto") {
             $sysLang = (Get-Culture).Name
-            if ($translations.ContainsKey($sysLang)) { $sysLang } else { "en-US" }
+            if ($translationsObj -and ($translationsObj.PSObject.Properties.Name -contains $sysLang)) { $sysLang } else { "en-US" }
         } else {
             $langCode
         }
 
-        $t = if ($translations.ContainsKey($code)) { $translations[$code] } else { $translations["en-US"] }
+        $t = $null
+        if ($translationsObj -and ($translationsObj.PSObject.Properties.Name -contains $code)) {
+            $t = $translationsObj.$code
+        } elseif ($translationsObj -and ($translationsObj.PSObject.Properties.Name -contains "en-US")) {
+            $t = $translationsObj.'en-US'
+        }
+
+        if (-not $t) { return }
 
         if ($txtWelcomeHeading) { $txtWelcomeHeading.Text = $t.Heading }
         if ($txtWelcomeSubtitle) { $txtWelcomeSubtitle.Text = $t.Sub }
@@ -2999,7 +2944,7 @@ function Show-DebloaterWindow {
         })
     }
 
-    # Quick Actions Menu (☰)
+    # Quick Actions Menu
     $btnQuickActions = $window.FindName("BtnQuickActions")
     $popupQuickActions = $window.FindName("PopupQuickActions")
     $btnActionLoadProfile = $window.FindName("BtnActionLoadProfile")

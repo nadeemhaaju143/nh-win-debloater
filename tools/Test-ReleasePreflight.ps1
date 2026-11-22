@@ -1,4 +1,4 @@
-﻿<#
+<#
     .SYNOPSIS
         Release preflight check and version bumping utility for NH Win Debloater.
     .DESCRIPTION
@@ -36,7 +36,7 @@ Write-Host " [+] Current Version : $currentVersion" -ForegroundColor Gray
 if (-not [string]::IsNullOrWhiteSpace($TargetVersion)) {
     if (-not $SkipBump) {
         Set-Content -Path $versionFile -Value $TargetVersion -Encoding UTF8
-        Write-Host " [✓] Bumped VERSION.txt -> $TargetVersion" -ForegroundColor Green
+        Write-Host " [OK] Bumped VERSION.txt -> $TargetVersion" -ForegroundColor Green
     }
 } else {
     Write-Host " [i] Retaining version: $currentVersion (pass -TargetVersion to bump)" -ForegroundColor Gray
@@ -61,9 +61,9 @@ foreach ($file in $scriptFiles) {
 }
 
 if ($issues.Count -eq 0) {
-    Write-Host " [✓] PSScriptAnalyzer: PASSED (0 errors, 0 warnings across $($scriptFiles.Count) files)." -ForegroundColor Green
+    Write-Host " [OK] PSScriptAnalyzer: PASSED (0 errors, 0 warnings across $($scriptFiles.Count) files)." -ForegroundColor Green
 } else {
-    Write-Host " [✗] PSScriptAnalyzer: FAILED with $($issues.Count) issues!" -ForegroundColor Red
+    Write-Host " [FAIL] PSScriptAnalyzer: FAILED with $($issues.Count) issues!" -ForegroundColor Red
     $issues | Format-Table RuleName, Severity, ScriptName, Line, Message -AutoSize
     exit 1
 }
@@ -73,9 +73,9 @@ Write-Host "`n [Step 2/2] Running Pester Test Suite..." -ForegroundColor Yellow
 $pesterResults = Invoke-Pester -Path $testsDir -PassThru -Output Detailed
 
 if ($pesterResults.FailedCount -eq 0) {
-    Write-Host " [✓] Pester Test Suite: PASSED ($($pesterResults.PassedCount)/$($pesterResults.TotalCount) tests passed)." -ForegroundColor Green
+    Write-Host " [OK] Pester Test Suite: PASSED ($($pesterResults.PassedCount)/$($pesterResults.TotalCount) tests passed)." -ForegroundColor Green
 } else {
-    Write-Host " [✗] Pester Test Suite: FAILED ($($pesterResults.FailedCount) failed tests)!" -ForegroundColor Red
+    Write-Host " [FAIL] Pester Test Suite: FAILED ($($pesterResults.FailedCount) failed tests)!" -ForegroundColor Red
     exit 1
 }
 
@@ -91,7 +91,7 @@ try {
         Write-Host "     Create a feature branch before committing:" -ForegroundColor Yellow
         Write-Host "     git checkout -b feature/v$(if ($TargetVersion) { $TargetVersion } else { $currentVersion })-updates" -ForegroundColor White
     } else {
-        Write-Host " [✓] Good! You are on a feature branch ('$currentBranch')." -ForegroundColor Green
+        Write-Host " [OK] Good! You are on a feature branch ('$currentBranch')." -ForegroundColor Green
         Write-Host "     Ready to commit and open a Pull Request:" -ForegroundColor Gray
         Write-Host "     git commit -am 'Release: Bump version to $(if ($TargetVersion) { $TargetVersion } else { $currentVersion })'" -ForegroundColor DarkGray
         Write-Host "     git push -u origin $currentBranch" -ForegroundColor DarkGray

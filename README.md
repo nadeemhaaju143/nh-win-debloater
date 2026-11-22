@@ -1,7 +1,7 @@
 # NH Win Debloater
 
 <p align="center">
-  <a href="https://github.com/nadeemhaaju143/nh-win-debloater/releases/tag/v1.2.0"><img src="https://img.shields.io/badge/version-1.2.0-0EA5E9.svg" alt="Version 1.2.0"></a>
+  <a href="https://github.com/nadeemhaaju143/nh-win-debloater/releases/tag/v1.2.1"><img src="https://img.shields.io/badge/version-1.2.1-0EA5E9.svg" alt="Version 1.2.1"></a>
   <a href="https://microsoft.com/powershell"><img src="https://img.shields.io/badge/PowerShell-5.1%20%7C%207%2B-blue.svg" alt="PowerShell 5.1/7+"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT"></a>
   <a href="https://github.com/nadeemhaaju143/nh-win-debloater/wiki"><img src="https://img.shields.io/badge/docs-GitHub%20Wiki-10B981.svg" alt="GitHub Wiki"></a>
@@ -58,6 +58,18 @@ Dark Material multi-select CheckBox dropdowns across all tabs, live selection co
 ### 3. Stage 5: Summary, Snapshot Rollback & Selective Restore
 Automatic pre-tweak registry snapshot selector, Start Menu layout recovery, and selective restore checkboxes (Apps Only, Tweaks Only, or individual categories).
 ![Stage 5: Restore & Rollback Manager](assets/screenshots/restore-manager.png)
+
+### 4. Preferences & 6-Language Engine
+Integrated dark-theme preferences with theme switching, safety toggles, and high-contrast dynamic language selection.
+![Preferences Modal](assets/screenshots/preferences-modal.png)
+
+### 5. App Selection & Visual Safety Indicators
+Browse system and third-party packages categorized with visual safety indicators (Recommended, Optional, Not Recommended).
+![Stage 2: App Selection](assets/screenshots/stage2-app-selection.png)
+
+### 6. Quick Recovery & Rollback Utilities
+Dedicated rollback modal accessible from the top menu for 1-click full system reversion or targeted registry/layout restoration.
+![Recovery Modal](assets/screenshots/recovery-modal.png)
 
 ---
 

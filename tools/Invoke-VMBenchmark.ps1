@@ -1,4 +1,4 @@
-﻿<#
+<#
     .SYNOPSIS
         Automated VM / System Benchmark Suite for NH Win Debloater v1.2.0.
     .DESCRIPTION
@@ -121,22 +121,22 @@ $v120_Advantage = [math]::Round($v120_Freed - $v110_Freed, 1)
 Write-Host " [+] Step 5/5: Generating Benchmark Report & Documentation..." -ForegroundColor Yellow
 
 $benchmarkMd = @"
-# NH Win Debloater — Performance & Resource Benchmarks
+# NH Win Debloater - Performance & Resource Benchmarks
 
 **Benchmark Target:** NH Win Debloater v1.2.0 vs. v1.1.0 vs. v1.0.0 vs. Stock Windows Baseline  
-**Testing Environment:** Windows 11 Enterprise / Pro (x64) • Isolated Clean Virtual Machine  
-**Attribution:** Created and maintained by **Mohammed Nadeem BM** ([NH Digital](https://nhdigital.shop) • [@nadeemhaaju143](https://github.com/nadeemhaaju143))  
+**Testing Environment:** Windows 11 Enterprise / Pro (x64) - Isolated Clean Virtual Machine  
+**Attribution:** Created and maintained by **Mohammed Nadeem BM** ([NH Digital](https://nhdigital.shop) - [@nadeemhaaju143](https://github.com/nadeemhaaju143))  
 **Generated:** $((Get-Date).ToString("yyyy-MM-dd HH:mm:ss"))
 
 ---
 
 ## 1. Executive Summary & Comparative Matrix
 
-| Benchmark Metric | Stock Windows Baseline (Before) | After v1.0.0 (`main`) | After v1.1.0 | After v1.2.0 (`Recommended Setup`) | Improvement (v1.1.0 → v1.2.0) | Total Optimization vs. Baseline |
+| Benchmark Metric | Stock Windows Baseline (Before) | After v1.0.0 (`main`) | After v1.1.0 | After v1.2.0 (`Recommended Setup`) | Improvement (v1.1.0 -> v1.2.0) | Total Optimization vs. Baseline |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: |
 | **RAM In-Use (MB)** | **$($baseline.UsedMemoryMB) MB** | **$v100_UsedMem MB** | **$v110_UsedMem MB** | **$v120_UsedMem MB** | **-$v120_Advantage MB RAM** | **-$v120_Freed MB RAM** |
 | **Memory Utilization (%)** | **$($baseline.MemoryUsagePct)%** | **$v100_MemPct%** | **$v110_MemPct%** | **$v120_MemPct%** | **-$([math]::Round($v110_MemPct - $v120_MemPct, 1))%** | **-$([math]::Round($baseline.MemoryUsagePct - $v120_MemPct, 1))%** |
-| **Total RAM Freed (MB)** | — | +$v100_Freed MB | +$v110_Freed MB | **+$v120_Freed MB** | **+$v120_Advantage MB extra** | **+$v120_Freed MB reclaimed** |
+| **Total RAM Freed (MB)** | 0 MB | +$v100_Freed MB | +$v110_Freed MB | **+$v120_Freed MB** | **+$v120_Advantage MB extra** | **+$v120_Freed MB reclaimed** |
 | **Idle CPU Utilization (%)** | **$($baseline.CpuUsagePct)%** | **$v100_Cpu%** | **$v110_Cpu%** | **$v120_Cpu%** | **-$([math]::Round($v110_Cpu - $v120_Cpu, 1))% CPU** | **-$([math]::Round($baseline.CpuUsagePct - $v120_Cpu, 1))% CPU** |
 | **Active Running Services** | **$($baseline.RunningServices)** | **$v100_Svcs** | **$v110_Svcs** | **$v120_Svcs** | **-$($v110_Svcs - $v120_Svcs) services** | **-$($baseline.RunningServices - $v120_Svcs) services** |
 | **Running Background Processes** | **$($baseline.ProcessCount)** | **$v100_Procs** | **$v110_Procs** | **$v120_Procs** | **-$($v110_Procs - $v120_Procs) processes** | **-$($baseline.ProcessCount - $v120_Procs) background tasks** |
@@ -155,12 +155,12 @@ $benchmarkMd = @"
 - **Safe Handle Cleanup:** Flushes registry provider handles with explicit Garbage Collection passes and pauses to guarantee error-free dismounting.
 
 ### C. Live Hardware Specifications & Zero-Leak Host Lifetime
-- **Top Header Live Hardware Slot:** Instantaneous (<1ms) processor detection via registry and fast (<220ms) memory metrics display `CPU Model • Total RAM` directly in the top header.
+- **Top Header Live Hardware Slot:** Instantaneous (<1ms) processor detection via registry and fast (<220ms) memory metrics display `CPU Model - Total RAM` directly in the top header.
 - **Minimized PowerShell Console:** Startup automatically minimizes the hosting console (`SW_MINIMIZE = 2`) to maintain a clean desktop workspace while mirroring stdout to debug logs.
 - **Guaranteed Temp Directory Cleanup:** Window exit and abort triggers guarantee `%TEMP%\NHWinDebloater*` scratch directories are purged with zero background processes left behind.
 
 ### D. Multi-Language Internationalization
-- **High-Contrast 6-Language Engine:** Instant runtime switching between System Auto, English (US), Hindi (हिन्दी), Kannada (ಕನ್ನಡ), Spanish (Español), and German (Deutsch).
+- **High-Contrast 6-Language Engine:** Instant runtime switching between System Auto, English (US), Hindi (hi-IN), Kannada (kn-IN), Spanish (es-ES), and German (de-DE).
 
 ---
 
@@ -173,7 +173,7 @@ $benchmarkMd = @"
 "@
 
 $benchmarkMd | Set-Content -Path $OutputPath -Encoding UTF8
-Write-Host " [✓] Benchmark report saved to: $OutputPath" -ForegroundColor Green
+Write-Host " [OK] Benchmark report saved to: $OutputPath" -ForegroundColor Green
 Write-Host ""
 
 return [PSCustomObject]@{
