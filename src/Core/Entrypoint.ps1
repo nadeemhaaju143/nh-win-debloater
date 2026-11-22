@@ -366,7 +366,34 @@ Write-Host " Press any key to finish..." -ForegroundColor Gray
 }
 finally {
     # Post-Exit Temp & Session Cleanup (Preserving Backups in %LOCALAPPDATA%\NHWinDebloater\Backups)
+    try {
+        if (-not ([System.Management.Automation.PSTypeName]'Win32ConsoleHelper').Type) {
+            $win32Def = @"
+using System;
+using System.Runtime.InteropServices;
+public class Win32ConsoleHelper {
+    [DllImport("user32.dll")]
+    public static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
+    [DllImport("kernel32.dll")]
+    public static extern IntPtr GetConsoleWindow();
+}
+"@
+            Add-Type -TypeDefinition $win32Def -ErrorAction SilentlyContinue
+        }
+        $hwnd = [Win32ConsoleHelper]::GetConsoleWindow()
+        if ($hwnd -and $hwnd -ne [IntPtr]::Zero) {
+            # SW_RESTORE = 9
+            [Win32ConsoleHelper]::ShowWindow($hwnd, 9) | Out-Null
+        }
+        Write-Host "Cleaning temporary files..." -ForegroundColor Cyan
+    } catch {}
     if (Get-Command Clear-DebloatTempSession -ErrorAction SilentlyContinue) {
         Clear-DebloatTempSession
+    }
+    $cleanPatterns = @("NHWinDebloater*", "nh-win-debloater*")
+    foreach ($pat in $cleanPatterns) {
+        Get-ChildItem -Path $env:TEMP -Filter $pat -ErrorAction SilentlyContinue |
+            Where-Object { $_.FullName -notlike "*Backups*" -and $_.FullName -notlike "*Logs*" } |
+            Remove-Item -Recurse -Force -ErrorAction SilentlyContinue
     }
 }

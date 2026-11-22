@@ -8,7 +8,7 @@
         (Sandbox, WSL), creates System Restore Points, and captures pre-modification
         registry snapshots for transactional rollback.
     .MODULEVERSION
-        1.2.2
+        1.3.0
 #>
 
 [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '')]

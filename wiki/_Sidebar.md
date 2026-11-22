@@ -10,7 +10,7 @@
 ### Resources
 - [Website (nhdigital.shop)](https://nhdigital.shop)
 - [GitHub Repository](https://github.com/nadeemhaaju143/nh-win-debloater)
-- [Latest Release (v1.2.2)](https://github.com/nadeemhaaju143/nh-win-debloater/releases/tag/v1.2.2)
+- [Latest Release (v1.3.0)](https://github.com/nadeemhaaju143/nh-win-debloater/releases/tag/v1.3.0)
 
 ---
 

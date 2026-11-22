@@ -86,7 +86,7 @@ Safely reclaims hundreds of megabytes of working memory by tuning non-essential 
 
 ---
 
-## 8. Sysprep & Default User Profile Hive Synchronization (v1.2.0)
+## 8. Sysprep & Default User Profile Hive Synchronization (v1.3.0)
 
 - **Native Hive Mount Engine (`Mount-DefaultUserHive` & `Dismount-DefaultUserHive`):** Safely mounts the Default User registry hive at `C:\Users\Default\NTUSER.DAT` into `HKLM\NHDefaultUser`.
 - **Golden Image & Multi-User Deployment:** Replicates current user optimization rules directly to the Default User template. Every new local account, active directory domain user, or sysprep provisioned workstation automatically boots into a clean, debloated environment.

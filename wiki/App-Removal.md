@@ -50,7 +50,7 @@ Manufacturer-specific pre-installed bloat:
 
 ## 3. App Selection Safety Indicators & Legend
 
-In v1.2.0, every application in the catalog features a high-contrast safety indicator and badge:
+In v1.3.0, every application in the catalog features a high-contrast safety indicator and badge:
 
 - 🟢 **Recommended (Green `#10B981`):** Safe bloatware packages universally recommended for removal without affecting workflow.
 - 🟡 **Optional (Amber `#F59E0B`):** User preference applications such as Xbox services, built-in media tools, or office viewers.

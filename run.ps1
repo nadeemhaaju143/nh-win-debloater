@@ -4,7 +4,7 @@
     .DESCRIPTION
         Lightweight root launcher that forwards parameters (-CLI, -DryRun, -Silent, -Branch)
         directly to Get-NHWinDebloater.ps1 with post-exit session cleanup.
-        Developed by Mohammed Nadeem BM - NH Digital (https://nhdigital.shop).
+        Developed by Nadeem - NH Digital (https://nhdigital.shop).
     .EXAMPLE
         .\run.ps1
     .EXAMPLE
