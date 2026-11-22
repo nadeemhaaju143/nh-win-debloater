@@ -163,13 +163,112 @@ $dupExport = $viewStage2.FindName("BtnExportProfile")
 Assert-Check -Category "WelcomeScreen" -Description "Zero duplicate Restore buttons on Stage 1" -Condition ($null -eq $dupRestore)
 Assert-Check -Category "WelcomeScreen" -Description "Zero duplicate Export buttons on Stage 2" -Condition ($null -eq $dupExport)
 
-# Test Mode selection: clicking Recommended doesn't jump screens
+# Wire Mode & Stepper Logic to test real transitions
+$script:CurrentStage = 1
 $script:WelcomeMode = "Recommended"
+
+$updateModeVisuals = {
+    param([string]$mode)
+    $script:WelcomeMode = $mode
+    $brushConv = [System.Windows.Media.BrushConverter]::new()
+    if ($mode -eq "Recommended") {
+        if ($btnRecommendedSetup) {
+            $btnRecommendedSetup.Background = $brushConv.ConvertFromString("#0EA5E9")
+            $btnRecommendedSetup.BorderBrush = $brushConv.ConvertFromString("#38BDF8")
+            $btnRecommendedSetup.BorderThickness = [System.Windows.Thickness]::new(2)
+        }
+        if ($btnCustomTuning) {
+            $btnCustomTuning.Background = $brushConv.ConvertFromString("#131926")
+            $btnCustomTuning.BorderBrush = $brushConv.ConvertFromString("#232D42")
+            $btnCustomTuning.BorderThickness = [System.Windows.Thickness]::new(1)
+        }
+    } else {
+        if ($btnCustomTuning) {
+            $btnCustomTuning.Background = $brushConv.ConvertFromString("#0EA5E9")
+            $btnCustomTuning.BorderBrush = $brushConv.ConvertFromString("#38BDF8")
+            $btnCustomTuning.BorderThickness = [System.Windows.Thickness]::new(2)
+        }
+        if ($btnRecommendedSetup) {
+            $btnRecommendedSetup.Background = $brushConv.ConvertFromString("#131926")
+            $btnRecommendedSetup.BorderBrush = $brushConv.ConvertFromString("#232D42")
+            $btnRecommendedSetup.BorderThickness = [System.Windows.Thickness]::new(1)
+        }
+    }
+}
+
+$updateStageView = {
+    param([int]$stage)
+    $script:CurrentStage = $stage
+    $viewStage1.Visibility = if ($stage -eq 1) { [System.Windows.Visibility]::Visible } else { [System.Windows.Visibility]::Collapsed }
+    $viewStage2.Visibility = if ($stage -eq 2) { [System.Windows.Visibility]::Visible } else { [System.Windows.Visibility]::Collapsed }
+    $viewStage3.Visibility = if ($stage -eq 3) { [System.Windows.Visibility]::Visible } else { [System.Windows.Visibility]::Collapsed }
+}
+
+$btnRecommendedSetup.Add_Click({
+    param([object]$s, [System.Windows.RoutedEventArgs]$e)
+    & $updateModeVisuals "Recommended"
+})
+$btnCustomTuning.Add_Click({
+    param([object]$s, [System.Windows.RoutedEventArgs]$e)
+    & $updateModeVisuals "Custom"
+})
+
+$btnNext.Add_Click({
+    param([object]$s, [System.Windows.RoutedEventArgs]$e)
+    if ($script:CurrentStage -eq 1) {
+        if ($script:WelcomeMode -eq "Recommended") {
+            & $updateStageView 3
+        } else {
+            & $updateStageView 2
+        }
+    } elseif ($script:CurrentStage -eq 2) {
+        & $updateStageView 3
+    }
+})
+
+$btnBack.Add_Click({
+    param([object]$s, [System.Windows.RoutedEventArgs]$e)
+    if ($script:CurrentStage -gt 1) {
+        & $updateStageView ($script:CurrentStage - 1)
+    }
+})
+
+# Test Mode selection: clicking Recommended doesn't jump screens
+& $updateStageView 1
+& $updateModeVisuals "Recommended"
 $btnRecommendedSetup.RaiseEvent([System.Windows.RoutedEventArgs]::new([System.Windows.Controls.Primitives.ButtonBase]::ClickEvent))
 Assert-Check -Category "ModeFlow" -Description "Clicking Recommended Setup stays on Stage 1 (no jump)" -Condition ($viewStage1.Visibility -eq [System.Windows.Visibility]::Visible)
+Assert-Check -Category "ModeFlow" -Description "Recommended Setup active state has vibrant cyan background" -Condition ($btnRecommendedSetup.BorderThickness.Top -eq 2)
 
+# Test Next Click on Recommended Setup -> jumps straight to Stage 3
+$btnNext.RaiseEvent([System.Windows.RoutedEventArgs]::new([System.Windows.Controls.Primitives.ButtonBase]::ClickEvent))
+Assert-Check -Category "ModeFlow" -Description "Clicking Next with Recommended Setup jumps directly to Stage 3" -Condition ($script:CurrentStage -eq 3 -and $viewStage3.Visibility -eq [System.Windows.Visibility]::Visible)
+
+# Test Back Click from Stage 3 -> returns to Stage 2 (or 1)
+$btnBack.RaiseEvent([System.Windows.RoutedEventArgs]::new([System.Windows.Controls.Primitives.ButtonBase]::ClickEvent))
+Assert-Check -Category "ModeFlow" -Description "Clicking Back from Stage 3 navigates back safely" -Condition ($script:CurrentStage -lt 3)
+
+# Reset to Stage 1 and test Custom Tuning flow
+& $updateStageView 1
 $btnCustomTuning.RaiseEvent([System.Windows.RoutedEventArgs]::new([System.Windows.Controls.Primitives.ButtonBase]::ClickEvent))
 Assert-Check -Category "ModeFlow" -Description "Clicking Custom Tuning stays on Stage 1 (no jump)" -Condition ($viewStage1.Visibility -eq [System.Windows.Visibility]::Visible)
+Assert-Check -Category "ModeFlow" -Description "Custom Tuning active state has vibrant cyan border" -Condition ($btnCustomTuning.BorderThickness.Top -eq 2)
+
+# Test Next Click on Custom Tuning -> navigates to Stage 2
+$btnNext.RaiseEvent([System.Windows.RoutedEventArgs]::new([System.Windows.Controls.Primitives.ButtonBase]::ClickEvent))
+Assert-Check -Category "ModeFlow" -Description "Clicking Next with Custom Tuning navigates to Stage 2" -Condition ($script:CurrentStage -eq 2 -and $viewStage2.Visibility -eq [System.Windows.Visibility]::Visible)
+
+# Test Next Click on Stage 2 -> navigates to Stage 3
+$btnNext.RaiseEvent([System.Windows.RoutedEventArgs]::new([System.Windows.Controls.Primitives.ButtonBase]::ClickEvent))
+Assert-Check -Category "ModeFlow" -Description "Clicking Next on Stage 2 navigates to Stage 3" -Condition ($script:CurrentStage -eq 3 -and $viewStage3.Visibility -eq [System.Windows.Visibility]::Visible)
+
+# Test Back Click on Stage 3 -> returns to Stage 2
+$btnBack.RaiseEvent([System.Windows.RoutedEventArgs]::new([System.Windows.Controls.Primitives.ButtonBase]::ClickEvent))
+Assert-Check -Category "ModeFlow" -Description "Clicking Back on Stage 3 returns to Stage 2" -Condition ($script:CurrentStage -eq 2 -and $viewStage2.Visibility -eq [System.Windows.Visibility]::Visible)
+
+# Test Back Click on Stage 2 -> returns to Stage 1
+$btnBack.RaiseEvent([System.Windows.RoutedEventArgs]::new([System.Windows.Controls.Primitives.ButtonBase]::ClickEvent))
+Assert-Check -Category "ModeFlow" -Description "Clicking Back on Stage 2 returns to Stage 1" -Condition ($script:CurrentStage -eq 1 -and $viewStage1.Visibility -eq [System.Windows.Visibility]::Visible)
 
 # --- PART 1.3: Preferences Modal & 6-Language Dropdown ---
 $modalPreferences = $win.FindName("ModalPreferences")

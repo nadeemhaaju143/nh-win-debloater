@@ -50,7 +50,7 @@ function Show-Header {
     Write-Host " ======================================================================" -ForegroundColor Cyan
     Write-Host "   NH WIN DEBLOATER v$($script:AppVersion)" -ForegroundColor White
     Write-Host "   Less Bloat. Better Windows." -ForegroundColor Gray
-    Write-Host "   Developed by Mohammed Nadeem BM - NH Digital | https://nhdigital.shop" -ForegroundColor DarkCyan
+    Write-Host ("   Developed by Nadeem " + [char]0x2022 + " NH Digital " + [char]0x2122 + " | https://nhdigital.shop") -ForegroundColor DarkCyan
     Write-Host " ======================================================================" -ForegroundColor Cyan
     Write-Host ""
 }
@@ -110,6 +110,28 @@ if (-not $CLI) {
         if (-not (Test-Path $AppControllerScript)) {
             throw "UI Controller script not found at expected location: '$AppControllerScript'."
         }
+
+        # Auto-minimize console window behind modern WPF GUI
+        try {
+            $win32Def = @"
+using System;
+using System.Runtime.InteropServices;
+public class Win32ConsoleHelper {
+    [DllImport("user32.dll")]
+    public static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
+    [DllImport("kernel32.dll")]
+    public static extern IntPtr GetConsoleWindow();
+}
+"@
+            if (-not ([System.Management.Automation.PSTypeName]'Win32ConsoleHelper').Type) {
+                Add-Type -TypeDefinition $win32Def -ErrorAction SilentlyContinue
+            }
+            $hwnd = [Win32ConsoleHelper]::GetConsoleWindow()
+            if ($hwnd -and $hwnd -ne [IntPtr]::Zero) {
+                # SW_MINIMIZE = 2
+                [Win32ConsoleHelper]::ShowWindow($hwnd, 2) | Out-Null
+            }
+        } catch {}
 
         Import-Module $AppControllerScript -Force
         Show-DebloaterWindow -ProjectRoot $ProjectRootDirectory
