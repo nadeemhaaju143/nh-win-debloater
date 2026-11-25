@@ -594,7 +594,7 @@
                                 </Path.Fill>
                             </Path>
                         </Grid>
-                        <Image x:Name="ImgLogo" MaxWidth="120" MaxHeight="38" Stretch="Uniform" VerticalAlignment="Center" Visibility="Collapsed" Margin="0,0,14,0"/>
+                        <Image x:Name="ImgLogo" Width="40" Height="40" Stretch="Uniform" RenderOptions.BitmapScalingMode="HighQuality" VerticalAlignment="Center" Visibility="Collapsed" Margin="0,0,14,0"/>
 
                         <StackPanel VerticalAlignment="Center">
                             <StackPanel Orientation="Horizontal">

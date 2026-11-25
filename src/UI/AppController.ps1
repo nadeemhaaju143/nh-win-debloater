@@ -394,8 +394,12 @@ function Show-DebloaterWindow {
         }
     }
 
-    # Header Logo wiring: borderless combined NH lion-face vector lettermark
-    $logoCandidates = @()
+    # Header Logo wiring (loads custom NH lion logo, falling back to borderless vector lettermark)
+    $logoCandidates = @(
+        (Join-Path $logoDir "nh-lion-logo.jpg"),
+        (Join-Path $logoDir "nhdigital-logo.png"),
+        (Join-Path $logoDir "logo.png")
+    )
     $foundLogo = $false
     foreach ($candidate in $logoCandidates) {
         if (Test-Path $candidate) {
@@ -403,6 +407,7 @@ function Show-DebloaterWindow {
                 $img = [System.Windows.Media.Imaging.BitmapImage]::new()
                 $img.BeginInit()
                 $img.UriSource = [Uri]$candidate
+                $img.CreateOptions = [System.Windows.Media.Imaging.BitmapCreateOptions]::IgnoreColorProfile
                 $img.CacheOption = [System.Windows.Media.Imaging.BitmapCacheOption]::OnLoad
                 $img.EndInit()
 
