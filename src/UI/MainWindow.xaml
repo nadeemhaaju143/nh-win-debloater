@@ -582,8 +582,9 @@
                             <Grid.Effect>
                                 <DropShadowEffect Color="#0EA5E9" BlurRadius="10" Opacity="0.35" ShadowDepth="0"/>
                             </Grid.Effect>
+                            <!-- Borderless NH Lion/Brave-Style Lettermark: Left N-ear/pillar + Diagonal N-bridge + H-crossbar + Right H-ear/pillar + Lion Chin -->
                             <Path Stretch="Uniform" Width="34" Height="34" HorizontalAlignment="Center" VerticalAlignment="Center"
-                                  Data="M4,4 L10,2 L15,12 L15,2 L19,4 L19,14 L21,14 L21,4 L25,2 L25,12 L30,2 L36,4 L34,19 L29,28 L20,36 L11,28 L6,19 Z M9,9 L9,21 L12,24 L12,15 L18,24 L18,17 L22,17 L22,24 L28,15 L28,24 L31,21 L31,9 L27,15 L24,15 L24,19 L16,19 L16,15 L13,15 Z">
+                                  Data="M4,7 L9,2 L14,10 L14,27 L10,30 L5,20 Z M10,7 L23,21 L23,27 L10,13 Z M32,7 L27,2 L22,10 L22,27 L26,30 L31,20 Z M13,15 L23,15 L23,19 L13,19 Z M12,28 L18,35 L24,28 L18,31 Z">
                                 <Path.Fill>
                                     <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
                                         <GradientStop Color="#38BDF8" Offset="0"/>

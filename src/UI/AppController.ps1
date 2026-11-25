@@ -394,14 +394,8 @@ function Show-DebloaterWindow {
         }
     }
 
-    # Header Logo wiring (preferring raster official logo, falling back to stylish vector box)
-    $logoCandidates = @(
-        (Join-Path $logoDir "nhdigital-logo.png"),
-        (Join-Path $logoDir "logo.png"),
-        (Join-Path $logoDir "nh-digital-logo.png"),
-        (Join-Path $logoDir "logo.jpg"),
-        (Join-Path $logoDir "nhdigital.png")
-    )
+    # Header Logo wiring: borderless combined NH lion-face vector lettermark
+    $logoCandidates = @()
     $foundLogo = $false
     foreach ($candidate in $logoCandidates) {
         if (Test-Path $candidate) {
