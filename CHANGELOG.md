@@ -9,6 +9,24 @@ The project follows a **progressive semantic minor versioning format**:
 
 ---
 
+## [1.3.2] - 2026-11-25
+
+### Windows 11 26H2 App Discovery, Hybrid Removal, Safe Services & Advanced Power Options
+- **Hybrid Removal Pipeline & Windows 11 26H2 App Discovery (`AppManager.psm1`, `DefaultApps.json`, `DeepDebloatApps.json`, `ProtectedApps.json`):**
+  - Added AppID alias array support in `Get-DebloatPreset` and `Remove-DebloatApp` so Store IDs, AppX names, and Win32 installers map cleanly to a single entry.
+  - Upgraded `Remove-DebloatApp` to execute `Remove-AppxPackage -AllUsers`, `Remove-AppxProvisionedPackage -Online`, WinGet uninstall fallback, and write `HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Appx\AppxAllUserStore\Deprovisioned\<PackageFamilyName>` so Windows 11 26H2 does not silently reinstall removed inbox apps (such as `Microsoft.MicrosoftSolitaireCollection`).
+  - Added `Get-OneDriveInstallInfo` and hybrid OneDrive removal (`OneDriveSetup.exe /uninstall` + `Microsoft.OneDriveSync` AppX cleanup), with **Microsoft OneDrive** and **Microsoft Copilot** (matching `Microsoft.Copilot`, `XP9CXNGPPJ97XX`, `Microsoft.Windows.Ai.Copilot.Provider`, `*Copilot*`) displayed unchecked by default.
+  - Expanded Windows 11 26H2 inbox & promoted app coverage (`Microsoft.Edge.GameAssist`, `MicrosoftWindows.CrossDevice`, `Microsoft.BingSearch`, `Microsoft.ZuneVideo`, `5319275A.WhatsAppDesktop`, `Facebook.InstagramBeta`, `7EE7776C.LinkedInforWindows`, OEM bloatware) while keeping all 9 essential built-in Windows apps strictly protected and filtering out core shell/runtime frameworks.
+  - Merged curated catalog entries with live installed non-system apps and updated the **"Show Installed Only"** filter toggle in `Apps & Bloatware`.
+- **Safe Registry / Policy Tweaks & BitLocker Auto-Encryption Prevention (`SystemTweaks.psm1`, `MainWindow.xaml`, `AppController.ps1`):**
+  - Added `Set-BitLockerAutoEncryptTweak` (`HKLM:\SYSTEM\CurrentControlSet\Control\BitLocker\PreventDeviceEncryption = 1`), `Set-WindowsSpotlightTweak`, Xbox Game Bar background keys, and Settings 365 Ads suppression (`SubscribedContent-338393Enabled`, `353694`, `353696`) with full JSON snapshot backup and rollback support.
+- **Safe Services Optimization (`SystemTweaks.psm1`, `MainWindow.xaml`, `AppController.ps1`):**
+  - Added **Safe Services Optimization** card in System Extras covering 11 Recommended Safe Services (`XblAuthManager`, `XblGameSave`, `XboxNetApiSvc`, `XboxGipSvc`, `MapsBroker`, `RetailDemo`, `WalletService`, `wisvc`, `WMPNetworkSvc`, `RemoteRegistry`, `Fax`, default ON) and 7 Optional Hardware / Location Services (`lfsvc`, `SensrSvc`, `SensorDataService`, `PhoneSvc`, `WpcMonSvc`, `SCardSvr`, `ScDeviceEnum`, default OFF) with `ServiceSnapshot_*.json` backup and rollback.
+- **Advanced Power Options (`SystemTweaks.psm1`, `MainWindow.xaml`, `AppController.ps1`):**
+  - Added **Advanced Power Options** card in System Extras (Unlock & Activate Ultimate Performance Plan, Unhide Classic High Performance & Power Saver Plans, Unhide Hidden Processor Boost / USB Selective Suspend / PCIe Link State Attributes, and Disable Hibernation `powercfg /h off`) with `PowerSnapshot_*.json` rollback support.
+
+---
+
 ## [1.3.1] - 2026-11-22
 
 ### Stage 3 Pre-Apply Deployment Summary, Terminal Line-Clear & Essential App Protection

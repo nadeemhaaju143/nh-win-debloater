@@ -483,7 +483,7 @@ $essentialApps = @(
     "Microsoft.WindowsTerminal", "Microsoft.WindowsStore", "Microsoft.WindowsNotepad",
     "Microsoft.ScreenSketch", "Microsoft.Paint", "Microsoft.MSPaint",
     "Microsoft.WindowsCalculator", "Microsoft.WindowsCamera", "Microsoft.ZuneMusic",
-    "Microsoft.ZuneVideo", "Microsoft.WindowsMediaPlayer", "Microsoft.Windows.Photos"
+    "Microsoft.WindowsMediaPlayer", "Microsoft.Windows.Photos"
 )
 $allProtected = ($essentialApps | Where-Object { $protectedList -notcontains $_ }).Count -eq 0
 Assert-Check -Category "ProtectedApps" -Description "All essential built-in apps are in ProtectedApps.json" -Condition $allProtected

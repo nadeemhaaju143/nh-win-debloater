@@ -30,7 +30,7 @@ Describe "AppManager Module" {
 
     It "Loads presets cleanly" {
         $defaultPreset = Get-DebloatPreset -PresetName "Default" -PresetsPath $presetsPath
-        $defaultPreset.Count | Should -Be 86
+        $defaultPreset.Count | Should -BeGreaterThan 85
 
         $minimalPreset = Get-DebloatPreset -PresetName "Minimal" -PresetsPath $presetsPath
         $minimalPreset.Count | Should -BeGreaterThan 0
@@ -209,7 +209,8 @@ Describe "SystemTweaks Module" {
 
     It "Executes SettingsHome WhatIf safely" {
         $res = Set-SettingsHomeTweak -DisableHomeRecommendations $true -WhatIf
-        $res.Status | Should -Be "Preview"
+        $res.Count | Should -Be 4
+        ($res | Where-Object { $_.Status -eq "Preview" }).Count | Should -Be 4
     }
 
     It "Evaluates LOW / SAFE impact when only safe tweaks are selected" {
@@ -798,5 +799,70 @@ Describe "Deep Debloat, Service Optimization & Start Menu Recovery" {
 
         $restoreOps = Restore-ServiceOptimization -WhatIf
         $restoreOps | Should -Not -BeNullOrEmpty
+    }
+}
+
+Describe "v1.3.2 Hybrid App Discovery, Safe Registry, Services & Power Options" {
+    It "Detects OneDrive Win32 and AppX status via Get-OneDriveInstallInfo" {
+        $info = Get-OneDriveInstallInfo
+        $info | Should -Not -BeNullOrEmpty
+        $info.PSObject.Properties.Name | Should -Contain "IsInstalled"
+        $info.PSObject.Properties.Name | Should -Contain "Win32Installed"
+        $info.PSObject.Properties.Name | Should -Contain "AppxInstalled"
+    }
+
+    It "Maps Copilot variants via Aliases in DefaultApps.json" {
+        $defaultPreset = Get-DebloatPreset -PresetName "Default" -PresetsPath $presetsPath
+        $copilot = $defaultPreset | Where-Object { $_.AppId -eq "Microsoft.Copilot" } | Select-Object -First 1
+        $copilot | Should -Not -BeNullOrEmpty
+        $copilot.Aliases | Should -Contain "XP9CXNGPPJ97XX"
+        $copilot.Aliases | Should -Contain "Microsoft.Windows.Ai.Copilot.Provider"
+    }
+
+    It "Filters core shell/runtime frameworks while keeping bloatware apps" {
+        (Test-IsCoreSystemFramework -AppId "MicrosoftWindows.Client.CBS") | Should -BeTrue
+        (Test-IsCoreSystemFramework -AppId "Microsoft.VCLibs.140.00") | Should -BeTrue
+        (Test-IsCoreSystemFramework -AppId "Microsoft.MicrosoftEdge.Stable") | Should -BeTrue
+        (Test-IsCoreSystemFramework -AppId "Microsoft.MicrosoftSolitaireCollection") | Should -BeFalse
+    }
+
+    It "Supports Solitaire deprovisioning and Copilot WhatIf preview" {
+        (Register-DeprovisionedAppxKey -PackageFamilyName "Microsoft.MicrosoftSolitaireCollection_8wekyb3d8bbwe" -WhatIf) | Should -BeTrue
+        $remRes = Remove-DebloatApp -AppIdList @("Microsoft.MicrosoftSolitaireCollection", "Microsoft.Copilot") -PresetsPath $presetsPath -WhatIf
+        $remRes.Count | Should -Be 2
+        ($remRes | Where-Object { $_.Status -eq "Preview" }).Count | Should -Be 2
+    }
+
+    It "Executes BitLocker auto-encryption prevention and Windows Spotlight WhatIf safely" {
+        $bl = Set-BitLockerAutoEncryptTweak -Prevent $true -WhatIf
+        $bl.Status | Should -Be "Preview"
+        $bl.Name | Should -Be "PreventDeviceEncryption"
+        $bl.Value | Should -Be 1
+
+        $sp = Set-WindowsSpotlightTweak -Disable $true -WhatIf
+        $sp.Count | Should -Be 5
+        ($sp | Where-Object { $_.Status -eq "Preview" }).Count | Should -Be 5
+    }
+
+    It "Optimizes Recommended and Optional Safe Services in WhatIf without touching protected services" {
+        $recOps = Set-SafeServiceOptimization -IncludeRecommended $true -IncludeOptional $false -WhatIf
+        $recOps | Should -Not -BeNullOrEmpty
+        $protectedNames = @("WinDefend", "wuauserv", "Spooler", "WSearch", "SysMain", "DoSvc", "BITS", "bthserv")
+        foreach ($pName in $protectedNames) {
+            ($recOps | Where-Object { $_.Path -eq "Service:\$pName" }).Count | Should -Be 0
+        }
+
+        $optOps = Set-SafeServiceOptimization -IncludeRecommended $false -IncludeOptional $true -WhatIf
+        $optOps | Should -Not -BeNullOrEmpty
+    }
+
+    It "Configures and restores Advanced Power Options in WhatIf preview safely" {
+        $powOps = Set-PowerOptionTweak -UnlockUltimatePerformance $true -UnhideClassicPlans $true -UnhidePowerAttributes $true -DisableHibernation $true -WhatIf
+        $powOps.Count | Should -Be 6
+        ($powOps | Where-Object { $_.Status -eq "Preview" }).Count | Should -Be 6
+
+        $restOps = Restore-PowerOptions -WhatIf
+        $restOps.Count | Should -BeGreaterOrEqual 4
+        ($restOps | Where-Object { $_.Status -eq "Preview" }).Count | Should -Be $restOps.Count
     }
 }

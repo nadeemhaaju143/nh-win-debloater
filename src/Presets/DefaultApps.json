@@ -66,10 +66,52 @@
         "RemovalMethod": "Appx"
     },
     {
-        "AppId": "XP9CXNGPPJ97XX",
-        "DisplayName": "XP9CXNGPPJ97XX",
+        "AppId": "Microsoft.BingSearch",
+        "DisplayName": "Microsoft.BingSearch",
         "Recommendation": "Safe",
-        "RemovalMethod": "WinGet"
+        "RemovalMethod": "Appx"
+    },
+    {
+        "AppId": "Microsoft.Edge.GameAssist",
+        "DisplayName": "Microsoft.Edge.GameAssist",
+        "Recommendation": "Safe",
+        "RemovalMethod": "Appx"
+    },
+    {
+        "AppId": "MicrosoftWindows.CrossDevice",
+        "DisplayName": "MicrosoftWindows.CrossDevice",
+        "Recommendation": "Safe",
+        "RemovalMethod": "Appx"
+    },
+    {
+        "AppId": "Microsoft.GetHelp",
+        "DisplayName": "Microsoft.GetHelp",
+        "Recommendation": "Safe",
+        "RemovalMethod": "Appx"
+    },
+    {
+        "AppId": "Microsoft.ZuneVideo",
+        "DisplayName": "Microsoft.ZuneVideo",
+        "Recommendation": "Safe",
+        "RemovalMethod": "Appx"
+    },
+    {
+        "AppId": "5319275A.WhatsAppDesktop",
+        "DisplayName": "5319275A.WhatsAppDesktop",
+        "Recommendation": "Safe",
+        "RemovalMethod": "Appx"
+    },
+    {
+        "AppId": "Facebook.InstagramBeta",
+        "DisplayName": "Facebook.InstagramBeta",
+        "Recommendation": "Safe",
+        "RemovalMethod": "Appx"
+    },
+    {
+        "AppId": "7EE7776C.LinkedInforWindows",
+        "DisplayName": "7EE7776C.LinkedInforWindows",
+        "Recommendation": "Safe",
+        "RemovalMethod": "Appx"
     },
     {
         "AppId": "Microsoft.Windows.AIHub",
@@ -505,14 +547,16 @@
     },
     {
         "AppId": "Microsoft.Copilot",
+        "Aliases": ["Microsoft.Copilot", "XP9CXNGPPJ97XX", "Microsoft.Windows.Ai.Copilot.Provider"],
         "DisplayName": "Microsoft.Copilot",
         "Recommendation": "Optional",
-        "RemovalMethod": "Appx"
+        "RemovalMethod": "HybridAppxAndWinGet"
     },
     {
         "AppId": "Microsoft.OneDrive",
+        "Aliases": ["Microsoft.OneDrive", "Microsoft.OneDriveSync"],
         "DisplayName": "Microsoft.OneDrive",
         "Recommendation": "Optional",
-        "RemovalMethod": "ProcessAndAppx"
+        "RemovalMethod": "HybridOneDrive"
     }
 ]

@@ -66,10 +66,34 @@
         "RemovalMethod": "Appx"
     },
     {
-        "AppId": "XP9CXNGPPJ97XX",
-        "DisplayName": "XP9CXNGPPJ97XX",
+        "AppId": "Microsoft.Edge.GameAssist",
+        "DisplayName": "Microsoft.Edge.GameAssist",
         "Recommendation": "safe",
-        "RemovalMethod": "WinGet"
+        "RemovalMethod": "Appx"
+    },
+    {
+        "AppId": "Microsoft.ZuneVideo",
+        "DisplayName": "Microsoft.ZuneVideo",
+        "Recommendation": "safe",
+        "RemovalMethod": "Appx"
+    },
+    {
+        "AppId": "5319275A.WhatsAppDesktop",
+        "DisplayName": "5319275A.WhatsAppDesktop",
+        "Recommendation": "safe",
+        "RemovalMethod": "Appx"
+    },
+    {
+        "AppId": "Facebook.InstagramBeta",
+        "DisplayName": "Facebook.InstagramBeta",
+        "Recommendation": "safe",
+        "RemovalMethod": "Appx"
+    },
+    {
+        "AppId": "7EE7776C.LinkedInforWindows",
+        "DisplayName": "7EE7776C.LinkedInforWindows",
+        "Recommendation": "safe",
+        "RemovalMethod": "Appx"
     },
     {
         "AppId": "Microsoft.Windows.AIHub",
@@ -919,8 +943,16 @@
     },
     {
         "AppId": "Microsoft.Copilot",
+        "Aliases": ["Microsoft.Copilot", "XP9CXNGPPJ97XX", "Microsoft.Windows.Ai.Copilot.Provider"],
         "DisplayName": "Microsoft.Copilot",
         "Recommendation": "Optional",
-        "RemovalMethod": "Appx"
+        "RemovalMethod": "HybridAppxAndWinGet"
+    },
+    {
+        "AppId": "Microsoft.OneDrive",
+        "Aliases": ["Microsoft.OneDrive", "Microsoft.OneDriveSync"],
+        "DisplayName": "Microsoft.OneDrive",
+        "Recommendation": "Optional",
+        "RemovalMethod": "HybridOneDrive"
     }
 ]

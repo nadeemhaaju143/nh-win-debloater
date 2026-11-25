@@ -8,7 +8,7 @@
         (Sandbox, WSL), creates System Restore Points, and captures pre-modification
         registry snapshots for transactional rollback.
     .MODULEVERSION
-        1.3.1
+        1.3.2
 #>
 
 [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '')]
@@ -421,9 +421,9 @@ function Restore-RegistrySnapshot {
         $entryCategory = "Tweaks"
         if ($entry.Path -match "Copilot|WindowsAI|ClickToDo|Paint|Notepad|\\Edge") { $entryCategory = "AI" }
         elseif ($entry.Path -match "DataCollection|Privacy|AdvertisingInfo|SearchSettings") { $entryCategory = "Privacy" }
-        elseif ($entry.Path -match "Explorer|ContentDeliveryManager") { $entryCategory = "Shell" }
-        elseif ($entry.Path -match "GameDVR|DeliveryOptimization|DiagTrack") { $entryCategory = "Gaming" }
-        elseif ($entry.Path -match "Control Panel|StickyKeys|Power|WindowsUpdate|StorageSense") { $entryCategory = "Extras" }
+        elseif ($entry.Path -match "Explorer|ContentDeliveryManager|CloudContent") { $entryCategory = "Shell" }
+        elseif ($entry.Path -match "GameDVR|GameBar|DeliveryOptimization|DiagTrack") { $entryCategory = "Gaming" }
+        elseif ($entry.Path -match "Control Panel|StickyKeys|Power|WindowsUpdate|StorageSense|BitLocker") { $entryCategory = "Extras" }
 
         if ($hasCategoryFilter -and ($Categories -notcontains $entryCategory)) {
             continue
@@ -487,6 +487,8 @@ function Set-GameDVRPlaybackTweak {
     $ops.Add((Set-TweakRegistryValue -Path "HKCU:\System\GameConfigStore" -Name "GameDVR_FSEBehaviorMode" -Value $fseVal -PropertyType "DWord" -WhatIf:$WhatIfPreference))
     $ops.Add((Set-TweakRegistryValue -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\GameDVR" -Name "AllowGameDVR" -Value $dvrVal -PropertyType "DWord" -WhatIf:$WhatIfPreference))
     $ops.Add((Set-TweakRegistryValue -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\GameDVR" -Name "AppCaptureEnabled" -Value $dvrVal -PropertyType "DWord" -WhatIf:$WhatIfPreference))
+    $ops.Add((Set-TweakRegistryValue -Path "HKCU:\Software\Microsoft\GameBar" -Name "ShowStartupPanel" -Value $dvrVal -PropertyType "DWord" -WhatIf:$WhatIfPreference))
+    $ops.Add((Set-TweakRegistryValue -Path "HKCU:\Software\Microsoft\GameBar" -Name "UseNexusForGameBarEnabled" -Value $dvrVal -PropertyType "DWord" -WhatIf:$WhatIfPreference))
 
     return $ops.ToArray()
 }
@@ -699,7 +701,7 @@ function Set-MultitaskingTweak {
 function Set-SettingsHomeTweak {
     <#
         .SYNOPSIS
-            Disables recommended cards and suggestions on the Windows 11 Settings home page.
+            Disables recommended cards, Microsoft 365 ads, and promotional suggestions on the Windows 11 Settings home page.
     #>
     [CmdletBinding(SupportsShouldProcess = $true)]
     [OutputType([PSCustomObject[]])]
@@ -710,9 +712,56 @@ function Set-SettingsHomeTweak {
 
     $ops = [System.Collections.Generic.List[PSCustomObject]]::new()
     $advPath = "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced"
+    $cdmPath = "HKCU:\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager"
     $val = if ($DisableHomeRecommendations) { 0 } else { 1 }
 
     $ops.Add((Set-TweakRegistryValue -Path $advPath -Name "ShowSettingsHome" -Value $val -PropertyType "DWord" -WhatIf:$WhatIfPreference))
+    $ops.Add((Set-TweakRegistryValue -Path $cdmPath -Name "SubscribedContent-338393Enabled" -Value $val -PropertyType "DWord" -WhatIf:$WhatIfPreference))
+    $ops.Add((Set-TweakRegistryValue -Path $cdmPath -Name "SubscribedContent-353694Enabled" -Value $val -PropertyType "DWord" -WhatIf:$WhatIfPreference))
+    $ops.Add((Set-TweakRegistryValue -Path $cdmPath -Name "SubscribedContent-353696Enabled" -Value $val -PropertyType "DWord" -WhatIf:$WhatIfPreference))
+    return $ops.ToArray()
+}
+
+function Set-BitLockerAutoEncryptTweak {
+    <#
+        .SYNOPSIS
+            Safely prevents automatic BitLocker device encryption during Windows setup without touching active BitLocker volumes.
+    #>
+    [CmdletBinding(SupportsShouldProcess = $true)]
+    [OutputType([PSCustomObject])]
+    param(
+        [Parameter(Mandatory = $false)]
+        [bool]$Prevent = $true
+    )
+
+    $val = if ($Prevent) { 1 } else { 0 }
+    return (Set-TweakRegistryValue -Path "HKLM:\SYSTEM\CurrentControlSet\Control\BitLocker" -Name "PreventDeviceEncryption" -Value $val -PropertyType "DWord" -WhatIf:$WhatIfPreference)
+}
+
+function Set-WindowsSpotlightTweak {
+    <#
+        .SYNOPSIS
+            Disables Windows Spotlight promotional backgrounds and action center suggestions.
+    #>
+    [CmdletBinding(SupportsShouldProcess = $true)]
+    [OutputType([PSCustomObject[]])]
+    param(
+        [Parameter(Mandatory = $false)]
+        [bool]$Disable = $true
+    )
+
+    $ops = [System.Collections.Generic.List[PSCustomObject]]::new()
+    $policyVal = if ($Disable) { 1 } else { 0 }
+    $cdmVal = if ($Disable) { 0 } else { 1 }
+    $cloudPath = "HKCU:\Software\Policies\Microsoft\Windows\CloudContent"
+    $cdmPath = "HKCU:\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager"
+
+    $ops.Add((Set-TweakRegistryValue -Path $cloudPath -Name "DisableWindowsSpotlightFeatures" -Value $policyVal -PropertyType "DWord" -WhatIf:$WhatIfPreference))
+    $ops.Add((Set-TweakRegistryValue -Path $cloudPath -Name "DisableWindowsSpotlightOnActionCenter" -Value $policyVal -PropertyType "DWord" -WhatIf:$WhatIfPreference))
+    $ops.Add((Set-TweakRegistryValue -Path $cloudPath -Name "DisableWindowsSpotlightOnSettings" -Value $policyVal -PropertyType "DWord" -WhatIf:$WhatIfPreference))
+    $ops.Add((Set-TweakRegistryValue -Path $cloudPath -Name "DisableWindowsSpotlightWindowsWelcomeExperience" -Value $policyVal -PropertyType "DWord" -WhatIf:$WhatIfPreference))
+    $ops.Add((Set-TweakRegistryValue -Path $cdmPath -Name "RotatingLockScreenEnabled" -Value $cdmVal -PropertyType "DWord" -WhatIf:$WhatIfPreference))
+
     return $ops.ToArray()
 }
 
@@ -849,7 +898,7 @@ function Get-DebloatSafetyImpact {
     )
 
     $highImpactKeys = @("WindowsSandbox", "WSL")
-    $cautionKeys = @("TelemetryService", "Hibernation", "FastStartup", "StorageSense", "PaintAI", "NotepadAI")
+    $cautionKeys = @("TelemetryService", "Hibernation", "FastStartup", "StorageSense", "PaintAI", "NotepadAI", "SafeServicesOptional", "PowerUltimate")
 
     $hasHigh = $false
     $hasCaution = $false
@@ -1186,7 +1235,7 @@ function Clear-StartMenuCloudStubs {
 function Set-SafeServiceOptimization {
     <#
         .SYNOPSIS
-            Safely optimizes non-essential background services (telemetry, retail demo, maps, error reporting) and trims high-RAM autostart bloat.
+            Safely optimizes non-essential background services (Xbox, Maps, RetailDemo, Wallet, Insider, WMP Sharing, RemoteRegistry, Fax, and optional hardware/location services) with snapshot backup.
     #>
     [CmdletBinding(SupportsShouldProcess = $true)]
     [OutputType([PSCustomObject[]])]
@@ -1195,23 +1244,78 @@ function Set-SafeServiceOptimization {
         [bool]$DisableServices = $true,
 
         [Parameter(Mandatory = $false)]
+        [bool]$IncludeRecommended = $true,
+
+        [Parameter(Mandatory = $false)]
+        [bool]$IncludeOptional = $false,
+
+        [Parameter(Mandatory = $false)]
+        [string[]]$ServiceNames,
+
+        [Parameter(Mandatory = $false)]
         [string]$SnapshotPath
     )
 
     $ops = [System.Collections.Generic.List[PSCustomObject]]::new()
 
-    $safeServices = @(
-        @{ Name = "DiagTrack"; TargetStartup = "Disabled" },
-        @{ Name = "dmwappushservice"; TargetStartup = "Disabled" },
-        @{ Name = "RetailDemo"; TargetStartup = "Disabled" },
+    $recommendedServices = @(
+        @{ Name = "XblAuthManager"; TargetStartup = "Manual" },
+        @{ Name = "XblGameSave"; TargetStartup = "Manual" },
+        @{ Name = "XboxNetApiSvc"; TargetStartup = "Manual" },
+        @{ Name = "XboxGipSvc"; TargetStartup = "Manual" },
         @{ Name = "MapsBroker"; TargetStartup = "Manual" },
-        @{ Name = "WerSvc"; TargetStartup = "Manual" },
+        @{ Name = "RetailDemo"; TargetStartup = "Disabled" },
+        @{ Name = "WalletService"; TargetStartup = "Manual" },
         @{ Name = "wisvc"; TargetStartup = "Manual" },
-        @{ Name = "Fax"; TargetStartup = "Manual" },
-        @{ Name = "PhoneSvc"; TargetStartup = "Manual" }
+        @{ Name = "WMPNetworkSvc"; TargetStartup = "Manual" },
+        @{ Name = "RemoteRegistry"; TargetStartup = "Disabled" },
+        @{ Name = "Fax"; TargetStartup = "Manual" }
     )
 
-    $protectedServices = @("WinDefend", "wuauserv", "AudioSrv", "AudioEndpointBuilder", "Dhcp", "Dnscache", "BFE", "mpssvc", "bthserv")
+    $optionalServices = @(
+        @{ Name = "lfsvc"; TargetStartup = "Manual" },
+        @{ Name = "SensrSvc"; TargetStartup = "Manual" },
+        @{ Name = "SensorDataService"; TargetStartup = "Manual" },
+        @{ Name = "PhoneSvc"; TargetStartup = "Manual" },
+        @{ Name = "WpcMonSvc"; TargetStartup = "Manual" },
+        @{ Name = "SCardSvr"; TargetStartup = "Manual" },
+        @{ Name = "ScDeviceEnum"; TargetStartup = "Manual" }
+    )
+
+    $protectedServices = @(
+        "WinDefend", "wuauserv", "AudioSrv", "AudioEndpointBuilder", "Dhcp", "Dnscache",
+        "BFE", "mpssvc", "bthserv", "Spooler", "WSearch", "SysMain", "DoSvc", "BITS",
+        "DPS", "CDPSvc", "WpnService", "fdPHost", "FDResPub", "AppXSvc", "msiserver", "VSS"
+    )
+
+    $targetList = [System.Collections.Generic.List[hashtable]]::new()
+    $addedNames = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::OrdinalIgnoreCase)
+
+    if ($ServiceNames -and $ServiceNames.Count -gt 0) {
+        $allMap = @{}
+        foreach ($s in ($recommendedServices + $optionalServices)) { $allMap[$s.Name] = $s }
+        foreach ($name in $ServiceNames) {
+            if ($protectedServices -contains $name) { continue }
+            if ($addedNames.Add($name)) {
+                if ($allMap.ContainsKey($name)) {
+                    $targetList.Add($allMap[$name])
+                } else {
+                    $targetList.Add(@{ Name = $name; TargetStartup = "Manual" })
+                }
+            }
+        }
+    } else {
+        if ($IncludeRecommended) {
+            foreach ($s in $recommendedServices) {
+                if ($addedNames.Add($s.Name)) { $targetList.Add($s) }
+            }
+        }
+        if ($IncludeOptional) {
+            foreach ($s in $optionalServices) {
+                if ($addedNames.Add($s.Name)) { $targetList.Add($s) }
+            }
+        }
+    }
 
     $serviceBackupDir = Join-Path $env:LOCALAPPDATA "NHWinDebloater\Backups"
     if (-not (Test-Path $serviceBackupDir)) {
@@ -1225,7 +1329,7 @@ function Set-SafeServiceOptimization {
     }
     $backupData = [System.Collections.Generic.List[PSCustomObject]]::new()
 
-    foreach ($svcItem in $safeServices) {
+    foreach ($svcItem in $targetList) {
         $svcName = $svcItem.Name
         if ($protectedServices -contains $svcName) { continue }
 
@@ -1259,17 +1363,170 @@ function Set-SafeServiceOptimization {
         $backupData | ConvertTo-Json -Depth 3 | Set-Content -Path $serviceBackupFile -Encoding UTF8 -ErrorAction SilentlyContinue
     }
 
-    # Safe Autostart & RAM trimming
-    $ops.Add((Set-TweakRegistryValue -Path "HKLM:\SOFTWARE\Policies\Microsoft\Edge" -Name "StartupBoostEnabled" -Value 0 -PropertyType "DWord" -WhatIf:$WhatIfPreference))
-    $ops.Add((Set-TweakRegistryValue -Path "HKLM:\SOFTWARE\Policies\Microsoft\Edge" -Name "BackgroundModeEnabled" -Value 0 -PropertyType "DWord" -WhatIf:$WhatIfPreference))
+    return $ops.ToArray()
+}
 
-    $teamsPath = "HKCU:\Software\Microsoft\Windows\CurrentVersion\Run"
-    if (Test-Path $teamsPath) {
-        $teamsProp = Get-ItemProperty -Path $teamsPath -Name "com.squirrel.Teams.Teams" -ErrorAction SilentlyContinue
-        if ($teamsProp -and $PSCmdlet.ShouldProcess("Registry: $teamsPath", "Remove Teams auto-start")) {
-            Remove-ItemProperty -Path $teamsPath -Name "com.squirrel.Teams.Teams" -Force -ErrorAction SilentlyContinue
-            $ops.Add([PSCustomObject]@{ Path = $teamsPath; Name = "com.squirrel.Teams.Teams"; Value = "Removed"; Status = "Success" })
+function Set-PowerOptionTweak {
+    <#
+        .SYNOPSIS
+            Configures Advanced Power Options (Ultimate Performance, Classic Plans, Hidden Processor/USB/PCIe Attributes, and Hibernation) with snapshot backup.
+    #>
+    [CmdletBinding(SupportsShouldProcess = $true)]
+    [OutputType([PSCustomObject[]])]
+    param(
+        [Parameter(Mandatory = $false)]
+        [bool]$UnlockUltimatePerformance = $false,
+
+        [Parameter(Mandatory = $false)]
+        [bool]$UnhideClassicPlans = $false,
+
+        [Parameter(Mandatory = $false)]
+        [bool]$UnhidePowerAttributes = $false,
+
+        [Parameter(Mandatory = $false)]
+        [bool]$DisableHibernation = $false,
+
+        [Parameter(Mandatory = $false)]
+        [string]$SnapshotPath
+    )
+
+    $ops = [System.Collections.Generic.List[PSCustomObject]]::new()
+
+    # Capture current active scheme GUID for rollback
+    $activeSchemeLine = (powercfg.exe /getactivescheme 2>$null) -join ""
+    $prevGuid = $null
+    if ($activeSchemeLine -match '([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})') {
+        $prevGuid = $Matches[1]
+    }
+
+    $powerBackupDir = Join-Path $env:LOCALAPPDATA "NHWinDebloater\Backups"
+    if (-not (Test-Path $powerBackupDir)) {
+        New-Item -Path $powerBackupDir -ItemType Directory -Force -ErrorAction SilentlyContinue | Out-Null
+    }
+    $timestamp = (Get-Date).ToString("yyyyMMdd_HHmmss")
+    $powerBackupFile = if (-not [string]::IsNullOrWhiteSpace($SnapshotPath)) {
+        $SnapshotPath
+    } else {
+        Join-Path $powerBackupDir "PowerSnapshot_$timestamp.json"
+    }
+
+    if (-not $WhatIfPreference) {
+        $snapObj = [PSCustomObject]@{
+            PreviousSchemeGuid = $prevGuid
+            DisableHibernation = $DisableHibernation
+            Timestamp          = $timestamp
         }
+        $snapObj | ConvertTo-Json -Depth 3 | Set-Content -Path $powerBackupFile -Encoding UTF8 -ErrorAction SilentlyContinue
+    }
+
+    if ($UnlockUltimatePerformance) {
+        if ($PSCmdlet.ShouldProcess("Power Plan: Ultimate Performance", "Duplicate and set active scheme")) {
+            try {
+                $dupOut = (powercfg.exe -duplicatescheme e9a42b02-d5df-448d-aa00-03f14749eb61 2>&1) -join " "
+                if ($dupOut -match '([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})') {
+                    $newGuid = $Matches[1]
+                    powercfg.exe /setactive $newGuid 2>$null
+                }
+                $ops.Add([PSCustomObject]@{ Path = "powercfg.exe"; Name = "UltimatePerformance"; Value = "Active"; Status = "Success" })
+            } catch {
+                $ops.Add([PSCustomObject]@{ Path = "powercfg.exe"; Name = "UltimatePerformance"; Value = "Active"; Status = "Error: $($_.Exception.Message)" })
+            }
+        } else {
+            $ops.Add([PSCustomObject]@{ Path = "powercfg.exe"; Name = "UltimatePerformance"; Value = "Active"; Status = "Preview" })
+        }
+    }
+
+    if ($UnhideClassicPlans) {
+        if ($PSCmdlet.ShouldProcess("Power Plans: High Performance & Power Saver", "Unhide classic power schemes")) {
+            try {
+                $existingList = (powercfg.exe /list 2>$null) -join "`n"
+                if ($existingList -notmatch '8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c') {
+                    powercfg.exe -duplicatescheme 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c 2>$null | Out-Null
+                }
+                if ($existingList -notmatch 'a1841308-3541-4fab-bc81-f71556f20b4a') {
+                    powercfg.exe -duplicatescheme a1841308-3541-4fab-bc81-f71556f20b4a 2>$null | Out-Null
+                }
+                $ops.Add([PSCustomObject]@{ Path = "powercfg.exe"; Name = "ClassicPowerPlans"; Value = "Unhidden"; Status = "Success" })
+            } catch {
+                $ops.Add([PSCustomObject]@{ Path = "powercfg.exe"; Name = "ClassicPowerPlans"; Value = "Unhidden"; Status = "Error: $($_.Exception.Message)" })
+            }
+        } else {
+            $ops.Add([PSCustomObject]@{ Path = "powercfg.exe"; Name = "ClassicPowerPlans"; Value = "Unhidden"; Status = "Preview" })
+        }
+    }
+
+    if ($UnhidePowerAttributes) {
+        $attrPaths = @(
+            "HKLM:\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\54533251-82be-4824-96c1-47b60b740d00\be337238-0d82-4146-a960-4f3749d470c7",
+            "HKLM:\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\2a737441-1930-4402-8d77-b2bebba308a3\48e6b7a6-50f5-4782-a5d4-53bb8f07e226",
+            "HKLM:\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\501a4d13-42af-4429-9fd1-a8218c268e20\ee12f906-d277-404b-b6da-e5fa1a576df5"
+        )
+        foreach ($ap in $attrPaths) {
+            $ops.Add((Set-TweakRegistryValue -Path $ap -Name "Attributes" -Value 2 -PropertyType "DWord" -WhatIf:$WhatIfPreference))
+        }
+    }
+
+    if ($DisableHibernation) {
+        $ops.Add((Set-HibernationStorageTweak -DisableHibernation $true -WhatIf:$WhatIfPreference))
+    }
+
+    return $ops.ToArray()
+}
+
+function Restore-PowerOptions {
+    <#
+        .SYNOPSIS
+            Restores the previous active Windows power plan, hidden attribute states, and hibernation from snapshot.
+    #>
+    [CmdletBinding(SupportsShouldProcess = $true)]
+    [OutputType([PSCustomObject[]])]
+    param(
+        [Parameter(Mandatory = $false)]
+        [string]$SnapshotPath
+    )
+
+    $ops = [System.Collections.Generic.List[PSCustomObject]]::new()
+    $powerBackupDir = Join-Path $env:LOCALAPPDATA "NHWinDebloater\Backups"
+
+    if ([string]::IsNullOrWhiteSpace($SnapshotPath) -and (Test-Path $powerBackupDir)) {
+        $latest = Get-ChildItem -Path $powerBackupDir -Filter "PowerSnapshot_*.json" -ErrorAction SilentlyContinue |
+            Sort-Object LastWriteTime -Descending |
+            Select-Object -First 1
+        if ($latest) { $SnapshotPath = $latest.FullName }
+    }
+
+    $snapData = $null
+    if ($SnapshotPath -and (Test-Path $SnapshotPath)) {
+        try {
+            $snapData = Get-Content -Path $SnapshotPath -Raw -Encoding UTF8 | ConvertFrom-Json
+        } catch {
+            Write-Warning "Could not parse power snapshot: $SnapshotPath"
+        }
+    }
+
+    $restoreGuid = if ($snapData -and $snapData.PreviousSchemeGuid) { $snapData.PreviousSchemeGuid } else { "381b4222-f694-41f0-9685-ff5bb260df2e" }
+    if ($PSCmdlet.ShouldProcess("Active Power Plan: $restoreGuid", "Restore previous power scheme")) {
+        try {
+            powercfg.exe /setactive $restoreGuid 2>$null
+            $ops.Add([PSCustomObject]@{ Path = "powercfg.exe"; Name = "ActiveScheme"; Value = $restoreGuid; Status = "Restored" })
+        } catch {
+            $ops.Add([PSCustomObject]@{ Path = "powercfg.exe"; Name = "ActiveScheme"; Value = $restoreGuid; Status = "Error: $($_.Exception.Message)" })
+        }
+    } else {
+        $ops.Add([PSCustomObject]@{ Path = "powercfg.exe"; Name = "ActiveScheme"; Value = $restoreGuid; Status = "Preview" })
+    }
+
+    $attrPaths = @(
+        "HKLM:\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\54533251-82be-4824-96c1-47b60b740d00\be337238-0d82-4146-a960-4f3749d470c7",
+        "HKLM:\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\2a737441-1930-4402-8d77-b2bebba308a3\48e6b7a6-50f5-4782-a5d4-53bb8f07e226",
+        "HKLM:\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\501a4d13-42af-4429-9fd1-a8218c268e20\ee12f906-d277-404b-b6da-e5fa1a576df5"
+    )
+    foreach ($ap in $attrPaths) {
+        $ops.Add((Set-TweakRegistryValue -Path $ap -Name "Attributes" -Value 1 -PropertyType "DWord" -WhatIf:$WhatIfPreference))
+    }
+
+    if ($snapData -and $snapData.DisableHibernation) {
+        $ops.Add((Set-HibernationStorageTweak -DisableHibernation $false -WhatIf:$WhatIfPreference))
     }
 
     return $ops.ToArray()
@@ -1437,4 +1694,4 @@ function Dismount-DefaultUserHive {
     return $true
 }
 
-Export-ModuleMember -Function Set-ConsumerFeatureTweak, Set-LockScreenTweak, Set-ClassicContextMenuTweak, Set-MousePrecisionTweak, Set-StickyKeysTweak, Set-FastStartupTweak, Set-StorageSenseTweak, Set-WindowsUpdatePolicyTweak, Set-OptionalFeatureState, Set-GameDVRPlaybackTweak, Set-DeliveryOptimizationTweak, Set-TelemetryServiceTweak, Set-StartMenuRecommendedTweak, Set-EdgeBackgroundTweak, Set-TelemetryScheduledTasksTweak, Set-HibernationStorageTweak, Set-MultitaskingTweak, Set-SettingsHomeTweak, Set-CopilotAITweak, Set-RecallAITweak, Set-ApplicationAITweak, Get-DebloatSafetyImpact, New-DebloatRestorePoint, Export-RegistrySnapshot, Restore-RegistrySnapshot, Remove-OneDriveDeep, Backup-StartMenuLayout, Restore-StartMenuLayout, Clear-StartMenuCloudStubs, Set-SafeServiceOptimization, Restore-ServiceOptimization, Mount-DefaultUserHive, Dismount-DefaultUserHive
+Export-ModuleMember -Function Set-ConsumerFeatureTweak, Set-LockScreenTweak, Set-ClassicContextMenuTweak, Set-MousePrecisionTweak, Set-StickyKeysTweak, Set-FastStartupTweak, Set-StorageSenseTweak, Set-WindowsUpdatePolicyTweak, Set-OptionalFeatureState, Set-GameDVRPlaybackTweak, Set-DeliveryOptimizationTweak, Set-TelemetryServiceTweak, Set-StartMenuRecommendedTweak, Set-EdgeBackgroundTweak, Set-TelemetryScheduledTasksTweak, Set-HibernationStorageTweak, Set-MultitaskingTweak, Set-SettingsHomeTweak, Set-BitLockerAutoEncryptTweak, Set-WindowsSpotlightTweak, Set-PowerOptionTweak, Restore-PowerOptions, Set-CopilotAITweak, Set-RecallAITweak, Set-ApplicationAITweak, Get-DebloatSafetyImpact, New-DebloatRestorePoint, Export-RegistrySnapshot, Restore-RegistrySnapshot, Remove-OneDriveDeep, Backup-StartMenuLayout, Restore-StartMenuLayout, Clear-StartMenuCloudStubs, Set-SafeServiceOptimization, Restore-ServiceOptimization, Mount-DefaultUserHive, Dismount-DefaultUserHive

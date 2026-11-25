@@ -7,12 +7,13 @@
         supports multi-user and default-user Sysprep environments,
         and provides reinstall capability for default/Store apps.
     .MODULEVERSION
-        1.3.1
+        1.3.2
 #>
 
 [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '')]
 [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSProvideCommentHelp', '')]
 [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseOutputTypeCorrectly', '')]
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingEmptyCatchBlock', '')]
 param()
 
 $script:ProtectedSystemPackages = @(
@@ -29,7 +30,6 @@ $script:ProtectedSystemPackages = @(
     "Microsoft.WindowsCalculator",
     "Microsoft.WindowsCamera",
     "Microsoft.ZuneMusic",
-    "Microsoft.ZuneVideo",
     "Microsoft.WindowsMediaPlayer",
     "Microsoft.Windows.Photos",
     "Microsoft.VCLibs",
@@ -38,6 +38,39 @@ $script:ProtectedSystemPackages = @(
     "Microsoft.Windows.ShellExperienceHost",
     "Microsoft.Windows.StartMenuExperienceHost",
     "Microsoft.Windows.Search"
+)
+
+$script:BuiltinAppAliases = @{
+    "Microsoft.Copilot"    = @("Microsoft.Copilot", "XP9CXNGPPJ97XX", "Microsoft.Windows.Ai.Copilot.Provider")
+    "Microsoft.OneDrive"   = @("Microsoft.OneDrive", "Microsoft.OneDriveSync")
+    "Facebook.Instagram"   = @("Facebook.Instagram", "Facebook.InstagramBeta")
+    "LinkedInforWindows"   = @("LinkedInforWindows", "7EE7776C.LinkedInforWindows")
+}
+
+$script:CoreFrameworkPatterns = @(
+    "MicrosoftWindows.Client.*",
+    "*SecHealthUI*",
+    "*ShellExperienceHost*",
+    "*StartMenuExperienceHost*",
+    "*MicrosoftEdge.Stable*",
+    "*Microsoft.VCLibs*",
+    "*Microsoft.UI.Xaml*",
+    "*WindowsAppRuntime*",
+    "*Microsoft.NET.Native*",
+    "*Microsoft.DesktopAppInstaller*",
+    "*Microsoft.AAD.BrokerPlugin*",
+    "*Microsoft.AccountsControl*",
+    "*Microsoft.AsyncTextService*",
+    "*Microsoft.BioEnrollment*",
+    "*Microsoft.CredDialogHost*",
+    "*Microsoft.LockApp*",
+    "*Microsoft.ECApp*",
+    "*Microsoft.ApplicationCompatibilityEnhancements*",
+    "*Microsoft.Windows.Search*",
+    "1527c705-839a-4832-9118-54d4Bd6a0c89",
+    "c5e2524a-ea46-4f67-841f-6a9465d9d515",
+    "E2A4F912-2574-4A75-9BB0-0D023378592B",
+    "F46D4000-FD22-4DB4-AC8E-4E1DDDE828FE"
 )
 
 $script:CachedProtectedApps = $null
@@ -111,10 +144,127 @@ function Test-IsProtectedApp {
     return $false
 }
 
+function Test-IsCoreSystemFramework {
+    <#
+        .SYNOPSIS
+            Tests whether a package ID belongs to a core Windows shell or runtime framework.
+    #>
+    [CmdletBinding()]
+    [OutputType([bool])]
+    param(
+        [Parameter(Mandatory = $false)]
+        [string]$AppId
+    )
+
+    if ([string]::IsNullOrWhiteSpace($AppId)) { return $false }
+
+    foreach ($pattern in $script:CoreFrameworkPatterns) {
+        if ($AppId -like $pattern) {
+            return $true
+        }
+    }
+
+    return $false
+}
+
+function Get-OneDriveInstallInfo {
+    <#
+        .SYNOPSIS
+            Detects Microsoft OneDrive installation across Win32 setup/uninstall keys and AppX sync packages.
+    #>
+    [CmdletBinding()]
+    [OutputType([PSCustomObject])]
+    param()
+
+    $setupCandidates = @(
+        "$env:SystemRoot\System32\OneDriveSetup.exe",
+        "$env:SystemRoot\SysWOW64\OneDriveSetup.exe",
+        "$env:LOCALAPPDATA\Microsoft\OneDrive\Update\OneDriveSetup.exe"
+    )
+
+    $uninstallKeys = @(
+        "HKCU:\Software\Microsoft\Windows\CurrentVersion\Uninstall\OneDriveSetup.exe",
+        "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\OneDriveSetup.exe",
+        "HKLM:\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\OneDriveSetup.exe"
+    )
+
+    $win32Detected = $false
+    $foundSetupPath = $null
+
+    foreach ($uKey in $uninstallKeys) {
+        if (Test-Path $uKey) {
+            $win32Detected = $true
+            $props = Get-ItemProperty -Path $uKey -ErrorAction SilentlyContinue
+            if ($props -and $props.UninstallString) {
+                if ($props.UninstallString -match '([A-Za-z]:\\[^"]*?OneDriveSetup\.exe)') {
+                    $foundSetupPath = $Matches[1]
+                }
+            }
+            break
+        }
+    }
+
+    foreach ($candidate in $setupCandidates) {
+        if (Test-Path $candidate) {
+            if (-not $foundSetupPath) { $foundSetupPath = $candidate }
+            if ($candidate -like "*AppData*" -or (Test-Path "$env:LOCALAPPDATA\Microsoft\OneDrive\OneDrive.exe")) {
+                $win32Detected = $true
+            }
+        }
+    }
+
+    $appxPackages = @(try { Get-AppxPackage -Name "Microsoft.OneDriveSync" -AllUsers -ErrorAction SilentlyContinue 2>$null } catch { @() })
+    if (-not $appxPackages -or $appxPackages.Count -eq 0) {
+        $appxPackages = @(try { Get-AppxPackage -Name "Microsoft.OneDriveSync" -ErrorAction SilentlyContinue 2>$null } catch { @() })
+    }
+    $appxInstalled = ($appxPackages.Count -gt 0)
+
+    return [PSCustomObject]@{
+        IsInstalled    = ($win32Detected -or $appxInstalled)
+        Win32Installed = $win32Detected
+        AppxInstalled  = $appxInstalled
+        SetupPath      = $foundSetupPath
+        AppxPackages   = $appxPackages
+    }
+}
+
+function Register-DeprovisionedAppxKey {
+    <#
+        .SYNOPSIS
+            Writes the Deprovisioned registry key so Windows 11 26H2 does not silently reinstall removed inbox AppX packages.
+    #>
+    [CmdletBinding(SupportsShouldProcess = $true)]
+    [OutputType([bool])]
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$PackageFamilyName
+    )
+
+    if ([string]::IsNullOrWhiteSpace($PackageFamilyName)) { return $false }
+
+    $deprovBase = "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Appx\AppxAllUserStore\Deprovisioned"
+    $deprovPath = Join-Path $deprovBase $PackageFamilyName
+
+    if ($PSCmdlet.ShouldProcess($deprovPath, "Mark AppX package family as Deprovisioned")) {
+        try {
+            if (-not (Test-Path $deprovPath)) {
+                New-Item -Path $deprovPath -Force -ErrorAction Stop | Out-Null
+            }
+            return $true
+        }
+        catch {
+            Write-Verbose "Could not write Deprovisioned key '$deprovPath': $($_.Exception.Message)"
+            return $false
+        }
+    }
+
+    return $true
+}
+
 function Get-DebloatPreset {
     <#
         .SYNOPSIS
-            Loads an application debloat preset profile.
+            Loads an application debloat preset profile with AppId alias array support.
     #>
     [CmdletBinding()]
     param(
@@ -143,28 +293,42 @@ function Get-DebloatPreset {
         $resultList = [System.Collections.Generic.List[PSCustomObject]]::new()
         foreach ($item in $data) {
             if (-not $item -or -not $item.AppId) { continue }
+
+            $aliasList = [System.Collections.Generic.List[string]]::new()
+            $primaryId = $null
+
             if ($item.AppId -is [System.Collections.IEnumerable] -and $item.AppId -isnot [string]) {
                 foreach ($id in $item.AppId) {
                     $idStr = [string]$id
                     if (-not [string]::IsNullOrWhiteSpace($idStr)) {
-                        $resultList.Add([PSCustomObject]@{
-                            AppId          = $idStr
-                            DisplayName    = if ($item.DisplayName -is [string]) { $item.DisplayName } else { $idStr }
-                            Recommendation = $item.Recommendation
-                            RemovalMethod  = $item.RemovalMethod
-                        })
+                        if (-not $primaryId) { $primaryId = $idStr }
+                        if (-not $aliasList.Contains($idStr)) { $aliasList.Add($idStr) }
                     }
                 }
             } else {
-                $idStr = [string]$item.AppId
-                if (-not [string]::IsNullOrWhiteSpace($idStr)) {
-                    $resultList.Add([PSCustomObject]@{
-                        AppId          = $idStr
-                        DisplayName    = if ($item.DisplayName -is [string]) { $item.DisplayName } else { $idStr }
-                        Recommendation = $item.Recommendation
-                        RemovalMethod  = $item.RemovalMethod
-                    })
+                $primaryId = [string]$item.AppId
+                if (-not [string]::IsNullOrWhiteSpace($primaryId)) {
+                    $aliasList.Add($primaryId)
                 }
+            }
+
+            if ($item.PSObject.Properties["Aliases"] -and $item.Aliases) {
+                foreach ($al in $item.Aliases) {
+                    $alStr = [string]$al
+                    if (-not [string]::IsNullOrWhiteSpace($alStr) -and -not $aliasList.Contains($alStr)) {
+                        $aliasList.Add($alStr)
+                    }
+                }
+            }
+
+            if (-not [string]::IsNullOrWhiteSpace($primaryId)) {
+                $resultList.Add([PSCustomObject]@{
+                    AppId          = $primaryId
+                    Aliases        = $aliasList.ToArray()
+                    DisplayName    = if ($item.DisplayName -is [string]) { $item.DisplayName } else { $primaryId }
+                    Recommendation = $item.Recommendation
+                    RemovalMethod  = $item.RemovalMethod
+                })
             }
         }
         return @($resultList)
@@ -178,12 +342,14 @@ function Get-DebloatPreset {
 function Get-InstalledDebloatApp {
     <#
         .SYNOPSIS
-            Scans installed and provisioned AppX packages with high-performance dictionary indexing.
+            Scans installed/provisioned AppX packages, OneDrive (Win32+AppX), and Copilot variants with dictionary indexing.
     #>
     [CmdletBinding()]
     [OutputType([PSCustomObject[]])]
     param(
-        [string]$PresetsPath
+        [string]$PresetsPath,
+
+        [switch]$ExcludeCoreFrameworks
     )
 
     $installedPackages = try { Get-AppxPackage -AllUsers -ErrorAction SilentlyContinue 2>$null } catch { $null }
@@ -197,46 +363,86 @@ function Get-InstalledDebloatApp {
 
     foreach ($pkg in $installedPackages) {
         if (-not $pkg.Name) { continue }
+        $isCore = Test-IsCoreSystemFramework -AppId $pkg.Name
+        if ($ExcludeCoreFrameworks -and $isCore) { continue }
+
         $isProtected = $false
         foreach ($protected in $protectedList) {
-            if ($pkg.Name -like "*$protected*" -or $protected -like "*$pkg.Name*") {
+            if ($pkg.Name -like "*$protected*" -or $protected -like "*$($pkg.Name)*") {
                 $isProtected = $true
                 break
             }
         }
         $resultsDict[$pkg.Name] = [PSCustomObject]@{
-            AppId           = $pkg.Name
-            PackageFullName = $pkg.PackageFullName
-            Publisher       = $pkg.PublisherId
-            IsProvisioned   = $false
-            IsProtected     = $isProtected
-            Version         = $pkg.Version
+            AppId             = $pkg.Name
+            PackageFullName   = $pkg.PackageFullName
+            PackageFamilyName = $pkg.PackageFamilyName
+            Publisher         = $pkg.PublisherId
+            IsProvisioned     = $false
+            IsProtected       = $isProtected
+            IsCoreFramework   = $isCore
+            Version           = $pkg.Version
         }
     }
 
     if ($provisionedPackages) {
         foreach ($prov in $provisionedPackages) {
             if (-not $prov.DisplayName) { continue }
+            $isCore = Test-IsCoreSystemFramework -AppId $prov.DisplayName
+            if ($ExcludeCoreFrameworks -and $isCore) { continue }
+
             if ($resultsDict.ContainsKey($prov.DisplayName)) {
                 $resultsDict[$prov.DisplayName].IsProvisioned = $true
             }
             else {
                 $isProtected = $false
                 foreach ($protected in $protectedList) {
-                    if ($prov.DisplayName -like "*$protected*" -or $protected -like "*$prov.DisplayName*") {
+                    if ($prov.DisplayName -like "*$protected*" -or $protected -like "*$($prov.DisplayName)*") {
                         $isProtected = $true
                         break
                     }
                 }
                 $resultsDict[$prov.DisplayName] = [PSCustomObject]@{
-                    AppId           = $prov.DisplayName
-                    PackageFullName = $prov.PackageName
-                    Publisher       = ""
-                    IsProvisioned   = $true
-                    IsProtected     = $isProtected
-                    Version         = $prov.Version
+                    AppId             = $prov.DisplayName
+                    PackageFullName   = $prov.PackageName
+                    PackageFamilyName = ""
+                    Publisher         = ""
+                    IsProvisioned     = $true
+                    IsProtected       = $isProtected
+                    IsCoreFramework   = $isCore
+                    Version           = $prov.Version
                 }
             }
+        }
+    }
+
+    # Hybrid OneDrive detection (Win32 OneDriveSetup + AppX Microsoft.OneDriveSync)
+    $odInfo = Get-OneDriveInstallInfo
+    if ($odInfo.IsInstalled -and -not $resultsDict.ContainsKey("Microsoft.OneDrive")) {
+        $resultsDict["Microsoft.OneDrive"] = [PSCustomObject]@{
+            AppId             = "Microsoft.OneDrive"
+            PackageFullName   = if ($odInfo.SetupPath) { $odInfo.SetupPath } else { "Microsoft.OneDriveSync" }
+            PackageFamilyName = "Microsoft.OneDriveSync_8wekyb3d8bbwe"
+            Publisher         = "Microsoft"
+            IsProvisioned     = $false
+            IsProtected       = $false
+            IsCoreFramework   = $false
+            Version           = "Hybrid"
+        }
+    }
+
+    # Normalize Copilot variants to Microsoft.Copilot if any Copilot package is present
+    $hasCopilotVariant = @($resultsDict.Keys | Where-Object { $_ -like "*Copilot*" }).Count -gt 0
+    if ($hasCopilotVariant -and -not $resultsDict.ContainsKey("Microsoft.Copilot")) {
+        $resultsDict["Microsoft.Copilot"] = [PSCustomObject]@{
+            AppId             = "Microsoft.Copilot"
+            PackageFullName   = "Microsoft.Copilot"
+            PackageFamilyName = ""
+            Publisher         = "Microsoft"
+            IsProvisioned     = $false
+            IsProtected       = $false
+            IsCoreFramework   = $false
+            Version           = "Variant"
         }
     }
 
@@ -246,7 +452,7 @@ function Get-InstalledDebloatApp {
 function Remove-DebloatApp {
     <#
         .SYNOPSIS
-            Safely uninstalls selected bloatware packages with multi-user and Sysprep scope support.
+            Safely uninstalls selected bloatware packages using a hybrid AppX + Provisioned + Deprovisioned + WinGet + Win32 pipeline.
     #>
     [CmdletBinding(SupportsShouldProcess = $true)]
     [OutputType([PSCustomObject])]
@@ -268,8 +474,16 @@ function Remove-DebloatApp {
         foreach ($appId in $AppIdList) {
             if ([string]::IsNullOrWhiteSpace($appId)) { continue }
 
+            $candidateIds = [System.Collections.Generic.List[string]]::new()
+            $candidateIds.Add($appId)
+            if ($script:BuiltinAppAliases.ContainsKey($appId)) {
+                foreach ($alias in $script:BuiltinAppAliases[$appId]) {
+                    if (-not $candidateIds.Contains($alias)) { $candidateIds.Add($alias) }
+                }
+            }
+
             # Safety gate: Ensure protected system components cannot be removed
-            if (Test-IsProtectedApp -AppId $appId -PresetsPath $PresetsPath) {
+            if (Test-IsProtectedApp -AppId $candidateIds.ToArray() -PresetsPath $PresetsPath) {
                 Write-Warning "Skipped protected system package: '$appId'"
                 [PSCustomObject]@{
                     AppId   = $appId
@@ -279,50 +493,93 @@ function Remove-DebloatApp {
                 continue
             }
 
-            if ($PSCmdlet.ShouldProcess("Package: $appId (Scope: $TargetScope)", "Remove AppX and Provisioned Package")) {
+            if ($PSCmdlet.ShouldProcess("Package: $appId (Scope: $TargetScope)", "Remove via Hybrid Pipeline")) {
                 $removed = $false
                 $errorMessage = $null
+                $deprovFamilies = [System.Collections.Generic.List[string]]::new()
 
-                # 1. Remove Provisioned Package (Applies to AllUsers and DefaultUser / Sysprep)
-                if ($TargetScope -eq "AllUsers" -or $TargetScope -eq "DefaultUser" -or $AllUsers) {
+                # Special Hybrid Win32 + AppX handler for Microsoft OneDrive
+                if ($appId -eq "Microsoft.OneDrive" -or $appId -eq "Microsoft.OneDriveSync") {
                     try {
-                        $prov = Get-AppxProvisionedPackage -Online -ErrorAction SilentlyContinue |
-                            Where-Object { $_.DisplayName -eq $appId -or $_.PackageName -like "*$appId*" }
-
-                        foreach ($p in $prov) {
-                            Remove-AppxProvisionedPackage -Online -PackageName $p.PackageName -ErrorAction Stop | Out-Null
+                        $odInfo = Get-OneDriveInstallInfo
+                        if ($odInfo.Win32Installed -and $odInfo.SetupPath) {
+                            $odProc = Get-Process -Name "OneDrive" -ErrorAction SilentlyContinue
+                            if ($odProc) { Stop-Process -Name "OneDrive" -Force -ErrorAction SilentlyContinue }
+                            Start-Process -FilePath $odInfo.SetupPath -ArgumentList "/uninstall" -Wait -WindowStyle Hidden -ErrorAction Stop
                             $removed = $true
                         }
                     }
                     catch {
-                        $errorMessage = "Provisioned removal error: $($_.Exception.Message)"
+                        $errorMessage = "OneDrive Win32 uninstall error: $($_.Exception.Message)"
                     }
                 }
 
-                # 2. Remove Current or AllUsers Installed Package
-                if ($TargetScope -ne "DefaultUser") {
-                    try {
-                        $installed = if ($TargetScope -eq "AllUsers" -or $AllUsers) {
-                            Get-AppxPackage -Name "*$appId*" -AllUsers -ErrorAction SilentlyContinue
-                        } else {
-                            Get-AppxPackage -Name "*$appId*" -ErrorAction SilentlyContinue
-                        }
+                foreach ($targetId in $candidateIds) {
+                    $appxPattern = if ($targetId -eq "Microsoft.Copilot") { "*Copilot*" } else { "*$targetId*" }
 
-                        foreach ($pkg in $installed) {
-                            if ($TargetScope -eq "AllUsers" -or $AllUsers) {
-                                Remove-AppxPackage -Package $pkg.PackageFullName -AllUsers -ErrorAction Stop | Out-Null
-                            } else {
-                                Remove-AppxPackage -Package $pkg.PackageFullName -ErrorAction Stop | Out-Null
+                    # 1. Remove Provisioned Package (Applies to AllUsers and DefaultUser / Sysprep)
+                    if ($TargetScope -eq "AllUsers" -or $TargetScope -eq "DefaultUser" -or $AllUsers) {
+                        try {
+                            $prov = Get-AppxProvisionedPackage -Online -ErrorAction SilentlyContinue |
+                                Where-Object { $_.DisplayName -eq $targetId -or $_.PackageName -like $appxPattern }
+
+                            foreach ($p in $prov) {
+                                Remove-AppxProvisionedPackage -Online -PackageName $p.PackageName -ErrorAction Stop | Out-Null
+                                $removed = $true
                             }
-                            $removed = $true
+                        }
+                        catch {
+                            $errorMessage = if ($null -eq $errorMessage) { "Provisioned removal error: $($_.Exception.Message)" } else { "$errorMessage | Provisioned removal error: $($_.Exception.Message)" }
                         }
                     }
-                    catch {
-                        if ($null -eq $errorMessage) {
-                            $errorMessage = "Installed removal error: $($_.Exception.Message)"
-                        } else {
-                            $errorMessage += " | Installed removal error: $($_.Exception.Message)"
+
+                    # 2. Remove Current or AllUsers Installed Package
+                    if ($TargetScope -ne "DefaultUser") {
+                        try {
+                            $installed = if ($TargetScope -eq "AllUsers" -or $AllUsers) {
+                                Get-AppxPackage -Name $appxPattern -AllUsers -ErrorAction SilentlyContinue
+                            } else {
+                                Get-AppxPackage -Name $appxPattern -ErrorAction SilentlyContinue
+                            }
+
+                            foreach ($pkg in $installed) {
+                                if ($pkg.PackageFamilyName -and -not $deprovFamilies.Contains($pkg.PackageFamilyName)) {
+                                    $deprovFamilies.Add($pkg.PackageFamilyName)
+                                }
+                                if ($TargetScope -eq "AllUsers" -or $AllUsers) {
+                                    Remove-AppxPackage -Package $pkg.PackageFullName -AllUsers -ErrorAction Stop | Out-Null
+                                } else {
+                                    Remove-AppxPackage -Package $pkg.PackageFullName -ErrorAction Stop | Out-Null
+                                }
+                                $removed = $true
+                            }
                         }
+                        catch {
+                            $errorMessage = if ($null -eq $errorMessage) { "Installed removal error: $($_.Exception.Message)" } else { "$errorMessage | Installed removal error: $($_.Exception.Message)" }
+                        }
+                    }
+
+                    # 3. WinGet fallback for Store IDs (e.g. XP9CXNGPPJ97XX)
+                    if ($targetId -match '^XP9[A-Z0-9]+$' -or $targetId -match '^9[A-Z0-9]{11}$') {
+                        $wingetCmd = Get-Command "winget.exe" -ErrorAction SilentlyContinue
+                        if ($wingetCmd) {
+                            try {
+                                $wgProc = Start-Process -FilePath "winget.exe" -ArgumentList "uninstall --id $targetId --silent --accept-source-agreements" -NoNewWindow -PassThru -Wait -ErrorAction SilentlyContinue
+                                if ($wgProc -and $wgProc.ExitCode -eq 0) {
+                                    $removed = $true
+                                }
+                            }
+                            catch {
+                                Write-Verbose "WinGet uninstall skipped for '$targetId': $($_.Exception.Message)"
+                            }
+                        }
+                    }
+                }
+
+                # 4. Write Deprovisioned registry key so Windows 11 26H2 does not silently reinstall removed inbox apps
+                if ($removed -and $TargetScope -ne "CurrentUser") {
+                    foreach ($familyName in $deprovFamilies) {
+                        Register-DeprovisionedAppxKey -PackageFamilyName $familyName | Out-Null
                     }
                 }
 
@@ -616,4 +873,4 @@ function Install-CommonWindowsApp {
     }
 }
 
-Export-ModuleMember -Function Get-ProtectedApp, Test-IsProtectedApp, Get-DebloatPreset, Get-InstalledDebloatApp, Remove-DebloatApp, Restore-DefaultApp, Export-DebloatProfile, Import-DebloatProfile, Install-CommonWindowsApp
+Export-ModuleMember -Function Get-ProtectedApp, Test-IsProtectedApp, Test-IsCoreSystemFramework, Get-OneDriveInstallInfo, Register-DeprovisionedAppxKey, Get-DebloatPreset, Get-InstalledDebloatApp, Remove-DebloatApp, Restore-DefaultApp, Export-DebloatProfile, Import-DebloatProfile, Install-CommonWindowsApp
