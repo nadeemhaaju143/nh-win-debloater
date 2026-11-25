@@ -22,5 +22,13 @@
     "Microsoft.UI.Xaml.2.7",
     "Microsoft.Windows.ShellExperienceHost",
     "Microsoft.Windows.StartMenuExperienceHost",
-    "Microsoft.Windows.Search"
+    "Microsoft.Windows.Search",
+    "Microsoft.HEIFImageExtension",
+    "Microsoft.HEVCVideoExtension",
+    "Microsoft.WebpImageExtension",
+    "Microsoft.WebMediaExtensions",
+    "Microsoft.AV1VideoExtension",
+    "Microsoft.VP9VideoExtensions",
+    "Microsoft.RawImageExtension",
+    "Microsoft.MPEG2VideoExtension"
 ]

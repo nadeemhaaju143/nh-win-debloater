@@ -9,6 +9,18 @@ The project follows a **progressive semantic minor versioning format**:
 
 ---
 
+## [1.3.4] - 2026-11-26
+
+### Media Codec Protection & Multi-Method Retry Fallbacks for OneDrive / Copilot
+- **Protected Image & Video Media Extension Packages (`ProtectedApps.json`, `AppManager.psm1`):**
+  - Added `Microsoft.HEIFImageExtension`, `Microsoft.HEVCVideoExtension`, `Microsoft.WebpImageExtension`, `Microsoft.WebMediaExtensions`, `Microsoft.AV1VideoExtension`, `Microsoft.VP9VideoExtensions`, `Microsoft.RawImageExtension`, and `Microsoft.MPEG2VideoExtension` to `ProtectedApps.json`, `$script:ProtectedSystemPackages`, and `$script:CoreFrameworkPatterns` so Windows photo/video codecs are never removed or listed as bloatware.
+- **Multi-Method Retry Pipeline for Stubborn OneDrive & Copilot (`AppManager.psm1`):**
+  - Kept **Microsoft OneDrive** and **Microsoft Copilot** unchecked by default; when explicitly selected, `Remove-DebloatApp` executes process termination, Win32 uninstallers (`System32`, `SysWOW64`, `HKCU`/`HKLM` `UninstallString` & `QuietUninstallString`), AppX + Provisioned + `Deprovisioned` registry cleanup, post-removal verification, and `Invoke-WingetUninstallRetry` fallback (`Microsoft.OneDrive`, `Microsoft.OneDriveSync`, `XP9CXNGPPJ97XX`, `Microsoft.Copilot`) plus Run/Policy key cleanup.
+- **Automated Regression Tests (`CoreModules.Tests.ps1`):**
+  - Added Pester unit/contract tests verifying all 8 media codecs are protected and OneDrive/Copilot retry fallbacks invoke `Invoke-WingetUninstallRetry` when primary steps leave packages installed.
+
+---
+
 ## [1.3.3] - 2026-11-26
 
 ### WPF Stability Fix, Clean Friendly App Names & Vibrant Transparent NH Lion Logo

@@ -875,3 +875,60 @@ Describe "v1.3.3 Friendly App Name Formatting Regression" {
         (Format-AppDisplayName -PackageName "king.com.CandyCrushSodaSaga") | Should -Be "Candy Crush Soda Saga"
     }
 }
+
+Describe "v1.3.4 Media Codec Protection & OneDrive/Copilot Multi-Method Retry" {
+    It "Protects all 8 Windows image and video media extension/codec packages" {
+        $mediaCodecs = @(
+            "Microsoft.HEIFImageExtension",
+            "Microsoft.HEVCVideoExtension",
+            "Microsoft.WebpImageExtension",
+            "Microsoft.WebMediaExtensions",
+            "Microsoft.AV1VideoExtension",
+            "Microsoft.VP9VideoExtensions",
+            "Microsoft.RawImageExtension",
+            "Microsoft.MPEG2VideoExtension"
+        )
+        foreach ($codec in $mediaCodecs) {
+            (Test-IsProtectedApp -AppId $codec -PresetsPath $presetsPath) | Should -BeTrue
+            (Test-IsCoreSystemFramework -AppId $codec) | Should -BeTrue
+        }
+
+        $remResults = Remove-DebloatApp -AppIdList $mediaCodecs -PresetsPath $presetsPath
+        $remResults.Count | Should -Be 8
+        ($remResults | Where-Object { $_.Status -eq "SkippedProtected" }).Count | Should -Be 8
+    }
+
+    It "Invokes secondary winget retry fallback when OneDrive remains installed after primary uninstall" {
+        Mock -ModuleName AppManager Get-Process { return $null }
+        Mock -ModuleName AppManager Get-OneDriveInstallInfo {
+            return [PSCustomObject]@{
+                IsInstalled    = $true
+                Win32Installed = $false
+                AppxInstalled  = $true
+                SetupPath      = $null
+                SetupPaths     = @()
+                AppxPackages   = @()
+            }
+        }
+        Mock -ModuleName AppManager Get-AppxProvisionedPackage { return @() }
+        Mock -ModuleName AppManager Get-AppxPackage { return @() }
+        Mock -ModuleName AppManager Invoke-WingetUninstallRetry { return $true }
+
+        $res = Remove-DebloatApp -AppIdList @("Microsoft.OneDrive") -PresetsPath $presetsPath -Confirm:$false
+        $res.Status | Should -Be "Success"
+        Should -Invoke -ModuleName AppManager -CommandName Invoke-WingetUninstallRetry -Times 2
+    }
+
+    It "Invokes secondary winget retry fallback when Copilot remains installed after primary uninstall" {
+        Mock -ModuleName AppManager Get-Process { return $null }
+        Mock -ModuleName AppManager Get-AppxProvisionedPackage { return @() }
+        Mock -ModuleName AppManager Get-AppxPackage { return @() }
+        Mock -ModuleName AppManager Invoke-WingetUninstallRetry { return $true }
+        Mock -ModuleName AppManager New-Item { return $null }
+        Mock -ModuleName AppManager New-ItemProperty { return $null }
+
+        $res = Remove-DebloatApp -AppIdList @("Microsoft.Copilot") -PresetsPath $presetsPath -Confirm:$false
+        $res.Status | Should -Be "Success"
+        Should -Invoke -ModuleName AppManager -CommandName Invoke-WingetUninstallRetry -Times 2
+    }
+}

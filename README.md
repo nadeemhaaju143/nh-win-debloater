@@ -1,7 +1,7 @@
 # NH Win Debloater
 
 <p align="center">
-  <a href="https://github.com/nadeemhaaju143/nh-win-debloater/releases/tag/v1.3.3"><img src="https://img.shields.io/badge/version-1.3.3-0EA5E9.svg" alt="Version 1.3.3"></a>
+  <a href="https://github.com/nadeemhaaju143/nh-win-debloater/releases/tag/v1.3.4"><img src="https://img.shields.io/badge/version-1.3.4-0EA5E9.svg" alt="Version 1.3.4"></a>
   <a href="https://microsoft.com/powershell"><img src="https://img.shields.io/badge/PowerShell-5.1%20%7C%207%2B-blue.svg" alt="PowerShell 5.1/7+"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT"></a>
   <a href="https://github.com/nadeemhaaju143/nh-win-debloater/wiki"><img src="https://img.shields.io/badge/docs-GitHub%20Wiki-10B981.svg" alt="GitHub Wiki"></a>

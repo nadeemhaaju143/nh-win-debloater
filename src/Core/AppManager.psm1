@@ -7,7 +7,7 @@
         supports multi-user and default-user Sysprep environments,
         and provides reinstall capability for default/Store apps.
     .MODULEVERSION
-        1.3.3
+        1.3.4
 #>
 
 [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '')]
@@ -37,7 +37,15 @@ $script:ProtectedSystemPackages = @(
     "Microsoft.UI.Xaml",
     "Microsoft.Windows.ShellExperienceHost",
     "Microsoft.Windows.StartMenuExperienceHost",
-    "Microsoft.Windows.Search"
+    "Microsoft.Windows.Search",
+    "Microsoft.HEIFImageExtension",
+    "Microsoft.HEVCVideoExtension",
+    "Microsoft.WebpImageExtension",
+    "Microsoft.WebMediaExtensions",
+    "Microsoft.AV1VideoExtension",
+    "Microsoft.VP9VideoExtensions",
+    "Microsoft.RawImageExtension",
+    "Microsoft.MPEG2VideoExtension"
 )
 
 $script:BuiltinAppAliases = @{
@@ -67,6 +75,14 @@ $script:CoreFrameworkPatterns = @(
     "*Microsoft.ECApp*",
     "*Microsoft.ApplicationCompatibilityEnhancements*",
     "*Microsoft.Windows.Search*",
+    "*Microsoft.HEIFImageExtension*",
+    "*Microsoft.HEVCVideoExtension*",
+    "*Microsoft.WebpImageExtension*",
+    "*Microsoft.WebMediaExtensions*",
+    "*Microsoft.AV1VideoExtension*",
+    "*Microsoft.VP9VideoExtensions*",
+    "*Microsoft.RawImageExtension*",
+    "*Microsoft.MPEG2VideoExtension*",
     "1527c705-839a-4832-9118-54d4Bd6a0c89",
     "c5e2524a-ea46-4f67-841f-6a9465d9d515",
     "E2A4F912-2574-4A75-9BB0-0D023378592B",
@@ -190,23 +206,28 @@ function Get-OneDriveInstallInfo {
 
     $win32Detected = $false
     $foundSetupPath = $null
+    $setupPathsList = [System.Collections.Generic.List[string]]::new()
 
     foreach ($uKey in $uninstallKeys) {
         if (Test-Path $uKey) {
             $win32Detected = $true
             $props = Get-ItemProperty -Path $uKey -ErrorAction SilentlyContinue
-            if ($props -and $props.UninstallString) {
-                if ($props.UninstallString -match '([A-Za-z]:\\[^"]*?OneDriveSetup\.exe)') {
-                    $foundSetupPath = $Matches[1]
+            if ($props) {
+                foreach ($strProp in @($props.QuietUninstallString, $props.UninstallString)) {
+                    if ($strProp -and $strProp -match '([A-Za-z]:\\[^"]*?OneDriveSetup\.exe)') {
+                        $exePath = $Matches[1]
+                        if (-not $foundSetupPath) { $foundSetupPath = $exePath }
+                        if (-not $setupPathsList.Contains($exePath)) { $setupPathsList.Add($exePath) }
+                    }
                 }
             }
-            break
         }
     }
 
     foreach ($candidate in $setupCandidates) {
         if (Test-Path $candidate) {
             if (-not $foundSetupPath) { $foundSetupPath = $candidate }
+            if (-not $setupPathsList.Contains($candidate)) { $setupPathsList.Add($candidate) }
             if ($candidate -like "*AppData*" -or (Test-Path "$env:LOCALAPPDATA\Microsoft\OneDrive\OneDrive.exe")) {
                 $win32Detected = $true
             }
@@ -224,7 +245,34 @@ function Get-OneDriveInstallInfo {
         Win32Installed = $win32Detected
         AppxInstalled  = $appxInstalled
         SetupPath      = $foundSetupPath
+        SetupPaths     = $setupPathsList.ToArray()
         AppxPackages   = $appxPackages
+    }
+}
+
+function Invoke-WingetUninstallRetry {
+    <#
+        .SYNOPSIS
+            Executes a silent winget uninstall fallback for stubborn Store/WinGet packages.
+    #>
+    [CmdletBinding()]
+    [OutputType([bool])]
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$PackageId
+    )
+
+    $wingetCmd = Get-Command "winget.exe" -ErrorAction SilentlyContinue
+    if (-not $wingetCmd) { return $false }
+
+    try {
+        $wgArgs = "uninstall --id $PackageId --exact --silent --accept-source-agreements --accept-package-agreements"
+        $wgProc = Start-Process -FilePath "winget.exe" -ArgumentList $wgArgs -NoNewWindow -PassThru -Wait -ErrorAction SilentlyContinue
+        return ($null -ne $wgProc -and $wgProc.ExitCode -eq 0)
+    }
+    catch {
+        Write-Verbose "WinGet uninstall skipped for '$PackageId': $($_.Exception.Message)"
+        return $false
     }
 }
 
@@ -498,15 +546,22 @@ function Remove-DebloatApp {
                 $errorMessage = $null
                 $deprovFamilies = [System.Collections.Generic.List[string]]::new()
 
-                # Special Hybrid Win32 + AppX handler for Microsoft OneDrive
-                if ($appId -eq "Microsoft.OneDrive" -or $appId -eq "Microsoft.OneDriveSync") {
+                $isOneDrive = ($appId -eq "Microsoft.OneDrive" -or $appId -eq "Microsoft.OneDriveSync")
+                $isCopilot  = ($appId -eq "Microsoft.Copilot" -or $appId -eq "XP9CXNGPPJ97XX" -or $appId -eq "Microsoft.Windows.Ai.Copilot.Provider")
+
+                # 1. Special Hybrid Multi-Method Handler for Microsoft OneDrive
+                if ($isOneDrive) {
                     try {
+                        $odProc = Get-Process -Name "OneDrive" -ErrorAction SilentlyContinue
+                        if ($odProc) { Stop-Process -Name "OneDrive" -Force -ErrorAction SilentlyContinue }
+
                         $odInfo = Get-OneDriveInstallInfo
-                        if ($odInfo.Win32Installed -and $odInfo.SetupPath) {
-                            $odProc = Get-Process -Name "OneDrive" -ErrorAction SilentlyContinue
-                            if ($odProc) { Stop-Process -Name "OneDrive" -Force -ErrorAction SilentlyContinue }
-                            Start-Process -FilePath $odInfo.SetupPath -ArgumentList "/uninstall" -Wait -WindowStyle Hidden -ErrorAction Stop
-                            $removed = $true
+                        $odPaths = if ($odInfo.PSObject.Properties["SetupPaths"] -and $odInfo.SetupPaths) { $odInfo.SetupPaths } elseif ($odInfo.SetupPath) { @($odInfo.SetupPath) } else { @() }
+                        foreach ($exePath in $odPaths) {
+                            if ($exePath -and (Test-Path $exePath)) {
+                                Start-Process -FilePath $exePath -ArgumentList "/uninstall" -Wait -WindowStyle Hidden -ErrorAction SilentlyContinue
+                                $removed = $true
+                            }
                         }
                     }
                     catch {
@@ -514,16 +569,25 @@ function Remove-DebloatApp {
                     }
                 }
 
+                # 2. Stop active Copilot processes before AppX/Provisioned removal
+                if ($isCopilot) {
+                    try {
+                        $copProc = Get-Process -Name "Copilot" -ErrorAction SilentlyContinue
+                        if ($copProc) { Stop-Process -Name "Copilot" -Force -ErrorAction SilentlyContinue }
+                    } catch {}
+                }
+
                 foreach ($targetId in $candidateIds) {
                     $appxPattern = if ($targetId -eq "Microsoft.Copilot") { "*Copilot*" } else { "*$targetId*" }
 
-                    # 1. Remove Provisioned Package (Applies to AllUsers and DefaultUser / Sysprep)
+                    # Remove Provisioned Package (Applies to AllUsers and DefaultUser / Sysprep)
                     if ($TargetScope -eq "AllUsers" -or $TargetScope -eq "DefaultUser" -or $AllUsers) {
                         try {
                             $prov = Get-AppxProvisionedPackage -Online -ErrorAction SilentlyContinue |
                                 Where-Object { $_.DisplayName -eq $targetId -or $_.PackageName -like $appxPattern }
 
                             foreach ($p in $prov) {
+                                if ($isCopilot -and (Test-IsProtectedApp -AppId $p.DisplayName -PresetsPath $PresetsPath)) { continue }
                                 Remove-AppxProvisionedPackage -Online -PackageName $p.PackageName -ErrorAction Stop | Out-Null
                                 $removed = $true
                             }
@@ -533,7 +597,7 @@ function Remove-DebloatApp {
                         }
                     }
 
-                    # 2. Remove Current or AllUsers Installed Package
+                    # Remove Current or AllUsers Installed Package
                     if ($TargetScope -ne "DefaultUser") {
                         try {
                             $installed = if ($TargetScope -eq "AllUsers" -or $AllUsers) {
@@ -543,6 +607,7 @@ function Remove-DebloatApp {
                             }
 
                             foreach ($pkg in $installed) {
+                                if ($isCopilot -and (Test-IsProtectedApp -AppId $pkg.Name -PresetsPath $PresetsPath)) { continue }
                                 if ($pkg.PackageFamilyName -and -not $deprovFamilies.Contains($pkg.PackageFamilyName)) {
                                     $deprovFamilies.Add($pkg.PackageFamilyName)
                                 }
@@ -558,28 +623,50 @@ function Remove-DebloatApp {
                             $errorMessage = if ($null -eq $errorMessage) { "Installed removal error: $($_.Exception.Message)" } else { "$errorMessage | Installed removal error: $($_.Exception.Message)" }
                         }
                     }
-
-                    # 3. WinGet fallback for Store IDs (e.g. XP9CXNGPPJ97XX)
-                    if ($targetId -match '^XP9[A-Z0-9]+$' -or $targetId -match '^9[A-Z0-9]{11}$') {
-                        $wingetCmd = Get-Command "winget.exe" -ErrorAction SilentlyContinue
-                        if ($wingetCmd) {
-                            try {
-                                $wgProc = Start-Process -FilePath "winget.exe" -ArgumentList "uninstall --id $targetId --silent --accept-source-agreements" -NoNewWindow -PassThru -Wait -ErrorAction SilentlyContinue
-                                if ($wgProc -and $wgProc.ExitCode -eq 0) {
-                                    $removed = $true
-                                }
-                            }
-                            catch {
-                                Write-Verbose "WinGet uninstall skipped for '$targetId': $($_.Exception.Message)"
-                            }
-                        }
-                    }
                 }
 
-                # 4. Write Deprovisioned registry key so Windows 11 26H2 does not silently reinstall removed inbox apps
+                # 3. Write Deprovisioned registry key so Windows 11 26H2 does not silently reinstall removed inbox apps
                 if ($removed -and $TargetScope -ne "CurrentUser") {
                     foreach ($familyName in $deprovFamilies) {
                         Register-DeprovisionedAppxKey -PackageFamilyName $familyName | Out-Null
+                    }
+                }
+
+                # 4. Post-Removal Verification & Multi-Method Retry Fallbacks for OneDrive & Copilot
+                if ($isOneDrive) {
+                    $odRemaining = Get-OneDriveInstallInfo
+                    if ($odRemaining.IsInstalled) {
+                        foreach ($wgId in @("Microsoft.OneDrive", "Microsoft.OneDriveSync")) {
+                            if (Invoke-WingetUninstallRetry -PackageId $wgId) { $removed = $true }
+                        }
+                    }
+                    $odRunPath = "HKCU:\Software\Microsoft\Windows\CurrentVersion\Run"
+                    if (Test-Path $odRunPath) {
+                        $odRunProp = Get-ItemProperty -Path $odRunPath -Name "OneDrive" -ErrorAction SilentlyContinue
+                        if ($odRunProp) {
+                            Remove-ItemProperty -Path $odRunPath -Name "OneDrive" -Force -ErrorAction SilentlyContinue
+                        }
+                    }
+                }
+                elseif ($isCopilot) {
+                    $copRemaining = @(Get-AppxPackage -Name "*Copilot*" -AllUsers -ErrorAction SilentlyContinue | Where-Object { -not (Test-IsProtectedApp -AppId $_.Name -PresetsPath $PresetsPath) })
+                    if ($copRemaining.Count -gt 0 -or -not $removed) {
+                        foreach ($wgId in @("XP9CXNGPPJ97XX", "Microsoft.Copilot")) {
+                            if (Invoke-WingetUninstallRetry -PackageId $wgId) { $removed = $true }
+                        }
+                    }
+                    foreach ($polPath in @("HKCU:\Software\Policies\Microsoft\Windows\WindowsCopilot", "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsCopilot")) {
+                        try {
+                            if (-not (Test-Path $polPath)) { New-Item -Path $polPath -Force -ErrorAction SilentlyContinue | Out-Null }
+                            New-ItemProperty -Path $polPath -Name "TurnOffWindowsCopilot" -Value 1 -PropertyType DWord -Force -ErrorAction SilentlyContinue | Out-Null
+                        } catch {}
+                    }
+                }
+                else {
+                    foreach ($targetId in $candidateIds) {
+                        if ($targetId -match '^XP9[A-Z0-9]+$' -or $targetId -match '^9[A-Z0-9]{11}$') {
+                            if (Invoke-WingetUninstallRetry -PackageId $targetId) { $removed = $true }
+                        }
                     }
                 }
 
@@ -900,4 +987,4 @@ function Format-AppDisplayName {
     return $name
 }
 
-Export-ModuleMember -Function Get-ProtectedApp, Test-IsProtectedApp, Test-IsCoreSystemFramework, Format-AppDisplayName, Get-OneDriveInstallInfo, Register-DeprovisionedAppxKey, Get-DebloatPreset, Get-InstalledDebloatApp, Remove-DebloatApp, Restore-DefaultApp, Export-DebloatProfile, Import-DebloatProfile, Install-CommonWindowsApp
+Export-ModuleMember -Function Get-ProtectedApp, Test-IsProtectedApp, Test-IsCoreSystemFramework, Format-AppDisplayName, Get-OneDriveInstallInfo, Invoke-WingetUninstallRetry, Register-DeprovisionedAppxKey, Get-DebloatPreset, Get-InstalledDebloatApp, Remove-DebloatApp, Restore-DefaultApp, Export-DebloatProfile, Import-DebloatProfile, Install-CommonWindowsApp
