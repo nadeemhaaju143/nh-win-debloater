@@ -9,6 +9,19 @@ The project follows a **progressive semantic minor versioning format**:
 
 ---
 
+## [1.3.3] - 2026-11-26
+
+### WPF Stability Fix, Clean Friendly App Names & Vibrant Transparent NH Lion Logo
+- **WPF UI Thread Stability Fix (`MainWindow.xaml`, `AppController.ps1`):**
+  - Removed the `BtnScrollTop` (`^`) overlay and its `DispatcherTimer` tick closure that caused an unhandled UI-thread exception and crashed the WPF window back to the console menu, restoring native `ScrollViewer` scrolling.
+- **Friendly App Name Formatter Fix (`AppManager.psm1`, `AppController.ps1`):**
+  - Added `Format-AppDisplayName` using case-sensitive `-creplace` word-boundary splitting (`([a-z0-9])([A-Z])` and `([A-Z]+)([A-Z][a-z])`), eliminating the PowerShell case-insensitive `-replace` bug that inserted spaces between every two letters (`P ic sA rt`, `W in do ws.C BS`).
+  - Added Pester regression tests for `PicsArt-PhotoStudio`, `Windows.CBSPreview`, `Microsoft.HEIFImageExtension`, and `king.com.CandyCrushSodaSaga`.
+- **Vibrant Transparent `NH` Lion Logo (`assets/logo/`, `AppController.ps1`):**
+  - Processed the custom `NH` lion-mane artwork into a crisp `1024x1024` alpha-transparent PNG (`assets/logo/nh-lion-logo.png`, plus `nhdigital-logo.png` and `logo.png`) with boosted blue/cyan vibrancy (`#2563EB` -> `#38BDF8`), removing the solid black JPEG square and pointing `AppController.ps1` to `nh-lion-logo.png`.
+
+---
+
 ## [1.3.2] - 2026-11-25
 
 ### Windows 11 26H2 App Discovery, Hybrid Removal, Safe Services & Advanced Power Options

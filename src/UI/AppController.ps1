@@ -161,8 +161,6 @@ function Show-DebloaterWindow {
     $btnDeselectAllApps = $window.FindName("BtnDeselectAllApps")
     $btnInvertSelection = $window.FindName("BtnInvertSelection")
     $txtAppsSummary = $window.FindName("TxtAppsSummary")
-    $scrollAppsList = $window.FindName("ScrollAppsList")
-    $btnScrollTop = $window.FindName("BtnScrollTop")
     $listAppsContainer = $window.FindName("ListAppsContainer")
 
     # Stage 2: TabControl
@@ -394,9 +392,9 @@ function Show-DebloaterWindow {
         }
     }
 
-    # Header Logo wiring (loads custom NH lion logo, falling back to borderless vector lettermark)
+    # Header Logo wiring (loads custom NH lion PNG logo, falling back to borderless vector lettermark)
     $logoCandidates = @(
-        (Join-Path $logoDir "nh-lion-logo.jpg"),
+        (Join-Path $logoDir "nh-lion-logo.png"),
         (Join-Path $logoDir "nhdigital-logo.png"),
         (Join-Path $logoDir "logo.png")
     )
@@ -1113,10 +1111,7 @@ function Show-DebloaterWindow {
                     $cleanName = $friendlyCatalog[$app.AppId].Name
                     $cleanDesc = $friendlyCatalog[$app.AppId].Desc
                 } else {
-                    if ($cleanName -like "Microsoft.*") {
-                        $cleanName = $cleanName -replace "^Microsoft\.", ""
-                    }
-                    $cleanName = $cleanName -replace "([a-z])([A-Z])", '$1 $2'
+                    $cleanName = Format-AppDisplayName -PackageName $cleanName
                 }
 
                 $cb = [System.Windows.Controls.CheckBox]::new()
@@ -1285,30 +1280,6 @@ function Show-DebloaterWindow {
         $chkOnlyInstalled.Add_Click({
             param([object]$eventSource, [System.Windows.RoutedEventArgs]$eventArgs)
             & $filterApps
-        })
-    }
-
-    if ($btnScrollTop -and $scrollAppsList) {
-        $btnScrollTop.Add_Click({
-            param([object]$eventSource, [System.Windows.RoutedEventArgs]$eventArgs)
-            try {
-                if ($scrollAppsList.VerticalOffset -le 0) { return }
-                $timer = [System.Windows.Threading.DispatcherTimer]::new()
-                $timer.Interval = [TimeSpan]::FromMilliseconds(16)
-                $timer.Add_Tick({
-                    $cur = $scrollAppsList.VerticalOffset
-                    if ($cur -le 1) {
-                        $scrollAppsList.ScrollToTop()
-                        $timer.Stop()
-                    } else {
-                        $step = [Math]::Max(8.0, $cur * 0.14)
-                        $scrollAppsList.ScrollToVerticalOffset([Math]::Max(0.0, $cur - $step))
-                    }
-                })
-                $timer.Start()
-            } catch {
-                $scrollAppsList.ScrollToTop()
-            }
         })
     }
 

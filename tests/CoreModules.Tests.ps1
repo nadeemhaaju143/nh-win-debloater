@@ -866,3 +866,12 @@ Describe "v1.3.2 Hybrid App Discovery, Safe Registry, Services & Power Options" 
         ($restOps | Where-Object { $_.Status -eq "Preview" }).Count | Should -Be $restOps.Count
     }
 }
+
+Describe "v1.3.3 Friendly App Name Formatting Regression" {
+    It "Formats package IDs cleanly without splitting single letters apart" {
+        (Format-AppDisplayName -PackageName "PicsArt-PhotoStudio") | Should -Be "Pics Art - Photo Studio"
+        (Format-AppDisplayName -PackageName "Windows.CBSPreview") | Should -Be "Windows CBS Preview"
+        (Format-AppDisplayName -PackageName "Microsoft.HEIFImageExtension") | Should -Be "HEIF Image Extension"
+        (Format-AppDisplayName -PackageName "king.com.CandyCrushSodaSaga") | Should -Be "Candy Crush Soda Saga"
+    }
+}

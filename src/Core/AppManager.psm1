@@ -7,7 +7,7 @@
         supports multi-user and default-user Sysprep environments,
         and provides reinstall capability for default/Store apps.
     .MODULEVERSION
-        1.3.2
+        1.3.3
 #>
 
 [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '')]
@@ -873,4 +873,31 @@ function Install-CommonWindowsApp {
     }
 }
 
-Export-ModuleMember -Function Get-ProtectedApp, Test-IsProtectedApp, Test-IsCoreSystemFramework, Get-OneDriveInstallInfo, Register-DeprovisionedAppxKey, Get-DebloatPreset, Get-InstalledDebloatApp, Remove-DebloatApp, Restore-DefaultApp, Export-DebloatProfile, Import-DebloatProfile, Install-CommonWindowsApp
+function Format-AppDisplayName {
+    <#
+        .SYNOPSIS
+            Formats a raw AppX/Store package identifier into a clean human-readable display name using case-sensitive word-boundary splitting.
+    #>
+    [CmdletBinding()]
+    [OutputType([string])]
+    param(
+        [Parameter(Mandatory = $false)]
+        [string]$PackageName
+    )
+
+    if ([string]::IsNullOrWhiteSpace($PackageName)) { return "" }
+
+    $name = $PackageName.Trim()
+    $name = $name -replace "^Microsoft\.", ""
+    $name = $name -replace "^king\.com\.", ""
+    $name = $name -replace "^[0-9A-Za-z]+\.(?=WhatsApp|Instagram|LinkedIn|Netflix)", ""
+    $name = $name -replace "[\._]+", " "
+    $name = $name -replace "\s*-\s*", " - "
+    $name = $name -creplace "([a-z0-9])([A-Z])", '$1 $2'
+    $name = $name -creplace "([A-Z]+)([A-Z][a-z])", '$1 $2'
+    $name = ($name -replace "\s+", " ").Trim()
+
+    return $name
+}
+
+Export-ModuleMember -Function Get-ProtectedApp, Test-IsProtectedApp, Test-IsCoreSystemFramework, Format-AppDisplayName, Get-OneDriveInstallInfo, Register-DeprovisionedAppxKey, Get-DebloatPreset, Get-InstalledDebloatApp, Remove-DebloatApp, Restore-DefaultApp, Export-DebloatProfile, Import-DebloatProfile, Install-CommonWindowsApp
