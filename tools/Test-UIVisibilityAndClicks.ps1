@@ -461,7 +461,10 @@ Assert-Check -Category "AppList" -Description "Tab 1 Grid has zero overlapping r
 
 # --- PART 1.5: Stage 3 Pre-Apply Summary & Apps & Bloatware Checks ---
 $tabHeaderApps = $win.FindName("TabHeaderApps")
-Assert-Check -Category "Stage2" -Description "Tab 1 renamed to 'Apps & Bloatware'" -Condition ($null -ne $tabHeaderApps -and $tabHeaderApps.Text -eq "Apps & Bloatware")
+Assert-Check -Category "Stage2" -Description "Tab 1 displays '1. Apps & Bloatware'" -Condition ($null -ne $tabHeaderApps -and $tabHeaderApps.Text -eq "1. Apps & Bloatware")
+
+$btnScrollTop = $win.FindName("BtnScrollTop")
+Assert-Check -Category "Stage2" -Description "Tab 1 slow-scroll '^' button (BtnScrollTop) exists" -Condition ($null -ne $btnScrollTop -and $btnScrollTop.Content -eq "^")
 
 $txtStage3Scope = $win.FindName("TxtStage3Scope")
 $txtStage3Mode = $win.FindName("TxtStage3Mode")

@@ -13,7 +13,7 @@
     "ScopeAll": "All Users (Recommended)",
     "ScopeCur": "Current User Only",
     "ScopeDef": "Default User / Sysprep",
-    "TabApps": "Apps & Bloatware"
+    "TabApps": "1. Apps & Bloatware"
   },
   "hi-IN": {
     "Heading": "एनएच विन डीब्लोटर में आपका स्वागत है",
@@ -77,6 +77,6 @@
     "ScopeAll": "Alle Benutzer (Empfohlen)",
     "ScopeCur": "Nur aktueller Benutzer",
     "ScopeDef": "Standardbenutzer / Sysprep",
-    "TabApps": "Apps & Bloatware"
+    "TabApps": "1. Apps & Bloatware"
   }
 }

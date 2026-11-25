@@ -161,6 +161,8 @@ function Show-DebloaterWindow {
     $btnDeselectAllApps = $window.FindName("BtnDeselectAllApps")
     $btnInvertSelection = $window.FindName("BtnInvertSelection")
     $txtAppsSummary = $window.FindName("TxtAppsSummary")
+    $scrollAppsList = $window.FindName("ScrollAppsList")
+    $btnScrollTop = $window.FindName("BtnScrollTop")
     $listAppsContainer = $window.FindName("ListAppsContainer")
 
     # Stage 2: TabControl
@@ -725,6 +727,7 @@ function Show-DebloaterWindow {
                     $txtStage3Mode.Foreground = [System.Windows.Media.BrushConverter]::new().ConvertFromString($modeColor)
                 }
                 & $updateLiveImpactSummary
+                if ($buildDryRunPreview) { & $buildDryRunPreview }
             }
             4 {
                 & $revealStage $viewStage4
@@ -1166,44 +1169,50 @@ function Show-DebloaterWindow {
 
                 $txtTitle = [System.Windows.Controls.TextBlock]::new()
                 $txtTitle.Text = $cleanName
+                $txtTitle.FontFamily = [System.Windows.Media.FontFamily]::new("Segoe UI")
                 $txtTitle.FontWeight = [System.Windows.FontWeights]::SemiBold
                 $txtTitle.Foreground = [System.Windows.Media.BrushConverter]::new().ConvertFromString("#F8FAFC")
-                $txtTitle.FontSize = 12
+                $txtTitle.FontSize = 12.5
                 $txtTitle.VerticalAlignment = [System.Windows.VerticalAlignment]::Center
                 $sp.Children.Add($txtTitle) | Out-Null
 
                 $txtDesc = [System.Windows.Controls.TextBlock]::new()
                 $txtDesc.Text = " - $cleanDesc"
-                $txtDesc.Foreground = [System.Windows.Media.BrushConverter]::new().ConvertFromString("#94A3B8")
-                $txtDesc.FontSize = 11
+                $txtDesc.FontFamily = [System.Windows.Media.FontFamily]::new("Segoe UI")
+                $txtDesc.Foreground = [System.Windows.Media.BrushConverter]::new().ConvertFromString("#CBD5E1")
+                $txtDesc.FontSize = 11.5
                 $txtDesc.Margin = [System.Windows.Thickness]::new(4, 0, 0, 0)
                 $txtDesc.VerticalAlignment = [System.Windows.VerticalAlignment]::Center
                 $sp.Children.Add($txtDesc) | Out-Null
 
                 $pkgBadge = [System.Windows.Controls.Border]::new()
-                $pkgBadge.CornerRadius = [System.Windows.CornerRadius]::new(3)
+                $pkgBadge.CornerRadius = [System.Windows.CornerRadius]::new(4)
                 $pkgBadge.Background = [System.Windows.Media.BrushConverter]::new().ConvertFromString("#1E293B")
-                $pkgBadge.Padding = [System.Windows.Thickness]::new(5, 1, 5, 1)
+                $pkgBadge.BorderBrush = [System.Windows.Media.BrushConverter]::new().ConvertFromString("#334155")
+                $pkgBadge.BorderThickness = [System.Windows.Thickness]::new(1)
+                $pkgBadge.Padding = [System.Windows.Thickness]::new(6, 1, 6, 1)
                 $pkgBadge.Margin = [System.Windows.Thickness]::new(8, 0, 0, 0)
                 $pkgBadge.VerticalAlignment = [System.Windows.VerticalAlignment]::Center
                 $pkgTxt = [System.Windows.Controls.TextBlock]::new()
                 $pkgTxt.Text = $app.AppId
-                $pkgTxt.Foreground = [System.Windows.Media.BrushConverter]::new().ConvertFromString("#64748B")
-                $pkgTxt.FontSize = 9
+                $pkgTxt.FontFamily = [System.Windows.Media.FontFamily]::new("Segoe UI")
+                $pkgTxt.Foreground = [System.Windows.Media.BrushConverter]::new().ConvertFromString("#94A3B8")
+                $pkgTxt.FontSize = 9.5
                 $pkgBadge.Child = $pkgTxt
                 $sp.Children.Add($pkgBadge) | Out-Null
 
                 if ($isInst) {
                     $instBadge = [System.Windows.Controls.Border]::new()
-                    $instBadge.CornerRadius = [System.Windows.CornerRadius]::new(3)
-                    $instBadge.Background = [System.Windows.Media.BrushConverter]::new().ConvertFromString("#075985")
-                    $instBadge.Padding = [System.Windows.Thickness]::new(5, 1, 5, 1)
+                    $instBadge.CornerRadius = [System.Windows.CornerRadius]::new(4)
+                    $instBadge.Background = [System.Windows.Media.BrushConverter]::new().ConvertFromString("#0284C7")
+                    $instBadge.Padding = [System.Windows.Thickness]::new(6, 1, 6, 1)
                     $instBadge.Margin = [System.Windows.Thickness]::new(8, 0, 0, 0)
                     $instBadge.VerticalAlignment = [System.Windows.VerticalAlignment]::Center
                     $instTxt = [System.Windows.Controls.TextBlock]::new()
                     $instTxt.Text = "INSTALLED"
-                    $instTxt.Foreground = [System.Windows.Media.BrushConverter]::new().ConvertFromString("#38BDF8")
-                    $instTxt.FontSize = 9
+                    $instTxt.FontFamily = [System.Windows.Media.FontFamily]::new("Segoe UI")
+                    $instTxt.Foreground = [System.Windows.Media.BrushConverter]::new().ConvertFromString("#FFFFFF")
+                    $instTxt.FontSize = 9.5
                     $instTxt.FontWeight = [System.Windows.FontWeights]::Bold
                     $instBadge.Child = $instTxt
                     $sp.Children.Add($instBadge) | Out-Null
@@ -1277,6 +1286,30 @@ function Show-DebloaterWindow {
         $chkOnlyInstalled.Add_Click({
             param([object]$eventSource, [System.Windows.RoutedEventArgs]$eventArgs)
             & $filterApps
+        })
+    }
+
+    if ($btnScrollTop -and $scrollAppsList) {
+        $btnScrollTop.Add_Click({
+            param([object]$eventSource, [System.Windows.RoutedEventArgs]$eventArgs)
+            try {
+                if ($scrollAppsList.VerticalOffset -le 0) { return }
+                $timer = [System.Windows.Threading.DispatcherTimer]::new()
+                $timer.Interval = [TimeSpan]::FromMilliseconds(16)
+                $timer.Add_Tick({
+                    $cur = $scrollAppsList.VerticalOffset
+                    if ($cur -le 1) {
+                        $scrollAppsList.ScrollToTop()
+                        $timer.Stop()
+                    } else {
+                        $step = [Math]::Max(8.0, $cur * 0.14)
+                        $scrollAppsList.ScrollToVerticalOffset([Math]::Max(0.0, $cur - $step))
+                    }
+                })
+                $timer.Start()
+            } catch {
+                $scrollAppsList.ScrollToTop()
+            }
         })
     }
 
@@ -1907,10 +1940,10 @@ function Show-DebloaterWindow {
     & $updateAIDropdownHeader
     & $updateFeaturesDropdownHeader
 
-    # Dry-Run Preview Action
-    $btnRunDryRun.Add_Click({
-        param([object]$eventSource, [System.Windows.RoutedEventArgs]$eventArgs)
-        $txtDryRunStatus.Text = "Simulating WhatIf dry-run changes..."
+    # Dry-Run Preview Action (Auto-populated on Stage 3 entry & on Inspect/Dry-Run toggle)
+    $buildDryRunPreview = {
+        if (-not $txtDryRunLog) { return }
+        if ($txtDryRunStatus) { $txtDryRunStatus.Text = "Simulating WhatIf dry-run changes..." }
         $txtDryRunLog.Clear()
 
         $logBuilder = [System.Text.StringBuilder]::new()
@@ -1979,8 +2012,15 @@ function Show-DebloaterWindow {
 
         $logBuilder.AppendLine("[$(Get-Date -Format 'HH:mm:ss')] PREVIEW COMPLETE: No system changes were made.") | Out-Null
         $txtDryRunLog.Text = $logBuilder.ToString()
-        $txtDryRunStatus.Text = "Dry-Run complete: $selectedCount packages and selected tweaks simulated."
-    })
+        if ($txtDryRunStatus) { $txtDryRunStatus.Text = "Queued preview ready: $selectedCount apps and selected tweaks simulated." }
+    }
+
+    if ($btnRunDryRun) {
+        $btnRunDryRun.Add_Click({
+            param([object]$eventSource, [System.Windows.RoutedEventArgs]$eventArgs)
+            & $buildDryRunPreview
+        })
+    }
 
     if ($chkDryRunStage3) {
         $chkDryRunStage3.Add_Click({
@@ -1992,6 +2032,7 @@ function Show-DebloaterWindow {
                 $txtStage3Mode.Text = if ($isDry) { "Dry-Run Simulation (WhatIf)" } else { "Live System Optimization" }
                 $txtStage3Mode.Foreground = [System.Windows.Media.BrushConverter]::new().ConvertFromString($modeColor)
             }
+            & $buildDryRunPreview
         })
     }
 

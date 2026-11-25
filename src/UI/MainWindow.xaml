@@ -9,7 +9,9 @@
     AllowsTransparency="True"
     Background="Transparent"
     Foreground="#F8FAFC"
-    FontFamily="Segoe UI Variable Display, Segoe UI, Arial">
+    FontFamily="Segoe UI, Arial"
+    TextOptions.TextFormattingMode="Display"
+    TextOptions.TextRenderingMode="ClearType">
 
     <WindowChrome.WindowChrome>
         <WindowChrome
@@ -323,6 +325,82 @@
         <!-- Global CheckBox Style -->
         <Style TargetType="CheckBox" BasedOn="{StaticResource ModernCheckBox}"/>
 
+        <!-- Crisp Dark Material ComboBox Style (Fixes washed Aero2 system template on Windows 11) -->
+        <Style x:Key="DarkComboBoxStyle" TargetType="ComboBox">
+            <Setter Property="Background" Value="#131926"/>
+            <Setter Property="Foreground" Value="#F8FAFC"/>
+            <Setter Property="BorderBrush" Value="#38BDF8"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="SnapsToDevicePixels" Value="True"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ComboBox">
+                        <Grid>
+                            <ToggleButton x:Name="ToggleButton"
+                                          Focusable="False"
+                                          IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
+                                          ClickMode="Press"
+                                          Background="{TemplateBinding Background}"
+                                          BorderBrush="{TemplateBinding BorderBrush}"
+                                          BorderThickness="{TemplateBinding BorderThickness}">
+                                <ToggleButton.Template>
+                                    <ControlTemplate TargetType="ToggleButton">
+                                        <Border x:Name="Bd" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="6" Padding="10,0,8,0">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
+                                                <ContentPresenter Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                                                <Path Grid.Column="1" Data="M0,0 L4,4 L8,0 Z" Fill="#38BDF8" Width="9" Height="6" Stretch="Uniform" VerticalAlignment="Center" Margin="8,0,2,0"/>
+                                            </Grid>
+                                        </Border>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter TargetName="Bd" Property="Background" Value="#1A2234"/>
+                                                <Setter TargetName="Bd" Property="BorderBrush" Value="#38BDF8"/>
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </ToggleButton.Template>
+                            </ToggleButton>
+                            <ContentPresenter x:Name="ContentSite"
+                                              IsHitTestVisible="False"
+                                              Content="{TemplateBinding SelectionBoxItem}"
+                                              ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
+                                              ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}"
+                                              Margin="10,0,28,0"
+                                              VerticalAlignment="Center"
+                                              HorizontalAlignment="Left">
+                                <ContentPresenter.Resources>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="Foreground" Value="#F8FAFC"/>
+                                    </Style>
+                                </ContentPresenter.Resources>
+                            </ContentPresenter>
+                            <Popup x:Name="Popup"
+                                   Placement="Bottom"
+                                   IsOpen="{TemplateBinding IsDropDownOpen}"
+                                   AllowsTransparency="True"
+                                   Focusable="False"
+                                   PopupAnimation="Slide">
+                                <Grid x:Name="DropDown"
+                                      SnapsToDevicePixels="True"
+                                      MinWidth="{TemplateBinding ActualWidth}"
+                                      MaxHeight="{TemplateBinding MaxDropDownHeight}">
+                                    <Border x:Name="DropDownBorder" Background="#131926" BorderThickness="1" BorderBrush="#38BDF8" CornerRadius="6" Margin="0,2,0,0">
+                                        <ScrollViewer Margin="2" SnapsToDevicePixels="True">
+                                            <StackPanel IsItemsHost="True" KeyboardNavigation.DirectionalNavigation="Contained"/>
+                                        </ScrollViewer>
+                                    </Border>
+                                </Grid>
+                            </Popup>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
         <!-- Slim 6px Dark ScrollBar Style -->
         <Style TargetType="ScrollBar">
             <Setter Property="Background" Value="Transparent"/>
@@ -498,28 +576,23 @@
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
 
-                    <!-- Logo Area -->
+                    <!-- Logo Area: Borderless Combined NH Lion/Brave-Style Monogram -->
                     <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
-                        <Border x:Name="LogoFallbackBox" Width="38" Height="38" CornerRadius="10" BorderBrush="#38BDF8" BorderThickness="1.5" VerticalAlignment="Center" Margin="0,0,14,0">
-                            <Border.Background>
-                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                                    <GradientStop Color="#0284C7" Offset="0"/>
-                                    <GradientStop Color="#0EA5E9" Offset="0.5"/>
-                                    <GradientStop Color="#6366F1" Offset="1"/>
-                                </LinearGradientBrush>
-                            </Border.Background>
-                            <Border.Effect>
-                                <DropShadowEffect Color="#0EA5E9" BlurRadius="12" Opacity="0.4" ShadowDepth="0"/>
-                            </Border.Effect>
-                            <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
-                                <Path Data="M19,3 L33,10 L33,23 C33,31 19,37 19,37 C19,37 5,31 5,23 L5,10 Z" Fill="#00D2FF" Opacity="0.25" Stretch="Uniform" Width="26" Height="28"/>
-                                <TextBlock Text="NH" FontWeight="ExtraBold" FontSize="16" Foreground="#FFFFFF" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,-1,0,0">
-                                    <TextBlock.Effect>
-                                        <DropShadowEffect Color="#000000" BlurRadius="4" Opacity="0.5" ShadowDepth="1"/>
-                                    </TextBlock.Effect>
-                                </TextBlock>
-                            </Grid>
-                        </Border>
+                        <Grid x:Name="LogoFallbackBox" Width="40" Height="40" Background="Transparent" VerticalAlignment="Center" Margin="0,0,14,0">
+                            <Grid.Effect>
+                                <DropShadowEffect Color="#0EA5E9" BlurRadius="10" Opacity="0.35" ShadowDepth="0"/>
+                            </Grid.Effect>
+                            <Path Stretch="Uniform" Width="34" Height="34" HorizontalAlignment="Center" VerticalAlignment="Center"
+                                  Data="M4,4 L10,2 L15,12 L15,2 L19,4 L19,14 L21,14 L21,4 L25,2 L25,12 L30,2 L36,4 L34,19 L29,28 L20,36 L11,28 L6,19 Z M9,9 L9,21 L12,24 L12,15 L18,24 L18,17 L22,17 L22,24 L28,15 L28,24 L31,21 L31,9 L27,15 L24,15 L24,19 L16,19 L16,15 L13,15 Z">
+                                <Path.Fill>
+                                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                        <GradientStop Color="#38BDF8" Offset="0"/>
+                                        <GradientStop Color="#0EA5E9" Offset="0.55"/>
+                                        <GradientStop Color="#6366F1" Offset="1"/>
+                                    </LinearGradientBrush>
+                                </Path.Fill>
+                            </Path>
+                        </Grid>
                         <Image x:Name="ImgLogo" MaxWidth="120" MaxHeight="38" Stretch="Uniform" VerticalAlignment="Center" Visibility="Collapsed" Margin="0,0,14,0"/>
 
                         <StackPanel VerticalAlignment="Center">
@@ -921,7 +994,7 @@
                         <TabItem.Header>
                             <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                                 <Path Data="{StaticResource IconAppGrid}" Fill="#38BDF8" Width="14" Height="14" Stretch="Uniform" Margin="0,0,6,0" VerticalAlignment="Center"/>
-                                <TextBlock x:Name="TabHeaderApps" Text="Apps &amp; Bloatware" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                                <TextBlock x:Name="TabHeaderApps" Text="1. Apps &amp; Bloatware" VerticalAlignment="Center" Margin="0,0,6,0"/>
                                 <Border Background="#1A2234" CornerRadius="8" Padding="6,1" VerticalAlignment="Center">
                                     <TextBlock x:Name="TxtTabAppsCount" Text="84" FontSize="10" FontWeight="Bold" Foreground="#38BDF8"/>
                                 </Border>
@@ -1029,9 +1102,12 @@
                             <TextBlock x:Name="TxtAppsSummary" Grid.Row="1" Text="Showing 84 apps selected for removal" VerticalAlignment="Center" FontSize="12" Foreground="#38BDF8" Margin="0,0,0,8"/>
 
                             <Border Grid.Row="2" Background="#0B0F17" CornerRadius="6" BorderBrush="#232D42" BorderThickness="1">
-                                <ScrollViewer VerticalScrollBarVisibility="Auto">
-                                    <ItemsControl x:Name="ListAppsContainer" Margin="10"/>
-                                </ScrollViewer>
+                                <Grid>
+                                    <ScrollViewer x:Name="ScrollAppsList" VerticalScrollBarVisibility="Auto">
+                                        <ItemsControl x:Name="ListAppsContainer" Margin="10"/>
+                                    </ScrollViewer>
+                                    <Button x:Name="BtnScrollTop" Style="{StaticResource ModernBtn}" Content="^" Width="32" Height="32" Padding="0" FontSize="15" FontWeight="Bold" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,16,14" Background="#1A2234" BorderBrush="#38BDF8" BorderThickness="1" Foreground="#38BDF8" ToolTip="Smoothly scroll back to top"/>
+                                </Grid>
                             </Border>
                         </Grid>
                     </TabItem>
@@ -1041,7 +1117,7 @@
                         <TabItem.Header>
                             <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                                 <Path Data="{StaticResource IconShieldLock}" Fill="#38BDF8" Width="14" Height="14" Stretch="Uniform" Margin="0,0,6,0" VerticalAlignment="Center"/>
-                                <TextBlock Text="Privacy &amp; Search" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                                <TextBlock Text="2. Privacy &amp; Search" VerticalAlignment="Center" Margin="0,0,6,0"/>
                                 <Border Background="#1A2234" CornerRadius="8" Padding="6,1" VerticalAlignment="Center">
                                     <TextBlock x:Name="TxtTabPrivacyCount" Text="5/5" FontSize="10" FontWeight="Bold" Foreground="#34D399"/>
                                 </Border>
@@ -1190,7 +1266,7 @@
                         <TabItem.Header>
                             <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                                 <Path Data="{StaticResource IconDesktopExplorer}" Fill="#38BDF8" Width="14" Height="14" Stretch="Uniform" Margin="0,0,6,0" VerticalAlignment="Center"/>
-                                <TextBlock Text="Taskbar &amp; Explorer" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                                <TextBlock Text="3. Taskbar &amp; Explorer" VerticalAlignment="Center" Margin="0,0,6,0"/>
                                 <Border Background="#1A2234" CornerRadius="8" Padding="6,1" VerticalAlignment="Center">
                                     <TextBlock x:Name="TxtTabShellCount" Text="10/13" FontSize="10" FontWeight="Bold" Foreground="#34D399"/>
                                 </Border>
@@ -1439,7 +1515,7 @@
                         <TabItem.Header>
                             <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                                 <Path Data="{StaticResource IconGamepadGaming}" Fill="#38BDF8" Width="14" Height="14" Stretch="Uniform" Margin="0,0,6,0" VerticalAlignment="Center"/>
-                                <TextBlock Text="Gaming &amp; Performance" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                                <TextBlock Text="4. Gaming &amp; Performance" VerticalAlignment="Center" Margin="0,0,6,0"/>
                                 <Border Background="#1A2234" CornerRadius="8" Padding="6,1" VerticalAlignment="Center">
                                     <TextBlock x:Name="TxtTabGamingCount" Text="5/6" FontSize="10" FontWeight="Bold" Foreground="#34D399"/>
                                 </Border>
@@ -1598,7 +1674,7 @@
                         <TabItem.Header>
                             <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                                 <Path Data="{StaticResource IconSettingsExtras}" Fill="#38BDF8" Width="14" Height="14" Stretch="Uniform" Margin="0,0,6,0" VerticalAlignment="Center"/>
-                                <TextBlock Text="System Extras" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                                <TextBlock Text="5. System Extras" VerticalAlignment="Center" Margin="0,0,6,0"/>
                                 <Border Background="#1A2234" CornerRadius="8" Padding="6,1" VerticalAlignment="Center">
                                     <TextBlock x:Name="TxtTabExtrasCount" Text="6/8" FontSize="10" FontWeight="Bold" Foreground="#34D399"/>
                                 </Border>
@@ -1881,7 +1957,7 @@
                         <TabItem.Header>
                             <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                                 <Path Data="{StaticResource IconSparklesAI}" Fill="#38BDF8" Width="14" Height="14" Stretch="Uniform" Margin="0,0,6,0" VerticalAlignment="Center"/>
-                                <TextBlock Text="AI Integration" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                                <TextBlock Text="6. AI Integration" VerticalAlignment="Center" Margin="0,0,6,0"/>
                                 <Border Background="#1A2234" CornerRadius="8" Padding="6,1" VerticalAlignment="Center">
                                     <TextBlock x:Name="TxtTabAICount" Text="6/6" FontSize="10" FontWeight="Bold" Foreground="#34D399"/>
                                 </Border>
@@ -2043,7 +2119,7 @@
                         <TabItem.Header>
                             <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                                 <Path Data="{StaticResource IconLayersFeatures}" Fill="#38BDF8" Width="14" Height="14" Stretch="Uniform" Margin="0,0,6,0" VerticalAlignment="Center"/>
-                                <TextBlock Text="Optional Features" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                                <TextBlock Text="7. Optional Features" VerticalAlignment="Center" Margin="0,0,6,0"/>
                                 <Border Background="#1A2234" CornerRadius="8" Padding="6,1" VerticalAlignment="Center">
                                     <TextBlock x:Name="TxtTabFeaturesCount" Text="0/2" FontSize="10" FontWeight="Bold" Foreground="#94A3B8"/>
                                 </Border>
@@ -2672,7 +2748,7 @@
                     <Border Background="#0B0F17" BorderBrush="#232D42" BorderThickness="1" CornerRadius="8" Padding="12" Margin="0,0,0,14">
                         <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                             <TextBlock Text="Language:" FontSize="12" Foreground="#94A3B8" Margin="0,0,14,0" VerticalAlignment="Center"/>
-                            <ComboBox x:Name="CmbLanguage" Height="30" Width="260" MaxDropDownHeight="240" Background="#1E1E2E" Foreground="#F8FAFC" BorderBrush="#38BDF8" BorderThickness="1" VerticalContentAlignment="Center" FontSize="12" SelectedIndex="0">
+                            <ComboBox x:Name="CmbLanguage" Style="{StaticResource DarkComboBoxStyle}" Height="30" Width="260" MaxDropDownHeight="240" Background="#131926" Foreground="#F8FAFC" BorderBrush="#38BDF8" BorderThickness="1" VerticalContentAlignment="Center" FontSize="12" SelectedIndex="0">
                                 <ComboBox.ItemContainerStyle>
                                     <Style TargetType="ComboBoxItem">
                                         <Setter Property="Background" Value="#1E1E2E"/>
