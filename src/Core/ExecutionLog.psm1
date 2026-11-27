@@ -266,9 +266,9 @@ function Clear-DebloatTempSession {
         $searchPath = Join-Path $TempRoot $pattern
         $targets = Get-Item -Path $searchPath -ErrorAction SilentlyContinue
         foreach ($target in $targets) {
-            # Critical Safety Check: Never touch anything in LOCALAPPDATA, Backups, or Logs
+            # Critical Safety Check: Never touch anything in LOCALAPPDATA, Backups, Logs, or Sessions
             $fullPath = $target.FullName
-            if ($fullPath -like "*LOCALAPPDATA*" -or $fullPath -like "*Backups*" -or $fullPath -like "*Logs*") {
+            if ($fullPath -like "*LOCALAPPDATA*" -or $fullPath -like "*Backups*" -or $fullPath -like "*Logs*" -or $fullPath -like "*Sessions*") {
                 continue
             }
 

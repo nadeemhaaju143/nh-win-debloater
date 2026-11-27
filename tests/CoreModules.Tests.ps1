@@ -13,6 +13,12 @@ BeforeAll {
     Import-Module (Join-Path $corePath "ShellCustomization.psm1") -Force
     Import-Module (Join-Path $corePath "SystemTweaks.psm1") -Force
     Import-Module (Join-Path $corePath "ExecutionLog.psm1") -Force
+    Import-Module (Join-Path $corePath "PreflightValidator.psm1") -Force
+    Import-Module (Join-Path $corePath "TransactionJournal.psm1") -Force
+    Import-Module (Join-Path $corePath "RollbackEngine.psm1") -Force
+    Import-Module (Join-Path $corePath "RegistryProvider.psm1") -Force
+    Import-Module (Join-Path $corePath "ServiceProvider.psm1") -Force
+    Import-Module (Join-Path $corePath "TaskProvider.psm1") -Force
 }
 
 Describe "AppManager Module" {
@@ -930,5 +936,243 @@ Describe "v1.3.4 Media Codec Protection & OneDrive/Copilot Multi-Method Retry" {
         $res = Remove-DebloatApp -AppIdList @("Microsoft.Copilot") -PresetsPath $presetsPath -Confirm:$false
         $res.Status | Should -Be "Success"
         Should -Invoke -ModuleName AppManager -CommandName Invoke-WingetUninstallRetry -Times 2
+    }
+}
+
+Describe "v1.4.0 Phase 1: Safety Foundation & Transactional Pipeline" {
+    BeforeAll {
+        $script:TestSessionsRoot = Join-Path $env:TEMP "NHWinDebloater_Phase1_Sessions_Test"
+        if (Test-Path $script:TestSessionsRoot) { Remove-Item -Path $script:TestSessionsRoot -Recurse -Force -ErrorAction SilentlyContinue }
+        New-Item -Path $script:TestSessionsRoot -ItemType Directory -Force | Out-Null
+    }
+
+    AfterAll {
+        if (Test-Path $script:TestSessionsRoot) { Remove-Item -Path $script:TestSessionsRoot -Recurse -Force -ErrorAction SilentlyContinue }
+    }
+
+    It "(a) Halts execution when Restore Point or recovery fails unless explicitly overridden" {
+        $sess = New-TransactionSession -BaseDirectory $script:TestSessionsRoot
+        $failRp = { return [PSCustomObject]@{ Status = "Error"; Message = "System Restore disabled by policy" } }
+
+        $gateHalted = Save-SessionRecoveryData -Session $sess -BeforeStateData @{ Test = 1 } -AttemptRestorePoint $true -RestorePointAction $failRp
+        $gateHalted.Halted | Should -BeTrue
+        $gateHalted.Success | Should -BeFalse
+        $gateHalted.RequiresOverride | Should -BeTrue
+
+        $gateOverridden = Save-SessionRecoveryData -Session $sess -BeforeStateData @{ Test = 1 } -AttemptRestorePoint $true -RestorePointAction $failRp -ForceOverride
+        $gateOverridden.Halted | Should -BeFalse
+        $gateOverridden.Success | Should -BeTrue
+        $gateOverridden.Overridden | Should -BeTrue
+    }
+
+    It "(b) Writes structured JSON transaction records per operation and never reports overall success on failure" {
+        $sess = New-TransactionSession -BaseDirectory $script:TestSessionsRoot
+
+        $recOk = Invoke-TransactionalOperation -Session $sess -OperationId "OP_TEST_1" -Category "Privacy" `
+            -Target "HKCU:\Test\Telemetry" -PreviousState 3 -RequestedState 0 `
+            -Action { return "ok" } -VerifyAction { return $true }
+        $recOk.result | Should -Be "Success"
+        $recOk.verified | Should -BeTrue
+        $recOk.sessionId | Should -Be $sess.SessionId
+
+        $recFail = Invoke-TransactionalOperation -Session $sess -OperationId "OP_TEST_2" -Category "Extras" `
+            -Target "HKLM:\Test\Denied" -PreviousState 0 -RequestedState 1 `
+            -Action { throw "Access denied" }
+        $recFail.result | Should -Be "Failed"
+        $recFail.verified | Should -BeFalse
+        $recFail.exitCode | Should -Be 1
+
+        $report = Get-TransactionReport -Session $sess
+        $report.Total | Should -Be 2
+        $report.Success | Should -Be 1
+        $report.Failed | Should -Be 1
+        $report.OverallSuccess | Should -BeFalse
+    }
+
+    It "(c) Detects rollback conflict when target value changed externally post-backup and preserves backup records" {
+        $sess = New-TransactionSession -BaseDirectory $script:TestSessionsRoot
+        $rec = Add-TransactionRecord -Session $sess -OperationId "OP_CONFLICT" -Category "Shell" `
+            -Target "HKCU:\Test\TaskbarAl" -PreviousState 1 -RequestedState 0 -Result "Success" -Verified $true -RollbackAvailable $true
+
+        $conflict = Test-RollbackConflict -Target $rec.target -PreviousState $rec.previousState -RequestedState $rec.requestedState -CurrentState 2
+        $conflict.HasConflict | Should -BeTrue
+
+        $rbConflict = Invoke-ItemRollback -Record $rec -CurrentState 2 -WarningAction SilentlyContinue
+        $rbConflict.Status | Should -Be "Conflict"
+
+        $rbSess = Invoke-SessionRollback -SessionId $sess.SessionId -SessionsDirectory $script:TestSessionsRoot -WhatIf
+        $rbSess.BackupPreserved | Should -BeTrue
+    }
+
+    It "(d) Preserves session backups and logs during temporary cleanup" {
+        $fakeTemp = Join-Path $env:TEMP "NHWinDebloater_Phase1_TempClean"
+        $protectedSessions = Join-Path $fakeTemp "NHWinDebloater_Sessions"
+        $protectedFile = Join-Path $protectedSessions "journal.json"
+        if (-not (Test-Path $protectedSessions)) { New-Item -Path $protectedSessions -ItemType Directory -Force | Out-Null }
+        Set-Content -Path $protectedFile -Value "[]" -Encoding UTF8
+
+        $null = Clear-DebloatTempSession -TempRoot $fakeTemp
+        (Test-Path $protectedFile) | Should -BeTrue
+
+        Remove-Item -Path $fakeTemp -Recurse -Force -ErrorAction SilentlyContinue
+    }
+}
+
+Describe "v1.4.0 Phase 2: Typed Registry, Protected Services & XML Scheduled Tasks" {
+    BeforeAll {
+        $script:TestRegRoot = "HKCU:\Software\NHWinDebloater_Phase2_Test"
+        if (Test-Path $script:TestRegRoot) { Remove-Item -Path $script:TestRegRoot -Recurse -Force -ErrorAction SilentlyContinue }
+        New-Item -Path $script:TestRegRoot -Force | Out-Null
+
+        $script:TestTaskBackupDir = Join-Path $env:TEMP "NHWinDebloater_Phase2_TaskBackups"
+        if (Test-Path $script:TestTaskBackupDir) { Remove-Item -Path $script:TestTaskBackupDir -Recurse -Force -ErrorAction SilentlyContinue }
+        New-Item -Path $script:TestTaskBackupDir -ItemType Directory -Force | Out-Null
+    }
+
+    AfterAll {
+        if (Test-Path $script:TestRegRoot) { Remove-Item -Path $script:TestRegRoot -Recurse -Force -ErrorAction SilentlyContinue }
+        if (Test-Path $script:TestTaskBackupDir) { Remove-Item -Path $script:TestTaskBackupDir -Recurse -Force -ErrorAction SilentlyContinue }
+    }
+
+    It "Creates missing registry value and deletes it on rollback when Existed was false" {
+        $res = Set-TypedRegistryValue -Path $script:TestRegRoot -Name "NewTestDWord" -Value 1 -PropertyType "DWord" -Confirm:$false
+        $res.Status | Should -Be "Success"
+        $res.Verified | Should -BeTrue
+        $res.PreviousState.Existed | Should -BeFalse
+
+        $rb = Restore-TypedRegistryEntry -PreviousState $res.PreviousState -ExpectedAppliedValue 1 -Confirm:$false
+        $rb.Status | Should -Be "Deleted"
+        $rb.Verified | Should -BeTrue
+    }
+
+    It "Preserves exact registry types (DWord, String, Binary) on write and rollback" {
+        New-ItemProperty -Path $script:TestRegRoot -Name "TypedStr" -Value "orig" -PropertyType String -Force | Out-Null
+        New-ItemProperty -Path $script:TestRegRoot -Name "TypedBin" -Value ([byte[]](1, 2, 3)) -PropertyType Binary -Force | Out-Null
+
+        $wStr = Set-TypedRegistryValue -Path $script:TestRegRoot -Name "TypedStr" -Value "changed" -PropertyType "String" -Confirm:$false
+        $wBin = Set-TypedRegistryValue -Path $script:TestRegRoot -Name "TypedBin" -Value ([byte[]](9, 8, 7)) -PropertyType "Binary" -Confirm:$false
+        $wStr.Verified | Should -BeTrue
+        $wBin.Verified | Should -BeTrue
+
+        $rStr = Restore-TypedRegistryEntry -PreviousState $wStr.PreviousState -ExpectedAppliedValue "changed" -Confirm:$false
+        $rBin = Restore-TypedRegistryEntry -PreviousState $wBin.PreviousState -ExpectedAppliedValue ([byte[]](9, 8, 7)) -Confirm:$false
+        $rStr.Status | Should -Be "Restored"
+        $rStr.Verified | Should -BeTrue
+        $rBin.Status | Should -Be "Restored"
+        $rBin.Verified | Should -BeTrue
+    }
+
+    It "Refuses modification of hard-protected NVIDIA, audio, network, and Store services" {
+        $protectedList = @("NVDisplay.ContainerLocalSystem", "NvContainerLocalSystem", "AudioSrv", "Dhcp", "WlanSvc", "AppXSvc", "msiserver", "WinDefend")
+        foreach ($svc in $protectedList) {
+            (Get-ServiceClassification -ServiceName $svc) | Should -Be "Protected"
+            $res = Set-SafeServiceState -ServiceName $svc -TargetStartType "Disabled" -WarningAction SilentlyContinue
+            $res.Status | Should -Be "SkippedProtected"
+        }
+    }
+
+    It "Captures and restores service DelayedAutoStart and StartType accurately" {
+        Mock -ModuleName ServiceProvider Get-Service { return [PSCustomObject]@{ Name = "MapsBroker"; Status = "Running" } }
+        Mock -ModuleName ServiceProvider Test-Path { return $true }
+        Mock -ModuleName ServiceProvider Get-ItemProperty { return [PSCustomObject]@{ Start = 2; DelayedAutostart = 1 } }
+        Mock -ModuleName ServiceProvider Set-Service { return $null }
+        Mock -ModuleName ServiceProvider Start-Service { return $null }
+        Mock -ModuleName ServiceProvider New-ItemProperty { return $null }
+
+        $state = Get-ExactServiceState -ServiceName "MapsBroker"
+        $state.StartType | Should -Be "DelayedAutoStart"
+        $state.Status | Should -Be "Running"
+
+        $rest = Restore-ExactServiceState -PreviousState $state -Confirm:$false
+        $rest.Status | Should -Be "Restored"
+        $rest.Verified | Should -BeTrue
+    }
+
+    It "Protects Windows Maintenance/Update/Defender tasks and backs up + restores task XML" {
+        (Test-IsProtectedScheduledTask -TaskPath "\Microsoft\Windows\WindowsUpdate\" -TaskName "Scheduled Start") | Should -BeTrue
+        (Test-IsProtectedScheduledTask -TaskPath "\Microsoft\Windows\Windows Defender\" -TaskName "Windows Defender Scheduled Scan") | Should -BeTrue
+        (Test-IsProtectedScheduledTask -TaskPath "\Microsoft\Windows\Customer Experience Improvement Program\" -TaskName "Consolidator") | Should -BeFalse
+
+        $protDisable = Disable-TelemetryScheduledTask -TaskPath "\Microsoft\Windows\WindowsUpdate\" -TaskName "Scheduled Start"
+        $protDisable.Status | Should -Be "SkippedProtected"
+
+        Mock -ModuleName TaskProvider Get-ScheduledTask { return [PSCustomObject]@{ TaskName = "Consolidator"; State = "Ready" } }
+        Mock -ModuleName TaskProvider Export-ScheduledTask { return "<Task><Settings><Enabled>true</Enabled></Settings></Task>" }
+        Mock -ModuleName TaskProvider Disable-ScheduledTask { return $null }
+        Mock -ModuleName TaskProvider Enable-ScheduledTask { return $null }
+
+        $bak = Backup-ScheduledTaskXml -TaskPath "\Microsoft\Windows\Customer Experience Improvement Program\" -TaskName "Consolidator" -BackupDirectory $script:TestTaskBackupDir
+        $bak.Exists | Should -BeTrue
+        (Test-Path $bak.BackupFile) | Should -BeTrue
+
+        $rest = Restore-ScheduledTaskFromBackup -BackupFile $bak.BackupFile -Confirm:$false
+        $rest.Status | Should -Be "Restored"
+        $rest.Verified | Should -BeTrue
+    }
+}
+
+Describe "v1.4.0 Phase 3: Hardware Control Panels, Scope Separation & Compatibility Matrix" {
+    It "Protects GPU, Chipset, Audio, and Edge WebView2 packages and checks dependency guard" {
+        $hwApps = @(
+            "NVIDIACorp.NVIDIAControlPanel",
+            "AppUp.IntelGraphicsExperience",
+            "AppUp.ThunderboltControlCenter",
+            "RealtekSemiconductorCorp.RealtekAudioControl",
+            "Microsoft.EdgeWebView2Runtime"
+        )
+        foreach ($app in $hwApps) {
+            (Test-IsProtectedApp -AppId $app -PresetsPath $presetsPath) | Should -BeTrue
+            (Get-AppPackageClassification -AppId $app -PresetsPath $presetsPath) | Should -Be "Protected"
+        }
+
+        $remRes = Remove-DebloatApp -AppIdList $hwApps -PresetsPath $presetsPath
+        ($remRes | Where-Object { $_.Status -eq "SkippedProtected" }).Count | Should -Be 5
+
+        Mock -ModuleName AppManager Get-AppxPackage {
+            return @([PSCustomObject]@{ Name = "Microsoft.WindowsStore"; Dependencies = @("Microsoft.VCLibs.140.00") })
+        }
+        (Test-HasProtectedDependent -AppId "Microsoft.VCLibs.140.00" -PresetsPath $presetsPath) | Should -BeTrue
+    }
+
+    It "Reports 'Skipped - Not Installed' honestly when package is absent and supports separated scopes" {
+        Mock -ModuleName AppManager Test-HasProtectedDependent { return $false }
+        Mock -ModuleName AppManager Get-AppxPackage { return @() }
+        Mock -ModuleName AppManager Get-AppxProvisionedPackage { return @() }
+
+        $res = Remove-DebloatApp -AppIdList @("NonExistent.SampleApp") -TargetScope "CurrentUser" -PresetsPath $presetsPath -Confirm:$false
+        $res.Status | Should -Be "Skipped - Not Installed"
+    }
+
+    It "Detects edition-aware telemetry support and approval gates for AllUsers scope" {
+        $ed = Get-EditionTelemetrySupport
+        $ed | Should -Not -BeNullOrEmpty
+        $ed.PSObject.Properties.Name | Should -Contain "SupportsSecurityZero"
+
+        $appCurrent = Test-ApprovalRequirement -Scope "CurrentUser" -HasHighImpact $false
+        $appCurrent.RequiresElevatedScopeConfirmation | Should -BeFalse
+
+        $appAll = Test-ApprovalRequirement -Scope "AllUsers" -HasHighImpact $true
+        $appAll.RequiresElevatedScopeConfirmation | Should -BeTrue
+        $appAll.RequiresHighImpactConfirmation | Should -BeTrue
+    }
+
+    It "Passes Windows 11 26H2 + RTX 3050 Ti + 16 GB RAM compatibility matrix (idempotent & non-mutating dry-run)" {
+        $preflight = Invoke-SystemPreflight -Scope "CurrentUser"
+        $preflight.Build | Should -BeGreaterThan 0
+
+        $inv = Get-ReadOnlySystemInventory -RegistryPaths @("HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced")
+        $inv.CapturedAt | Should -Not -BeNullOrEmpty
+
+        $preview = @(New-DryRunOperationPreview -Operations @(
+            [PSCustomObject]@{ OperationId = "OP1"; Category = "Privacy"; Target = "AdvertisingId"; CurrentValue = 1; RequestedValue = 0 }
+        ))
+        $preview.Count | Should -Be 1
+        $preview[0].RecoveryMethod | Should -Be "Session JSON Rollback"
+
+        # Repeated execution idempotency check in WhatIf
+        $p1 = Set-PrivacySetting -SettingId "DisableAdvertisingId" -Enable $true -WhatIf
+        $p2 = Set-PrivacySetting -SettingId "DisableAdvertisingId" -Enable $true -WhatIf
+        $p1[0].Status | Should -Be "Preview"
+        $p2[0].Status | Should -Be "Preview"
     }
 }

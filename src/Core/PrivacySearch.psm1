@@ -5,7 +5,7 @@
         Manages Windows telemetry, diagnostic data, personalized suggestions,
         AI assistants (Copilot, Recall), Activity History, and Bing Search integration.
     .MODULEVERSION
-        1.3.1
+        1.4.0
 #>
 
 [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '')]
@@ -58,6 +58,33 @@ function Set-RegistryPropertySafe {
             Value  = $Value
             Status = "Preview"
         }
+    }
+}
+
+function Get-EditionTelemetrySupport {
+    <#
+        .SYNOPSIS
+            Checks Windows edition support for AllowTelemetry levels (Home clamps 0 -> 1; Pro/Enterprise support 0).
+    #>
+    [CmdletBinding()]
+    [OutputType([PSCustomObject])]
+    param()
+
+    $edition = "Unknown"
+    try {
+        $nt = Get-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion" -ErrorAction SilentlyContinue
+        if ($nt -and $nt.EditionID) { $edition = [string]$nt.EditionID }
+    } catch {
+        Write-Verbose "Could not read Windows edition: $($_.Exception.Message)"
+    }
+
+    $isHome = ($edition -match "Core|Home")
+    $minSupported = if ($isHome) { 1 } else { 0 }
+
+    return [PSCustomObject]@{
+        Edition             = $edition
+        SupportsSecurityZero = (-not $isHome)
+        RecommendedMinLevel = $minSupported
     }
 }
 
@@ -159,9 +186,10 @@ function Set-PrivacySetting {
 
     $ops = [System.Collections.Generic.List[PSCustomObject]]::new()
 
-    # 1. Telemetry / Diagnostics
+    # 1. Telemetry / Diagnostics (edition-aware level + post-write verification)
     if ($SettingId -eq "DisableTelemetry" -or $SettingId -eq "All") {
-        $val = if ($Enable) { 0 } else { 3 }
+        $edInfo = Get-EditionTelemetrySupport
+        $val = if ($Enable) { $edInfo.RecommendedMinLevel } else { 3 }
         $ops.Add((Set-RegistryPropertySafe -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\DataCollection" -Name "AllowTelemetry" -Value $val -PropertyType "DWord" -WhatIf:$WhatIfPreference))
         $ops.Add((Set-RegistryPropertySafe -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\DataCollection" -Name "AllowTelemetry" -Value $val -PropertyType "DWord" -WhatIf:$WhatIfPreference))
     }
@@ -210,4 +238,4 @@ function Set-PrivacySetting {
     return $ops.ToArray()
 }
 
-Export-ModuleMember -Function Get-PrivacySetting, Set-PrivacySetting
+Export-ModuleMember -Function Get-EditionTelemetrySupport, Get-PrivacySetting, Set-PrivacySetting

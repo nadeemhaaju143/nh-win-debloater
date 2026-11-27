@@ -30,5 +30,11 @@
     "Microsoft.AV1VideoExtension",
     "Microsoft.VP9VideoExtensions",
     "Microsoft.RawImageExtension",
-    "Microsoft.MPEG2VideoExtension"
+    "Microsoft.MPEG2VideoExtension",
+    "NVIDIACorp.NVIDIAControlPanel",
+    "AppUp.IntelGraphicsExperience",
+    "AppUp.ThunderboltControlCenter",
+    "RealtekSemiconductorCorp.RealtekAudioControl",
+    "Microsoft.MicrosoftEdge.Stable",
+    "Microsoft.EdgeWebView2Runtime"
 ]

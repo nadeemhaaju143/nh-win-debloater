@@ -9,6 +9,24 @@ The project follows a **progressive semantic minor versioning format**:
 
 ---
 
+## [1.4.0] - 2026-11-27
+
+### Safety Foundation, Transactional Pipeline, Typed Providers & Hardware Protection
+- **Phase 1 — 9-Step Transactional Pipeline & Session Rollback (`PreflightValidator.psm1`, `TransactionJournal.psm1`, `RollbackEngine.psm1`, `ExecutionLog.psm1`):**
+  - Enforced 9-step execution pipeline: System Preflight, Read-Only System Inventory, Mandatory Recovery Gate (halts on missing recovery/Restore Point unless explicitly overridden), Operation Validation, Dry-Run Preview, Explicit Approval Gate (`AllUsers`/high-impact confirmation), Per-Operation Transaction Journal (`journal.json`, `user.log`, `debug.log`), Post-Apply Verification, and Honest Execution Report (`OverallSuccess = $false` on any failure).
+  - Added `RollbackEngine.psm1` with single-item, per-category, and full-session rollback by `sessionId`, external modification conflict detection, and non-destructive backup preservation.
+  - Protected `Sessions\` directories in `Clear-DebloatTempSession` and added `Export-RedactedDiagnostics`.
+- **Phase 2 — Exact Typed Registry, Protected Services & XML Scheduled Tasks (`RegistryProvider.psm1`, `ServiceProvider.psm1`, `TaskProvider.psm1`):**
+  - Exact typed registry capture & restore (`DWord`, `QWord`, `String`, `ExpandString`, `Binary`, `MultiString`) with delete-on-rollback for newly created keys (`Existed = $false`) and conflict detection.
+  - Hard-protected NVIDIA/AMD/Intel GPU, Driver Foundation/PnP, WMI/RPC/DCOM, Defender/Firewall, Windows Update/`BITS`, Network, Audio, HID/Touchpad, Store/AppX, and Licensing services, with `DelayedAutoStart` preservation.
+  - XML-backed scheduled task backups (`Export-ScheduledTask`) and protection for Windows Maintenance, Update, Defender, Driver, and Application Maintenance tasks.
+- **Phase 3 — Scope-Separated Package Engine, Hardware Control Panel Protection & 10-Tab UI (`AppManager.psm1`, `ProtectedApps.json`, `PrivacySearch.psm1`, `SystemTweaks.psm1`, `MainWindow.xaml`, `AppController.ps1`):**
+  - Separated AppX operations into `CurrentUser` (default), `AllUsers`, `Provisioned`, and `DefaultUserProfile`; added `Test-HasProtectedDependent` dependency guard and `Get-PackageRemovalMetadata`; reported absent packages honestly as `Skipped - Not Installed`.
+  - Hard-protected GPU/Chipset/Audio control panels (`NVIDIACorp.NVIDIAControlPanel`, `AppUp.IntelGraphicsExperience`, `AppUp.ThunderboltControlCenter`, `RealtekSemiconductorCorp.RealtekAudioControl`, `Microsoft.EdgeWebView2Runtime`); defaulted unknown live-scanned apps to unchecked.
+  - Added `powercfg /export` + `/import` scheme backup in `Set-PowerOptionTweak`/`Restore-PowerOptions`, edition-aware telemetry (`Get-EditionTelemetrySupport`), and expanded Stage 2 UI to 10 categorized tabs.
+
+---
+
 ## [1.3.4] - 2026-11-26
 
 ### Media Codec Protection & Multi-Method Retry Fallbacks for OneDrive / Copilot

@@ -40,6 +40,12 @@ Import-Module (Join-Path $CoreDirectory "PrivacySearch.psm1") -Force
 Import-Module (Join-Path $CoreDirectory "ShellCustomization.psm1") -Force
 Import-Module (Join-Path $CoreDirectory "SystemTweaks.psm1") -Force
 Import-Module (Join-Path $CoreDirectory "ExecutionLog.psm1") -Force
+Import-Module (Join-Path $CoreDirectory "PreflightValidator.psm1") -Force
+Import-Module (Join-Path $CoreDirectory "TransactionJournal.psm1") -Force
+Import-Module (Join-Path $CoreDirectory "RollbackEngine.psm1") -Force
+Import-Module (Join-Path $CoreDirectory "RegistryProvider.psm1") -Force
+Import-Module (Join-Path $CoreDirectory "ServiceProvider.psm1") -Force
+Import-Module (Join-Path $CoreDirectory "TaskProvider.psm1") -Force
 
 # Initialize Logging
 Initialize-DebloatLogger -Version $script:AppVersion | Out-Null

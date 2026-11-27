@@ -51,6 +51,12 @@ function Show-DebloaterWindow {
     Import-Module (Join-Path $corePath "ShellCustomization.psm1") -Force
     Import-Module (Join-Path $corePath "SystemTweaks.psm1") -Force
     Import-Module (Join-Path $corePath "ExecutionLog.psm1") -Force
+    Import-Module (Join-Path $corePath "PreflightValidator.psm1") -Force
+    Import-Module (Join-Path $corePath "TransactionJournal.psm1") -Force
+    Import-Module (Join-Path $corePath "RollbackEngine.psm1") -Force
+    Import-Module (Join-Path $corePath "RegistryProvider.psm1") -Force
+    Import-Module (Join-Path $corePath "ServiceProvider.psm1") -Force
+    Import-Module (Join-Path $corePath "TaskProvider.psm1") -Force
 
     Initialize-DebloatLogger -Version $script:AppVersion | Out-Null
 
@@ -997,16 +1003,17 @@ function Show-DebloaterWindow {
                 }
             }
 
-            # Merge live installed/provisioned non-system apps not already in curated catalog
+            # Merge live installed/provisioned non-system apps not already in curated catalog (default unchecked)
             foreach ($instItem in $script:InstalledAppMap.Values) {
                 if (-not $instItem -or $instItem.IsProtected -or $instItem.IsCoreFramework) { continue }
                 if (-not $appMap.ContainsKey($instItem.AppId)) {
                     $appMap[$instItem.AppId] = [PSCustomObject]@{
-                        AppId          = $instItem.AppId
-                        Aliases        = @($instItem.AppId)
-                        DisplayName    = $instItem.AppId
-                        Recommendation = "Optional"
-                        RemovalMethod  = "Appx"
+                        AppId            = $instItem.AppId
+                        Aliases          = @($instItem.AppId)
+                        DisplayName      = $instItem.AppId
+                        Recommendation   = "Optional"
+                        RemovalMethod    = "Appx"
+                        IsLiveDiscovered = $true
                     }
                 }
             }
@@ -1120,6 +1127,7 @@ function Show-DebloaterWindow {
                 }
                 $cb.Tag = $app.AppId
                 $isUncheckedByDefault = (
+                    ($app.PSObject.Properties["IsLiveDiscovered"] -and $app.IsLiveDiscovered) -or
                     $app.AppId -eq "Microsoft.Copilot" -or
                     $app.AppId -eq "Microsoft.OneDrive" -or
                     $app.AppId -eq "Microsoft.OutlookForWindows" -or
@@ -2117,9 +2125,34 @@ function Show-DebloaterWindow {
         $targetScope = if ($radioScopeCurrentUser.IsChecked) { "CurrentUser" } elseif ($radioScopeDefaultUser.IsChecked) { "DefaultUser" } else { "AllUsers" }
         & $appendLog "Selected execution scope: $targetScope" "INFO"
 
+        # Step 1: System Preflight (Read-Only)
+        $preflight = Invoke-SystemPreflight -Scope $targetScope
+        & $appendLog "Preflight: $($preflight.Edition) Build $($preflight.Build) ($($preflight.Architecture)), Admin=$($preflight.IsAdmin), FreeSpace=$($preflight.FreeDiskSpaceGB)GB" "INFO"
+        foreach ($pw in $preflight.Warnings) {
+            & $appendLog "Preflight Warning: $pw" "WARN"
+        }
+
+        # Step 6: Explicit Approval Gate for AllUsers / High-Impact changes (Live mode)
+        $hasHighImpact = [bool](($chkWindowsSandbox -and $chkWindowsSandbox.IsChecked) -or ($chkWSL -and $chkWSL.IsChecked))
+        $approvalReq = Test-ApprovalRequirement -Scope $targetScope -HasHighImpact $hasHighImpact
+        if (-not $isDryRun -and ($approvalReq.RequiresElevatedScopeConfirmation -or $approvalReq.RequiresHighImpactConfirmation)) {
+            $confirmScope = [System.Windows.MessageBox]::Show(
+                "$($approvalReq.PromptSummary)`n`nDo you explicitly approve applying these changes?",
+                "NH Win Debloater - Explicit Confirmation Required",
+                [System.Windows.MessageBoxButton]::YesNo,
+                [System.Windows.MessageBoxImage]::Warning
+            )
+            if ($confirmScope -ne [System.Windows.MessageBoxResult]::Yes) {
+                & $appendLog "Execution cancelled by user at explicit approval gate." "WARN"
+                $txtProgressStatus.Text = "Cancelled before applying changes."
+                & $updateStageView 3
+                return
+            }
+        }
+
         $isDefaultUserScope = ($targetScope -eq "DefaultUser")
         $defaultUserMounted = $false
-        if ($isDefaultUserScope) {
+        if ($isDefaultUserScope -and -not $isDryRun) {
             & $appendLog "Mounting Windows Default User profile hive (C:\Users\Default\NTUSER.DAT) under HKLM\NHDefaultUser..." "INFO"
             $defaultUserMounted = Mount-DefaultUserHive
             if ($defaultUserMounted) {
@@ -2132,56 +2165,81 @@ function Show-DebloaterWindow {
         $totalOps = 0
         $successOps = 0
         $skippedOps = 0
+        $failedOps = 0
 
-        # 1. Restore Point
-        if ($chkCreateRestorePoint.IsChecked) {
+        # Step 2 & 3: Read-Only System Inventory & Mandatory Recovery Data Gate
+        $txSession = New-TransactionSession
+        & $appendLog "Initialized transaction session: $($txSession.SessionId)" "INFO"
+
+        $regPaths = @(
+            "HKLM:\SOFTWARE\Policies\Microsoft\Windows\DataCollection",
+            "HKCU:\Software\Microsoft\Windows\CurrentVersion\Privacy",
+            "HKCU:\Software\Microsoft\Windows\CurrentVersion\AdvertisingInfo",
+            "HKCU:\Software\Policies\Microsoft\Windows\WindowsCopilot",
+            "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsCopilot",
+            "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsAI",
+            "HKCU:\Software\Policies\Microsoft\Windows\WindowsAI",
+            "HKLM:\SOFTWARE\Policies\Microsoft\Windows\ClickToDo",
+            "HKCU:\Software\Microsoft\Windows\CurrentVersion\ClickToDo",
+            "HKCU:\Software\Policies\Microsoft\Windows\Explorer",
+            "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced",
+            "HKCU:\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager",
+            "HKCU:\Control Panel\Mouse",
+            "HKCU:\Control Panel\Accessibility\StickyKeys",
+            "HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\Power",
+            "HKLM:\SYSTEM\CurrentControlSet\Control\BitLocker",
+            "HKLM:\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\54533251-82be-4824-96c1-47b60b740d00\be337238-0d82-4146-a960-4f3749d470c7",
+            "HKLM:\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\2a737441-1930-4402-8d77-b2bebba308a3\48e6b7a6-50f5-4782-a5d4-53bb8f07e226",
+            "HKLM:\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\501a4d13-42af-4429-9fd1-a8218c268e20\ee12f906-d277-404b-b6da-e5fa1a576df5",
+            "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate",
+            "HKLM:\SOFTWARE\Policies\Microsoft\Windows\DeliveryOptimization",
+            "HKCU:\Software\Microsoft\Windows\CurrentVersion\DeliveryOptimization",
+            "HKCU:\Software\Microsoft\Windows\CurrentVersion\SearchSettings",
+            "HKCU:\Software\Policies\Microsoft\Windows\CloudContent",
+            "HKCU:\Software\Microsoft\GameBar",
+            "HKCU:\System\GameConfigStore",
+            "HKLM:\SOFTWARE\Policies\Microsoft\Windows\GameDVR",
+            "HKCU:\Software\Microsoft\Windows\CurrentVersion\GameDVR",
+            "HKLM:\SOFTWARE\Policies\Microsoft\Edge",
+            "HKCU:\Software\Microsoft\Paint\Settings",
+            "HKCU:\Software\Policies\Microsoft\Paint",
+            "HKCU:\Software\Microsoft\Notepad",
+            "HKCU:\Software\Policies\Microsoft\Notepad"
+        )
+
+        $inventory = Get-ReadOnlySystemInventory -RegistryPaths $regPaths
+        $attemptRp = [bool]((-not $isDryRun) -and $chkCreateRestorePoint -and $chkCreateRestorePoint.IsChecked)
+        if ($attemptRp) {
             & $appendLog "Creating Windows System Restore Point..." "INFO"
             $txtProgressStatus.Text = "Creating System Restore checkpoint..."
-            $rp = New-DebloatRestorePoint -Description "NH Win Debloater Checkpoint"
-            $totalOps++
-            if ($rp.Status -eq "Success") { $successOps++; & $appendLog "System Restore Point created successfully." "SUCCESS" }
-            else { $skippedOps++; & $appendLog "System Restore Point skipped/warning: $($rp.Message)" "WARN" }
+        }
+        $recGate = Save-SessionRecoveryData -Session $txSession -BeforeStateData $inventory -AttemptRestorePoint $attemptRp
+        if ($recGate.Halted) {
+            $missingMsg = $recGate.MissingProtections -join "`n"
+            & $appendLog "RECOVERY GATE HALTED: $missingMsg" "WARN"
+            $overrideChoice = [System.Windows.MessageBox]::Show(
+                "Mandatory recovery protection could not be completed:`n`n$missingMsg`n`nDo you want to override this safety gate and continue anyway?",
+                "NH Win Debloater - Recovery Protection Warning",
+                [System.Windows.MessageBoxButton]::YesNo,
+                [System.Windows.MessageBoxImage]::Warning
+            )
+            if ($overrideChoice -ne [System.Windows.MessageBoxResult]::Yes) {
+                & $appendLog "Execution halted cleanly because recovery protection was missing and not overridden." "WARN"
+                $txtProgressStatus.Text = "Halted: Recovery protection required."
+                & $updateStageView 3
+                return
+            }
+            $null = Save-SessionRecoveryData -Session $txSession -BeforeStateData $inventory -AttemptRestorePoint $false -ForceOverride
+            & $appendLog "User explicitly overrode missing recovery protection warning." "WARN"
+        } elseif ($attemptRp) {
+            $totalOps++; $successOps++
+            & $appendLog "System Restore Point created successfully." "SUCCESS"
         }
         $progExecution.Value = 20
 
-        # 2. Registry Snapshot
-        if ($chkRegistrySnapshot.IsChecked) {
+        # Legacy Registry Snapshot compatibility (preserved alongside session before-state.json)
+        if ($chkRegistrySnapshot -and $chkRegistrySnapshot.IsChecked) {
             & $appendLog "Capturing pre-tweak registry snapshot..." "INFO"
-            $regPaths = @(
-                "HKLM:\SOFTWARE\Policies\Microsoft\Windows\DataCollection",
-                "HKCU:\Software\Microsoft\Windows\CurrentVersion\Privacy",
-                "HKCU:\Software\Microsoft\Windows\CurrentVersion\AdvertisingInfo",
-                "HKCU:\Software\Policies\Microsoft\Windows\WindowsCopilot",
-                "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsCopilot",
-                "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsAI",
-                "HKCU:\Software\Policies\Microsoft\Windows\WindowsAI",
-                "HKLM:\SOFTWARE\Policies\Microsoft\Windows\ClickToDo",
-                "HKCU:\Software\Microsoft\Windows\CurrentVersion\ClickToDo",
-                "HKCU:\Software\Policies\Microsoft\Windows\Explorer",
-                "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced",
-                "HKCU:\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager",
-                "HKCU:\Control Panel\Mouse",
-                "HKCU:\Control Panel\Accessibility\StickyKeys",
-                "HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\Power",
-                "HKLM:\SYSTEM\CurrentControlSet\Control\BitLocker",
-                "HKLM:\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\54533251-82be-4824-96c1-47b60b740d00\be337238-0d82-4146-a960-4f3749d470c7",
-                "HKLM:\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\2a737441-1930-4402-8d77-b2bebba308a3\48e6b7a6-50f5-4782-a5d4-53bb8f07e226",
-                "HKLM:\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\501a4d13-42af-4429-9fd1-a8218c268e20\ee12f906-d277-404b-b6da-e5fa1a576df5",
-                "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate",
-                "HKLM:\SOFTWARE\Policies\Microsoft\Windows\DeliveryOptimization",
-                "HKCU:\Software\Microsoft\Windows\CurrentVersion\DeliveryOptimization",
-                "HKCU:\Software\Microsoft\Windows\CurrentVersion\SearchSettings",
-                "HKCU:\Software\Policies\Microsoft\Windows\CloudContent",
-                "HKCU:\Software\Microsoft\GameBar",
-                "HKCU:\System\GameConfigStore",
-                "HKLM:\SOFTWARE\Policies\Microsoft\Windows\GameDVR",
-                "HKCU:\Software\Microsoft\Windows\CurrentVersion\GameDVR",
-                "HKLM:\SOFTWARE\Policies\Microsoft\Edge",
-                "HKCU:\Software\Microsoft\Paint\Settings",
-                "HKCU:\Software\Policies\Microsoft\Paint",
-                "HKCU:\Software\Microsoft\Notepad",
-                "HKCU:\Software\Policies\Microsoft\Notepad"
-            )
             $snapFile = Export-RegistrySnapshot -RegistryPaths $regPaths
             $totalOps++
             $successOps++
@@ -2379,8 +2437,14 @@ function Show-DebloaterWindow {
 
         $progExecution.Value = 100
 
-        & $appendLog "Pipeline execution finished successfully." "SUCCESS"
-        $txtProgressStatus.Text = "Optimization complete."
+        $txReport = Get-TransactionReport -Session $txSession
+        if ($failedOps -gt 0 -or ($txReport -and -not $txReport.OverallSuccess)) {
+            & $appendLog "Pipeline completed with errors ($failedOps failed). Review session journal: $($txSession.SessionId)" "WARN"
+            $txtProgressStatus.Text = "Completed with $failedOps failure(s)."
+        } else {
+            & $appendLog "Pipeline execution finished successfully (Session: $($txSession.SessionId))." "SUCCESS"
+            $txtProgressStatus.Text = "Optimization complete."
+        }
 
         # Update Summary Stats
         $txtStatTotal.Text = "$totalOps"
@@ -2431,19 +2495,21 @@ function Show-DebloaterWindow {
                     if ($chkSearchHighlights) { $chkSearchHighlights.IsChecked = $true }
                     if ($chkStartRecommended) { $chkStartRecommended.IsChecked = $true }
 
-                    if ($chkGameDVR) { $chkGameDVR.IsChecked = $true }
+                    if ($chkGameDVR) { $chkGameDVR.IsChecked = $false }
                     if ($chkDeliveryOpt) { $chkDeliveryOpt.IsChecked = $true }
                     if ($chkEdgeBackground) { $chkEdgeBackground.IsChecked = $true }
                     if ($chkScheduledTasks) { $chkScheduledTasks.IsChecked = $true }
-                    if ($chkTelemetryService) { $chkTelemetryService.IsChecked = $true }
+                    if ($chkTelemetryService) { $chkTelemetryService.IsChecked = $false }
 
                     if ($chkConsumerFeatures) { $chkConsumerFeatures.IsChecked = $true }
                     if ($chkLockScreenAds) { $chkLockScreenAds.IsChecked = $true }
                     if ($chkSettingsHome) { $chkSettingsHome.IsChecked = $true }
-                    if ($chkPreventBitLockerAutoEncrypt) { $chkPreventBitLockerAutoEncrypt.IsChecked = $true }
+                    if ($chkPreventBitLockerAutoEncrypt) { $chkPreventBitLockerAutoEncrypt.IsChecked = $false }
                     if ($chkDisableSpotlight) { $chkDisableSpotlight.IsChecked = $false }
-                    if ($chkSafeServicesRecommended) { $chkSafeServicesRecommended.IsChecked = $true }
+                    if ($chkSafeServicesRecommended) { $chkSafeServicesRecommended.IsChecked = $false }
                     if ($chkSafeServicesOptional) { $chkSafeServicesOptional.IsChecked = $false }
+                    if ($chkPreventAutoReboot) { $chkPreventAutoReboot.IsChecked = $false }
+                    if ($chkExcludeDrivers) { $chkExcludeDrivers.IsChecked = $false }
                     if ($chkPowerUltimate) { $chkPowerUltimate.IsChecked = $false }
                     if ($chkPowerUnhidePlans) { $chkPowerUnhidePlans.IsChecked = $false }
                     if ($chkPowerUnhideAttrs) { $chkPowerUnhideAttrs.IsChecked = $false }

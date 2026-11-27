@@ -8,7 +8,7 @@
         (Sandbox, WSL), creates System Restore Points, and captures pre-modification
         registry snapshots for transactional rollback.
     .MODULEVERSION
-        1.3.2
+        1.4.0
 #>
 
 [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '')]
@@ -1387,6 +1387,10 @@ function Set-PowerOptionTweak {
         [bool]$DisableHibernation = $false,
 
         [Parameter(Mandatory = $false)]
+        [ValidateSet("AC", "DC", "Both")]
+        [string]$PowerSource = "Both",
+
+        [Parameter(Mandatory = $false)]
         [string]$SnapshotPath
     )
 
@@ -1409,10 +1413,16 @@ function Set-PowerOptionTweak {
     } else {
         Join-Path $powerBackupDir "PowerSnapshot_$timestamp.json"
     }
+    $powExportFile = Join-Path $powerBackupDir "PowerScheme_$timestamp.pow"
 
     if (-not $WhatIfPreference) {
+        if ($prevGuid) {
+            try { powercfg.exe /export $powExportFile $prevGuid 2>$null | Out-Null } catch {}
+        }
         $snapObj = [PSCustomObject]@{
             PreviousSchemeGuid = $prevGuid
+            ExportedPowFile    = if (Test-Path $powExportFile) { $powExportFile } else { $null }
+            PowerSource        = $PowerSource
             DisableHibernation = $DisableHibernation
             Timestamp          = $timestamp
         }
@@ -1507,6 +1517,9 @@ function Restore-PowerOptions {
     $restoreGuid = if ($snapData -and $snapData.PreviousSchemeGuid) { $snapData.PreviousSchemeGuid } else { "381b4222-f694-41f0-9685-ff5bb260df2e" }
     if ($PSCmdlet.ShouldProcess("Active Power Plan: $restoreGuid", "Restore previous power scheme")) {
         try {
+            if ($snapData -and $snapData.ExportedPowFile -and (Test-Path $snapData.ExportedPowFile)) {
+                powercfg.exe /import $snapData.ExportedPowFile $restoreGuid 2>$null | Out-Null
+            }
             powercfg.exe /setactive $restoreGuid 2>$null
             $ops.Add([PSCustomObject]@{ Path = "powercfg.exe"; Name = "ActiveScheme"; Value = $restoreGuid; Status = "Restored" })
         } catch {

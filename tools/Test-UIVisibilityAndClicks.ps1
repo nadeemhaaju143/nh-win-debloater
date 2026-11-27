@@ -389,14 +389,14 @@ $viewStage1.Visibility = [System.Windows.Visibility]::Collapsed
 $viewStage2.Visibility = [System.Windows.Visibility]::Visible
 
 $tabStage2Controls = $win.FindName("TabStage2Controls")
-Assert-Check -Category "Stage2" -Description "TabStage2Controls has 7 tabs" -Condition ($tabStage2Controls.Items.Count -eq 7)
+Assert-Check -Category "Stage2" -Description "TabStage2Controls has 10 tabs" -Condition ($tabStage2Controls.Items.Count -eq 10)
 
-# Iterate across all 7 tabs without crash
-for ($t = 0; $t -lt 7; $t++) {
+# Iterate across all 10 tabs without crash
+for ($t = 0; $t -lt 10; $t++) {
     $tabStage2Controls.SelectedIndex = $t
     $win.UpdateLayout()
 }
-Assert-Check -Category "Stage2" -Description "Cycled across all 7 tabs without dispatcher hang" -Condition $true
+Assert-Check -Category "Stage2" -Description "Cycled across all 10 tabs without dispatcher hang" -Condition $true
 
 # Switch back to Tab 1: Apps
 $tabStage2Controls.SelectedIndex = 0
