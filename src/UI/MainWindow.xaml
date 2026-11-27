@@ -600,7 +600,7 @@
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Text="NH Win Debloater" FontWeight="Bold" FontSize="18" Foreground="#F8FAFC"/>
                                 <Border x:Name="BadgeVersion" CornerRadius="4" Background="#0284C7" Margin="10,2,0,2" Padding="6,1">
-                                    <TextBlock x:Name="TxtVersion" Text="v1.4.0" FontSize="11" FontWeight="Bold" Foreground="#FFFFFF"/>
+                                    <TextBlock x:Name="TxtVersion" Text="v1.4.1" FontSize="11" FontWeight="Bold" Foreground="#FFFFFF"/>
                                 </Border>
                             </StackPanel>
                             <TextBlock Text="Less Bloat. Better Windows. Built for performance." FontSize="12" Foreground="#94A3B8"/>
@@ -1515,7 +1515,7 @@
                                 <Path Data="{StaticResource IconGamepadGaming}" Fill="#38BDF8" Width="14" Height="14" Stretch="Uniform" Margin="0,0,6,0" VerticalAlignment="Center"/>
                                 <TextBlock Text="4. Gaming &amp; Performance" VerticalAlignment="Center" Margin="0,0,6,0"/>
                                 <Border Background="#1A2234" CornerRadius="8" Padding="6,1" VerticalAlignment="Center">
-                                    <TextBlock x:Name="TxtTabGamingCount" Text="5/6" FontSize="10" FontWeight="Bold" Foreground="#34D399"/>
+                                    <TextBlock x:Name="TxtTabGamingCount" Text="4/4" FontSize="10" FontWeight="Bold" Foreground="#34D399"/>
                                 </Border>
                             </StackPanel>
                         </TabItem.Header>
@@ -1573,7 +1573,6 @@
                                                 <CheckBox x:Name="ChkGamingDVR" Style="{StaticResource ModernCheckBox}" Content="Game DVR &amp; Background Capture" IsChecked="True"/>
                                                 <CheckBox x:Name="ChkGamingBackground" Style="{StaticResource ModernCheckBox}" Content="Background Apps &amp; Edge Startup" IsChecked="True"/>
                                                 <CheckBox x:Name="ChkGamingOptimization" Style="{StaticResource ModernCheckBox}" Content="Delivery Optimization &amp; CEIP Tasks" IsChecked="True"/>
-                                                <CheckBox x:Name="ChkGamingStorage" Style="{StaticResource ModernCheckBox}" Content="Hibernation Storage Reclaim" IsChecked="False"/>
                                                 <Border BorderBrush="#232D42" BorderThickness="0,1,0,0" Margin="0,8,0,8"/>
                                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
                                                     <Button x:Name="BtnGamingSelectAll" Style="{StaticResource ModernBtn}" Content="Check All" Padding="8,2" Margin="0,0,6,0"/>
@@ -1642,26 +1641,6 @@
                                             </StackPanel>
                                         </Border>
                                     </Grid>
-                                    <Grid Margin="0,4">
-                                        <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
-                                        <CheckBox x:Name="ChkTelemetryService" Grid.Column="0" Style="{StaticResource ModernCheckBox}" Content="Disable Connected User Experiences &amp; Telemetry Service (DiagTrack background service)" IsChecked="True"/>
-                                        <Border Grid.Column="1" Background="#78350F" CornerRadius="10" Padding="8,3" VerticalAlignment="Center">
-                                            <StackPanel Orientation="Horizontal">
-                                                <Path Data="{StaticResource IconAlertTriangle}" Fill="#FBBF24" Width="10" Height="10" Stretch="Uniform" Margin="0,0,4,0" VerticalAlignment="Center"/>
-                                                <TextBlock Text="CAUTION" FontSize="9" FontWeight="Bold" Foreground="#FBBF24" VerticalAlignment="Center"/>
-                                            </StackPanel>
-                                        </Border>
-                                    </Grid>
-                                    <Grid Margin="0,4">
-                                        <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
-                                        <CheckBox x:Name="ChkHibernation" Grid.Column="0" Style="{StaticResource ModernCheckBox}" Content="Reclaim Disk Space by Disabling Hibernation (Removes multi-GB hiberfil.sys)" IsChecked="False"/>
-                                        <Border Grid.Column="1" Background="#78350F" CornerRadius="10" Padding="8,3" VerticalAlignment="Center">
-                                            <StackPanel Orientation="Horizontal">
-                                                <Path Data="{StaticResource IconAlertTriangle}" Fill="#FBBF24" Width="10" Height="10" Stretch="Uniform" Margin="0,0,4,0" VerticalAlignment="Center"/>
-                                                <TextBlock Text="CAUTION" FontSize="9" FontWeight="Bold" Foreground="#FBBF24" VerticalAlignment="Center"/>
-                                            </StackPanel>
-                                        </Border>
-                                    </Grid>
                                 </StackPanel>
                             </ScrollViewer>
                         </Grid>
@@ -1674,7 +1653,7 @@
                                 <Path Data="{StaticResource IconSettingsExtras}" Fill="#38BDF8" Width="14" Height="14" Stretch="Uniform" Margin="0,0,6,0" VerticalAlignment="Center"/>
                                 <TextBlock Text="5. System Extras" VerticalAlignment="Center" Margin="0,0,6,0"/>
                                 <Border Background="#1A2234" CornerRadius="8" Padding="6,1" VerticalAlignment="Center">
-                                    <TextBlock x:Name="TxtTabExtrasCount" Text="6/8" FontSize="10" FontWeight="Bold" Foreground="#34D399"/>
+                                    <TextBlock x:Name="TxtTabExtrasCount" Text="4/7" FontSize="10" FontWeight="Bold" Foreground="#34D399"/>
                                 </Border>
                             </StackPanel>
                         </TabItem.Header>
@@ -1732,7 +1711,7 @@
                                                 <CheckBox x:Name="ChkExtrasPromos" Style="{StaticResource ModernCheckBox}" Content="Consumer Promos &amp; Lock Screen Tips" IsChecked="True"/>
                                                 <CheckBox x:Name="ChkExtrasDesktop" Style="{StaticResource ModernCheckBox}" Content="Classic Context Menu &amp; Mouse Precision" IsChecked="True"/>
                                                 <CheckBox x:Name="ChkExtrasAccessibility" Style="{StaticResource ModernCheckBox}" Content="Disable Sticky Keys Shortcut" IsChecked="True"/>
-                                                <CheckBox x:Name="ChkExtrasPower" Style="{StaticResource ModernCheckBox}" Content="Fast Startup &amp; Storage Sense" IsChecked="False"/>
+                                                <CheckBox x:Name="ChkExtrasPower" Style="{StaticResource ModernCheckBox}" Content="Storage Sense &amp; Spotlight" IsChecked="False"/>
                                                 <Border BorderBrush="#232D42" BorderThickness="0,1,0,0" Margin="0,8,0,8"/>
                                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
                                                     <Button x:Name="BtnExtrasSelectAll" Style="{StaticResource ModernBtn}" Content="Check All" Padding="8,2" Margin="0,0,6,0"/>
@@ -1803,16 +1782,6 @@
                                     </Grid>
                                     <Grid Margin="0,4">
                                         <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
-                                        <CheckBox x:Name="ChkFastStartup" Grid.Column="0" Style="{StaticResource ModernCheckBox}" Content="Disable Fast Startup (Avoid hibernation boot anomalies)" IsChecked="False"/>
-                                        <Border Grid.Column="1" Background="#78350F" CornerRadius="10" Padding="8,3" VerticalAlignment="Center">
-                                            <StackPanel Orientation="Horizontal">
-                                                <Path Data="{StaticResource IconAlertTriangle}" Fill="#FBBF24" Width="10" Height="10" Stretch="Uniform" Margin="0,0,4,0" VerticalAlignment="Center"/>
-                                                <TextBlock Text="CAUTION" FontSize="9" FontWeight="Bold" Foreground="#FBBF24" VerticalAlignment="Center"/>
-                                            </StackPanel>
-                                        </Border>
-                                    </Grid>
-                                    <Grid Margin="0,4">
-                                        <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
                                         <CheckBox x:Name="ChkStorageSense" Grid.Column="0" Style="{StaticResource ModernCheckBox}" Content="Disable Storage Sense automatic background deletion" IsChecked="False"/>
                                         <Border Grid.Column="1" Background="#78350F" CornerRadius="10" Padding="8,3" VerticalAlignment="Center">
                                             <StackPanel Orientation="Horizontal">
@@ -1823,37 +1792,7 @@
                                     </Grid>
                                     <Grid Margin="0,4">
                                         <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
-                                        <CheckBox x:Name="ChkPreventAutoReboot" Grid.Column="0" Style="{StaticResource ModernCheckBox}" Content="Prevent automatic reboot while users are logged on for updates" IsChecked="True"/>
-                                        <Border Grid.Column="1" Background="#064E3B" CornerRadius="10" Padding="8,3" VerticalAlignment="Center">
-                                            <StackPanel Orientation="Horizontal">
-                                                <Path Data="{StaticResource IconCheckCircle}" Fill="#34D399" Width="10" Height="10" Stretch="Uniform" Margin="0,0,4,0" VerticalAlignment="Center"/>
-                                                <TextBlock Text="RECOMMENDED" FontSize="9" FontWeight="Bold" Foreground="#34D399" VerticalAlignment="Center"/>
-                                            </StackPanel>
-                                        </Border>
-                                    </Grid>
-                                    <Grid Margin="0,4">
-                                        <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
-                                        <CheckBox x:Name="ChkExcludeDrivers" Grid.Column="0" Style="{StaticResource ModernCheckBox}" Content="Exclude third-party drivers from Windows Update quality updates" IsChecked="True"/>
-                                        <Border Grid.Column="1" Background="#064E3B" CornerRadius="10" Padding="8,3" VerticalAlignment="Center">
-                                            <StackPanel Orientation="Horizontal">
-                                                <Path Data="{StaticResource IconCheckCircle}" Fill="#34D399" Width="10" Height="10" Stretch="Uniform" Margin="0,0,4,0" VerticalAlignment="Center"/>
-                                                <TextBlock Text="RECOMMENDED" FontSize="9" FontWeight="Bold" Foreground="#34D399" VerticalAlignment="Center"/>
-                                            </StackPanel>
-                                        </Border>
-                                    </Grid>
-                                    <Grid Margin="0,4">
-                                        <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
                                         <CheckBox x:Name="ChkSettingsHome" Grid.Column="0" Style="{StaticResource ModernCheckBox}" Content="Disable Settings Home recommendations &amp; Microsoft 365 ads" IsChecked="True"/>
-                                        <Border Grid.Column="1" Background="#064E3B" CornerRadius="10" Padding="8,3" VerticalAlignment="Center">
-                                            <StackPanel Orientation="Horizontal">
-                                                <Path Data="{StaticResource IconCheckCircle}" Fill="#34D399" Width="10" Height="10" Stretch="Uniform" Margin="0,0,4,0" VerticalAlignment="Center"/>
-                                                <TextBlock Text="SAFE" FontSize="9" FontWeight="Bold" Foreground="#34D399" VerticalAlignment="Center"/>
-                                            </StackPanel>
-                                        </Border>
-                                    </Grid>
-                                    <Grid Margin="0,4">
-                                        <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
-                                        <CheckBox x:Name="ChkPreventBitLockerAutoEncrypt" Grid.Column="0" Style="{StaticResource ModernCheckBox}" Content="Prevent automatic BitLocker device encryption during setup (Explicit opt-in)" IsChecked="False"/>
                                         <Border Grid.Column="1" Background="#064E3B" CornerRadius="10" Padding="8,3" VerticalAlignment="Center">
                                             <StackPanel Orientation="Horizontal">
                                                 <Path Data="{StaticResource IconCheckCircle}" Fill="#34D399" Width="10" Height="10" Stretch="Uniform" Margin="0,0,4,0" VerticalAlignment="Center"/>
@@ -1871,80 +1810,6 @@
                                             </StackPanel>
                                         </Border>
                                     </Grid>
-
-                                    <!-- Safe Services Optimization Card -->
-                                    <Border Background="#111827" BorderBrush="#1E293B" BorderThickness="1" CornerRadius="10" Padding="14,10" Margin="0,10,0,4">
-                                        <StackPanel>
-                                            <TextBlock Text="Safe Services Optimization (With Full Snapshot &amp; Rollback)" FontSize="12" FontWeight="Bold" Foreground="#38BDF8" Margin="0,0,0,6"/>
-                                            <Grid Margin="0,3">
-                                                <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
-                                                <CheckBox x:Name="ChkSafeServicesRecommended" Grid.Column="0" Style="{StaticResource ModernCheckBox}" Content="Optimize Optional Non-Hardware Services (RetailDemo, MapsBroker, Wallet, WMP Sharing, RemoteRegistry, Fax)" IsChecked="False"/>
-                                                <Border Grid.Column="1" Background="#064E3B" CornerRadius="10" Padding="8,3" VerticalAlignment="Center">
-                                                    <StackPanel Orientation="Horizontal">
-                                                        <Path Data="{StaticResource IconCheckCircle}" Fill="#34D399" Width="10" Height="10" Stretch="Uniform" Margin="0,0,4,0" VerticalAlignment="Center"/>
-                                                        <TextBlock Text="RECOMMENDED" FontSize="9" FontWeight="Bold" Foreground="#34D399" VerticalAlignment="Center"/>
-                                                    </StackPanel>
-                                                </Border>
-                                            </Grid>
-                                            <Grid Margin="0,3">
-                                                <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
-                                                <CheckBox x:Name="ChkSafeServicesOptional" Grid.Column="0" Style="{StaticResource ModernCheckBox}" Content="Optimize 7 Optional Hardware / Location Services (Geolocation lfsvc, Sensors, PhoneSvc, Parental Controls, Smart Card)" IsChecked="False"/>
-                                                <Border Grid.Column="1" Background="#1A2234" CornerRadius="10" Padding="8,3" VerticalAlignment="Center">
-                                                    <StackPanel Orientation="Horizontal">
-                                                        <Path Data="{StaticResource IconSettingsExtras}" Fill="#94A3B8" Width="9" Height="9" Stretch="Uniform" Margin="0,0,4,0" VerticalAlignment="Center"/>
-                                                        <TextBlock Text="OPTIONAL" FontSize="9" FontWeight="Bold" Foreground="#94A3B8" VerticalAlignment="Center"/>
-                                                    </StackPanel>
-                                                </Border>
-                                            </Grid>
-                                        </StackPanel>
-                                    </Border>
-
-                                    <!-- Advanced Power Options Card -->
-                                    <Border Background="#111827" BorderBrush="#1E293B" BorderThickness="1" CornerRadius="10" Padding="14,10" Margin="0,8,0,4">
-                                        <StackPanel>
-                                            <TextBlock Text="Advanced Power Options (With Rollback Snapshot)" FontSize="12" FontWeight="Bold" Foreground="#38BDF8" Margin="0,0,0,6"/>
-                                            <Grid Margin="0,3">
-                                                <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
-                                                <CheckBox x:Name="ChkPowerUltimate" Grid.Column="0" Style="{StaticResource ModernCheckBox}" Content="Unlock &amp; Activate Ultimate Performance Power Plan" IsChecked="False"/>
-                                                <Border Grid.Column="1" Background="#1A2234" CornerRadius="10" Padding="8,3" VerticalAlignment="Center">
-                                                    <StackPanel Orientation="Horizontal">
-                                                        <Path Data="{StaticResource IconSettingsExtras}" Fill="#94A3B8" Width="9" Height="9" Stretch="Uniform" Margin="0,0,4,0" VerticalAlignment="Center"/>
-                                                        <TextBlock Text="OPTIONAL" FontSize="9" FontWeight="Bold" Foreground="#94A3B8" VerticalAlignment="Center"/>
-                                                    </StackPanel>
-                                                </Border>
-                                            </Grid>
-                                            <Grid Margin="0,3">
-                                                <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
-                                                <CheckBox x:Name="ChkPowerUnhidePlans" Grid.Column="0" Style="{StaticResource ModernCheckBox}" Content="Unhide Classic High Performance &amp; Power Saver Plans" IsChecked="False"/>
-                                                <Border Grid.Column="1" Background="#064E3B" CornerRadius="10" Padding="8,3" VerticalAlignment="Center">
-                                                    <StackPanel Orientation="Horizontal">
-                                                        <Path Data="{StaticResource IconCheckCircle}" Fill="#34D399" Width="10" Height="10" Stretch="Uniform" Margin="0,0,4,0" VerticalAlignment="Center"/>
-                                                        <TextBlock Text="SAFE" FontSize="9" FontWeight="Bold" Foreground="#34D399" VerticalAlignment="Center"/>
-                                                    </StackPanel>
-                                                </Border>
-                                            </Grid>
-                                            <Grid Margin="0,3">
-                                                <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
-                                                <CheckBox x:Name="ChkPowerUnhideAttrs" Grid.Column="0" Style="{StaticResource ModernCheckBox}" Content="Unhide Hidden Processor Boost, USB Selective Suspend &amp; PCIe Power Attributes" IsChecked="False"/>
-                                                <Border Grid.Column="1" Background="#064E3B" CornerRadius="10" Padding="8,3" VerticalAlignment="Center">
-                                                    <StackPanel Orientation="Horizontal">
-                                                        <Path Data="{StaticResource IconCheckCircle}" Fill="#34D399" Width="10" Height="10" Stretch="Uniform" Margin="0,0,4,0" VerticalAlignment="Center"/>
-                                                        <TextBlock Text="SAFE" FontSize="9" FontWeight="Bold" Foreground="#34D399" VerticalAlignment="Center"/>
-                                                    </StackPanel>
-                                                </Border>
-                                            </Grid>
-                                            <Grid Margin="0,3">
-                                                <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
-                                                <CheckBox x:Name="ChkPowerDisableHibernation" Grid.Column="0" Style="{StaticResource ModernCheckBox}" Content="Disable Hibernation (powercfg /h off) to reclaim SSD space" IsChecked="False"/>
-                                                <Border Grid.Column="1" Background="#78350F" CornerRadius="10" Padding="8,3" VerticalAlignment="Center">
-                                                    <StackPanel Orientation="Horizontal">
-                                                        <Path Data="{StaticResource IconAlertTriangle}" Fill="#FBBF24" Width="10" Height="10" Stretch="Uniform" Margin="0,0,4,0" VerticalAlignment="Center"/>
-                                                        <TextBlock Text="CAUTION" FontSize="9" FontWeight="Bold" Foreground="#FBBF24" VerticalAlignment="Center"/>
-                                                    </StackPanel>
-                                                </Border>
-                                            </Grid>
-                                        </StackPanel>
-                                    </Border>
                                 </StackPanel>
                             </ScrollViewer>
                         </Grid>
@@ -2228,56 +2093,6 @@
                                     <TextBlock Text="Note: Enabling optional Windows features requires system virtualization support (VT-x/AMD-V)." FontSize="11" Foreground="#94A3B8" Margin="0,10,0,0"/>
                                 </StackPanel>
                             </ScrollViewer>
-                        </Grid>
-                    </TabItem>
-
-                    <!-- Tab 8: Services Protection & Inventory -->
-                    <TabItem FontWeight="SemiBold">
-                        <TabItem.Header>
-                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                <Path Data="{StaticResource IconShieldLock}" Fill="#38BDF8" Width="14" Height="14" Stretch="Uniform" Margin="0,0,6,0" VerticalAlignment="Center"/>
-                                <TextBlock Text="8. Services" VerticalAlignment="Center" Margin="0,0,6,0"/>
-                            </StackPanel>
-                        </TabItem.Header>
-                        <Grid Margin="16">
-                            <StackPanel>
-                                <TextBlock Text="Service Classification &amp; Hardware Protection" FontSize="14" FontWeight="Bold" Foreground="#38BDF8" Margin="0,0,0,8"/>
-                                <TextBlock Text="Hard-Protected (Never Altered): NVIDIA/AMD/Intel GPU drivers, Windows Driver Foundation, Plug and Play, WMI, RPC/DCOM, Windows Defender, Firewall, Windows Update &amp; BITS, Network/DHCP/DNS/WLAN, Windows Audio, HID/Touchpad, Store/AppX, and Licensing." Foreground="#CBD5E1" TextWrapping="Wrap" Margin="0,0,0,10"/>
-                                <TextBlock Text="Optional services (RetailDemo, MapsBroker, Fax, PhoneSvc, DiagTrack, Xbox Live) remain unchanged unless explicitly opted in under System Extras." Foreground="#94A3B8" TextWrapping="Wrap"/>
-                            </StackPanel>
-                        </Grid>
-                    </TabItem>
-
-                    <!-- Tab 9: XML-Backed Scheduled Tasks -->
-                    <TabItem FontWeight="SemiBold">
-                        <TabItem.Header>
-                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                <Path Data="{StaticResource IconFileText}" Fill="#38BDF8" Width="14" Height="14" Stretch="Uniform" Margin="0,0,6,0" VerticalAlignment="Center"/>
-                                <TextBlock Text="9. Scheduled Tasks" VerticalAlignment="Center" Margin="0,0,6,0"/>
-                            </StackPanel>
-                        </TabItem.Header>
-                        <Grid Margin="16">
-                            <StackPanel>
-                                <TextBlock Text="Individual XML-Backed Scheduled Tasks" FontSize="14" FontWeight="Bold" Foreground="#38BDF8" Margin="0,0,0,8"/>
-                                <TextBlock Text="Protected Categories (Never Disabled): Windows Maintenance, Windows Update, Security &amp; Defender, Driver &amp; Hardware Maintenance, and Application Maintenance." Foreground="#CBD5E1" TextWrapping="Wrap" Margin="0,0,0,10"/>
-                                <TextBlock Text="Before disabling any telemetry task, NH Win Debloater exports its full XML definition and State for exact 1-click restoration." Foreground="#94A3B8" TextWrapping="Wrap"/>
-                            </StackPanel>
-                        </Grid>
-                    </TabItem>
-
-                    <!-- Tab 10: Windows Update Preferences -->
-                    <TabItem FontWeight="SemiBold">
-                        <TabItem.Header>
-                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                <Path Data="{StaticResource IconRefresh}" Fill="#38BDF8" Width="14" Height="14" Stretch="Uniform" Margin="0,0,6,0" VerticalAlignment="Center"/>
-                                <TextBlock Text="10. Windows Update" VerticalAlignment="Center" Margin="0,0,6,0"/>
-                            </StackPanel>
-                        </TabItem.Header>
-                        <Grid Margin="16">
-                            <StackPanel>
-                                <TextBlock Text="Windows Update &amp; Store Safety" FontSize="14" FontWeight="Bold" Foreground="#38BDF8" Margin="0,0,0,8"/>
-                                <TextBlock Text="Windows Update, Microsoft Store updates, and automatic security updates remain enabled by default. Broad update-blocking policies are disabled by default to preserve system security." Foreground="#CBD5E1" TextWrapping="Wrap"/>
-                            </StackPanel>
                         </Grid>
                     </TabItem>
                 </TabControl>

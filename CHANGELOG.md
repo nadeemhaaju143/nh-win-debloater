@@ -9,6 +9,17 @@ The project follows a **progressive semantic minor versioning format**:
 
 ---
 
+## [1.4.1] - 2026-11-27
+
+### Safe-Scope Pruning & 7-Tab UI Refinement
+- **Pruned Experimental & High-Risk Toggles (`MainWindow.xaml`, `AppController.ps1`):**
+  - Removed `Safe Services Optimization` (`ChkSafeServicesRecommended`, `ChkSafeServicesOptional`), `Advanced Power Options` (`ChkPowerUltimate`, `ChkPowerUnhidePlans`, `ChkPowerUnhideAttrs`, `ChkPowerDisableHibernation`), `ChkTelemetryService` (`DiagTrack`), `ChkHibernation`, `ChkPreventBitLockerAutoEncrypt`, `ChkFastStartup`, `ChkPreventAutoReboot`, and `ChkExcludeDrivers` from the interactive UI so only proven safe, reversible bloatware, privacy, Explorer/Taskbar, AI policy, and Optional Features operations are exposed.
+- **Streamlined Stage 2 Tabs:**
+  - Removed the 3 empty informational tabs (`8. Services`, `9. Scheduled Tasks`, `10. Windows Update`), restoring `TabStage2Controls` to 7 clean, actionable tabs (`1. Apps & Bloatware` through `7. Optional Features`).
+  - Preserved all 9 essential built-in app protections, hardware/GPU/audio driver control panel protections (`ProtectedApps.json`), OneDrive/Copilot unchecked-by-default rules, `CurrentUser` default scope, and transactional rollback architecture.
+
+---
+
 ## [1.4.0] - 2026-11-27
 
 ### Safety Foundation, Transactional Pipeline, Typed Providers & Hardware Protection

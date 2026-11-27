@@ -222,7 +222,6 @@ function Show-DebloaterWindow {
     $chkGamingDVR = $window.FindName("ChkGamingDVR")
     $chkGamingBackground = $window.FindName("ChkGamingBackground")
     $chkGamingOptimization = $window.FindName("ChkGamingOptimization")
-    $chkGamingStorage = $window.FindName("ChkGamingStorage")
     $btnGamingSelectAll = $window.FindName("BtnGamingSelectAll")
     $btnGamingClear = $window.FindName("BtnGamingClear")
     $btnSelectAllGaming = $window.FindName("BtnSelectAllGaming")
@@ -231,8 +230,6 @@ function Show-DebloaterWindow {
     $chkDeliveryOpt = $window.FindName("ChkDeliveryOpt")
     $chkEdgeBackground = $window.FindName("ChkEdgeBackground")
     $chkScheduledTasks = $window.FindName("ChkScheduledTasks")
-    $chkTelemetryService = $window.FindName("ChkTelemetryService")
-    $chkHibernation = $window.FindName("ChkHibernation")
 
     # Tab 5: System Extras
     $toggleExtrasPresets = $window.FindName("ToggleExtrasPresets")
@@ -249,19 +246,9 @@ function Show-DebloaterWindow {
     $chkLockScreenAds = $window.FindName("ChkLockScreenAds")
     $chkMousePrecision = $window.FindName("ChkMousePrecision")
     $chkStickyKeys = $window.FindName("ChkStickyKeys")
-    $chkFastStartup = $window.FindName("ChkFastStartup")
     $chkStorageSense = $window.FindName("ChkStorageSense")
-    $chkPreventAutoReboot = $window.FindName("ChkPreventAutoReboot")
-    $chkExcludeDrivers = $window.FindName("ChkExcludeDrivers")
     $chkSettingsHome = $window.FindName("ChkSettingsHome")
-    $chkPreventBitLockerAutoEncrypt = $window.FindName("ChkPreventBitLockerAutoEncrypt")
     $chkDisableSpotlight = $window.FindName("ChkDisableSpotlight")
-    $chkSafeServicesRecommended = $window.FindName("ChkSafeServicesRecommended")
-    $chkSafeServicesOptional = $window.FindName("ChkSafeServicesOptional")
-    $chkPowerUltimate = $window.FindName("ChkPowerUltimate")
-    $chkPowerUnhidePlans = $window.FindName("ChkPowerUnhidePlans")
-    $chkPowerUnhideAttrs = $window.FindName("ChkPowerUnhideAttrs")
-    $chkPowerDisableHibernation = $window.FindName("ChkPowerDisableHibernation")
 
     # Tab 6: AI Integration (Dedicated Suite)
     $toggleAIPresets = $window.FindName("ToggleAIPresets")
@@ -793,12 +780,12 @@ function Show-DebloaterWindow {
         if ($txtTabShellCount) { $txtTabShellCount.Text = "$shellChecked/15" }
 
         $gamingChecked = 0
-        @($chkGameDVR, $chkDeliveryOpt, $chkEdgeBackground, $chkScheduledTasks, $chkTelemetryService, $chkHibernation) |
+        @($chkGameDVR, $chkDeliveryOpt, $chkEdgeBackground, $chkScheduledTasks) |
             ForEach-Object { if ($_ -and $_.IsChecked) { $gamingChecked++ } }
-        if ($txtTabGamingCount) { $txtTabGamingCount.Text = "$gamingChecked/6" }
+        if ($txtTabGamingCount) { $txtTabGamingCount.Text = "$gamingChecked/4" }
 
         $extrasChecked = 0
-        $extrasAll = @($chkConsumerFeatures, $chkLockScreenAds, $chkMousePrecision, $chkStickyKeys, $chkFastStartup, $chkStorageSense, $chkPreventAutoReboot, $chkExcludeDrivers, $chkSettingsHome, $chkPreventBitLockerAutoEncrypt, $chkDisableSpotlight, $chkSafeServicesRecommended, $chkSafeServicesOptional, $chkPowerUltimate, $chkPowerUnhidePlans, $chkPowerUnhideAttrs, $chkPowerDisableHibernation)
+        $extrasAll = @($chkConsumerFeatures, $chkLockScreenAds, $chkMousePrecision, $chkStickyKeys, $chkStorageSense, $chkSettingsHome, $chkDisableSpotlight)
         $extrasAll | ForEach-Object { if ($_ -and $_.IsChecked) { $extrasChecked++ } }
         if ($txtTabExtrasCount) { $txtTabExtrasCount.Text = "$extrasChecked/$($extrasAll.Count)" }
 
@@ -839,25 +826,13 @@ function Show-DebloaterWindow {
             DeliveryOpt         = [bool]($chkDeliveryOpt -and $chkDeliveryOpt.IsChecked)
             EdgeBackground      = [bool]($chkEdgeBackground -and $chkEdgeBackground.IsChecked)
             ScheduledTasks      = [bool]($chkScheduledTasks -and $chkScheduledTasks.IsChecked)
-            TelemetryService    = [bool]($chkTelemetryService -and $chkTelemetryService.IsChecked)
-            Hibernation         = [bool]($chkHibernation -and $chkHibernation.IsChecked)
             ConsumerFeatures    = [bool]($chkConsumerFeatures -and $chkConsumerFeatures.IsChecked)
             LockScreenAds       = [bool]($chkLockScreenAds -and $chkLockScreenAds.IsChecked)
             MousePrecision      = [bool]($chkMousePrecision -and $chkMousePrecision.IsChecked)
             StickyKeys          = [bool]($chkStickyKeys -and $chkStickyKeys.IsChecked)
-            FastStartup         = [bool]($chkFastStartup -and $chkFastStartup.IsChecked)
             StorageSense        = [bool]($chkStorageSense -and $chkStorageSense.IsChecked)
-            PreventAutoReboot          = [bool]($chkPreventAutoReboot -and $chkPreventAutoReboot.IsChecked)
-            ExcludeDrivers             = [bool]($chkExcludeDrivers -and $chkExcludeDrivers.IsChecked)
-            SettingsHome               = [bool]($chkSettingsHome -and $chkSettingsHome.IsChecked)
-            PreventBitLockerAutoEncrypt = [bool]($chkPreventBitLockerAutoEncrypt -and $chkPreventBitLockerAutoEncrypt.IsChecked)
-            DisableSpotlight           = [bool]($chkDisableSpotlight -and $chkDisableSpotlight.IsChecked)
-            SafeServicesRecommended    = [bool]($chkSafeServicesRecommended -and $chkSafeServicesRecommended.IsChecked)
-            SafeServicesOptional       = [bool]($chkSafeServicesOptional -and $chkSafeServicesOptional.IsChecked)
-            PowerUltimate              = [bool]($chkPowerUltimate -and $chkPowerUltimate.IsChecked)
-            PowerUnhidePlans           = [bool]($chkPowerUnhidePlans -and $chkPowerUnhidePlans.IsChecked)
-            PowerUnhideAttrs           = [bool]($chkPowerUnhideAttrs -and $chkPowerUnhideAttrs.IsChecked)
-            PowerDisableHibernation    = [bool]($chkPowerDisableHibernation -and $chkPowerDisableHibernation.IsChecked)
+            SettingsHome        = [bool]($chkSettingsHome -and $chkSettingsHome.IsChecked)
+            DisableSpotlight    = [bool]($chkDisableSpotlight -and $chkDisableSpotlight.IsChecked)
             CopilotPolicy       = [bool]($chkCopilotPolicy -and $chkCopilotPolicy.IsChecked)
             CopilotAppx         = [bool]($chkCopilotAppx -and $chkCopilotAppx.IsChecked)
             RecallAI            = [bool]($chkRecallAI -and $chkRecallAI.IsChecked)
@@ -1340,8 +1315,8 @@ function Show-DebloaterWindow {
     $allTweakCheckboxes = @(
         $chkTelemetry, $chkBingSearch, $chkAdvertisingId, $chkActivityHistory, $chkTailoredExp,
         $chkShowExt, $chkShowHidden, $chkLaunchToThisPC, $chkClassicContextMenu, $chkHideWidgets, $chkHideChat, $chkEndTask, $chkAlignLeft, $chkHideOneDriveNav, $chkHideGalleryNav, $chkSearchHighlights, $chkStartRecommended, $chkCompactExplorer, $chkMultitasking, $chkSnapFlyout,
-        $chkGameDVR, $chkDeliveryOpt, $chkEdgeBackground, $chkScheduledTasks, $chkTelemetryService, $chkHibernation,
-        $chkConsumerFeatures, $chkLockScreenAds, $chkMousePrecision, $chkStickyKeys, $chkFastStartup, $chkStorageSense, $chkPreventAutoReboot, $chkExcludeDrivers, $chkSettingsHome,
+        $chkGameDVR, $chkDeliveryOpt, $chkEdgeBackground, $chkScheduledTasks,
+        $chkConsumerFeatures, $chkLockScreenAds, $chkMousePrecision, $chkStickyKeys, $chkStorageSense, $chkSettingsHome, $chkDisableSpotlight,
         $chkCopilotPolicy, $chkCopilotAppx, $chkRecallAI, $chkEdgeAI, $chkPaintAI, $chkNotepadAI,
         $chkWindowsSandbox, $chkWSL
     )
@@ -1553,14 +1528,13 @@ function Show-DebloaterWindow {
         if ($chkGamingDVR -and $chkGamingDVR.IsChecked) { $sel.Add("Game DVR") }
         if ($chkGamingBackground -and $chkGamingBackground.IsChecked) { $sel.Add("Background") }
         if ($chkGamingOptimization -and $chkGamingOptimization.IsChecked) { $sel.Add("Services/Tasks") }
-        if ($chkGamingStorage -and $chkGamingStorage.IsChecked) { $sel.Add("Storage") }
 
         $hdr = if ($sel.Count -eq 0) {
-            "Presets: None Selected (0/4)"
-        } elseif ($sel.Count -eq 4) {
-            "Presets: All Selected (4/4)"
+            "Presets: None Selected (0/3)"
+        } elseif ($sel.Count -eq 3) {
+            "Presets: All Selected (3/3)"
         } else {
-            "Presets: $($sel -join ', ') ($($sel.Count)/4)"
+            "Presets: $($sel -join ', ') ($($sel.Count)/3)"
         }
         if ($txtToggleGamingText) { $txtToggleGamingText.Text = $hdr }
     }
@@ -1568,8 +1542,7 @@ function Show-DebloaterWindow {
     $syncGamingDropdownFromTweaks = {
         if ($chkGamingDVR) { $chkGamingDVR.IsChecked = [bool]($chkGameDVR -and $chkGameDVR.IsChecked) }
         if ($chkGamingBackground) { $chkGamingBackground.IsChecked = [bool]($chkDeliveryOpt.IsChecked -and $chkEdgeBackground.IsChecked) }
-        if ($chkGamingOptimization) { $chkGamingOptimization.IsChecked = [bool]($chkScheduledTasks.IsChecked -and $chkTelemetryService.IsChecked) }
-        if ($chkGamingStorage) { $chkGamingStorage.IsChecked = [bool]($chkHibernation -and $chkHibernation.IsChecked) }
+        if ($chkGamingOptimization) { $chkGamingOptimization.IsChecked = [bool]($chkScheduledTasks -and $chkScheduledTasks.IsChecked) }
         & $updateGamingDropdownHeader
     }
 
@@ -1594,15 +1567,7 @@ function Show-DebloaterWindow {
         $chkGamingOptimization.Add_Click({
             param([object]$eventSource, [System.Windows.RoutedEventArgs]$eventArgs)
             $st = [bool]$chkGamingOptimization.IsChecked
-            @($chkScheduledTasks, $chkTelemetryService) | ForEach-Object { if ($_) { $_.IsChecked = $st } }
-            & $updateLiveImpactSummary
-            & $updateGamingDropdownHeader
-        })
-    }
-    if ($chkGamingStorage) {
-        $chkGamingStorage.Add_Click({
-            param([object]$eventSource, [System.Windows.RoutedEventArgs]$eventArgs)
-            if ($chkHibernation) { $chkHibernation.IsChecked = [bool]$chkGamingStorage.IsChecked }
+            if ($chkScheduledTasks) { $chkScheduledTasks.IsChecked = $st }
             & $updateLiveImpactSummary
             & $updateGamingDropdownHeader
         })
@@ -1610,8 +1575,8 @@ function Show-DebloaterWindow {
     if ($btnGamingSelectAll) {
         $btnGamingSelectAll.Add_Click({
             param([object]$eventSource, [System.Windows.RoutedEventArgs]$eventArgs)
-            @($chkGamingDVR, $chkGamingBackground, $chkGamingOptimization, $chkGamingStorage) | ForEach-Object { if ($_) { $_.IsChecked = $true } }
-            @($chkGameDVR, $chkDeliveryOpt, $chkEdgeBackground, $chkScheduledTasks, $chkTelemetryService, $chkHibernation) | ForEach-Object { if ($_) { $_.IsChecked = $true } }
+            @($chkGamingDVR, $chkGamingBackground, $chkGamingOptimization) | ForEach-Object { if ($_) { $_.IsChecked = $true } }
+            @($chkGameDVR, $chkDeliveryOpt, $chkEdgeBackground, $chkScheduledTasks) | ForEach-Object { if ($_) { $_.IsChecked = $true } }
             & $updateLiveImpactSummary
             & $updateGamingDropdownHeader
         })
@@ -1619,8 +1584,8 @@ function Show-DebloaterWindow {
     if ($btnGamingClear) {
         $btnGamingClear.Add_Click({
             param([object]$eventSource, [System.Windows.RoutedEventArgs]$eventArgs)
-            @($chkGamingDVR, $chkGamingBackground, $chkGamingOptimization, $chkGamingStorage) | ForEach-Object { if ($_) { $_.IsChecked = $false } }
-            @($chkGameDVR, $chkDeliveryOpt, $chkEdgeBackground, $chkScheduledTasks, $chkTelemetryService, $chkHibernation) | ForEach-Object { if ($_) { $_.IsChecked = $false } }
+            @($chkGamingDVR, $chkGamingBackground, $chkGamingOptimization) | ForEach-Object { if ($_) { $_.IsChecked = $false } }
+            @($chkGameDVR, $chkDeliveryOpt, $chkEdgeBackground, $chkScheduledTasks) | ForEach-Object { if ($_) { $_.IsChecked = $false } }
             & $updateLiveImpactSummary
             & $updateGamingDropdownHeader
         })
@@ -1628,7 +1593,7 @@ function Show-DebloaterWindow {
     if ($btnSelectAllGaming) {
         $btnSelectAllGaming.Add_Click({
             param([object]$eventSource, [System.Windows.RoutedEventArgs]$eventArgs)
-            @($chkGameDVR, $chkDeliveryOpt, $chkEdgeBackground, $chkScheduledTasks, $chkTelemetryService, $chkHibernation) | ForEach-Object { if ($_) { $_.IsChecked = $true } }
+            @($chkGameDVR, $chkDeliveryOpt, $chkEdgeBackground, $chkScheduledTasks) | ForEach-Object { if ($_) { $_.IsChecked = $true } }
             & $syncGamingDropdownFromTweaks
             & $updateLiveImpactSummary
         })
@@ -1636,12 +1601,12 @@ function Show-DebloaterWindow {
     if ($btnDeselectAllGaming) {
         $btnDeselectAllGaming.Add_Click({
             param([object]$eventSource, [System.Windows.RoutedEventArgs]$eventArgs)
-            @($chkGameDVR, $chkDeliveryOpt, $chkEdgeBackground, $chkScheduledTasks, $chkTelemetryService, $chkHibernation) | ForEach-Object { if ($_) { $_.IsChecked = $false } }
+            @($chkGameDVR, $chkDeliveryOpt, $chkEdgeBackground, $chkScheduledTasks) | ForEach-Object { if ($_) { $_.IsChecked = $false } }
             & $syncGamingDropdownFromTweaks
             & $updateLiveImpactSummary
         })
     }
-    @($chkGameDVR, $chkDeliveryOpt, $chkEdgeBackground, $chkScheduledTasks, $chkTelemetryService, $chkHibernation) | ForEach-Object {
+    @($chkGameDVR, $chkDeliveryOpt, $chkEdgeBackground, $chkScheduledTasks) | ForEach-Object {
         if ($_) { $_.Add_Click({ & $syncGamingDropdownFromTweaks }) }
     }
 
@@ -1665,9 +1630,9 @@ function Show-DebloaterWindow {
 
     $syncExtrasDropdownFromTweaks = {
         if ($chkExtrasPromos) { $chkExtrasPromos.IsChecked = [bool]($chkConsumerFeatures.IsChecked -and $chkLockScreenAds.IsChecked -and $chkSettingsHome.IsChecked) }
-        if ($chkExtrasDesktop) { $chkExtrasDesktop.IsChecked = [bool]($chkMousePrecision.IsChecked -and $chkStorageSense.IsChecked) }
+        if ($chkExtrasDesktop) { $chkExtrasDesktop.IsChecked = [bool]($chkMousePrecision -and $chkMousePrecision.IsChecked) }
         if ($chkExtrasAccessibility) { $chkExtrasAccessibility.IsChecked = [bool]($chkStickyKeys -and $chkStickyKeys.IsChecked) }
-        if ($chkExtrasPower) { $chkExtrasPower.IsChecked = [bool]($chkFastStartup.IsChecked -and $chkPreventAutoReboot.IsChecked -and $chkExcludeDrivers.IsChecked) }
+        if ($chkExtrasPower) { $chkExtrasPower.IsChecked = [bool]($chkStorageSense.IsChecked -and $chkDisableSpotlight.IsChecked) }
         & $updateExtrasDropdownHeader
     }
 
@@ -1701,7 +1666,7 @@ function Show-DebloaterWindow {
         $chkExtrasPower.Add_Click({
             param([object]$eventSource, [System.Windows.RoutedEventArgs]$eventArgs)
             $st = [bool]$chkExtrasPower.IsChecked
-            @($chkFastStartup, $chkPreventAutoReboot, $chkExcludeDrivers) | ForEach-Object { if ($_) { $_.IsChecked = $st } }
+            @($chkStorageSense, $chkDisableSpotlight) | ForEach-Object { if ($_) { $_.IsChecked = $st } }
             & $updateLiveImpactSummary
             & $updateExtrasDropdownHeader
         })
@@ -1710,7 +1675,7 @@ function Show-DebloaterWindow {
         $btnExtrasSelectAll.Add_Click({
             param([object]$eventSource, [System.Windows.RoutedEventArgs]$eventArgs)
             @($chkExtrasPromos, $chkExtrasDesktop, $chkExtrasAccessibility, $chkExtrasPower) | ForEach-Object { if ($_) { $_.IsChecked = $true } }
-            @($chkConsumerFeatures, $chkLockScreenAds, $chkMousePrecision, $chkStickyKeys, $chkFastStartup, $chkStorageSense, $chkPreventAutoReboot, $chkExcludeDrivers, $chkSettingsHome) | ForEach-Object { if ($_) { $_.IsChecked = $true } }
+            @($chkConsumerFeatures, $chkLockScreenAds, $chkMousePrecision, $chkStickyKeys, $chkStorageSense, $chkSettingsHome, $chkDisableSpotlight) | ForEach-Object { if ($_) { $_.IsChecked = $true } }
             & $updateLiveImpactSummary
             & $updateExtrasDropdownHeader
         })
@@ -1719,7 +1684,7 @@ function Show-DebloaterWindow {
         $btnExtrasClear.Add_Click({
             param([object]$eventSource, [System.Windows.RoutedEventArgs]$eventArgs)
             @($chkExtrasPromos, $chkExtrasDesktop, $chkExtrasAccessibility, $chkExtrasPower) | ForEach-Object { if ($_) { $_.IsChecked = $false } }
-            @($chkConsumerFeatures, $chkLockScreenAds, $chkMousePrecision, $chkStickyKeys, $chkFastStartup, $chkStorageSense, $chkPreventAutoReboot, $chkExcludeDrivers, $chkSettingsHome) | ForEach-Object { if ($_) { $_.IsChecked = $false } }
+            @($chkConsumerFeatures, $chkLockScreenAds, $chkMousePrecision, $chkStickyKeys, $chkStorageSense, $chkSettingsHome, $chkDisableSpotlight) | ForEach-Object { if ($_) { $_.IsChecked = $false } }
             & $updateLiveImpactSummary
             & $updateExtrasDropdownHeader
         })
@@ -1727,7 +1692,7 @@ function Show-DebloaterWindow {
     if ($btnSelectAllExtras) {
         $btnSelectAllExtras.Add_Click({
             param([object]$eventSource, [System.Windows.RoutedEventArgs]$eventArgs)
-            @($chkConsumerFeatures, $chkLockScreenAds, $chkMousePrecision, $chkStickyKeys, $chkFastStartup, $chkStorageSense, $chkPreventAutoReboot, $chkExcludeDrivers, $chkSettingsHome, $chkPreventBitLockerAutoEncrypt, $chkDisableSpotlight, $chkSafeServicesRecommended, $chkSafeServicesOptional, $chkPowerUltimate, $chkPowerUnhidePlans, $chkPowerUnhideAttrs, $chkPowerDisableHibernation) | ForEach-Object { if ($_) { $_.IsChecked = $true } }
+            @($chkConsumerFeatures, $chkLockScreenAds, $chkMousePrecision, $chkStickyKeys, $chkStorageSense, $chkSettingsHome, $chkDisableSpotlight) | ForEach-Object { if ($_) { $_.IsChecked = $true } }
             & $syncExtrasDropdownFromTweaks
             & $updateLiveImpactSummary
         })
@@ -1735,12 +1700,12 @@ function Show-DebloaterWindow {
     if ($btnDeselectAllExtras) {
         $btnDeselectAllExtras.Add_Click({
             param([object]$eventSource, [System.Windows.RoutedEventArgs]$eventArgs)
-            @($chkConsumerFeatures, $chkLockScreenAds, $chkMousePrecision, $chkStickyKeys, $chkFastStartup, $chkStorageSense, $chkPreventAutoReboot, $chkExcludeDrivers, $chkSettingsHome, $chkPreventBitLockerAutoEncrypt, $chkDisableSpotlight, $chkSafeServicesRecommended, $chkSafeServicesOptional, $chkPowerUltimate, $chkPowerUnhidePlans, $chkPowerUnhideAttrs, $chkPowerDisableHibernation) | ForEach-Object { if ($_) { $_.IsChecked = $false } }
+            @($chkConsumerFeatures, $chkLockScreenAds, $chkMousePrecision, $chkStickyKeys, $chkStorageSense, $chkSettingsHome, $chkDisableSpotlight) | ForEach-Object { if ($_) { $_.IsChecked = $false } }
             & $syncExtrasDropdownFromTweaks
             & $updateLiveImpactSummary
         })
     }
-    @($chkConsumerFeatures, $chkLockScreenAds, $chkMousePrecision, $chkStickyKeys, $chkFastStartup, $chkStorageSense, $chkPreventAutoReboot, $chkExcludeDrivers, $chkSettingsHome, $chkPreventBitLockerAutoEncrypt, $chkDisableSpotlight, $chkSafeServicesRecommended, $chkSafeServicesOptional, $chkPowerUltimate, $chkPowerUnhidePlans, $chkPowerUnhideAttrs, $chkPowerDisableHibernation) | ForEach-Object {
+    @($chkConsumerFeatures, $chkLockScreenAds, $chkMousePrecision, $chkStickyKeys, $chkStorageSense, $chkSettingsHome, $chkDisableSpotlight) | ForEach-Object {
         if ($_) { $_.Add_Click({ & $syncExtrasDropdownFromTweaks; & $updateLiveImpactSummary }) }
     }
 
@@ -1943,24 +1908,12 @@ function Show-DebloaterWindow {
         if ($chkDeliveryOpt -and $chkDeliveryOpt.IsChecked) { $logBuilder.AppendLine("WhatIf: Delivery Optimization P2P updates would be disabled.") | Out-Null }
         if ($chkEdgeBackground -and $chkEdgeBackground.IsChecked) { $logBuilder.AppendLine("WhatIf: Microsoft Edge background processes and Startup Boost would be disabled.") | Out-Null }
         if ($chkScheduledTasks -and $chkScheduledTasks.IsChecked) { $logBuilder.AppendLine("WhatIf: Telemetry scheduled tasks (Consolidator, Appraiser) would be disabled.") | Out-Null }
-        if ($chkTelemetryService -and $chkTelemetryService.IsChecked) { $logBuilder.AppendLine("WhatIf: DiagTrack connected user experiences service would be disabled.") | Out-Null }
-        if ($chkHibernation -and $chkHibernation.IsChecked) { $logBuilder.AppendLine("WhatIf: Hibernation storage would be reclaimed (powercfg /h off).") | Out-Null }
         if ($chkConsumerFeatures -and $chkConsumerFeatures.IsChecked) { $logBuilder.AppendLine("WhatIf: Windows consumer features and promo preinstalls would be blocked.") | Out-Null }
         if ($chkSettingsHome -and $chkSettingsHome.IsChecked) { $logBuilder.AppendLine("WhatIf: Settings home page recommendations and 365 ads would be disabled.") | Out-Null }
-        if ($chkPreventBitLockerAutoEncrypt -and $chkPreventBitLockerAutoEncrypt.IsChecked) { $logBuilder.AppendLine("WhatIf: Automatic BitLocker device encryption during setup would be prevented (PreventDeviceEncryption=1).") | Out-Null }
         if ($chkDisableSpotlight -and $chkDisableSpotlight.IsChecked) { $logBuilder.AppendLine("WhatIf: Windows Spotlight backgrounds and Action Center suggestions would be disabled.") | Out-Null }
-        if ($chkSafeServicesRecommended -and $chkSafeServicesRecommended.IsChecked) { $logBuilder.AppendLine("WhatIf: 11 Recommended Safe Services (Xbox, MapsBroker, RetailDemo, Wallet, Insider, WMP Sharing, RemoteRegistry, Fax) would be optimized with snapshot.") | Out-Null }
-        if ($chkSafeServicesOptional -and $chkSafeServicesOptional.IsChecked) { $logBuilder.AppendLine("WhatIf: 7 Optional Hardware/Location Services (lfsvc, Sensors, PhoneSvc, Parental Controls, Smart Card) would be optimized with snapshot.") | Out-Null }
-        if ($chkPowerUltimate -and $chkPowerUltimate.IsChecked) { $logBuilder.AppendLine("WhatIf: Ultimate Performance power plan would be unlocked and activated (with rollback snapshot).") | Out-Null }
-        if ($chkPowerUnhidePlans -and $chkPowerUnhidePlans.IsChecked) { $logBuilder.AppendLine("WhatIf: Classic High Performance & Power Saver plans would be unhidden.") | Out-Null }
-        if ($chkPowerUnhideAttrs -and $chkPowerUnhideAttrs.IsChecked) { $logBuilder.AppendLine("WhatIf: Hidden Processor Boost, USB Selective Suspend & PCIe power attributes would be unhidden (Attributes=2).") | Out-Null }
-        if ($chkPowerDisableHibernation -and $chkPowerDisableHibernation.IsChecked) { $logBuilder.AppendLine("WhatIf: Hibernation would be disabled (powercfg /h off) to reclaim SSD space.") | Out-Null }
         if ($chkMousePrecision -and $chkMousePrecision.IsChecked) { $logBuilder.AppendLine("WhatIf: Mouse pointer acceleration would be disabled (1:1 precision).") | Out-Null }
         if ($chkStickyKeys -and $chkStickyKeys.IsChecked) { $logBuilder.AppendLine("WhatIf: Sticky Keys 5x Shift shortcut prompt would be disabled.") | Out-Null }
-        if ($chkFastStartup -and $chkFastStartup.IsChecked) { $logBuilder.AppendLine("WhatIf: Fast Startup hybrid sleep would be disabled.") | Out-Null }
         if ($chkStorageSense -and $chkStorageSense.IsChecked) { $logBuilder.AppendLine("WhatIf: Storage Sense automatic deletion policy would be disabled.") | Out-Null }
-        if ($chkPreventAutoReboot -and $chkPreventAutoReboot.IsChecked) { $logBuilder.AppendLine("WhatIf: Windows Update automatic reboot while user logged on would be prevented.") | Out-Null }
-        if ($chkExcludeDrivers -and $chkExcludeDrivers.IsChecked) { $logBuilder.AppendLine("WhatIf: Third-party drivers would be excluded from Windows Quality Updates.") | Out-Null }
         if ($chkSearchHighlights -and $chkSearchHighlights.IsChecked) { $logBuilder.AppendLine("WhatIf: Taskbar search highlights and doodles would be disabled.") | Out-Null }
         if ($chkStartRecommended -and $chkStartRecommended.IsChecked) { $logBuilder.AppendLine("WhatIf: Start Menu Recommended clutter would be hidden.") | Out-Null }
         if ($chkCompactExplorer -and $chkCompactExplorer.IsChecked) { $logBuilder.AppendLine("WhatIf: File Explorer compact view would be enabled.") | Out-Null }
@@ -2278,8 +2231,6 @@ function Show-DebloaterWindow {
         if ($chkDeliveryOpt.IsChecked) { Set-DeliveryOptimizationTweak -DisableP2P $true | Out-Null; $totalOps++; $successOps++; & $appendLog "Delivery Optimization P2P disabled." }
         if ($chkEdgeBackground.IsChecked) { Set-EdgeBackgroundTweak -DisableEdgeBackground $true | Out-Null; $totalOps++; $successOps++; & $appendLog "Edge background mode and Startup Boost disabled." }
         if ($chkScheduledTasks.IsChecked) { Set-TelemetryScheduledTasksTweak -DisableTasks $true | Out-Null; $totalOps++; $successOps++; & $appendLog "Telemetry scheduled tasks disabled." }
-        if ($chkTelemetryService.IsChecked) { Set-TelemetryServiceTweak -DisableServices $true | Out-Null; $totalOps++; $successOps++; & $appendLog "DiagTrack telemetry service disabled." }
-        if ($chkHibernation.IsChecked) { Set-HibernationStorageTweak -DisableHibernation $true | Out-Null; $totalOps++; $successOps++; & $appendLog "Hibernation disabled and storage reclaimed." }
         $progExecution.Value = 72
 
         # 6. System Extras
@@ -2287,31 +2238,9 @@ function Show-DebloaterWindow {
         if ($chkLockScreenAds.IsChecked) { Set-LockScreenTweak -Disable $true | Out-Null; $totalOps++; $successOps++; & $appendLog "Lock screen promotional ads disabled." }
         if ($chkMousePrecision.IsChecked) { Set-MousePrecisionTweak -DisableAcceleration $true | Out-Null; $totalOps++; $successOps++; & $appendLog "Mouse pointer acceleration disabled (1:1 precision)." }
         if ($chkStickyKeys.IsChecked) { Set-StickyKeysTweak -DisableShortcut $true | Out-Null; $totalOps++; $successOps++; & $appendLog "Sticky Keys shortcut prompt disabled." }
-        if ($chkFastStartup.IsChecked) { Set-FastStartupTweak -DisableFastStartup $true | Out-Null; $totalOps++; $successOps++; & $appendLog "Fast Startup disabled." }
         if ($chkStorageSense.IsChecked) { Set-StorageSenseTweak -DisableStorageSense $true | Out-Null; $totalOps++; $successOps++; & $appendLog "Storage Sense automatic deletion disabled." }
         if ($chkSettingsHome.IsChecked) { Set-SettingsHomeTweak -DisableHomeRecommendations $true -WhatIf:$isDryRun | Out-Null; $totalOps++; $successOps++; & $appendLog "Settings home page recommendations & 365 ads disabled." }
-        if ($chkPreventBitLockerAutoEncrypt -and $chkPreventBitLockerAutoEncrypt.IsChecked) { Set-BitLockerAutoEncryptTweak -Prevent $true -WhatIf:$isDryRun | Out-Null; $totalOps++; $successOps++; & $appendLog "Automatic BitLocker device encryption prevented (PreventDeviceEncryption=1)." }
         if ($chkDisableSpotlight -and $chkDisableSpotlight.IsChecked) { Set-WindowsSpotlightTweak -Disable $true -WhatIf:$isDryRun | Out-Null; $totalOps++; $successOps++; & $appendLog "Windows Spotlight backgrounds & Action Center suggestions disabled." }
-        if (($chkSafeServicesRecommended -and $chkSafeServicesRecommended.IsChecked) -or ($chkSafeServicesOptional -and $chkSafeServicesOptional.IsChecked)) {
-            $incRec = [bool]($chkSafeServicesRecommended -and $chkSafeServicesRecommended.IsChecked)
-            $incOpt = [bool]($chkSafeServicesOptional -and $chkSafeServicesOptional.IsChecked)
-            Set-SafeServiceOptimization -DisableServices $true -IncludeRecommended $incRec -IncludeOptional $incOpt -WhatIf:$isDryRun | Out-Null
-            $totalOps++; $successOps++
-            & $appendLog "Safe Services Optimization applied (Recommended: $incRec, Optional: $incOpt)." "SUCCESS"
-        }
-        if (($chkPowerUltimate -and $chkPowerUltimate.IsChecked) -or ($chkPowerUnhidePlans -and $chkPowerUnhidePlans.IsChecked) -or ($chkPowerUnhideAttrs -and $chkPowerUnhideAttrs.IsChecked) -or ($chkPowerDisableHibernation -and $chkPowerDisableHibernation.IsChecked)) {
-            Set-PowerOptionTweak -UnlockUltimatePerformance ([bool]($chkPowerUltimate -and $chkPowerUltimate.IsChecked)) `
-                                 -UnhideClassicPlans ([bool]($chkPowerUnhidePlans -and $chkPowerUnhidePlans.IsChecked)) `
-                                 -UnhidePowerAttributes ([bool]($chkPowerUnhideAttrs -and $chkPowerUnhideAttrs.IsChecked)) `
-                                 -DisableHibernation ([bool]($chkPowerDisableHibernation -and $chkPowerDisableHibernation.IsChecked)) `
-                                 -WhatIf:$isDryRun | Out-Null
-            $totalOps++; $successOps++
-            & $appendLog "Advanced Power Options configured with rollback snapshot." "SUCCESS"
-        }
-        if ($chkPreventAutoReboot.IsChecked -or $chkExcludeDrivers.IsChecked) {
-            Set-WindowsUpdatePolicyTweak -PreventAutoReboot ($chkPreventAutoReboot.IsChecked) -ExcludeDrivers ($chkExcludeDrivers.IsChecked) | Out-Null
-            $totalOps++; $successOps++; & $appendLog "Windows Update reboot and driver policies applied."
-        }
         $progExecution.Value = 80
 
         # 7. AI Integration Suite
@@ -2499,21 +2428,11 @@ function Show-DebloaterWindow {
                     if ($chkDeliveryOpt) { $chkDeliveryOpt.IsChecked = $true }
                     if ($chkEdgeBackground) { $chkEdgeBackground.IsChecked = $true }
                     if ($chkScheduledTasks) { $chkScheduledTasks.IsChecked = $true }
-                    if ($chkTelemetryService) { $chkTelemetryService.IsChecked = $false }
 
                     if ($chkConsumerFeatures) { $chkConsumerFeatures.IsChecked = $true }
                     if ($chkLockScreenAds) { $chkLockScreenAds.IsChecked = $true }
                     if ($chkSettingsHome) { $chkSettingsHome.IsChecked = $true }
-                    if ($chkPreventBitLockerAutoEncrypt) { $chkPreventBitLockerAutoEncrypt.IsChecked = $false }
                     if ($chkDisableSpotlight) { $chkDisableSpotlight.IsChecked = $false }
-                    if ($chkSafeServicesRecommended) { $chkSafeServicesRecommended.IsChecked = $false }
-                    if ($chkSafeServicesOptional) { $chkSafeServicesOptional.IsChecked = $false }
-                    if ($chkPreventAutoReboot) { $chkPreventAutoReboot.IsChecked = $false }
-                    if ($chkExcludeDrivers) { $chkExcludeDrivers.IsChecked = $false }
-                    if ($chkPowerUltimate) { $chkPowerUltimate.IsChecked = $false }
-                    if ($chkPowerUnhidePlans) { $chkPowerUnhidePlans.IsChecked = $false }
-                    if ($chkPowerUnhideAttrs) { $chkPowerUnhideAttrs.IsChecked = $false }
-                    if ($chkPowerDisableHibernation) { $chkPowerDisableHibernation.IsChecked = $false }
 
                     if ($chkCopilotPolicy) { $chkCopilotPolicy.IsChecked = $true }
                     if ($chkCopilotAppx) { $chkCopilotAppx.IsChecked = $false }
@@ -2634,17 +2553,13 @@ function Show-DebloaterWindow {
                 DeliveryOpt         = [bool]($chkDeliveryOpt -and $chkDeliveryOpt.IsChecked)
                 EdgeBackground      = [bool]($chkEdgeBackground -and $chkEdgeBackground.IsChecked)
                 ScheduledTasks      = [bool]($chkScheduledTasks -and $chkScheduledTasks.IsChecked)
-                TelemetryService    = [bool]($chkTelemetryService -and $chkTelemetryService.IsChecked)
-                Hibernation         = [bool]($chkHibernation -and $chkHibernation.IsChecked)
                 ConsumerFeatures    = [bool]($chkConsumerFeatures -and $chkConsumerFeatures.IsChecked)
                 LockScreenAds       = [bool]($chkLockScreenAds -and $chkLockScreenAds.IsChecked)
                 MousePrecision      = [bool]($chkMousePrecision -and $chkMousePrecision.IsChecked)
                 StickyKeys          = [bool]($chkStickyKeys -and $chkStickyKeys.IsChecked)
-                FastStartup         = [bool]($chkFastStartup -and $chkFastStartup.IsChecked)
                 StorageSense        = [bool]($chkStorageSense -and $chkStorageSense.IsChecked)
-                PreventAutoReboot   = [bool]($chkPreventAutoReboot -and $chkPreventAutoReboot.IsChecked)
-                ExcludeDrivers      = [bool]($chkExcludeDrivers -and $chkExcludeDrivers.IsChecked)
                 SettingsHome        = [bool]($chkSettingsHome -and $chkSettingsHome.IsChecked)
+                DisableSpotlight    = [bool]($chkDisableSpotlight -and $chkDisableSpotlight.IsChecked)
                 CopilotPolicy       = [bool]($chkCopilotPolicy -and $chkCopilotPolicy.IsChecked)
                 CopilotAppx         = [bool]($chkCopilotAppx -and $chkCopilotAppx.IsChecked)
                 RecallAI            = [bool]($chkRecallAI -and $chkRecallAI.IsChecked)
@@ -2722,17 +2637,13 @@ function Show-DebloaterWindow {
                         if ($chkDeliveryOpt -and $t.ContainsKey("DeliveryOpt")) { $chkDeliveryOpt.IsChecked = [bool]$t["DeliveryOpt"] }
                         if ($chkEdgeBackground -and $t.ContainsKey("EdgeBackground")) { $chkEdgeBackground.IsChecked = [bool]$t["EdgeBackground"] }
                         if ($chkScheduledTasks -and $t.ContainsKey("ScheduledTasks")) { $chkScheduledTasks.IsChecked = [bool]$t["ScheduledTasks"] }
-                        if ($chkTelemetryService -and $t.ContainsKey("TelemetryService")) { $chkTelemetryService.IsChecked = [bool]$t["TelemetryService"] }
-                        if ($chkHibernation -and $t.ContainsKey("Hibernation")) { $chkHibernation.IsChecked = [bool]$t["Hibernation"] }
                         if ($chkConsumerFeatures -and $t.ContainsKey("ConsumerFeatures")) { $chkConsumerFeatures.IsChecked = [bool]$t["ConsumerFeatures"] }
                         if ($chkLockScreenAds -and $t.ContainsKey("LockScreenAds")) { $chkLockScreenAds.IsChecked = [bool]$t["LockScreenAds"] }
                         if ($chkMousePrecision -and $t.ContainsKey("MousePrecision")) { $chkMousePrecision.IsChecked = [bool]$t["MousePrecision"] }
                         if ($chkStickyKeys -and $t.ContainsKey("StickyKeys")) { $chkStickyKeys.IsChecked = [bool]$t["StickyKeys"] }
-                        if ($chkFastStartup -and $t.ContainsKey("FastStartup")) { $chkFastStartup.IsChecked = [bool]$t["FastStartup"] }
                         if ($chkStorageSense -and $t.ContainsKey("StorageSense")) { $chkStorageSense.IsChecked = [bool]$t["StorageSense"] }
-                        if ($chkPreventAutoReboot -and $t.ContainsKey("PreventAutoReboot")) { $chkPreventAutoReboot.IsChecked = [bool]$t["PreventAutoReboot"] }
-                        if ($chkExcludeDrivers -and $t.ContainsKey("ExcludeDrivers")) { $chkExcludeDrivers.IsChecked = [bool]$t["ExcludeDrivers"] }
                         if ($chkSettingsHome -and $t.ContainsKey("SettingsHome")) { $chkSettingsHome.IsChecked = [bool]$t["SettingsHome"] }
+                        if ($chkDisableSpotlight -and $t.ContainsKey("DisableSpotlight")) { $chkDisableSpotlight.IsChecked = [bool]$t["DisableSpotlight"] }
                         if ($chkCopilotPolicy -and $t.ContainsKey("CopilotPolicy")) { $chkCopilotPolicy.IsChecked = [bool]$t["CopilotPolicy"] }
                         if ($chkCopilotAppx -and $t.ContainsKey("CopilotAppx")) { $chkCopilotAppx.IsChecked = [bool]$t["CopilotAppx"] }
                         if ($chkRecallAI -and $t.ContainsKey("RecallAI")) { $chkRecallAI.IsChecked = [bool]$t["RecallAI"] }
