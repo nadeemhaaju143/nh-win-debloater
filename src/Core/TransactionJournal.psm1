@@ -210,7 +210,7 @@ function Add-TransactionRecord {
             $raw = Get-Content -Path $Session.JournalPath -Raw -Encoding UTF8
             if (-not [string]::IsNullOrWhiteSpace($raw)) {
                 $parsed = $raw | ConvertFrom-Json
-                if ($parsed) { $existing = @($parsed) }
+                if ($null -ne $parsed) { $existing = @($parsed | ForEach-Object { $_ }) }
             }
         } catch {
             $existing = @()

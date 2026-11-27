@@ -29,6 +29,15 @@ function Set-RegistryPropertySafe {
         [string]$PropertyType = "DWord"
     )
 
+    if ($env:NH_DEBLOAT_TARGET_SCOPE -eq "CurrentUser" -and $Path -like "HKLM:\*") {
+        return [PSCustomObject]@{
+            Path   = $Path
+            Name   = $Name
+            Value  = $Value
+            Status = "Skipped (CurrentUser scope)"
+        }
+    }
+
     if ($PSCmdlet.ShouldProcess("Registry Key: $Path, Value: $Name=$Value", "Set Registry Property")) {
         try {
             if (-not (Test-Path $Path)) {

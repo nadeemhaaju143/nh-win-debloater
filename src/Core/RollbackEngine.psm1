@@ -195,7 +195,7 @@ function Invoke-SessionRollback {
     }
 
     $raw = Get-Content -Path $journalPath -Raw -Encoding UTF8
-    $records = if ([string]::IsNullOrWhiteSpace($raw)) { @() } else { @($raw | ConvertFrom-Json) }
+    $records = if ([string]::IsNullOrWhiteSpace($raw)) { @() } else { @(($raw | ConvertFrom-Json) | ForEach-Object { $_ }) }
     if (-not [string]::IsNullOrWhiteSpace($CategoryFilter)) {
         $records = @($records | Where-Object { $_.category -eq $CategoryFilter })
     }

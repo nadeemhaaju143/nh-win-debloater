@@ -34,6 +34,15 @@ function Set-TweakRegistryValue {
         [string]$PropertyType = "DWord"
     )
 
+    if ($env:NH_DEBLOAT_TARGET_SCOPE -eq "CurrentUser" -and $Path -like "HKLM:\*") {
+        return [PSCustomObject]@{
+            Path   = $Path
+            Name   = $Name
+            Value  = $Value
+            Status = "Skipped (CurrentUser scope)"
+        }
+    }
+
     if ($PSCmdlet.ShouldProcess("Key: $Path, Name: $Name", "Set Registry Value to $Value")) {
         try {
             if (-not (Test-Path $Path)) {

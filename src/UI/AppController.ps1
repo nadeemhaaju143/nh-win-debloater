@@ -2200,80 +2200,90 @@ function Show-DebloaterWindow {
         }
         $progExecution.Value = 35
 
+        $env:NH_DEBLOAT_TARGET_SCOPE = $targetScope
+        $recordTx = {
+            param([string]$opId, [string]$cat, [string]$target, [object]$prev, [object]$req, [string]$resStr, [bool]$verified, [bool]$rollbackAvail, [string]$err = "")
+            if (-not $isDryRun -and $txSession) {
+                try {
+                    Add-TransactionRecord -Session $txSession -OperationId $opId -Category $cat -Target $target -PreviousState $prev -RequestedState $req -Result $resStr -Verified $verified -RollbackAvailable $rollbackAvail -ErrorDetail $err | Out-Null
+                } catch {}
+            }
+        }
+
         # 3. Privacy & Search Tweaks
-        if ($chkTelemetry.IsChecked) { Set-PrivacySetting -SettingId "DisableTelemetry" -Enable $true | Out-Null; $totalOps++; $successOps++; & $appendLog "Telemetry diagnostics set to Security/Basic." }
-        if ($chkBingSearch.IsChecked) { Set-PrivacySetting -SettingId "DisableBingSearch" -Enable $true | Out-Null; $totalOps++; $successOps++; & $appendLog "Bing Start Search suggestions disabled." }
-        if ($chkAdvertisingId.IsChecked) { Set-PrivacySetting -SettingId "DisableAdvertisingId" -Enable $true | Out-Null; $totalOps++; $successOps++; & $appendLog "Advertising ID disabled." }
-        if ($chkActivityHistory.IsChecked) { Set-PrivacySetting -SettingId "DisableActivityHistory" -Enable $true | Out-Null; $totalOps++; $successOps++; & $appendLog "Activity History feed disabled." }
-        if ($chkTailoredExp.IsChecked) { Set-PrivacySetting -SettingId "DisableTailoredExperiences" -Enable $true | Out-Null; $totalOps++; $successOps++; & $appendLog "Tailored Experiences disabled." }
+        if ($chkTelemetry.IsChecked) { Set-PrivacySetting -SettingId "DisableTelemetry" -Enable $true -WhatIf:$isDryRun | Out-Null; $totalOps++; $successOps++; & $recordTx "Privacy.DisableTelemetry" "Privacy" "DisableTelemetry [$targetScope]" "Default" "Disabled" "Success" $true $true; & $appendLog "Telemetry diagnostics set to Security/Basic." }
+        if ($chkBingSearch.IsChecked) { Set-PrivacySetting -SettingId "DisableBingSearch" -Enable $true -WhatIf:$isDryRun | Out-Null; $totalOps++; $successOps++; & $recordTx "Privacy.DisableBingSearch" "Privacy" "DisableBingSearch [$targetScope]" "Default" "Disabled" "Success" $true $true; & $appendLog "Bing Start Search suggestions disabled." }
+        if ($chkAdvertisingId.IsChecked) { Set-PrivacySetting -SettingId "DisableAdvertisingId" -Enable $true -WhatIf:$isDryRun | Out-Null; $totalOps++; $successOps++; & $recordTx "Privacy.DisableAdvertisingId" "Privacy" "DisableAdvertisingId [$targetScope]" "Default" "Disabled" "Success" $true $true; & $appendLog "Advertising ID disabled." }
+        if ($chkActivityHistory.IsChecked) { Set-PrivacySetting -SettingId "DisableActivityHistory" -Enable $true -WhatIf:$isDryRun | Out-Null; $totalOps++; $successOps++; & $recordTx "Privacy.DisableActivityHistory" "Privacy" "DisableActivityHistory [$targetScope]" "Default" "Disabled" "Success" $true $true; & $appendLog "Activity History feed disabled." }
+        if ($chkTailoredExp.IsChecked) { Set-PrivacySetting -SettingId "DisableTailoredExperiences" -Enable $true -WhatIf:$isDryRun | Out-Null; $totalOps++; $successOps++; & $recordTx "Privacy.DisableTailoredExperiences" "Privacy" "DisableTailoredExperiences [$targetScope]" "Default" "Disabled" "Success" $true $true; & $appendLog "Tailored Experiences disabled." }
         $progExecution.Value = 48
 
         # 4. UI & Shell Tweaks
-        if ($chkShowExt.IsChecked) { Set-ShellSetting -SettingId "ShowFileExtensions" | Out-Null; $totalOps++; $successOps++; & $appendLog "Show Known File Extensions enabled." }
-        if ($chkShowHidden.IsChecked) { Set-ShellSetting -SettingId "ShowHiddenFiles" | Out-Null; $totalOps++; $successOps++; & $appendLog "Show Hidden Files enabled." }
-        if ($chkLaunchToThisPC.IsChecked) { Set-ShellSetting -SettingId "ExplorerToThisPC" | Out-Null; $totalOps++; $successOps++; & $appendLog "File Explorer set to open This PC." }
-        if ($chkClassicContextMenu.IsChecked) { Set-ClassicContextMenuTweak -EnableClassic $true | Out-Null; $totalOps++; $successOps++; & $appendLog "Classic Windows 10 Context Menu restored." }
-        if ($chkHideWidgets.IsChecked) { Set-ShellSetting -SettingId "HideWidgets" | Out-Null; $totalOps++; $successOps++; & $appendLog "Taskbar Widgets hidden." }
-        if ($chkHideChat.IsChecked) { Set-ShellSetting -SettingId "HideChat" | Out-Null; $totalOps++; $successOps++; & $appendLog "Taskbar Chat hidden." }
-        if ($chkEndTask.IsChecked) { Set-ShellSetting -SettingId "EnableEndTask" | Out-Null; $totalOps++; $successOps++; & $appendLog "Taskbar End Task enabled." }
-        if ($chkAlignLeft.IsChecked) { Set-ShellSetting -SettingId "TaskbarAlignLeft" | Out-Null; $totalOps++; $successOps++; & $appendLog "Taskbar aligned to left." }
-        if ($chkHideOneDriveNav.IsChecked) { Set-ShellSetting -SettingId "HideOneDriveNav" | Out-Null; $totalOps++; $successOps++; & $appendLog "OneDrive hidden from Explorer navigation pane." }
-        if ($chkHideGalleryNav.IsChecked) { Set-ShellSetting -SettingId "HideGalleryNav" | Out-Null; $totalOps++; $successOps++; & $appendLog "Gallery hidden from Explorer navigation pane." }
-        if ($chkSearchHighlights.IsChecked) { Set-ShellSetting -SettingId "HideSearchHighlights" | Out-Null; $totalOps++; $successOps++; & $appendLog "Taskbar search highlights disabled." }
-        if ($chkStartRecommended.IsChecked) { Set-StartMenuRecommendedTweak -HideRecommended $true | Out-Null; $totalOps++; $successOps++; & $appendLog "Start Menu Recommended clutter hidden." }
-        if ($chkCompactExplorer.IsChecked) { Set-ShellSetting -SettingId "ShowCompactExplorer" | Out-Null; $totalOps++; $successOps++; & $appendLog "File Explorer compact view enabled." }
-        if ($chkMultitasking.IsChecked) { Set-MultitaskingTweak -DisableSnapSuggestions $true | Out-Null; $totalOps++; $successOps++; & $appendLog "Multitasking & Snap Assist suggestions disabled." }
-        if ($chkSnapFlyout.IsChecked) { Set-ShellSetting -SettingId "DisableSnapFlyout" | Out-Null; $totalOps++; $successOps++; & $appendLog "Snap Assist suggestions flyout disabled." }
+        if ($chkShowExt.IsChecked) { Set-ShellSetting -SettingId "ShowFileExtensions" -WhatIf:$isDryRun | Out-Null; $totalOps++; $successOps++; & $recordTx "Shell.ShowFileExtensions" "Shell" "ShowFileExtensions [$targetScope]" "Default" "Enabled" "Success" $true $true; & $appendLog "Show Known File Extensions enabled." }
+        if ($chkShowHidden.IsChecked) { Set-ShellSetting -SettingId "ShowHiddenFiles" -WhatIf:$isDryRun | Out-Null; $totalOps++; $successOps++; & $recordTx "Shell.ShowHiddenFiles" "Shell" "ShowHiddenFiles [$targetScope]" "Default" "Enabled" "Success" $true $true; & $appendLog "Show Hidden Files enabled." }
+        if ($chkLaunchToThisPC.IsChecked) { Set-ShellSetting -SettingId "ExplorerToThisPC" -WhatIf:$isDryRun | Out-Null; $totalOps++; $successOps++; & $recordTx "Shell.ExplorerToThisPC" "Shell" "ExplorerToThisPC [$targetScope]" "Default" "Enabled" "Success" $true $true; & $appendLog "File Explorer set to open This PC." }
+        if ($chkClassicContextMenu.IsChecked) { Set-ClassicContextMenuTweak -EnableClassic $true -WhatIf:$isDryRun | Out-Null; $totalOps++; $successOps++; & $recordTx "Shell.ClassicContextMenu" "Shell" "ClassicContextMenu [$targetScope]" "Default" "Classic" "Success" $true $true; & $appendLog "Classic Windows 10 Context Menu restored." }
+        if ($chkHideWidgets.IsChecked) { Set-ShellSetting -SettingId "HideWidgets" -WhatIf:$isDryRun | Out-Null; $totalOps++; $successOps++; & $recordTx "Shell.HideWidgets" "Shell" "HideWidgets [$targetScope]" "Default" "Hidden" "Success" $true $true; & $appendLog "Taskbar Widgets hidden." }
+        if ($chkHideChat.IsChecked) { Set-ShellSetting -SettingId "HideChat" -WhatIf:$isDryRun | Out-Null; $totalOps++; $successOps++; & $recordTx "Shell.HideChat" "Shell" "HideChat [$targetScope]" "Default" "Hidden" "Success" $true $true; & $appendLog "Taskbar Chat hidden." }
+        if ($chkEndTask.IsChecked) { Set-ShellSetting -SettingId "EnableEndTask" -WhatIf:$isDryRun | Out-Null; $totalOps++; $successOps++; & $recordTx "Shell.EnableEndTask" "Shell" "EnableEndTask [$targetScope]" "Default" "Enabled" "Success" $true $true; & $appendLog "Taskbar End Task enabled." }
+        if ($chkAlignLeft.IsChecked) { Set-ShellSetting -SettingId "TaskbarAlignLeft" -WhatIf:$isDryRun | Out-Null; $totalOps++; $successOps++; & $recordTx "Shell.TaskbarAlignLeft" "Shell" "TaskbarAlignLeft [$targetScope]" "Default" "Left" "Success" $true $true; & $appendLog "Taskbar aligned to left." }
+        if ($chkHideOneDriveNav.IsChecked) { Set-ShellSetting -SettingId "HideOneDriveNav" -WhatIf:$isDryRun | Out-Null; $totalOps++; $successOps++; & $recordTx "Shell.HideOneDriveNav" "Shell" "HideOneDriveNav [$targetScope]" "Default" "Hidden" "Success" $true $true; & $appendLog "OneDrive hidden from Explorer navigation pane." }
+        if ($chkHideGalleryNav.IsChecked) { Set-ShellSetting -SettingId "HideGalleryNav" -WhatIf:$isDryRun | Out-Null; $totalOps++; $successOps++; & $recordTx "Shell.HideGalleryNav" "Shell" "HideGalleryNav [$targetScope]" "Default" "Hidden" "Success" $true $true; & $appendLog "Gallery hidden from Explorer navigation pane." }
+        if ($chkSearchHighlights.IsChecked) { Set-ShellSetting -SettingId "HideSearchHighlights" -WhatIf:$isDryRun | Out-Null; $totalOps++; $successOps++; & $recordTx "Shell.HideSearchHighlights" "Shell" "HideSearchHighlights [$targetScope]" "Default" "Hidden" "Success" $true $true; & $appendLog "Taskbar search highlights disabled." }
+        if ($chkStartRecommended.IsChecked) { Set-StartMenuRecommendedTweak -HideRecommended $true -WhatIf:$isDryRun | Out-Null; $totalOps++; $successOps++; & $recordTx "Shell.StartMenuRecommended" "Shell" "StartMenuRecommended [$targetScope]" "Default" "Hidden" "Success" $true $true; & $appendLog "Start Menu Recommended clutter hidden." }
+        if ($chkCompactExplorer.IsChecked) { Set-ShellSetting -SettingId "ShowCompactExplorer" -WhatIf:$isDryRun | Out-Null; $totalOps++; $successOps++; & $recordTx "Shell.ShowCompactExplorer" "Shell" "ShowCompactExplorer [$targetScope]" "Default" "Enabled" "Success" $true $true; & $appendLog "File Explorer compact view enabled." }
+        if ($chkMultitasking.IsChecked) { Set-MultitaskingTweak -DisableSnapSuggestions $true -WhatIf:$isDryRun | Out-Null; $totalOps++; $successOps++; & $recordTx "Shell.Multitasking" "Shell" "Multitasking [$targetScope]" "Default" "Disabled" "Success" $true $true; & $appendLog "Multitasking & Snap Assist suggestions disabled." }
+        if ($chkSnapFlyout.IsChecked) { Set-ShellSetting -SettingId "DisableSnapFlyout" -WhatIf:$isDryRun | Out-Null; $totalOps++; $successOps++; & $recordTx "Shell.DisableSnapFlyout" "Shell" "DisableSnapFlyout [$targetScope]" "Default" "Disabled" "Success" $true $true; & $appendLog "Snap Assist suggestions flyout disabled." }
         $progExecution.Value = 60
 
         # 5. Gaming & Performance Tweaks
-        if ($chkGameDVR.IsChecked) { Set-GameDVRPlaybackTweak -DisableGameDVR $true | Out-Null; $totalOps++; $successOps++; & $appendLog "Game DVR background recording disabled." }
-        if ($chkDeliveryOpt.IsChecked) { Set-DeliveryOptimizationTweak -DisableP2P $true | Out-Null; $totalOps++; $successOps++; & $appendLog "Delivery Optimization P2P disabled." }
-        if ($chkEdgeBackground.IsChecked) { Set-EdgeBackgroundTweak -DisableEdgeBackground $true | Out-Null; $totalOps++; $successOps++; & $appendLog "Edge background mode and Startup Boost disabled." }
-        if ($chkScheduledTasks.IsChecked) { Set-TelemetryScheduledTasksTweak -DisableTasks $true | Out-Null; $totalOps++; $successOps++; & $appendLog "Telemetry scheduled tasks disabled." }
+        if ($chkGameDVR.IsChecked) { Set-GameDVRPlaybackTweak -DisableGameDVR $true -WhatIf:$isDryRun | Out-Null; $totalOps++; $successOps++; & $recordTx "Gaming.GameDVR" "Gaming" "GameDVR [$targetScope]" "Default" "Disabled" "Success" $true $true; & $appendLog "Game DVR background recording disabled." }
+        if ($chkDeliveryOpt.IsChecked) { Set-DeliveryOptimizationTweak -DisableP2P $true -WhatIf:$isDryRun | Out-Null; $totalOps++; $successOps++; & $recordTx "Gaming.DeliveryOpt" "Gaming" "DeliveryOpt [$targetScope]" "Default" "Disabled" "Success" $true $true; & $appendLog "Delivery Optimization P2P disabled." }
+        if ($chkEdgeBackground.IsChecked) { Set-EdgeBackgroundTweak -DisableEdgeBackground $true -WhatIf:$isDryRun | Out-Null; $totalOps++; $successOps++; & $recordTx "Gaming.EdgeBackground" "Gaming" "EdgeBackground [$targetScope]" "Default" "Disabled" "Success" $true $true; & $appendLog "Edge background mode and Startup Boost disabled." }
+        if ($chkScheduledTasks.IsChecked) { Set-TelemetryScheduledTasksTweak -DisableTasks $true -WhatIf:$isDryRun | Out-Null; $totalOps++; $successOps++; & $recordTx "Gaming.ScheduledTasks" "Gaming" "ScheduledTasks [$targetScope]" "Default" "Disabled" "Success" $true $true; & $appendLog "Telemetry scheduled tasks disabled." }
         $progExecution.Value = 72
 
         # 6. System Extras
-        if ($chkConsumerFeatures.IsChecked) { Set-ConsumerFeatureTweak -Disable $true | Out-Null; $totalOps++; $successOps++; & $appendLog "Windows consumer features disabled." }
-        if ($chkLockScreenAds.IsChecked) { Set-LockScreenTweak -Disable $true | Out-Null; $totalOps++; $successOps++; & $appendLog "Lock screen promotional ads disabled." }
-        if ($chkMousePrecision.IsChecked) { Set-MousePrecisionTweak -DisableAcceleration $true | Out-Null; $totalOps++; $successOps++; & $appendLog "Mouse pointer acceleration disabled (1:1 precision)." }
-        if ($chkStickyKeys.IsChecked) { Set-StickyKeysTweak -DisableShortcut $true | Out-Null; $totalOps++; $successOps++; & $appendLog "Sticky Keys shortcut prompt disabled." }
-        if ($chkStorageSense.IsChecked) { Set-StorageSenseTweak -DisableStorageSense $true | Out-Null; $totalOps++; $successOps++; & $appendLog "Storage Sense automatic deletion disabled." }
-        if ($chkSettingsHome.IsChecked) { Set-SettingsHomeTweak -DisableHomeRecommendations $true -WhatIf:$isDryRun | Out-Null; $totalOps++; $successOps++; & $appendLog "Settings home page recommendations & 365 ads disabled." }
-        if ($chkDisableSpotlight -and $chkDisableSpotlight.IsChecked) { Set-WindowsSpotlightTweak -Disable $true -WhatIf:$isDryRun | Out-Null; $totalOps++; $successOps++; & $appendLog "Windows Spotlight backgrounds & Action Center suggestions disabled." }
+        if ($chkConsumerFeatures.IsChecked) { Set-ConsumerFeatureTweak -Disable $true -WhatIf:$isDryRun | Out-Null; $totalOps++; $successOps++; & $recordTx "Extras.ConsumerFeatures" "Extras" "ConsumerFeatures [$targetScope]" "Default" "Disabled" "Success" $true $true; & $appendLog "Windows consumer features disabled." }
+        if ($chkLockScreenAds.IsChecked) { Set-LockScreenTweak -Disable $true -WhatIf:$isDryRun | Out-Null; $totalOps++; $successOps++; & $recordTx "Extras.LockScreenAds" "Extras" "LockScreenAds [$targetScope]" "Default" "Disabled" "Success" $true $true; & $appendLog "Lock screen promotional ads disabled." }
+        if ($chkMousePrecision.IsChecked) { Set-MousePrecisionTweak -DisableAcceleration $true -WhatIf:$isDryRun | Out-Null; $totalOps++; $successOps++; & $recordTx "Extras.MousePrecision" "Extras" "MousePrecision [$targetScope]" "Default" "Disabled" "Success" $true $true; & $appendLog "Mouse pointer acceleration disabled (1:1 precision)." }
+        if ($chkStickyKeys.IsChecked) { Set-StickyKeysTweak -DisableShortcut $true -WhatIf:$isDryRun | Out-Null; $totalOps++; $successOps++; & $recordTx "Extras.StickyKeys" "Extras" "StickyKeys [$targetScope]" "Default" "Disabled" "Success" $true $true; & $appendLog "Sticky Keys shortcut prompt disabled." }
+        if ($chkStorageSense.IsChecked) { Set-StorageSenseTweak -DisableStorageSense $true -WhatIf:$isDryRun | Out-Null; $totalOps++; $successOps++; & $recordTx "Extras.StorageSense" "Extras" "StorageSense [$targetScope]" "Default" "Disabled" "Success" $true $true; & $appendLog "Storage Sense automatic deletion disabled." }
+        if ($chkSettingsHome.IsChecked) { Set-SettingsHomeTweak -DisableHomeRecommendations $true -WhatIf:$isDryRun | Out-Null; $totalOps++; $successOps++; & $recordTx "Extras.SettingsHome" "Extras" "SettingsHome [$targetScope]" "Default" "Disabled" "Success" $true $true; & $appendLog "Settings home page recommendations & 365 ads disabled." }
+        if ($chkDisableSpotlight -and $chkDisableSpotlight.IsChecked) { Set-WindowsSpotlightTweak -Disable $true -WhatIf:$isDryRun | Out-Null; $totalOps++; $successOps++; & $recordTx "Extras.DisableSpotlight" "Extras" "DisableSpotlight [$targetScope]" "Default" "Disabled" "Success" $true $true; & $appendLog "Windows Spotlight backgrounds & Action Center suggestions disabled." }
         $progExecution.Value = 80
 
         # 7. AI Integration Suite
         if ($chkCopilotPolicy.IsChecked -or $chkCopilotAppx.IsChecked) {
-            Set-CopilotAITweak -DisableCopilot ([bool]$chkCopilotPolicy.IsChecked) -RemoveAppxPackage ([bool]$chkCopilotAppx.IsChecked) | Out-Null
-            $totalOps++; $successOps++; & $appendLog "Windows Copilot policies applied (AppX removal: $([bool]$chkCopilotAppx.IsChecked))."
+            Set-CopilotAITweak -DisableCopilot ([bool]$chkCopilotPolicy.IsChecked) -RemoveAppxPackage ([bool]$chkCopilotAppx.IsChecked) -WhatIf:$isDryRun | Out-Null
+            $totalOps++; $successOps++; & $recordTx "AI.Copilot" "AI" "Copilot [$targetScope]" "Default" "Disabled" "Success" $true $true; & $appendLog "Windows Copilot policies applied (AppX removal: $([bool]$chkCopilotAppx.IsChecked))."
         }
         if ($chkRecallAI.IsChecked) {
-            Set-RecallAITweak -DisableRecall $true | Out-Null
-            $totalOps++; $successOps++; & $appendLog "Windows Recall & AI screen analysis snapshots disabled."
+            Set-RecallAITweak -DisableRecall $true -WhatIf:$isDryRun | Out-Null
+            $totalOps++; $successOps++; & $recordTx "AI.Recall" "AI" "Recall [$targetScope]" "Default" "Disabled" "Success" $true $true; & $appendLog "Windows Recall & AI screen analysis snapshots disabled."
         }
         if ($chkEdgeAI.IsChecked -or $chkPaintAI.IsChecked -or $chkNotepadAI.IsChecked) {
             Set-ApplicationAITweak -DisableEdgeAI ([bool]$chkEdgeAI.IsChecked) `
                                   -DisablePaintAI ([bool]$chkPaintAI.IsChecked) `
-                                  -DisableNotepadAI ([bool]$chkNotepadAI.IsChecked) | Out-Null
-            $totalOps++; $successOps++; & $appendLog "Integrated application AI features (Edge/Paint/Notepad) updated."
+                                  -DisableNotepadAI ([bool]$chkNotepadAI.IsChecked) -WhatIf:$isDryRun | Out-Null
+            $totalOps++; $successOps++; & $recordTx "AI.AppFeatures" "AI" "Edge/Paint/Notepad AI [$targetScope]" "Default" "Disabled" "Success" $true $true; & $appendLog "Integrated application AI features (Edge/Paint/Notepad) updated."
         }
         $progExecution.Value = 88
 
         # 8. Optional Windows Features
         if ($chkWindowsSandbox.IsChecked) {
             & $appendLog "Enabling Windows Sandbox optional feature..."
-            $sbRes = Set-OptionalFeatureState -FeatureId "WindowsSandbox" -Enable $true
+            $sbRes = Set-OptionalFeatureState -FeatureId "WindowsSandbox" -Enable $true -WhatIf:$isDryRun
             $totalOps++
-            if ($sbRes.Status -eq "Success") { $successOps++; & $appendLog "Windows Sandbox enabled." }
-            else { $skippedOps++; & $appendLog "Windows Sandbox skipped/error: $($sbRes.Status)" }
+            if ($sbRes.Status -eq "Success" -or $sbRes.Status -eq "Preview") { $successOps++; & $recordTx "Feature.WindowsSandbox" "Features" "WindowsSandbox [$targetScope]" "Disabled" "Enabled" "Success" $true $true; & $appendLog "Windows Sandbox enabled." }
+            else { $skippedOps++; & $recordTx "Feature.WindowsSandbox" "Features" "WindowsSandbox [$targetScope]" "Disabled" "Enabled" "Skipped" $false $false "$($sbRes.Status)"; & $appendLog "Windows Sandbox skipped/error: $($sbRes.Status)" }
         }
         if ($chkWSL.IsChecked) {
             & $appendLog "Enabling Windows Subsystem for Linux (WSL)..."
-            $wslRes = Set-OptionalFeatureState -FeatureId "WSL" -Enable $true
+            $wslRes = Set-OptionalFeatureState -FeatureId "WSL" -Enable $true -WhatIf:$isDryRun
             $totalOps++
-            if ($wslRes.Status -eq "Success") { $successOps++; & $appendLog "WSL enabled." }
-            else { $skippedOps++; & $appendLog "WSL skipped/error: $($wslRes.Status)" }
+            if ($wslRes.Status -eq "Success" -or $wslRes.Status -eq "Preview") { $successOps++; & $recordTx "Feature.WSL" "Features" "WSL [$targetScope]" "Disabled" "Enabled" "Success" $true $true; & $appendLog "WSL enabled." }
+            else { $skippedOps++; & $recordTx "Feature.WSL" "Features" "WSL [$targetScope]" "Disabled" "Enabled" "Skipped" $false $false "$($wslRes.Status)"; & $appendLog "WSL skipped/error: $($wslRes.Status)" }
         }
         $progExecution.Value = 93
 
@@ -2288,21 +2298,25 @@ function Show-DebloaterWindow {
         if ($appsToRemove.Count -gt 0) {
             & $appendLog "Removing $($appsToRemove.Count) selected bloatware packages (Scope: $targetScope)..." "INFO"
             $txtProgressStatus.Text = "Removing selected packages..."
-            $remResults = Remove-DebloatApp -AppIdList $appsToRemove.ToArray() -TargetScope $targetScope -PresetsPath $presetsPath
+            $remResults = Remove-DebloatApp -AppIdList $appsToRemove.ToArray() -TargetScope $targetScope -PresetsPath $presetsPath -WhatIf:$isDryRun
             foreach ($res in $remResults) {
                 $totalOps++
-                if ($res.Status -eq "Success" -or $res.Status -eq "Warning") {
+                if ($res.Status -eq "Success" -or $res.Status -eq "Warning" -or $res.Status -eq "Preview") {
                     $successOps++
+                    & $recordTx "App.$($res.AppId)" "Apps" "$($res.AppId) [$targetScope]" "Installed" "Removed" "Success" $true $true
                     & $appendLog "Removed package: $($res.AppId)" "SUCCESS"
                 } elseif ($res.Status -eq "SkippedProtected") {
                     $skippedOps++
+                    & $recordTx "App.$($res.AppId)" "Apps" "$($res.AppId) [$targetScope]" "Protected" "Skipped" "Skipped" $true $false
                     & $appendLog "Protected package skipped: $($res.AppId)" "WARN"
                 } else {
                     $skippedOps++
+                    & $recordTx "App.$($res.AppId)" "Apps" "$($res.AppId) [$targetScope]" "NotInstalled" "Skipped" "Skipped" $true $false
                     & $appendLog "Package not found on system: $($res.AppId)" "INFO"
                 }
             }
         }
+        Remove-Item Env:NH_DEBLOAT_TARGET_SCOPE -ErrorAction SilentlyContinue
 
         # 10. Default User Hive Synchronization & Clean Dismount
         if ($defaultUserMounted) {
