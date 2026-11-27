@@ -479,7 +479,6 @@ Describe "UI Motion & Vector Icon Architecture" {
         $win.FindName("TxtTabGamingCount") | Should -Not -BeNullOrEmpty
         $win.FindName("TxtTabExtrasCount") | Should -Not -BeNullOrEmpty
         $win.FindName("TxtTabAICount") | Should -Not -BeNullOrEmpty
-        $win.FindName("TxtTabFeaturesCount") | Should -Not -BeNullOrEmpty
     }
 
     It "Verifies presence of profile export/import, snapshot rollback, and reinstall modal controls" {
@@ -522,7 +521,6 @@ Describe "UI Motion & Vector Icon Architecture" {
         $win.FindName("ToggleGamingPresets") | Should -Not -BeNullOrEmpty
         $win.FindName("ToggleExtrasPresets") | Should -Not -BeNullOrEmpty
         $win.FindName("ToggleAIPresets") | Should -Not -BeNullOrEmpty
-        $win.FindName("ToggleFeaturesPresets") | Should -Not -BeNullOrEmpty
 
         # Dropdown Preset CheckBoxes
         $win.FindName("ChkPrivTelemetry") | Should -Not -BeNullOrEmpty
@@ -530,7 +528,6 @@ Describe "UI Motion & Vector Icon Architecture" {
         $win.FindName("ChkGamingDVR") | Should -Not -BeNullOrEmpty
         $win.FindName("ChkExtrasPromos") | Should -Not -BeNullOrEmpty
         $win.FindName("ChkAISystem") | Should -Not -BeNullOrEmpty
-        $win.FindName("ChkFeatSandbox") | Should -Not -BeNullOrEmpty
 
         # Advanced System Parity Tweaks
         $win.FindName("ChkLaunchToThisPC") | Should -Not -BeNullOrEmpty

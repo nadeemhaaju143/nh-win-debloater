@@ -147,7 +147,6 @@ function Show-DebloaterWindow {
     $txtTabGamingCount = $window.FindName("TxtTabGamingCount")
     $txtTabExtrasCount = $window.FindName("TxtTabExtrasCount")
     $txtTabAICount = $window.FindName("TxtTabAICount")
-    $txtTabFeaturesCount = $window.FindName("TxtTabFeaturesCount")
 
     # Tab 1: Apps & Multi-Select Category Filters
     $txtAppFilter = $window.FindName("TxtAppFilter")
@@ -266,18 +265,6 @@ function Show-DebloaterWindow {
     $chkEdgeAI = $window.FindName("ChkEdgeAI")
     $chkPaintAI = $window.FindName("ChkPaintAI")
     $chkNotepadAI = $window.FindName("ChkNotepadAI")
-
-    # Tab 7: Optional Features
-    $toggleFeaturesPresets = $window.FindName("ToggleFeaturesPresets")
-    $txtToggleFeaturesText = $window.FindName("TxtToggleFeaturesText")
-    $chkFeatSandbox = $window.FindName("ChkFeatSandbox")
-    $chkFeatWSL = $window.FindName("ChkFeatWSL")
-    $btnFeatSelectAll = $window.FindName("BtnFeatSelectAll")
-    $btnFeatClear = $window.FindName("BtnFeatClear")
-    $btnSelectAllFeatures = $window.FindName("BtnSelectAllFeatures")
-    $btnDeselectAllFeatures = $window.FindName("BtnDeselectAllFeatures")
-    $chkWindowsSandbox = $window.FindName("ChkWindowsSandbox")
-    $chkWSL = $window.FindName("ChkWSL")
 
     # Stage 3 Safety & Dry-Run
     $txtStage3Summary = $window.FindName("TxtStage3Summary")
@@ -794,11 +781,6 @@ function Show-DebloaterWindow {
             ForEach-Object { if ($_ -and $_.IsChecked) { $aiChecked++ } }
         if ($txtTabAICount) { $txtTabAICount.Text = "$aiChecked/6" }
 
-        $featuresChecked = 0
-        @($chkWindowsSandbox, $chkWSL) |
-            ForEach-Object { if ($_ -and $_.IsChecked) { $featuresChecked++ } }
-        if ($txtTabFeaturesCount) { $txtTabFeaturesCount.Text = "$featuresChecked/2" }
-
         # 3. Build TweakFlags hashtable for evaluation
         $tweakFlags = @{
             Telemetry           = [bool]($chkTelemetry -and $chkTelemetry.IsChecked)
@@ -839,8 +821,6 @@ function Show-DebloaterWindow {
             EdgeAI              = [bool]($chkEdgeAI -and $chkEdgeAI.IsChecked)
             PaintAI             = [bool]($chkPaintAI -and $chkPaintAI.IsChecked)
             NotepadAI           = [bool]($chkNotepadAI -and $chkNotepadAI.IsChecked)
-            WindowsSandbox      = [bool]($chkWindowsSandbox -and $chkWindowsSandbox.IsChecked)
-            WSL                 = [bool]($chkWSL -and $chkWSL.IsChecked)
         }
 
         # 4. Compute Safety & Impact via pure engine function
@@ -1317,8 +1297,7 @@ function Show-DebloaterWindow {
         $chkShowExt, $chkShowHidden, $chkLaunchToThisPC, $chkClassicContextMenu, $chkHideWidgets, $chkHideChat, $chkEndTask, $chkAlignLeft, $chkHideOneDriveNav, $chkHideGalleryNav, $chkSearchHighlights, $chkStartRecommended, $chkCompactExplorer, $chkMultitasking, $chkSnapFlyout,
         $chkGameDVR, $chkDeliveryOpt, $chkEdgeBackground, $chkScheduledTasks,
         $chkConsumerFeatures, $chkLockScreenAds, $chkMousePrecision, $chkStickyKeys, $chkStorageSense, $chkSettingsHome, $chkDisableSpotlight,
-        $chkCopilotPolicy, $chkCopilotAppx, $chkRecallAI, $chkEdgeAI, $chkPaintAI, $chkNotepadAI,
-        $chkWindowsSandbox, $chkWSL
+        $chkCopilotPolicy, $chkCopilotAppx, $chkRecallAI, $chkEdgeAI, $chkPaintAI, $chkNotepadAI
     )
     foreach ($chk in $allTweakCheckboxes) {
         if ($chk) {
@@ -1797,91 +1776,12 @@ function Show-DebloaterWindow {
         if ($_) { $_.Add_Click({ & $syncAIDropdownFromTweaks }) }
     }
 
-    # Tab 7: Optional Features Dropdown & Batch Selection Wiring
-    $updateFeaturesDropdownHeader = {
-        $sel = [System.Collections.Generic.List[string]]::new()
-        if ($chkFeatSandbox -and $chkFeatSandbox.IsChecked) { $sel.Add("Sandbox") }
-        if ($chkFeatWSL -and $chkFeatWSL.IsChecked) { $sel.Add("WSL") }
-
-        $hdr = if ($sel.Count -eq 0) {
-            "Presets: None Selected (0/2)"
-        } elseif ($sel.Count -eq 2) {
-            "Presets: All Selected (2/2)"
-        } else {
-            "Presets: $($sel -join ', ') ($($sel.Count)/2)"
-        }
-        if ($txtToggleFeaturesText) { $txtToggleFeaturesText.Text = $hdr }
-    }
-
-    $syncFeaturesDropdownFromTweaks = {
-        if ($chkFeatSandbox) { $chkFeatSandbox.IsChecked = [bool]($chkWindowsSandbox -and $chkWindowsSandbox.IsChecked) }
-        if ($chkFeatWSL) { $chkFeatWSL.IsChecked = [bool]($chkWSL -and $chkWSL.IsChecked) }
-        & $updateFeaturesDropdownHeader
-    }
-
-    if ($chkFeatSandbox) {
-        $chkFeatSandbox.Add_Click({
-            param([object]$eventSource, [System.Windows.RoutedEventArgs]$eventArgs)
-            if ($chkWindowsSandbox) { $chkWindowsSandbox.IsChecked = [bool]$chkFeatSandbox.IsChecked }
-            & $updateLiveImpactSummary
-            & $updateFeaturesDropdownHeader
-        })
-    }
-    if ($chkFeatWSL) {
-        $chkFeatWSL.Add_Click({
-            param([object]$eventSource, [System.Windows.RoutedEventArgs]$eventArgs)
-            if ($chkWSL) { $chkWSL.IsChecked = [bool]$chkFeatWSL.IsChecked }
-            & $updateLiveImpactSummary
-            & $updateFeaturesDropdownHeader
-        })
-    }
-    if ($btnFeatSelectAll) {
-        $btnFeatSelectAll.Add_Click({
-            param([object]$eventSource, [System.Windows.RoutedEventArgs]$eventArgs)
-            @($chkFeatSandbox, $chkFeatWSL) | ForEach-Object { if ($_) { $_.IsChecked = $true } }
-            @($chkWindowsSandbox, $chkWSL) | ForEach-Object { if ($_) { $_.IsChecked = $true } }
-            & $updateLiveImpactSummary
-            & $updateFeaturesDropdownHeader
-        })
-    }
-    if ($btnFeatClear) {
-        $btnFeatClear.Add_Click({
-            param([object]$eventSource, [System.Windows.RoutedEventArgs]$eventArgs)
-            @($chkFeatSandbox, $chkFeatWSL) | ForEach-Object { if ($_) { $_.IsChecked = $false } }
-            @($chkWindowsSandbox, $chkWSL) | ForEach-Object { if ($_) { $_.IsChecked = $false } }
-            & $updateLiveImpactSummary
-            & $updateFeaturesDropdownHeader
-        })
-    }
-    if ($btnSelectAllFeatures) {
-        $btnSelectAllFeatures.Add_Click({
-            param([object]$eventSource, [System.Windows.RoutedEventArgs]$eventArgs)
-            if ($chkWindowsSandbox) { $chkWindowsSandbox.IsChecked = $true }
-            if ($chkWSL) { $chkWSL.IsChecked = $true }
-            & $syncFeaturesDropdownFromTweaks
-            & $updateLiveImpactSummary
-        })
-    }
-    if ($btnDeselectAllFeatures) {
-        $btnDeselectAllFeatures.Add_Click({
-            param([object]$eventSource, [System.Windows.RoutedEventArgs]$eventArgs)
-            if ($chkWindowsSandbox) { $chkWindowsSandbox.IsChecked = $false }
-            if ($chkWSL) { $chkWSL.IsChecked = $false }
-            & $syncFeaturesDropdownFromTweaks
-            & $updateLiveImpactSummary
-        })
-    }
-    @($chkWindowsSandbox, $chkWSL) | ForEach-Object {
-        if ($_) { $_.Add_Click({ & $syncFeaturesDropdownFromTweaks }) }
-    }
-
     # Initialize all dropdown headers and states
     & $updatePrivacyDropdownHeader
     & $updateShellDropdownHeader
     & $updateGamingDropdownHeader
     & $updateExtrasDropdownHeader
     & $updateAIDropdownHeader
-    & $updateFeaturesDropdownHeader
 
     # Dry-Run Preview Action (Auto-populated on Stage 3 entry & on Inspect/Dry-Run toggle)
     $buildDryRunPreview = {
@@ -1917,8 +1817,6 @@ function Show-DebloaterWindow {
         if ($chkSearchHighlights -and $chkSearchHighlights.IsChecked) { $logBuilder.AppendLine("WhatIf: Taskbar search highlights and doodles would be disabled.") | Out-Null }
         if ($chkStartRecommended -and $chkStartRecommended.IsChecked) { $logBuilder.AppendLine("WhatIf: Start Menu Recommended clutter would be hidden.") | Out-Null }
         if ($chkCompactExplorer -and $chkCompactExplorer.IsChecked) { $logBuilder.AppendLine("WhatIf: File Explorer compact view would be enabled.") | Out-Null }
-        if ($chkWindowsSandbox -and $chkWindowsSandbox.IsChecked) { $logBuilder.AppendLine("WhatIf: Windows Sandbox optional feature would be enabled.") | Out-Null }
-        if ($chkWSL -and $chkWSL.IsChecked) { $logBuilder.AppendLine("WhatIf: Windows Subsystem for Linux (WSL) would be enabled.") | Out-Null }
 
         # AI Suite Simulations
         if ($chkCopilotPolicy -and $chkCopilotPolicy.IsChecked) { $logBuilder.AppendLine("WhatIf: Windows Copilot taskbar button and group policies would be disabled.") | Out-Null }
@@ -2086,7 +1984,7 @@ function Show-DebloaterWindow {
         }
 
         # Step 6: Explicit Approval Gate for AllUsers / High-Impact changes (Live mode)
-        $hasHighImpact = [bool](($chkWindowsSandbox -and $chkWindowsSandbox.IsChecked) -or ($chkWSL -and $chkWSL.IsChecked))
+        $hasHighImpact = $false
         $approvalReq = Test-ApprovalRequirement -Scope $targetScope -HasHighImpact $hasHighImpact
         if (-not $isDryRun -and ($approvalReq.RequiresElevatedScopeConfirmation -or $approvalReq.RequiresHighImpactConfirmation)) {
             $confirmScope = [System.Windows.MessageBox]::Show(
@@ -2269,23 +2167,6 @@ function Show-DebloaterWindow {
             $totalOps++; $successOps++; & $recordTx "AI.AppFeatures" "AI" "Edge/Paint/Notepad AI [$targetScope]" "Default" "Disabled" "Success" $true $true; & $appendLog "Integrated application AI features (Edge/Paint/Notepad) updated."
         }
         $progExecution.Value = 88
-
-        # 8. Optional Windows Features
-        if ($chkWindowsSandbox.IsChecked) {
-            & $appendLog "Enabling Windows Sandbox optional feature..."
-            $sbRes = Set-OptionalFeatureState -FeatureId "WindowsSandbox" -Enable $true -WhatIf:$isDryRun
-            $totalOps++
-            if ($sbRes.Status -eq "Success" -or $sbRes.Status -eq "Preview") { $successOps++; & $recordTx "Feature.WindowsSandbox" "Features" "WindowsSandbox [$targetScope]" "Disabled" "Enabled" "Success" $true $true; & $appendLog "Windows Sandbox enabled." }
-            else { $skippedOps++; & $recordTx "Feature.WindowsSandbox" "Features" "WindowsSandbox [$targetScope]" "Disabled" "Enabled" "Skipped" $false $false "$($sbRes.Status)"; & $appendLog "Windows Sandbox skipped/error: $($sbRes.Status)" }
-        }
-        if ($chkWSL.IsChecked) {
-            & $appendLog "Enabling Windows Subsystem for Linux (WSL)..."
-            $wslRes = Set-OptionalFeatureState -FeatureId "WSL" -Enable $true -WhatIf:$isDryRun
-            $totalOps++
-            if ($wslRes.Status -eq "Success" -or $wslRes.Status -eq "Preview") { $successOps++; & $recordTx "Feature.WSL" "Features" "WSL [$targetScope]" "Disabled" "Enabled" "Success" $true $true; & $appendLog "WSL enabled." }
-            else { $skippedOps++; & $recordTx "Feature.WSL" "Features" "WSL [$targetScope]" "Disabled" "Enabled" "Skipped" $false $false "$($wslRes.Status)"; & $appendLog "WSL skipped/error: $($wslRes.Status)" }
-        }
-        $progExecution.Value = 93
 
         # 9. Selected Apps Removal
         $appsToRemove = [System.Collections.Generic.List[string]]::new()
@@ -2580,8 +2461,6 @@ function Show-DebloaterWindow {
                 EdgeAI              = [bool]($chkEdgeAI -and $chkEdgeAI.IsChecked)
                 PaintAI             = [bool]($chkPaintAI -and $chkPaintAI.IsChecked)
                 NotepadAI           = [bool]($chkNotepadAI -and $chkNotepadAI.IsChecked)
-                WindowsSandbox      = [bool]($chkWindowsSandbox -and $chkWindowsSandbox.IsChecked)
-                WSL                 = [bool]($chkWSL -and $chkWSL.IsChecked)
             }
 
             $sfd = [Microsoft.Win32.SaveFileDialog]::new()
@@ -2664,8 +2543,6 @@ function Show-DebloaterWindow {
                         if ($chkEdgeAI -and $t.ContainsKey("EdgeAI")) { $chkEdgeAI.IsChecked = [bool]$t["EdgeAI"] }
                         if ($chkPaintAI -and $t.ContainsKey("PaintAI")) { $chkPaintAI.IsChecked = [bool]$t["PaintAI"] }
                         if ($chkNotepadAI -and $t.ContainsKey("NotepadAI")) { $chkNotepadAI.IsChecked = [bool]$t["NotepadAI"] }
-                        if ($chkWindowsSandbox -and $t.ContainsKey("WindowsSandbox")) { $chkWindowsSandbox.IsChecked = [bool]$t["WindowsSandbox"] }
-                        if ($chkWSL -and $t.ContainsKey("WSL")) { $chkWSL.IsChecked = [bool]$t["WSL"] }
                     }
 
                     & $syncPrivacyDropdownFromTweaks

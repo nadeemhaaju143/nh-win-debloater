@@ -9,6 +9,17 @@ The project follows a **progressive semantic minor versioning format**:
 
 ---
 
+## [1.4.2] - 2026-11-27
+
+### 6-Tab UI Streamlining, Scope & Journal Integrity, and Originality Audit
+- **Removed `7. Optional Features` Tab (`MainWindow.xaml`, `AppController.ps1`):**
+  - Removed the `7. Optional Features` tab (`ChkWindowsSandbox`, `ChkWSL`, `TxtTabFeaturesCount`, and dropdown preset wiring) so `TabStage2Controls` focuses exclusively on 6 core debloat/privacy/shell/gaming/extras/AI tabs.
+- **End-to-End Scope, Dry-Run & Journal Integrity (`AppController.ps1`, `SystemTweaks.psm1`, `PrivacySearch.psm1`, `TransactionJournal.psm1`, `RollbackEngine.psm1`):**
+  - Forwarded `-WhatIf:$isDryRun` across all tweak and `Remove-DebloatApp` calls, wired `Add-TransactionRecord` into UI execution, enforced `HKLM:\` guards for `CurrentUser` scope, and fixed PowerShell 5.1 `ConvertFrom-Json` array unwrapping.
+- **Full Repository Originality Audit:** Verified zero third-party tool attribution, zero clone/fork phrasing, and 100% original **NH Digital / Mohammed Nadeem BM** attribution.
+
+---
+
 ## [1.4.1] - 2026-11-27
 
 ### Safe-Scope Pruning & 7-Tab UI Refinement
