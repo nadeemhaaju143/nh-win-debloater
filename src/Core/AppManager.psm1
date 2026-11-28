@@ -377,14 +377,41 @@ function Invoke-WingetUninstallRetry {
     $wingetCmd = Get-Command "winget.exe" -ErrorAction SilentlyContinue
     if (-not $wingetCmd) { return $false }
 
+    $tmpOut = [System.IO.Path]::GetTempFileName()
+    $tmpErr = [System.IO.Path]::GetTempFileName()
     try {
+        $listArgs = "list --id $PackageId -e --accept-source-agreements --disable-interactivity"
+        $listProc = Start-Process -FilePath "winget.exe" -ArgumentList $listArgs -WindowStyle Hidden -RedirectStandardOutput $tmpOut -RedirectStandardError $tmpErr -PassThru -ErrorAction SilentlyContinue
+        if ($listProc) {
+            if (-not $listProc.WaitForExit(15000)) {
+                try { $listProc.Kill() } catch {}
+                return $false
+            }
+            $listOut = Get-Content -Path $tmpOut -Raw -ErrorAction SilentlyContinue
+            if ($listProc.ExitCode -ne 0 -or [string]::IsNullOrWhiteSpace($listOut) -or $listOut -notmatch [regex]::Escape($PackageId)) {
+                return $false
+            }
+        } else {
+            return $false
+        }
+
         $wgArgs = "uninstall --id $PackageId --exact --silent --accept-source-agreements --disable-interactivity"
-        $wgProc = Start-Process -FilePath "winget.exe" -ArgumentList $wgArgs -NoNewWindow -PassThru -Wait -ErrorAction SilentlyContinue
-        return ($null -ne $wgProc -and $wgProc.ExitCode -eq 0)
+        $wgProc = Start-Process -FilePath "winget.exe" -ArgumentList $wgArgs -WindowStyle Hidden -RedirectStandardOutput $tmpOut -RedirectStandardError $tmpErr -PassThru -ErrorAction SilentlyContinue
+        if ($wgProc) {
+            if (-not $wgProc.WaitForExit(45000)) {
+                try { $wgProc.Kill() } catch {}
+                return $false
+            }
+            return ($wgProc.ExitCode -eq 0)
+        }
+        return $false
     }
     catch {
         Write-Verbose "WinGet uninstall skipped for '$PackageId': $($_.Exception.Message)"
         return $false
+    }
+    finally {
+        Remove-Item -Path $tmpOut, $tmpErr -Force -ErrorAction SilentlyContinue
     }
 }
 
@@ -1139,8 +1166,14 @@ function Install-CommonWindowsApp {
             # Method 3: Winget install fallback
             $wingetCmd = Get-Command "winget.exe" -ErrorAction SilentlyContinue
             if ($wingetCmd) {
-                $wingetArgs = "install --id $($info.WingetId) --silent --accept-package-agreements --accept-source-agreements"
-                $p = Start-Process -FilePath "winget.exe" -ArgumentList $wingetArgs -NoNewWindow -PassThru -Wait
+                $tmpOut = [System.IO.Path]::GetTempFileName()
+                $tmpErr = [System.IO.Path]::GetTempFileName()
+                try {
+                    $wingetArgs = "install --id $($info.WingetId) --silent --accept-package-agreements --accept-source-agreements"
+                    $p = Start-Process -FilePath "winget.exe" -ArgumentList $wingetArgs -WindowStyle Hidden -RedirectStandardOutput $tmpOut -RedirectStandardError $tmpErr -PassThru -Wait
+                } finally {
+                    Remove-Item -Path $tmpOut, $tmpErr -Force -ErrorAction SilentlyContinue
+                }
                 $status = if ($p.ExitCode -eq 0) { "Success" } else { "Notice" }
                 return [PSCustomObject]@{
                     AppName     = $AppName

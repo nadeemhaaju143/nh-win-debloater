@@ -2091,6 +2091,8 @@ function Show-DebloaterWindow {
             $totalOps++; $successOps++
             & $appendLog "System Restore Point created successfully." "SUCCESS"
         }
+        $txtProgressStatus.Text = "Applying system privacy & shell optimizations..."
+        [System.Windows.Forms.Application]::DoEvents()
         $progExecution.Value = 20
 
         # Legacy Registry Snapshot compatibility (preserved alongside session before-state.json)

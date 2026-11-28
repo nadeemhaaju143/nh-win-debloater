@@ -318,15 +318,42 @@ function New-DebloatRestorePoint {
     [OutputType([PSCustomObject])]
     param(
         [Parameter(Mandatory = $false)]
-        [string]$Description = "NH Win Debloater Pre-Debloat Checkpoint"
+        [string]$Description = "NH Win Debloater Pre-Debloat Checkpoint",
+
+        [Parameter(Mandatory = $false)]
+        [int]$TimeoutSeconds = 18
     )
 
     if ($PSCmdlet.ShouldProcess("System Restore Point", "Create checkpoint: '$Description'")) {
+        $job = $null
         try {
-            $srCheck = Get-ComputerRestorePoint -ErrorAction SilentlyContinue
-            Write-Verbose "Existing restore points found: $($srCheck.Count)"
+            $job = Start-Job -ScriptBlock {
+                Checkpoint-Computer -Description $using:Description -RestorePointType "MODIFY_SETTINGS" -ErrorAction Stop
+            }
 
-            Checkpoint-Computer -Description $Description -RestorePointType "MODIFY_SETTINGS" -ErrorAction Stop
+            $deadline = (Get-Date).AddSeconds($TimeoutSeconds)
+            while ($job.State -eq "Running" -and (Get-Date) -lt $deadline) {
+                Start-Sleep -Milliseconds 200
+                try {
+                    if ([System.Windows.Forms.Application]) {
+                        [System.Windows.Forms.Application]::DoEvents()
+                    }
+                } catch {}
+            }
+
+            if ($job.State -eq "Running") {
+                Stop-Job -Job $job -ErrorAction SilentlyContinue
+                Remove-Job -Job $job -Force -ErrorAction SilentlyContinue
+                return [PSCustomObject]@{
+                    Status      = "Error"
+                    Description = $Description
+                    Timestamp   = (Get-Date).ToString("yyyy-MM-dd HH:mm:ss")
+                    Message     = "System Restore Point timed out after ${TimeoutSeconds}s."
+                }
+            }
+
+            $null = Receive-Job -Job $job -ErrorAction Stop
+            Remove-Job -Job $job -Force -ErrorAction SilentlyContinue
             return [PSCustomObject]@{
                 Status      = "Success"
                 Description = $Description
@@ -334,6 +361,10 @@ function New-DebloatRestorePoint {
             }
         }
         catch {
+            if ($job) {
+                Stop-Job -Job $job -ErrorAction SilentlyContinue
+                Remove-Job -Job $job -Force -ErrorAction SilentlyContinue
+            }
             return [PSCustomObject]@{
                 Status      = "Error"
                 Description = $Description

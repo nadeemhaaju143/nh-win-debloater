@@ -9,6 +9,16 @@ The project follows a **progressive semantic minor versioning format**:
 
 ---
 
+## [1.4.6] - 2026-11-29
+
+### Non-Blocking Stage 4 Pipeline & WinGet Guard
+- **Non-Blocking System Restore Checkpoint (`SystemTweaks.psm1`, `AppController.ps1`):**
+  - Wrapped `Checkpoint-Computer` inside `Start-Job` with an 18-second timeout and UI `DoEvents()` pumping, and ensured `$txtProgressStatus.Text` immediately transitions past `"Creating System Restore checkpoint..."` on completion or timeout.
+- **WinGet Pre-Check & Hidden Stdout/Stderr Redirection (`AppManager.psm1`):**
+  - Updated `Invoke-WingetUninstallRetry` to check `winget list --id <ID> -e` first and skip `winget uninstall` immediately if not installed, and redirected stdout/stderr cleanly with `-WindowStyle Hidden` and explicit `WaitForExit` timeouts across both `Invoke-WingetUninstallRetry` and `Install-CommonWindowsApp`.
+
+---
+
 ## [1.4.5] - 2026-11-29
 
 ### WinGet Uninstall CLI Fix
