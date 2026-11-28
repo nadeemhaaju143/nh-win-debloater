@@ -240,7 +240,7 @@ function Set-WindowsUpdatePolicyTweak {
         [bool]$PreventAutoReboot = $true,
 
         [Parameter(Mandatory = $false)]
-        [bool]$ExcludeDrivers = $true
+        [bool]$ExcludeDrivers = $false
     )
 
     $ops = [System.Collections.Generic.List[PSCustomObject]]::new()
@@ -623,7 +623,6 @@ function Set-TelemetryScheduledTasksTweak {
     $ops = [System.Collections.Generic.List[PSCustomObject]]::new()
     $tasks = @(
         @{ Path = "\Microsoft\Windows\Customer Experience Improvement Program\"; Name = "Consolidator" },
-        @{ Path = "\Microsoft\Windows\Customer Experience Improvement Program\"; Name = "UsbCeip" },
         @{ Path = "\Microsoft\Windows\Application Experience\"; Name = "Microsoft Compatibility Appraiser" },
         @{ Path = "\Microsoft\Windows\Application Experience\"; Name = "ProgramDataUpdater" }
     )
@@ -1277,24 +1276,20 @@ function Set-SafeServiceOptimization {
         @{ Name = "WalletService"; TargetStartup = "Manual" },
         @{ Name = "wisvc"; TargetStartup = "Manual" },
         @{ Name = "WMPNetworkSvc"; TargetStartup = "Manual" },
-        @{ Name = "RemoteRegistry"; TargetStartup = "Disabled" },
         @{ Name = "Fax"; TargetStartup = "Manual" }
     )
 
     $optionalServices = @(
         @{ Name = "lfsvc"; TargetStartup = "Manual" },
-        @{ Name = "SensrSvc"; TargetStartup = "Manual" },
-        @{ Name = "SensorDataService"; TargetStartup = "Manual" },
-        @{ Name = "PhoneSvc"; TargetStartup = "Manual" },
-        @{ Name = "WpcMonSvc"; TargetStartup = "Manual" },
-        @{ Name = "SCardSvr"; TargetStartup = "Manual" },
-        @{ Name = "ScDeviceEnum"; TargetStartup = "Manual" }
+        @{ Name = "WpcMonSvc"; TargetStartup = "Manual" }
     )
 
     $protectedServices = @(
         "WinDefend", "wuauserv", "AudioSrv", "AudioEndpointBuilder", "Dhcp", "Dnscache",
-        "BFE", "mpssvc", "bthserv", "Spooler", "WSearch", "SysMain", "DoSvc", "BITS",
-        "DPS", "CDPSvc", "WpnService", "fdPHost", "FDResPub", "AppXSvc", "msiserver", "VSS"
+        "BFE", "mpssvc", "bthserv", "BTAGService", "BthAvctpSvc", "Spooler", "WSearch", "SysMain", "DoSvc", "BITS",
+        "DPS", "CDPSvc", "WpnService", "fdPHost", "FDResPub", "AppXSvc", "msiserver", "VSS",
+        "PlugPlay", "SCardSvr", "ScDeviceEnum", "PhoneSvc", "SensrSvc", "SensorDataService",
+        "RemoteRegistry", "TermService", "UmRdpService", "SessionEnv", "WinRM", "RustDesk", "NHPortShare"
     )
 
     $targetList = [System.Collections.Generic.List[hashtable]]::new()

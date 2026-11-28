@@ -27,6 +27,10 @@ $script:HardProtectedServicePatterns = @(
     "wuauserv", "UsoSvc", "WaaSMedicSvc", "BITS", "TrustedInstaller", "DoSvc",
     "Dhcp", "Dnscache", "NlaSvc", "netprofm", "WlanSvc", "Wcmsvc", "nsi",
     "AudioSrv", "AudioEndpointBuilder", "Audiosrv",
+    "bthserv", "BTAGService", "BthAvctpSvc", "BluetoothUserService*",
+    "SCardSvr", "ScDeviceEnum", "PhoneSvc", "SensrSvc", "SensorDataService",
+    "RemoteRegistry", "TermService", "UmRdpService", "SessionEnv", "WinRM",
+    "RustDesk*", "NHPortShare*", "Serenum", "Serial", "WinUSB", "libusb*",
     "hidserv", "TabletInputService", "Asus*", "Lenovo*", "Dell*", "HP*",
     "msiserver", "AppXSvc", "StateRepository", "StorSvc", "ClipSVC", "InstallService",
     "sppsvc", "wlidsvc"
@@ -37,18 +41,14 @@ $script:ServiceTierMap = @{
     "RetailDemo"        = "Optional"
     "MapsBroker"        = "Optional"
     "Fax"               = "Optional"
-    "PhoneSvc"          = "Optional"
     "XblAuthManager"    = "Optional"
     "XblGameSave"       = "Optional"
     "XboxNetApiSvc"     = "Optional"
     "XboxGipSvc"        = "Optional"
     "WalletService"     = "Optional"
     "WMPNetworkSvc"     = "Optional"
-    "RemoteRegistry"    = "Safe"
     "dmwappushservice"  = "NotRecommended"
     "wisvc"             = "NotRecommended"
-    "SensrSvc"          = "NotRecommended"
-    "SensorDataService" = "NotRecommended"
     "WerSvc"            = "NotRecommended"
 }
 

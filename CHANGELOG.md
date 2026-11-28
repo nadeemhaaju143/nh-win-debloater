@@ -9,6 +9,20 @@ The project follows a **progressive semantic minor versioning format**:
 
 ---
 
+## [1.4.3] - 2026-11-29
+
+### Servicing, USB, Bluetooth, Remote Access & Driver Hardening
+- **Service Protection (`ServiceProvider.psm1`, `SystemTweaks.psm1`):**
+  - Hard-protected `bthserv`, `BTAGService`, `BthAvctpSvc`, `BluetoothUserService*`, `SCardSvr`, `ScDeviceEnum`, `PhoneSvc`, `SensrSvc`, `SensorDataService`, `RemoteRegistry`, `TermService`, `UmRdpService`, `SessionEnv`, `WinRM`, `RustDesk*`, `NHPortShare*`, `Serenum`, `Serial`, `WinUSB`, and `libusb*` so no service optimization can disrupt USB/Bluetooth/PnP stacks, smartcard dongles, or remote/port-sharing tools.
+- **Driver & Task Safety (`SystemTweaks.psm1`):**
+  - Changed `Set-WindowsUpdatePolicyTweak` default `$ExcludeDrivers = $false` so Windows Update driver delivery (ADB/Fastboot/MediaTek/Qualcomm/USB/Bluetooth) is never blocked by default.
+  - Removed `\Microsoft\Windows\Customer Experience Improvement Program\UsbCeip` from `Set-TelemetryScheduledTasksTweak`.
+- **Package Protection (`AppManager.psm1`) & UI Copy (`MainWindow.xaml`):**
+  - Added `*RustDesk*`, `*PortShare*`, `*MediaTek*`, `*Qualcomm*`, `*Fastboot*`, `*WinUSB*`, `*libusb*`, `*FTDI*`, and `*SiliconLabs*` to `$script:CoreFrameworkPatterns`.
+  - Updated Stage 5 reboot note in `MainWindow.xaml`.
+
+---
+
 ## [1.4.2] - 2026-11-27
 
 ### 6-Tab UI Streamlining, Scope & Journal Integrity, and Originality Audit

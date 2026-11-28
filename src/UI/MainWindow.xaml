@@ -600,7 +600,7 @@
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Text="NH Win Debloater" FontWeight="Bold" FontSize="18" Foreground="#F8FAFC"/>
                                 <Border x:Name="BadgeVersion" CornerRadius="4" Background="#0284C7" Margin="10,2,0,2" Padding="6,1">
-                                    <TextBlock x:Name="TxtVersion" Text="v1.4.2" FontSize="11" FontWeight="Bold" Foreground="#FFFFFF"/>
+                                    <TextBlock x:Name="TxtVersion" Text="v1.4.3" FontSize="11" FontWeight="Bold" Foreground="#FFFFFF"/>
                                 </Border>
                             </StackPanel>
                             <TextBlock Text="Less Bloat. Better Windows. Built for performance." FontSize="12" Foreground="#94A3B8"/>
@@ -2146,7 +2146,7 @@
                         <StackPanel ClipToBounds="False">
                             <TextBlock Text="Recommended Next Steps:" FontSize="14" FontWeight="Bold" Foreground="#F8FAFC" Margin="0,0,0,10"/>
                             <TextBlock Text="• Restart Windows Explorer to immediately refresh Taskbar and desktop icons." FontSize="13" Foreground="#CBD5E1" Margin="0,2"/>
-                            <TextBlock Text="• For complete policy enforcement (Fast Startup / Driver exclusions), a system reboot is recommended." FontSize="13" Foreground="#CBD5E1" Margin="0,2"/>
+                            <TextBlock Text="• For complete policy enforcement across Explorer and system settings, a system reboot or sign-out is recommended." FontSize="13" Foreground="#CBD5E1" Margin="0,2"/>
                             <TextBlock Text="• Review session execution log file or backup snapshots at any time." FontSize="13" Foreground="#CBD5E1" Margin="0,2"/>
 
                             <StackPanel Orientation="Horizontal" Margin="0,14,0,16">
