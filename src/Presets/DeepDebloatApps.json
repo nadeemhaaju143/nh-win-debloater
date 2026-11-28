@@ -156,12 +156,6 @@
         "RemovalMethod": "Appx"
     },
     {
-        "AppId": "Microsoft.MicrosoftStickyNotes",
-        "DisplayName": "Microsoft.MicrosoftStickyNotes",
-        "Recommendation": "safe",
-        "RemovalMethod": "Appx"
-    },
-    {
         "AppId": "Microsoft.MixedReality.Portal",
         "DisplayName": "Microsoft.MixedReality.Portal",
         "Recommendation": "safe",
@@ -222,12 +216,6 @@
         "RemovalMethod": "Appx"
     },
     {
-        "AppId": "Microsoft.WindowsAlarms",
-        "DisplayName": "Microsoft.WindowsAlarms",
-        "Recommendation": "safe",
-        "RemovalMethod": "Appx"
-    },
-    {
         "AppId": "Microsoft.WindowsFeedbackHub",
         "DisplayName": "Microsoft.WindowsFeedbackHub",
         "Recommendation": "safe",
@@ -236,12 +224,6 @@
     {
         "AppId": "Microsoft.WindowsMaps",
         "DisplayName": "Microsoft.WindowsMaps",
-        "Recommendation": "safe",
-        "RemovalMethod": "Appx"
-    },
-    {
-        "AppId": "Microsoft.WindowsSoundRecorder",
-        "DisplayName": "Microsoft.WindowsSoundRecorder",
         "Recommendation": "safe",
         "RemovalMethod": "Appx"
     },
@@ -672,12 +654,6 @@
         "RemovalMethod": "Appx"
     },
     {
-        "AppId": "B9ECED6F.ASUSPCAssistant",
-        "DisplayName": "B9ECED6F.ASUSPCAssistant",
-        "Recommendation": "optional",
-        "RemovalMethod": "Appx"
-    },
-    {
         "AppId": "B9ECED6F.Glidex",
         "DisplayName": "B9ECED6F.Glidex",
         "Recommendation": "optional",
@@ -842,12 +818,6 @@
     {
         "AppId": "AD2F1837.HPPowerManager",
         "DisplayName": "AD2F1837.HPPowerManager",
-        "Recommendation": "optional",
-        "RemovalMethod": "Appx"
-    },
-    {
-        "AppId": "AD2F1837.HPPrinterControl",
-        "DisplayName": "AD2F1837.HPPrinterControl",
         "Recommendation": "optional",
         "RemovalMethod": "Appx"
     },

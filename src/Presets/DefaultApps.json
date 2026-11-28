@@ -174,12 +174,6 @@
         "RemovalMethod": "Appx"
     },
     {
-        "AppId": "Microsoft.MicrosoftStickyNotes",
-        "DisplayName": "Microsoft.MicrosoftStickyNotes",
-        "Recommendation": "Safe",
-        "RemovalMethod": "Appx"
-    },
-    {
         "AppId": "Microsoft.MixedReality.Portal",
         "DisplayName": "Microsoft.MixedReality.Portal",
         "Recommendation": "Safe",
@@ -240,12 +234,6 @@
         "RemovalMethod": "Appx"
     },
     {
-        "AppId": "Microsoft.WindowsAlarms",
-        "DisplayName": "Microsoft.WindowsAlarms",
-        "Recommendation": "Safe",
-        "RemovalMethod": "Appx"
-    },
-    {
         "AppId": "Microsoft.WindowsFeedbackHub",
         "DisplayName": "Microsoft.WindowsFeedbackHub",
         "Recommendation": "Safe",
@@ -254,12 +242,6 @@
     {
         "AppId": "Microsoft.WindowsMaps",
         "DisplayName": "Microsoft.WindowsMaps",
-        "Recommendation": "Safe",
-        "RemovalMethod": "Appx"
-    },
-    {
-        "AppId": "Microsoft.WindowsSoundRecorder",
-        "DisplayName": "Microsoft.WindowsSoundRecorder",
         "Recommendation": "Safe",
         "RemovalMethod": "Appx"
     },

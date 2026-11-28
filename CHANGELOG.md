@@ -9,6 +9,16 @@ The project follows a **progressive semantic minor versioning format**:
 
 ---
 
+## [1.4.4] - 2026-11-29
+
+### Strict Curated App Classification & Expanded Protection
+- **Fixed Unknown/Live-Discovered App Auto-Classification (`AppController.ps1`, `AppManager.psm1`):**
+  - Unknown or newly discovered AppX packages are never auto-classified as `"Recommended"` or `"Safe"` and are never pre-selected for removal. Only explicitly curated bloatware items in `DefaultApps.json` (excluding `OneDrive`, `Copilot`, etc.) are marked `"Recommended"` and pre-selected; any uncategorized package defaults to `"Optional"` (unselected).
+- **Expanded Permanent Package Protection (`ProtectedApps.json`, `AppManager.psm1`, `DefaultApps.json`, `DeepDebloatApps.json`):**
+  - Permanently protected and excluded all media codecs/encoders (`AVCEncoder`, `HEVC`, `HEIF`, `VP9`, `Webp`, `WebMediaExtensions`, `MPEG2`, `RawImageExtension`, `Codec`), OEM/audio/hardware (`DTSInc`, `DTSXUltra`, `Dolby`, `Realtek`, `ASUS`, `ASUSPCAssistant`, `ROG`, `ArmouryCrate`, `Nvidia`, `Intel`, `AMD`), printing & system dialogs/hosts (`PrintDialog`, `PrintQueueActionCenter`, `Printing`, `XGpuEjectDialog`, `PinningConfirmationDialog`, `Win32WebViewHost`, `ShellExperienceHost`, `StartExperiencesApp`, `CloudExperienceHost`, `OOBENetworkConnectionFlow`, `CBSPreview`, `AugLoop.CBS`, `Apprep.ChxApp`, `AssignedAccessLockApp`, `UndockedDevKit`, `SecureAssessmentBrowser`, `PeopleExperienceHost`, `NarratorQuickStart`, `ContentDeliveryManager`), and CLI/shell/user utilities (`Microsoft.PowerShell`, `Microsoft.Winget.Source`, `WinRAR.ShellExtension`, `7zip`, `TranslucentTB`, `MicrosoftStickyNotes`, `WindowsSoundRecorder`, `WindowsAlarms`, `WindowsCalculator`, `WindowsCamera`, `WindowsNotepad`, `Paint`, `ScreenSketch`).
+
+---
+
 ## [1.4.3] - 2026-11-29
 
 ### Servicing, USB, Bluetooth, Remote Access & Driver Hardening

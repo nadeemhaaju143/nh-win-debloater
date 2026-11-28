@@ -52,7 +52,47 @@ $script:ProtectedSystemPackages = @(
     "AppUp.ThunderboltControlCenter",
     "RealtekSemiconductorCorp.RealtekAudioControl",
     "Microsoft.MicrosoftEdge.Stable",
-    "Microsoft.EdgeWebView2Runtime"
+    "Microsoft.EdgeWebView2Runtime",
+    "AVCEncoder",
+    "Media",
+    "Codec",
+    "DTSInc",
+    "DTSXUltra",
+    "Dolby",
+    "Realtek",
+    "ASUS",
+    "ASUSPCAssistant",
+    "ROG",
+    "ArmouryCrate",
+    "Nvidia",
+    "Intel",
+    "AMD",
+    "PrintDialog",
+    "PrintQueueActionCenter",
+    "Printing",
+    "XGpuEjectDialog",
+    "PinningConfirmationDialog",
+    "Win32WebViewHost",
+    "StartExperiencesApp",
+    "CloudExperienceHost",
+    "OOBENetworkConnectionFlow",
+    "CBSPreview",
+    "AugLoop.CBS",
+    "Apprep.ChxApp",
+    "AssignedAccessLockApp",
+    "UndockedDevKit",
+    "SecureAssessmentBrowser",
+    "PeopleExperienceHost",
+    "NarratorQuickStart",
+    "ContentDeliveryManager",
+    "Microsoft.PowerShell",
+    "Microsoft.Winget.Source",
+    "WinRAR.ShellExtension",
+    "7zip",
+    "TranslucentTB",
+    "MicrosoftStickyNotes",
+    "WindowsSoundRecorder",
+    "WindowsAlarms"
 )
 
 $script:BuiltinAppAliases = @{
@@ -104,6 +144,57 @@ $script:CoreFrameworkPatterns = @(
     "*libusb*",
     "*FTDI*",
     "*SiliconLabs*",
+    "*AVCEncoder*",
+    "*HEVC*",
+    "*HEIF*",
+    "*VP9*",
+    "*Webp*",
+    "*MPEG2*",
+    "*RawImageExtension*",
+    "*Media*",
+    "*Codec*",
+    "*DTSInc*",
+    "*DTSXUltra*",
+    "*Dolby*",
+    "*Realtek*",
+    "*ASUS*",
+    "*ASUSPCAssistant*",
+    "*ROG*",
+    "*ArmouryCrate*",
+    "*Nvidia*",
+    "*Intel*",
+    "*AMD*",
+    "*PrintDialog*",
+    "*PrintQueueActionCenter*",
+    "*Printing*",
+    "*XGpuEjectDialog*",
+    "*PinningConfirmationDialog*",
+    "*Win32WebViewHost*",
+    "*StartExperiencesApp*",
+    "*CloudExperienceHost*",
+    "*OOBENetworkConnectionFlow*",
+    "*CBSPreview*",
+    "*AugLoop.CBS*",
+    "*Apprep.ChxApp*",
+    "*AssignedAccessLockApp*",
+    "*UndockedDevKit*",
+    "*SecureAssessmentBrowser*",
+    "*PeopleExperienceHost*",
+    "*NarratorQuickStart*",
+    "*ContentDeliveryManager*",
+    "*Microsoft.PowerShell*",
+    "*Microsoft.Winget.Source*",
+    "*WinRAR.ShellExtension*",
+    "*7zip*",
+    "*TranslucentTB*",
+    "*MicrosoftStickyNotes*",
+    "*WindowsSoundRecorder*",
+    "*WindowsAlarms*",
+    "*WindowsCalculator*",
+    "*WindowsCamera*",
+    "*WindowsNotepad*",
+    "*Paint*",
+    "*ScreenSketch*",
     "1527c705-839a-4832-9118-54d4Bd6a0c89",
     "c5e2524a-ea46-4f67-841f-6a9465d9d515",
     "E2A4F912-2574-4A75-9BB0-0D023378592B",
@@ -542,7 +633,15 @@ function Get-AppPackageClassification {
     if ($AppId -match "OneDrive|Copilot|OutlookForWindows|Teams|YourPhone|QuickAssist|Xbox|Gaming") {
         return "Optional"
     }
-    return "Safe"
+    if ($PresetsPath -and (Test-Path (Join-Path $PresetsPath "DefaultApps.json"))) {
+        $defaultItems = Get-DebloatPreset -PresetName "Default" -PresetsPath $PresetsPath
+        foreach ($d in $defaultItems) {
+            if ($d.AppId -eq $AppId -or ($d.Aliases -and ($d.Aliases -contains $AppId))) {
+                return "Safe"
+            }
+        }
+    }
+    return "Optional"
 }
 
 function Test-HasProtectedDependent {

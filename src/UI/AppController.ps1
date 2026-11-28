@@ -917,6 +917,10 @@ function Show-DebloaterWindow {
             # 2. Multi-category selection aggregation
             $appMap = @{}
             $selectedCatNames = [System.Collections.Generic.List[string]]::new()
+            $curatedRecommendedIds = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::OrdinalIgnoreCase)
+            foreach ($recItem in (Get-DebloatPreset -PresetName "Default" -PresetsPath $presetsPath)) {
+                if ($recItem.AppId) { [void]$curatedRecommendedIds.Add([string]$recItem.AppId) }
+            }
 
             if ($chkCatRecommended -and $chkCatRecommended.IsChecked) {
                 $selectedCatNames.Add("Recommended")
@@ -1055,16 +1059,17 @@ function Show-DebloaterWindow {
                     continue # Exclude protected essential apps completely from bloatware list
                 }
 
-                $safetyTier = "Recommended"
-                $dotColor = "#10B981"
-                $badgeBg = "#064E3B"
-                $badgeFg = "#10B981"
+                $safetyTier = "Optional"
+                $dotColor = "#F59E0B"
+                $badgeBg = "#451A03"
+                $badgeFg = "#F59E0B"
 
-                if ($app.AppId -match "Xbox|Gaming|Zune|Media|Solitaire|Weather|News|Bing|Maps|People|Mail|Office|OneNote|Skype|Clipchamp|Copilot|OneDrive") {
-                    $safetyTier = "Optional"
-                    $dotColor = "#F59E0B"
-                    $badgeBg = "#451A03"
-                    $badgeFg = "#F59E0B"
+                $isLive = [bool]($app.PSObject.Properties["IsLiveDiscovered"] -and $app.IsLiveDiscovered)
+                if (-not $isLive -and $curatedRecommendedIds.Contains($app.AppId) -and $app.AppId -notmatch "Xbox|Gaming|Zune|Media|Solitaire|Weather|News|Bing|Maps|People|Mail|Office|OneNote|Skype|Clipchamp|Copilot|OneDrive") {
+                    $safetyTier = "Recommended"
+                    $dotColor = "#10B981"
+                    $badgeBg = "#064E3B"
+                    $badgeFg = "#10B981"
                 }
 
                 $cleanName = $app.DisplayName
