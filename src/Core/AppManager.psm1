@@ -378,7 +378,7 @@ function Invoke-WingetUninstallRetry {
     if (-not $wingetCmd) { return $false }
 
     try {
-        $wgArgs = "uninstall --id $PackageId --exact --silent --accept-source-agreements --accept-package-agreements"
+        $wgArgs = "uninstall --id $PackageId --exact --silent --accept-source-agreements --disable-interactivity"
         $wgProc = Start-Process -FilePath "winget.exe" -ArgumentList $wgArgs -NoNewWindow -PassThru -Wait -ErrorAction SilentlyContinue
         return ($null -ne $wgProc -and $wgProc.ExitCode -eq 0)
     }

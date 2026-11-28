@@ -9,6 +9,14 @@ The project follows a **progressive semantic minor versioning format**:
 
 ---
 
+## [1.4.5] - 2026-11-29
+
+### WinGet Uninstall CLI Fix
+- **Fixed `Invoke-WingetUninstallRetry` Arguments (`AppManager.psm1`):**
+  - Removed unsupported `--accept-package-agreements` from `winget uninstall` invocations and replaced it with `--silent --accept-source-agreements --disable-interactivity` so stubborn package uninstall fallbacks execute cleanly without CLI argument errors.
+
+---
+
 ## [1.4.4] - 2026-11-29
 
 ### Strict Curated App Classification & Expanded Protection
